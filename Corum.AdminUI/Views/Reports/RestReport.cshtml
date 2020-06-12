@@ -170,35 +170,21 @@
                 var EmptyCell = row.insertCell(2);
                 EmptyCell.innerHTML = "";
                 var EmptyCell = row.insertCell(3);
-
                 EmptyCell.innerHTML = "";
                 var EmptyCell = row.insertCell(4);
-
-                var EmptyCell = row.insertCell(5);
-                addClass(EmptyCell, "right_column new_columns_block_start");
-                EmptyCell.innerHTML = "<span class='pull-right'>@Model.DisplayTotalValues.QuantityAfter.ToString("N", numberFormat)</span>";
-
-                var EmptyCell = row.insertCell(6);
-                EmptyCell.innerHTML = "<span class='pull-right'>@Model.DisplayTotalValues.Weight.Value.ToString("N", numberFormat)</span>";
-
-                var inSumCell = row.insertCell(7);
-                addClass(inSumCell, "right_column prices_column new_columns_block_end");
-
-                var inSumCellBody = "<span>в БС:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.BP_After.ToString("N", numberFormat)</span><br>" +
-                (('@Model.PriceForEndConsumer' === 'True') ? "<span>в ЦКП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PE_After.ToString("N", numberFormat)</span><br>" : "") +
-                (('@Model.PriceForFirstReciver' === 'True') ? "<span>в ЦПП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PF_After.ToString("N", numberFormat)</span><br>" : "") +
-                (('@Model.PlanFullCost' === 'True') ? "<span>в СПП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PCP_After.ToString("N", numberFormat)</span><br>" : "") +
-                (('@Model.PlanChangableCost' === 'True') ? "<span>в СППР:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PCPC_After.ToString("N", numberFormat)</span><br>" : "") +
-                (('@Model.FactFullCosts' === 'True') ? "<span>в СФП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.FCP_After.ToString("N", numberFormat)</span><br>" : "") +
-                (('@Model.FactChangableCosts' === 'True') ? "<span>в СФПР:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.FCPC_After.ToString("N", numberFormat)</span><br>" : "");
-
-                inSumCell.innerHTML = inSumCellBody;
-
-                var EmptyCell = row.insertCell(8);
                 EmptyCell.innerHTML = "";
+                var EmptyCell = row.insertCell(5);
+                EmptyCell.innerHTML = "";
+                var EmptyCell = row.insertCell(6);
+                EmptyCell.innerHTML = "";
+                var EmptyCell = row.insertCell(7);
+                EmptyCell.innerHTML = "";
+                var EmptyCell = row.insertCell(8);
+
 
                 var EmptyCell = row.insertCell(9);
-                EmptyCell.innerHTML = "";
+                addClass(EmptyCell, "right_column new_columns_block_start new_columns_block_end");
+                EmptyCell.innerHTML = "<span class='pull-right'>@Model.DisplayTotalValues.QuantityAfter.ToString("N", numberFormat)</span>";
 
                 var EmptyCell = row.insertCell(10);
                 EmptyCell.innerHTML = "";
@@ -206,8 +192,14 @@
                 var EmptyCell = row.insertCell(11);
                 EmptyCell.innerHTML = "";
 
-
                 var EmptyCell = row.insertCell(12);
+                EmptyCell.innerHTML = "";
+
+                var EmptyCell = row.insertCell(13);
+                EmptyCell.innerHTML = "";
+
+
+                var EmptyCell = row.insertCell(14);
                 addClass(EmptyCell, "new_columns_block_end");
                 EmptyCell.innerHTML = "";
             }

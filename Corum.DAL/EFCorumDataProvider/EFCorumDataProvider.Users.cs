@@ -33,7 +33,7 @@ namespace Corum.DAL
             {
                 db.LoginHistory.Add(new LoginHistory()
                 {
-                    Datetime=DateTime.Now,
+                    Datetime = DateTime.Now,
                     IP = model.IP,
                     userId = userInfo.Id,
                     userAgent = model.UserAgent
@@ -60,7 +60,7 @@ namespace Corum.DAL
         public void UpdateUserDisplayName(string userId, string displayName, string postName, string contactPhone)
         {
             var user = db.AspNetUsers.FirstOrDefault(u => u.Id == userId);
-            if (user!=null)
+            if (user != null)
             {
                 user.DisplayName = displayName;
                 user.TwoFactorEnabled = true;
@@ -74,20 +74,20 @@ namespace Corum.DAL
         public IQueryable<ImportError> getImportErrors(int idSnapshot, string logId)
         {
             if (logId == null)
-            return db.LogImportErrors
-                .AsNoTracking()
-                 .Where(e => e.idSnapshot == idSnapshot)
-                 .OrderBy(e => e.guidSession)
-                  .Select(Mapper.Map)
-                   .AsQueryable();
+                return db.LogImportErrors
+                    .AsNoTracking()
+                     .Where(e => e.idSnapshot == idSnapshot)
+                     .OrderBy(e => e.guidSession)
+                      .Select(Mapper.Map)
+                       .AsQueryable();
             else
                 return db.LogImportErrors
                 .AsNoTracking()
                  .Where(e => e.idSnapshot == idSnapshot)
-                  .Where(e => e.guidSession == logId)                  
+                  .Where(e => e.guidSession == logId)
                   .Select(Mapper.Map)
                    .AsQueryable();
-            
+
         }
 
 
@@ -95,7 +95,7 @@ namespace Corum.DAL
         public bool DeleteSnapshot(int Id)
         {
             var delete_item = db.LogisticSnapshots.FirstOrDefault(s => s.id_spanshot == Id);
-            if (delete_item!=null)
+            if (delete_item != null)
             {
                 db.LogisticSnapshots.Remove(delete_item);
                 db.SaveChanges();
@@ -130,7 +130,7 @@ namespace Corum.DAL
             ActualDateBegAsDate = GetDate.ActualDateBeg.Value;
             ActualDateEndAsDate = GetDate.ActualDateEnd.Value;
             ActualDateBeg = ActualDateBegAsDate.ToString("dd.MM.yyyy");
-            ActualDateEnd = ActualDateEndAsDate.ToString("dd.MM.yyyy");                       
+            ActualDateEnd = ActualDateEndAsDate.ToString("dd.MM.yyyy");
             return true;
         }
 
@@ -139,18 +139,18 @@ namespace Corum.DAL
             CommentColumnName = "";
             CultureInfo provider = CultureInfo.InvariantCulture;
             var GetComment = db.SelectCommentFieldForReport(IsRest, ColumnName).FirstOrDefault();
-            CommentColumnName = GetComment.ColumnDescription;            
+            CommentColumnName = GetComment.ColumnDescription;
             return true;
         }
 
         public IQueryable<UserViewModel> getUsers(string Search)
         {
-            var search = (Search!=null)? Search: string.Empty;
+            var search = (Search != null) ? Search : string.Empty;
 
             var users = db.AspNetUsers.Where(x => x.Dismissed == false);
 
             return users
-              .AsNoTracking()              
+              .AsNoTracking()
                .Where(u => (((search == "") || ((search != "") && ((u.UserName.ToUpper().StartsWith(search.ToUpper()))
                                                                                                 || (u.UserName.ToUpper().Contains(search.ToUpper()))
                                                                                                 || (u.UserName.ToUpper().EndsWith(search.ToUpper())))))
@@ -171,7 +171,7 @@ namespace Corum.DAL
         }
 
         public IQueryable<UserViewModel> getUsersForClone(string userId)
-        {           
+        {
             return db.AspNetUsers
                 .AsNoTracking()
                  .Where(u => u.Id != userId)
@@ -181,13 +181,13 @@ namespace Corum.DAL
 
         public UserViewModel getUser(string userId)
         {
-            return Mapper.Map(db.AspNetUsers.AsNoTracking().FirstOrDefault(u=>u.Id == userId));
+            return Mapper.Map(db.AspNetUsers.AsNoTracking().FirstOrDefault(u => u.Id == userId));
         }
 
         public void AddRole(string userId, string roleId)
         {
             var adminRole = db.AspNetRoles.FirstOrDefault(r => r.Id == roleId);
-            var userInfo  = db.AspNetUsers.FirstOrDefault(u => u.Id == userId);
+            var userInfo = db.AspNetUsers.FirstOrDefault(u => u.Id == userId);
             if ((adminRole == null) || (userInfo == null)) return;
             {
                 if (UserHasRole(userId, roleId)) return;
@@ -210,7 +210,7 @@ namespace Corum.DAL
 
         public bool UserHasRole(string userId, string roleId)
         {
-            var userInfo  = db.AspNetUsers.FirstOrDefault(u => u.Id == userId);
+            var userInfo = db.AspNetUsers.FirstOrDefault(u => u.Id == userId);
             return ((userInfo != null) && (userInfo.AspNetRoles.Any(r => r.Id == roleId)));
         }
 
@@ -235,8 +235,8 @@ namespace Corum.DAL
             if (dbInfo == null) return;
 
             dbInfo.DisplayName = model.displayName;
-            dbInfo.Email       = model.userEmail;
-            dbInfo.UserName    = model.userEmail;
+            dbInfo.Email = model.userEmail;
+            dbInfo.UserName = model.userEmail;
             dbInfo.UserName = model.userEmail;
             dbInfo.TwoFactorEnabled = model.twoFactorEnabled;
             dbInfo.PostName = model.postName;
@@ -288,7 +288,7 @@ namespace Corum.DAL
 
         public void CloneUserRoles(string userId)
         {
-            var userRoles = getUserRoles(userId);           
+            var userRoles = getUserRoles(userId);
 
             List<string> roles = new List<string>();
 
@@ -297,9 +297,9 @@ namespace Corum.DAL
                 roles.Add(role.roleId);
             }
 
-           string[] allRoles = roles.ToArray();
+            string[] allRoles = roles.ToArray();
 
-           AssignRoles(userId, allRoles);
+            AssignRoles(userId, allRoles);
         }
 
         public List<UserRoleViewModel> getUserRoles(string userid)
@@ -309,7 +309,7 @@ namespace Corum.DAL
             return (from R in db.AspNetRoles
                     join RGR in db.RoleGroupsRole on R.Id equals RGR.RoleId
                     where (R.AspNetUsers.Any(m => m.Id == userid)
-                        && R.Id!= adminRoleId)
+                        && R.Id != adminRoleId)
                     select new UserRoleViewModel()
                     {
                         roleId = R.Id,
@@ -322,16 +322,16 @@ namespace Corum.DAL
                     .Union
                     (from R in db.AspNetRoles
                      join RGR in db.RoleGroupsRole on R.Id equals RGR.RoleId
-                    where (!(R.AspNetUsers.Any(m => m.Id == userid)))
-                       && (R.Id != adminRoleId)
-                    select new UserRoleViewModel()
-                    {
-                        roleId = R.Id,
-                        roleName = R.Name,
-                        assigned = false,
-                        roleDescription = R.RoleDescription,
-                        roleGroupName = RGR.RoleGroups.Name
-                    }).ToList(); 
+                     where (!(R.AspNetUsers.Any(m => m.Id == userid)))
+                        && (R.Id != adminRoleId)
+                     select new UserRoleViewModel()
+                     {
+                         roleId = R.Id,
+                         roleName = R.Name,
+                         assigned = false,
+                         roleDescription = R.RoleDescription,
+                         roleGroupName = RGR.RoleGroups.Name
+                     }).ToList();
         }
 
         public List<ImportTemplateInfo> GetImportTemplateInfo(/*bool isRests*/int FileType)
@@ -345,12 +345,12 @@ namespace Corum.DAL
                 if (FileType == 1) isRests = false;
 
                 return (from R in db.SelectFieldsOfStuctureForImport(isRests)
-                    select new ImportTemplateInfo()
-                    {
-                        ColumnNameInDB = R.ColumnName,
-                        ColumnType = R.ColumnType,
-                        ColumnDescription = R.ColumnDescription
-                    }).ToList();
+                        select new ImportTemplateInfo()
+                        {
+                            ColumnNameInDB = R.ColumnName,
+                            ColumnType = R.ColumnType,
+                            ColumnDescription = R.ColumnDescription
+                        }).ToList();
             }
             else if (FileType == 2)
             {
@@ -570,8 +570,8 @@ namespace Corum.DAL
                 elem30.ColumnType = "nvarchar";
                 elem30.ColumnDescription = "Контактный телефон по заявке";
 
-                R.Add(elem30); 
-                
+                R.Add(elem30);
+
                 ImportTemplateInfo elem30dop1 = new ImportTemplateInfo();
                 elem30dop1.ColumnNameInDB = "Attachment";
                 elem30dop1.ColumnType = "nvarchar";
@@ -636,7 +636,7 @@ namespace Corum.DAL
                 elem39.ColumnDescription = "Комментарий";
 
                 R.Add(elem39);
-               
+
                 return R;
             }
             else //if (FileType == 3)
@@ -715,7 +715,7 @@ namespace Corum.DAL
                 elem6.ColumnDescription = "Грузополучатель";
 
                 R.Add(elem6);
-                
+
                 ImportTemplateInfo elem7 = new ImportTemplateInfo();
                 elem7.ColumnNameInDB = "FromCountry";
                 elem7.ColumnType = "varchar";
@@ -828,7 +828,7 @@ namespace Corum.DAL
                 elem14.ColumnDescription = "Ограничения по выгрузке";
 
                 R.Add(elem14);
-                
+
                 ImportTemplateInfo elem16 = new ImportTemplateInfo();
                 elem16.ColumnNameInDB = "CarNumber";
                 elem16.ColumnType = "int";
@@ -850,7 +850,7 @@ namespace Corum.DAL
 
                 R.Add(elem18);
 
-                ImportTemplateInfo elem19= new ImportTemplateInfo();                
+                ImportTemplateInfo elem19 = new ImportTemplateInfo();
                 elem19.ColumnNameInDB = "ToConsigneeDate";
                 elem19.ColumnType = "datetime2";
                 elem19.ColumnDescription = "Дата доставки груза по заявке";
@@ -957,20 +957,20 @@ namespace Corum.DAL
 
                 return R;
             }
-            
+
         }
 
         //получение типа столбца из бд
         public string GetColumnType(bool isRests, string ColumnName)
         {
-            string ColumnTypeVal="";            
+            string ColumnTypeVal = "";
             var ColumnType = db.SelectColumnType(isRests, ColumnName).FirstOrDefault();
-            ColumnTypeVal = ColumnType.ColumnType;            
+            ColumnTypeVal = ColumnType.ColumnType;
             return ColumnTypeVal;
         }
 
         public List<ColumnSettingsModel> GetConfigColumn(bool isRests)
-        {            
+        {
             return (from r in db.SelectColumnConfig(isRests)
                     select new ColumnSettingsModel()
                     {
@@ -990,7 +990,7 @@ namespace Corum.DAL
                         isNullForQPrihodZeroForDocs = (r.isNullForQPrihodZeroForDocs == true) ? true : false,
                         isNullForQPrihodNotZeroForDocs = (r.isNullForQPrihodNotZeroForDocs == true) ? true : false,
                         id = r.id
-                    }).ToList();      
+                    }).ToList();
 
         }
 
@@ -1027,7 +1027,7 @@ namespace Corum.DAL
             return (from r in db.ImportConfig
                     select new ColumnNameModel()
                     {
-                        ColumnName = r.Column_Name                        
+                        ColumnName = r.Column_Name
                     }).ToList();
 
         }
@@ -1049,7 +1049,7 @@ namespace Corum.DAL
         //получение индекса столбца ColumnName в заголовках HeadersCSVFile
         public int GetIndexColumnInCSVFile(string[] HeadersCSVFile, string ColumnName)
         {
-            int HeadersCSVFileLength,j;
+            int HeadersCSVFileLength, j;
             HeadersCSVFileLength = HeadersCSVFile.Length;
 
             var IndexColumnInFileVal = -1;
@@ -1065,9 +1065,9 @@ namespace Corum.DAL
         }
 
         // заполнение настроечного класса для импорта
-        public List<ImportTemplateInfo> GetImportTemplateInfoWithCSVColumn(ConfiguredByUserColumsPairsModel preImportConfig, 
+        public List<ImportTemplateInfo> GetImportTemplateInfoWithCSVColumn(ConfiguredByUserColumsPairsModel preImportConfig,
             string[] HeadersCSVFile, string[] DataCSVFile)
-        {            
+        {
             // заполнение настроечного класса для импорта
             var templateInfo = new List<ImportTemplateInfo>();
             int i;
@@ -1077,16 +1077,16 @@ namespace Corum.DAL
             {
                 bool isRests = true;
 
-                //0 - остатки, 1 - документы                
+                //0 - остатки, 1 - документы
                 if (preImportConfig.FileType == 1) isRests = false;
 
                 var ColumnNameInDBVal = preImportConfig.configuredPairs.ElementAt(i).Key;//название столбца в бд
                 var ColumnNameInFileVal = preImportConfig.configuredPairs.ElementAt(i).Value;//название столбца в файле
                 var ColumnTypeVal = "";
                 if (preImportConfig.FileType == 0 || preImportConfig.FileType == 1)
-                     ColumnTypeVal = GetColumnType(/*preImportConfig.*/isRests, ColumnNameInDBVal);//тип столбца в бд
+                    ColumnTypeVal = GetColumnType(/*preImportConfig.*/isRests, ColumnNameInDBVal);//тип столбца в бд
                 var IndexColumnInFileVal = GetIndexColumnInCSVFile(HeadersCSVFile, ColumnNameInFileVal);//индекс выбранного ColumnNameInFileVal в заголовке HeadersCSVFile
-                
+
                 templateInfo.Add(new ImportTemplateInfo()
                 {
                     ColumnNameInDB = ColumnNameInDBVal,
@@ -1105,17 +1105,17 @@ namespace Corum.DAL
             int i;
             string ActualDateBeg = "";
             string ActualDateEnd = "";
-           
+
             int HeadersCSVFileLength = HeadersCSVFile.Length;
-            for (i=0; i<HeadersCSVFileLength; i++)
+            for (i = 0; i < HeadersCSVFileLength; i++)
             {
-                if (HeadersCSVFile[i].Trim() == "ActualDateBeg")   
+                if (HeadersCSVFile[i].Trim() == "ActualDateBeg")
                     ActualDateBeg = FirstDataRowCSVFile[i];
-                if (HeadersCSVFile[i].Trim() == "ActualDateEnd")   
+                if (HeadersCSVFile[i].Trim() == "ActualDateEnd")
                     ActualDateEnd = FirstDataRowCSVFile[i];
             }
 
-            if (ActualDateBeg==""||ActualDateEnd=="") 
+            if (ActualDateBeg == "" || ActualDateEnd == "")
                 Res = false;
             else
             {
@@ -1129,7 +1129,7 @@ namespace Corum.DAL
                 SQL_param[1] = new SqlParameter();
                 SQL_param[1].ParameterName = "@ActualDateEnd";
                 DateTime dt_end = DateTime.ParseExact(ActualDateEnd, "dd.MM.yyyy", CultureInfo.InvariantCulture);
-                SQL_param[1].Value = dt_end; 
+                SQL_param[1].Value = dt_end;
 
                 SQL_param[2] = new SqlParameter();
                 SQL_param[2].ParameterName = "@IsRest";
@@ -1141,13 +1141,13 @@ namespace Corum.DAL
                 SQL_param[3] = new SqlParameter();
                 SQL_param[3].ParameterName = "@id_snapshot";
                 SQL_param[3].SqlDbType = SqlDbType.Int;
-                SQL_param[3].Direction = System.Data.ParameterDirection.Output;
+                SQL_param[3].Direction = ParameterDirection.Output;
 
                 db.Database.ExecuteSqlCommand("exec dbo.GetIdSnapshot @ActualDateBeg, @ActualDateEnd, @IsRest, @id_snapshot output", SQL_param);
                 id_snapshot = (int)SQL_param[3].Value;
-                Res = true; 
-                
-             }           
+                Res = true;
+
+            }
             return Res;
         }
 
@@ -1155,21 +1155,21 @@ namespace Corum.DAL
         public bool DoImport(ConfiguredByUserColumsPairsModel preImportConfig, string[] HeadersCSVFile,
             string[] DataCSVFile, string[] FirstDataRowCSVFile, ref string guidSessionString, ref int Id_Snapshot)
         {
-            int i, j;            
+            int i, j;
             int DataCSVFileLength = DataCSVFile.Length;//количество строк в файле, которые будем импортировать            
             bool FlagSuccessImport = true; //флаг полного успешного импорта 
             bool SuccessFindIdSnapshot = false;//флаг удачного забора/генерации нового Id_Snapshot для импорта
 
             Guid guidSession;
             guidSession = Guid.NewGuid(); //генерация гуида (используется при записи лога ошибок)
-            guidSessionString = guidSession.ToString();            
+            guidSessionString = guidSession.ToString();
 
             // забор/генерация нового Id_Snapshot для импорта
             Id_Snapshot = 0;
             bool isRests = true;
             if (preImportConfig.FileType == 0 || preImportConfig.FileType == 1)
-            {            
-                //0 - остатки, 1 - документы                
+            {
+                //0 - остатки, 1 - документы
                 if (preImportConfig.FileType == 1) isRests = false;
             }
             SuccessFindIdSnapshot = GetIdSnapshotForImport(preImportConfig.ServerFileName, isRests,
@@ -1188,12 +1188,12 @@ namespace Corum.DAL
                     RowCSVFile = DataCSVFile[i].Split('\t');
                     string SQLComm;
 
-                    if (/*preImportConfig.IsRestFile*/ isRests  == true)
+                    if (isRests == true)
                         SQLComm = "exec dbo.RestsSnapshotInsert ";
                     else
                         SQLComm = "exec dbo.DocsSnapshotInsert ";
 
-                    SqlParameter[] SQL_param = new SqlParameter[templateInfo.Count+1];
+                    SqlParameter[] SQL_param = new SqlParameter[templateInfo.Count + 1];
 
                     //забираем настройки импорта
                     var importConfig = GetConfigColumn(/*preImportConfig.IsRestFile*/isRests).ToList();
@@ -1217,7 +1217,9 @@ namespace Corum.DAL
                         string CommentChange = "";
 
                         //забираем настройки конкретного поля
-                        var columnSettings = importConfig.FirstOrDefault(ic => ic.ColumnName == ColumnNameInDB); 
+                        var columnSettings = importConfig.FirstOrDefault(ic => ic.ColumnName == ColumnNameInDB);
+
+                        if (columnSettings is null) columnSettings = new ColumnSettingsModel();
 
                         //проверка - не пустое поле
                         bool isNullCheck = false;
@@ -1225,12 +1227,12 @@ namespace Corum.DAL
                             isNullCheck = true;
 
                         //проверка - не пустое для остатков
-                        if ((!isNullCheck) && (/*preImportConfig.IsRestFile*/isRests) && (columnSettings.isNotNullForRest == true))
+                        if ((!isNullCheck) && (isRests) && (columnSettings.isNotNullForRest == true))
                             isNullCheck = true;
 
                         //проверка - пустое для остатков
                         bool isNullForRestCheck = false;
-                        if ((/*preImportConfig.IsRestFile*/isRests) && (columnSettings.isNullForRest == true))
+                        if ((isRests) && (columnSettings.isNullForRest == true))
                             isNullForRestCheck = true;
 
                         //замена не чиловых на 0
@@ -1243,67 +1245,71 @@ namespace Corum.DAL
                         if (columnSettings.isZeroDateReplace == true)
                             isZeroDateReplace = true;
 
-                        bool SuccessConvert = ConvertTypeHelpers.ConvertColumnVal(/*preImportConfig.IsRestFile*/isRests, i, ColumnNameInDB, ColumnType, ref ObjectCellVal, ref CommentError, ref CommentChange, isNullCheck, isZeroNumericReplace, isZeroDateReplace, isNullForRestCheck);
-                        
-                        if (SuccessConvert == false) 
+                        bool SuccessConvert = ConvertTypeHelpers.ConvertColumnVal(isRests, i, ColumnNameInDB, ColumnType, ref ObjectCellVal, ref CommentError, ref CommentChange, isNullCheck, isZeroNumericReplace, isZeroDateReplace, isNullForRestCheck);
+
+                        if (SuccessConvert == false)
                         {
-                            //запись в лог           
+                            //запись в лог
                             if (CommentError != "")
-                                WriteLogImportError(/*preImportConfig.IsRestFile*/isRests, i, ColumnNameInDB, CommentError, guidSession.ToString(), 1, Id_Snapshot);
+                                WriteLogImportError(isRests, i, ColumnNameInDB, CommentError, guidSession.ToString(), 1, Id_Snapshot);
 
                             if (CommentChange != "")
                             {
-                                WriteLogImportError(/*preImportConfig.IsRestFile*/isRests, i, ColumnNameInDB, CommentChange,
+                                WriteLogImportError(isRests, i, ColumnNameInDB, CommentChange,
                                     guidSession.ToString(), 2, Id_Snapshot);
                                 FlagSuccessImport = false;
                             }
 
                             //отметка о том, что строка неудачно проимпортируется в связи с ошибкой конвертации типов
-                            if ((FlagSuccessImportRow == true)) //&& (SuccessConvert == false))
+                            if ((FlagSuccessImportRow == true))
                                 FlagSuccessImportRow = false;
                         }
 
-                        if (SuccessConvert == true) 
+                        if (SuccessConvert == true)
                         {
                             if (CommentChange != "")
                             {
-                                WriteLogImportError(/*preImportConfig.IsRestFile*/isRests, i, ColumnNameInDB, CommentChange,
+                                WriteLogImportError(isRests, i, ColumnNameInDB, CommentChange,
                                     guidSession.ToString(), 2, Id_Snapshot);
                                 FlagSuccessImport = false;
                             }
 
                             SQLComm = SQLComm + "@" + ColumnNameInDB + ", ";
-                            SQL_param[j] = new SqlParameter();
-                            SQL_param[j].ParameterName = "@" + ColumnNameInDB;
-                            SQL_param[j].Value = ObjectCellVal;
+                            SQL_param[j] = new SqlParameter
+                            {
+                                ParameterName = "@" + ColumnNameInDB,
+                                Value = ObjectCellVal
+                            };
                         }
                     }
                     if (FlagSuccessImportRow == true)
                     {
-                        SQL_param[templateInfo.Count] = new SqlParameter();
-                        SQL_param[templateInfo.Count].ParameterName = "@id_snapshot";
-                        SQL_param[templateInfo.Count].Value = Id_Snapshot;
+                        SQL_param[templateInfo.Count] = new SqlParameter
+                        {
+                            ParameterName = "@id_snapshot",
+                            Value = Id_Snapshot
+                        };
 
                         //формирование запроса вызова хранимой процедуры
                         SQLComm = SQLComm = SQLComm + "@id_snapshot";
 
-                        //процедура вставки данных      
+                        //процедура вставки данных
                         db.Database.ExecuteSqlCommand(SQLComm, SQL_param);
-                        
+
                     }
                     else
                         if (FlagSuccessImport == true)
-                            FlagSuccessImport = false; //отметка о том, что полностью импорт не прошел успешно                                           
+                        FlagSuccessImport = false; //отметка о том, что полностью импорт не прошел успешно
                 }
             }
             else
             {
-                FlagSuccessImport = false;                
+                FlagSuccessImport = false;
                 db.LogImportErrorInsert(/*preImportConfig.IsRestFile*/isRests, 0, "все",
                     "не найдены поля ActualBeg ActualEnd", guidSessionString, 1, Id_Snapshot);
                 db.SaveChanges();
-            }               
-            
+            }
+
             if (FlagSuccessImport == true) return true; //переход на форму полного успешного импорта
             else return false;//переход на форму с логом ошибок
         }
@@ -1313,16 +1319,14 @@ namespace Corum.DAL
            string[] DataCSVFile, string[] FirstDataRowCSVFile, ref string guidSessionString, ref int Id_Snapshot)
         {
             int i, j;
-            int DataCSVFileLength = DataCSVFile.Length;//количество строк в файле, которые будем импортировать            
-            bool FlagSuccessImport = true; //флаг полного успешного импорта 
-            bool SuccessFindIdSnapshot = false;//флаг удачного забора/генерации нового Id_Snapshot для импорта
+            int DataCSVFileLength = DataCSVFile.Length;//количество строк в файле, которые будем импортировать
 
             Guid guidSession;
             guidSession = Guid.NewGuid(); //генерация гуида (используется при записи лога ошибок)
             guidSessionString = guidSession.ToString();
 
             //заполнение настроечного класса
-                var templateInfo = GetImportTemplateInfoWithCSVColumn(preImportConfig, HeadersCSVFile, DataCSVFile);
+            var templateInfo = GetImportTemplateInfoWithCSVColumn(preImportConfig, HeadersCSVFile, DataCSVFile);
 
             for (i = 1; i < DataCSVFileLength; i++)
             {
@@ -1334,7 +1338,7 @@ namespace Corum.DAL
 
                 SQLComm = "exec dbo.OrdersInsert ";
 
-                SqlParameter[] SQL_param = new SqlParameter[templateInfo.Count + 1];                
+                SqlParameter[] SQL_param = new SqlParameter[templateInfo.Count + 1];
 
                 for (j = 0; j < templateInfo.Count; j++)
                 {
@@ -1349,8 +1353,6 @@ namespace Corum.DAL
                     RowCSVFileValInCell = RowCSVFile[IndexColumnInFile]; //сохраняем значение 
 
                     object ObjectCellVal = RowCSVFileValInCell; //переприсваивание для проверки конвертации
-                    string CommentError = "";
-                    string CommentChange = "";
 
                     SQLComm = SQLComm + "@" + ColumnNameInDB + ", ";
                     SQL_param[j] = new SqlParameter();
@@ -1359,21 +1361,14 @@ namespace Corum.DAL
                     if (ColumnNameInDB == "OrderDate" || ColumnNameInDB == "СonfirmedDate" || ColumnNameInDB == "AcceptedDate" || ColumnNameInDB == "StartDateTimeOfTrip" ||
                         ColumnNameInDB == "FinishDateTimeOfTrip" || ColumnNameInDB == "ReturnStartDateTimeOfTrip" || ColumnNameInDB == "ReturnFinishDateTimeOfTrip")
                     {
-                      /*  if (ColumnNameInDB == "FinishDateTimeOfTrip" || ColumnNameInDB == "ReturnStartDateTimeOfTrip" || ColumnNameInDB == "ReturnFinishDateTimeOfTrip")
-                        {
-                            DateTime dt_end = DateTime.ParseExact(ObjectCellVal.ToString(), "dd.MM.yyyy", CultureInfo.InvariantCulture);
-                            SQL_param[j].Value = dt_end;
-                        }
-                        else                        
-                        {*/
-                            DateTime dt_end = DateTime.ParseExact(ObjectCellVal.ToString(), "dd.MM.yy", CultureInfo.InvariantCulture);
-                            SQL_param[j].Value = dt_end;
-                        //}                        
+
+                        DateTime dt_end = DateTime.ParseExact(ObjectCellVal.ToString(), "dd.MM.yy", CultureInfo.InvariantCulture);
+                        SQL_param[j].Value = dt_end;
                     }
                     else
                     {
                         SQL_param[j].Value = ObjectCellVal.ToString().Replace("\"\"", "\"");
-                    }                    
+                    }
                 }
 
                 SQLComm = SQLComm + "@CreateDatetime"; //+ ", ";
@@ -1383,8 +1378,8 @@ namespace Corum.DAL
                 db.Database.ExecuteSqlCommand(SQLComm, SQL_param);
 
             }
-            
- return true; //переход на форму полного успешного импорта
+
+            return true; //переход на форму полного успешного импорта
 
         }
 
@@ -1476,7 +1471,7 @@ namespace Corum.DAL
 
         public IEnumerable<MenuAccessViewModel> GetMenuTree()
         {
-            return (from menuItem in db.MenuStructure                  
+            return (from menuItem in db.MenuStructure
                     select new MenuAccessViewModel()
                     {
                         Id = menuItem.Id,
@@ -1516,9 +1511,9 @@ namespace Corum.DAL
                         && (R.Id != adminRoleId)
                      select new MenuRoleViewModel()
                      {
-                          RoleId = R.Id,
-                          RoleName = R.Name,
-                          Assigned = false
+                         RoleId = R.Id,
+                         RoleName = R.Name,
+                         Assigned = false
 
                      }).ToList();
         }
@@ -1567,7 +1562,7 @@ namespace Corum.DAL
         }
 
         public bool MenuHasRole(int menuId, string roleId)
-        {     
+        {
             //var menuInfo = db.MenuStructure.FirstOrDefault(u => u.Id == menuId);
             //return ((menuInfo != null) && (menuInfo.AspNetRoles.Any(r => r.Id == roleId)));
 
@@ -1576,7 +1571,7 @@ namespace Corum.DAL
                    .Where(x => x.Id == menuId);
 
             var roleInfo = menuInfo.Where(x => x.AspNetRoles.Any(r => r.Id == roleId)).ToList();
-                                   
+
             var result = roleInfo.Count();
             return (result > 0);
 
@@ -1584,11 +1579,11 @@ namespace Corum.DAL
         }
 
         public bool UserHasMenuRole(string userId, int menuId)
-        {            
+        {
             var isUserHasMenuRole = db.IsMenuHasRole(userId, menuId).ToList();
 
-            if (isUserHasMenuRole.Count()>0)
-            return (isUserHasMenuRole.FirstOrDefault().Value)>0;
+            if (isUserHasMenuRole.Count() > 0)
+                return (isUserHasMenuRole.FirstOrDefault().Value) > 0;
 
             return false;
         }
@@ -1603,10 +1598,10 @@ namespace Corum.DAL
             return (menuInfo.parentId == null);
         }
 
-        
+
         public bool UserHasMenuRootRole(string userId, int menuId)
         {
-            
+
             if (IsMenuRoot(menuId))
             {
                 //если меню корень то  делаем проверку
@@ -1614,7 +1609,7 @@ namespace Corum.DAL
 
                 //на то есть ли хоть один разрешенный ребенок
                 var childResult = false;
-                foreach(var childMenuItem in childMenuItems)
+                foreach (var childMenuItem in childMenuItems)
                 {
                     if (UserHasMenuRole(userId, childMenuItem.Id))
                     {
@@ -1633,38 +1628,38 @@ namespace Corum.DAL
             {   //если не корень, то ищем корень и проверяем права сразу на двух узлах
                 var menuInfo = db.MenuStructure.FirstOrDefault(u => u.Id == menuId);
                 if (menuInfo == null) return false;
-              
+
                 int root = (int)menuInfo.parentId;
 
                 //показываем лист если есть на корне или на нем самом
-                var result = (UserHasMenuRole(userId, root)|| UserHasMenuRole(userId, menuId));
+                var result = (UserHasMenuRole(userId, root) || UserHasMenuRole(userId, menuId));
 
                 return result;
-               
+
             }
         }
 
 
         public IEnumerable<MenuAccessViewModel> UserGetMenuTree(string userId)
-        {         
+        {
             var menuInfo = db.MenuStructure.ToList();
 
             return (from menuItem in menuInfo
                     where UserHasMenuRootRole(userId, menuItem.Id)
-                select new MenuAccessViewModel()
-                {
-                    Id = menuItem.Id,
-                    menuName = menuItem.menuName,
-                    menuHtmlId = menuItem.menuId,
-                    parentId = menuItem.parentId
-                }).ToList();
+                    select new MenuAccessViewModel()
+                    {
+                        Id = menuItem.Id,
+                        menuName = menuItem.menuName,
+                        menuHtmlId = menuItem.menuId,
+                        parentId = menuItem.parentId
+                    }).ToList();
 
-       }
+        }
 
         public List<UserViewModel> GetUsers(string searchTerm, int pageSize, int pageNum)
-        {            
+        {
 
-            return GetUsersBySearchString(searchTerm)                        
+            return GetUsersBySearchString(searchTerm)
                         .Skip(pageSize * (pageNum - 1))
                          .Take(pageSize)
                            .ToList();
@@ -1678,7 +1673,7 @@ namespace Corum.DAL
                   .AsNoTracking()
                   .Where(s => (s.Dismissed == false) && (((s.DisplayName.Contains(searchTerm) || s.DisplayName.StartsWith(searchTerm) || s.DisplayName.EndsWith(searchTerm)))))
                         .Select(Mapper.Map)
-                        //.Where(o => o.isAdmin == false)
+                         //.Where(o => o.isAdmin == false)
                          .OrderBy(o => o.displayName)
                          .AsQueryable();
         }
@@ -1688,7 +1683,7 @@ namespace Corum.DAL
             return GetUsersBySearchString(searchTerm).Count();
         }
 
-   
+
         public void CloneRolesForUser(string ReceiverId, string UserId)
         {
             var userRoles = getUserRoles(UserId).Where(x => x.assigned == true);
@@ -1700,13 +1695,13 @@ namespace Corum.DAL
             {
                 //проверяем чтобы не было дублирования ролей (т.е. если уже есть такая роль у ReceiverId, то ее не добавлять)
                 if (!(userRoles.Any(x => x.roleId == role.roleId)))
-                roles.Add(role.roleId);
+                    roles.Add(role.roleId);
             }
 
             string[] allRoles = roles.ToArray();
 
             //AssignRoles(UserId, allRoles);
-            
+
             //добавляем роли
             if (allRoles != null)
             {
@@ -1844,7 +1839,7 @@ namespace Corum.DAL
 
         public int checkEmailExist(string userEmail, string userId)
         {
-            var emailCnt = db.AspNetUsers.Where(x => x.Email == userEmail && x.Id!=userId).Count();
+            var emailCnt = db.AspNetUsers.Where(x => x.Email == userEmail && x.Id != userId).Count();
             return emailCnt;
         }
     }

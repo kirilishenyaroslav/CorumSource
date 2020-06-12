@@ -62,6 +62,10 @@ namespace Corum.DAL.Entity
         public string PrihodDocDate { get; set; }
         public string BalanceCurrency { get; set; }
         public Nullable<decimal> CurrencyIndexToUAH { get; set; }
+        public string BacodeProduct { get; set; }
+        public string BacodeConsignment { get; set; }
+        public string BacodesAll { get; set; }
+        public string Shifr_MDM { get; set; }
     
         public virtual LogisticSnapshots LogisticSnapshots { get; set; }
     }

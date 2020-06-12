@@ -1,0 +1,35 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="~/Content/img/logo_icon_favicon.png" />
+    <title>Corum source</title>
+    @Styles.Render("~/Content/css")
+    @Styles.Render("~/Content/ui_css")
+    @Styles.Render("~/Content/JQWidgetsCss")
+    
+    @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>    
+    <div class="container">
+        @RenderBody()
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/jqueryUI")
+    @Scripts.Render("~/bundles/jqueryval")
+    @Scripts.Render("~/bundles/jquery_ajax")
+    @Scripts.Render("~/bundles/blockUI")
+    @Scripts.Render("~/bundles/datetime")
+    @Scripts.Render("~/bundles/select2")
+    @Scripts.Render("~/bundles/MvcGrid")
+    @Scripts.Render("~/bundles/toastr")
+    @Scripts.Render("~/bundles/corum")    
+    @Scripts.Render("~/bundles/jqwidgets")
+    @Scripts.Render("~/bundles/bootstrap")
+
+    @RenderSection("scripts", required: false)
+
+</body>
+</html>

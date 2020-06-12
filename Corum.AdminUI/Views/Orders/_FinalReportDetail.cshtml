@@ -1,0 +1,102 @@
+﻿@model Corum.Models.OrdersReportsNavigationResult
+
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+
+                 
+@if (Model.FinalReport != null)
+{
+    var productInfoItems = Model.FinalReport.DisplayValues.SelectMany(x => x.OrderStatusName).Distinct();
+
+    <div class="col-md-1">
+    </div>
+
+    <div id="detailValuesGrid" class="table-header clearfix col-md-10" style="font-size: 11px;">
+
+        <table class="table table-striped table-bordered no-footer grid-table" style="height:100%;">
+            <thead>
+                <tr>
+                    <th class="grid-header centered_column new_columns_block_start">
+                        Общее число
+                    </th>
+
+                    @if (productInfoItems.Count() > 0)
+                    {
+                        <th class="grid-header centered_column">
+                            Заявка в работе
+                        </th>
+
+                        string last = productInfoItems.Last();
+
+                        foreach (var product in productInfoItems)
+                        {
+                            if (product.Equals(last))
+                            {
+                                <th class="grid-header centered_column new_columns_block_end">
+                                    @product
+                                </th>
+
+                            }
+                            else
+                            {
+                                <th class="grid-header centered_column">
+                                    @product
+                                </th>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <th class="grid-header centered_column new_columns_block_end">
+                            Заявка в работе
+                        </th>}
+                </tr>
+
+            </thead>
+            <tbody>
+                @foreach (var item in Model.FinalReport.DisplayValues)
+                {
+                    <tr>
+                        <td class="grid-cell rigth_column new_columns_block_start">@item.CntAll</td>
+
+
+                        @if (item.OrderStatus.Count() > 0)
+                        {
+                            <td class="grid-cell rigth_column">@item.CntAllNotFinal</td>
+
+                            var count = item.OrderStatus.Count();
+                            foreach (var product in item.OrderStatus)
+                            {
+                                if (--count > 0)
+                                {
+                                    <td class="grid-cell rigth_column">@product</td>
+                                }
+                                else
+                                {
+                                    <td class="grid-cell rigth_column new_columns_block_end">@product</td>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <td class="grid-cell rigth_column new_columns_block_end">@item.CntAllNotFinal</td>
+                        }
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+    </div>
+
+
+    <div class="col-md-1">
+    </div>
+}
+
+
+        
+
+

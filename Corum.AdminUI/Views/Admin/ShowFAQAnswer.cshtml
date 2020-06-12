@@ -1,0 +1,25 @@
+﻿@model Corum.Models.ViewModels.Admin.FAQAnswersViewModel
+@{
+    ViewBag.Title = "Просмотр ответа";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("ShowFAQAnswer", "Admin", FormMethod.Post))
+{
+    <div class="form-horizontal">
+
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.Id)
+
+        <h4> &nbsp; "@Model.Question"</h4>
+
+        <hr>
+        <div class="form-group">
+            <div class="col-md-offset-1 col-md-11 ">
+                 @Html.Raw(@Model.Answer)
+            </div>
+        </div>
+    </div>
+}

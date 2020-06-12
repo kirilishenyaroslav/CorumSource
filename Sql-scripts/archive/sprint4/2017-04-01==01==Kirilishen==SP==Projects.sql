@@ -1,0 +1,18 @@
+﻿ALTER TABLE dbo.OrdersBase
+  ADD ProjectId INT NULL;
+
+GO
+
+CREATE TABLE dbo.Projects (
+  Id INT IDENTITY
+ ,Code VARCHAR(50) NOT NULL
+ ,Description VARCHAR(500) NULL
+ ,CONSTRAINT PK_Projects_Id PRIMARY KEY CLUSTERED (Id)
+) ON [PRIMARY]
+
+GO
+
+ALTER TABLE dbo.OrdersBase
+ADD FOREIGN KEY (ProjectId) REFERENCES dbo.Projects (Id);
+
+GO

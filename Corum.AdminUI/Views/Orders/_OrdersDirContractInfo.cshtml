@@ -1,0 +1,21 @@
+﻿<div class="form-group row" id="divDirContractInfo">
+    <label class="col-md-4" style="font-weight: normal !important;">
+        Договор Эксп/Пер-к*
+    </label>
+    <div class="col-md-8">
+
+        @Html.TextBox("DirContractInfo", "",
+                      htmlAttributes: new
+                      {
+                          id = "DirContractInfo",
+                          @class = "filter_dropdown",
+                          @name = "DirContractInfo",
+                          data_source_url = Url.Action("GetContractExpCarrierInfo", "Orders"),
+                          data_droplist_placeholder = "Выберите договор экспедитор/перевозчик",
+                          data_selected_text = ""
+                      })
+
+    </div>
+</div>
+
+

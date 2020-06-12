@@ -1,0 +1,37 @@
+﻿@model Corum.Models.ViewModels.RoleGroupViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("UpdateGroupForRole", "Admin", FormMethod.Post))
+{
+
+    <div class="form-horizontal">
+        <h4>Перенос роли @Model.Roles.roleName в другую группу</h4>
+        <hr/>
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.GroupRolesInfo.Id, new { htmlAttributes = new { @class = "form-control" } })
+        @Html.HiddenFor(model => model.Roles.roleId, new { htmlAttributes = new { @class = "form-control" } })
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.GroupRolesInfo.parentId, "Группа ролей", htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="form-control-container full-width-select">
+                    @Html.DropDownListFor(model => model.GroupRolesInfo.parentId,
+                        new SelectList(Model.GroupRolesInfo.AvailableRoleGroups.Select(x => new { Value = x.Id, Text = x.GroupRolesName }), "Value", "Text", Model.GroupRolesInfo.Id),
+                        new { @class = "form-control input" })                    
+                </div>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Применить" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+

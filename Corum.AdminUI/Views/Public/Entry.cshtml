@@ -1,0 +1,43 @@
+﻿@model  List<Corum.Models.ViewModels.Orders.OrderTypeViewModel>
+
+@{    
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 main">
+        <h4>Выберите тип транспортной заявки для добавления</h4>   
+        <div style="font-size: 13px;">
+            <div class="grid-mvc">
+                <div class="grid-wrap">
+                    <table class="table table-striped table-bordered no-footer sort-table-header">
+                        <thead>
+                        <tr>
+                            <th class="grid-header centered_column">Наименование типа</th>                            
+                            <th class="grid-header"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var type in Model)
+                            {
+                                <tr class="odd gradeX">
+                                    <td class="">
+                                        <div style="float: left">
+                                            @type.TypeName
+                                        </div>
+                                    </td>                                     
+                                    <td class="centered_column">
+                                        @Html.ActionLink("Добавить", "NewOrderPublicEntry", "Public",  new { OrderTypeId = type.Id }, new { @class = "btn btn-success" })
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+          </div>            
+        </div>
+    </div>
+</div>
+

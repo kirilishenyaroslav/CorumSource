@@ -1,0 +1,653 @@
+﻿@model Corum.Models.OrdersNavigationResult<Corum.Models.ViewModels.Orders.OrderBaseViewModel>
+
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+@{
+    ViewBag.Title = "Заявки транспортные";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    var numberFormat = new CultureInfo("en-US", false).NumberFormat;
+}
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+
+}
+@Html.Hidden("jsCurrentOrderId")
+@Html.Partial("_OrdersSetSettingsDialog")
+@Html.Partial("_OrdersSendNotificationDialog")
+@Html.Partial("_OrdersLoadFilterSettings")
+
+
+<div class="container-fluid">
+    <div class="row ">
+        <div class="col-lg-12 main panel panel-info" style="margin-top:35px;">
+            <div class="row ">
+                 <h2 class="centered_column" style="margin-top:0px!important;">Реестр транспортных заявок</h2> <br>
+            </div>
+            <div class="table-header clearfix" style="margin-top: 0px;">
+                <div class="row panel panel-info">
+                    <div class="col-md-8" style="margin-top: 10px;">
+                        @Html.Partial("_NewOrderButton", Model.AvailiableTypes)
+                        <button style="margin-bottom: 10px; margin-left: 10px;" class="btn btn-default" onclick="ShowSettings()">
+                            <span class="glyphicon glyphicon-filter" aria-hidden="true"></span>
+                            Конфигурация
+                        </button>
+
+                        &nbsp;&nbsp;
+
+                        @Html.ActionLink("В excel", "AllOrdersAsExcel", "ExportToExcel", new
+                        {
+                            UseStatusFilter = Model.UseStatusFilter,
+                            UseOrderCreatorFilter = Model.UseOrderCreatorFilter,
+                            UseOrderExecuterFilter = Model.UseOrderExecuterFilter,
+                            UseOrderClientFilter = Model.UseOrderClientFilter,
+                            UseOrderPriorityFilter = Model.UseOrderPriorityFilter,
+                            UseOrderDateFilter = Model.UseOrderDateFilter,
+                            UseOrderExDateFilter = Model.UseOrderExDateFilter,
+                            UseOrderEndDateFilter = Model.UseOrderEndDateFilter,
+                            UseFinalStatusFilter = Model.UseFinalStatusFilter,
+                            UseOrderTypeFilter = Model.UseOrderTypeFilter,
+                            UseOrderProjectFilter = Model.UseOrderProjectFilter,
+                            UseOrderPayerFilter = Model.UseOrderPayerFilter,
+                            UseOrderOrgFromFilter = Model.UseOrderOrgFromFilter,
+                            UseOrderOrgToFilter = Model.UseOrderOrgToFilter,
+                            FilterOrderClientId = Model.FilterOrderClientId,
+                            FilterStatusId = Model.FilterStatusId,
+                            FilterOrderCreatorId = Model.FilterOrderCreatorId,
+                            FilterOrderExecuterId = Model.FilterOrderExecuterId,
+                            FilterOrderTypeId = Model.FilterOrderTypeId,
+                            FilterOrderPriority = Model.FilterOrderPriority,
+                            FilterOrderDateBeg = Model.FilterOrderDateBeg,
+                            FilterOrderDateBegRaw = Model.FilterOrderDateBegRaw,
+                            FilterOrderDateEnd = Model.FilterOrderDateEnd,
+                            FilterOrderDateEndRaw = Model.FilterOrderDateEndRaw,
+                            FilterFinalStatus = Model.FilterFinalStatus,
+                            FilterOrderProjectId = Model.FilterOrderProjectId,
+                            FilterOrderExDateBeg = Model.FilterOrderExDateBeg,
+                            FilterOrderExDateBegRaw = Model.FilterOrderExDateBegRaw,
+                            FilterOrderExDateEnd = Model.FilterOrderExDateEnd,
+                            FilterOrderExDateEndRaw = Model.FilterOrderExDateEndRaw,
+                            FilterOrderEndDateBeg = Model.FilterOrderEndDateBeg,
+                            FilterOrderEndDateBegRaw = Model.FilterOrderEndDateBegRaw,
+                            FilterOrderEndDateEnd = Model.FilterOrderEndDateEnd,
+                            FilterOrderEndDateEndRaw = Model.FilterOrderEndDateEndRaw,
+                            FilterOrderPayerId = Model.FilterOrderPayerId,
+                            FilterOrderOrgFromId = Model.FilterOrderOrgFromId,
+                            FilterOrderOrgToId = Model.FilterOrderOrgToId,
+
+                        },
+                            new {@class = "delete_link btn btn-success", @style = "margin-bottom:10px"})
+
+                        &nbsp;&nbsp;
+                        <div id="groupBtn">
+
+                        </div>
+                    </div>
+
+                    <div class="col-md-4" style="font-size: 10px !important; margin-top: 10px;">
+                        @Html.Partial("_OrderFilterSettings")
+
+                    </div>
+                </div>
+            </div>
+            @if (Model.isChrome)
+            { @Html.Partial("_OrderChrome");}
+            else
+            {@Html.Partial("_OrderNotChrome");}
+                @TPagging("Orders", "Orders", @Model.RequestParams, this)
+                </div>
+
+
+        </div>
+    </div>
+
+
+
+    @section scripts
+    {
+        <script>
+
+            var offset = $('.navbar').height();
+            $("html:not(.legacy) table").stickyTableHeaders({ fixedOffset: offset });
+
+
+            function SendNotification(orderId)
+            {
+
+                $("#ReceiverId").attr("data-source-url",'@Url.Action("GetReceivers", "Orders")'+'?Id='+orderId);
+
+                $('#sendnotificationdialog')
+                    .dialog({
+                        dialogClass: "jq-dialog-window-custom  modal_dialog",
+                        autoOpen: false,
+                        width: 600,
+                        top: 25,
+                        resizable: false,
+                        tags: true,
+                        title: "Параметры уведомления об утверждении заявки",
+                        modal: true,
+                        open: function (event, ui) {
+                            InitFilterDropDowns();
+                        },
+                        close: function (event, ui) {
+                            $(this).dialog('destroy');
+                        },
+                        create: function (event, ui) {
+                            $("#disable_all").addClass("disable_all");
+                        },
+                        beforeClose: function (event, ui) {
+                            $("#disable_all").removeClass("disable_all");
+                        },
+                        buttons:
+                        [
+                            {
+                                text: "Отмена",
+                                "class": 'cancel-btn btn btn-outline',
+                                click: function () {
+
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Отправить",
+                                "class": 'btn btn-primary',
+                                click: function () {
+
+                                    var ReceiverId=$('#ReceiverId').val();
+                                    var MessageText=$('#MessageText').val();
+
+                                    $.post('@Url.Action("SendNotification", "Orders")',
+                                        {
+                                            ReceiverId: ReceiverId,
+                                            OrderId: orderId,
+                                            MessageText: MessageText
+                                        },
+                                        function (data) {
+                                            alert('Уведомление отправлено');
+                                        });
+
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                    });
+
+                $('#sendnotificationdialog').dialog('open');
+
+                return;
+            }
+            function ShowSettings() {
+                ShowDialogColumnSettings();
+            }
+
+            function ShowDialogColumnSettings() {
+
+                $('#orderssettings')
+                    .dialog({
+                        dialogClass: "jq-dialog-window-custom  modal_dialog",
+                        autoOpen: false,
+                        width: 800,
+                        top: 25,
+                        resizable: false,
+                        tags: true,
+                        title: "Конфигурация реестра транспортных заявок",
+                        modal: true,
+                        open: function(event, ui) {
+                            InitFilterMultipleDropDowns();
+                        },
+                        close: function(event, ui) {
+
+                            $(this).dialog('destroy');
+                        },
+                        create: function(event, ui) {
+                            $("#disable_all").addClass("disable_all");
+                        },
+                        beforeClose: function(event, ui) {
+                            $("#disable_all").removeClass("disable_all");
+                        },
+                        buttons:
+                        [
+                            {
+                                text: "Отмена",
+                                "class": 'cancel-btn btn btn-outline',
+                                click: function() {
+
+                                    $(this).dialog("close");
+                                    $(this).dialog('destroy');
+                                }
+                            },
+                            {
+                                text: "Ок",
+                                "class": 'btn btn-primary',
+                                click: function() {
+                                    $("#settingsForm").submit();
+                                    $(this).dialog("close");
+                                    $(this).dialog('destroy');
+                                }
+                            }
+                        ]
+                    });
+
+                $('#orderssettings').dialog('open');
+
+                return;
+            }
+
+            $(document).ready(function () {
+                   InitializeDateTimePickers();
+            });
+
+
+            var NameFilter;
+
+            $("#FilterSave").click(function () {
+                bootbox.prompt("Введите название фильтра", function (result) {
+                    NameFilter = result;
+                    if (result === null) {
+                        alert("Prompt dismissed");
+                    } else {
+                        saveFilterForm();
+                    }
+                });
+
+            });
+            var DateShortStr = function (date1) {
+                var day = date1.getDate();
+                if (day <= 9) {
+                    var day = '0' + day.toString();
+                }
+                var month = date1.getMonth() + 1;
+                if (month <= 9) {
+                    var month = '0' + month.toString();
+                }
+                var year = date1.getFullYear().toString();
+                var dateShort = year + '-' + month + '-' + day;
+                return dateShort;
+            };
+
+            var DeltaDates = function (date1, date2) {
+                var date1 = new Date(DateShortStr(date1));
+                var date2 = new Date(DateShortStr(date2));
+                var delta = date1 - date2;
+                if (delta < 0)
+                {
+                    var days = Math.ceil(delta / (1000 * 60 * 60 * 24));
+                } else
+                {
+                    var days = Math.floor(delta / (1000 * 60 * 60 * 24));
+                }
+
+                return days;
+            }
+
+            function saveFilterForm() {
+
+                var FilterOrderDateBegRaw = new Date($('#FilterOrderDateBegRaw').val());
+                var FilterOrderDateEndRaw = new Date($('#FilterOrderDateEndRaw').val());
+                var FilterOrderExDateBegRaw = new Date($('#FilterOrderExDateBegRaw').val());
+                var FilterOrderExDateEndRaw = new Date($('#FilterOrderExDateEndRaw').val());
+                var FilterOrderEndDateBegRaw = new Date($('#FilterOrderEndDateBegRaw').val());
+                var FilterOrderEndDateEndRaw = new Date($('#FilterOrderEndDateEndRaw').val());
+
+                var DateNow = new Date();
+
+                var filter = new Object();
+                filter.NameFilter = NameFilter;
+
+                filter.UseStatusFilter = $('#UseStatusFilter').prop("checked");
+                if (filter.UseStatusFilter) {
+                    filter.StatusId = $('#FilterStatusId').val();
+                }
+                filter.UseCreatorFilter = $('#UseOrderCreatorFilter').prop("checked");
+                if (filter.UseCreatorFilter) {
+                    filter.CreatorId = $('#FilterOrderCreatorId').val();
+                }
+                filter.UseExecuterFilter = $('#UseOrderExecuterFilter').prop("checked");
+                if (filter.UseExecuterFilter) {
+                    filter.ExecuterId = $('#FilterOrderExecuterId').val();
+                }
+                filter.UseClientFilter = $('#UseOrderClientFilter').prop("checked");
+                if (filter.UseClientFilter) {
+                    filter.ClientId = $('#FilterOrderClientId').val();
+                }
+                filter.UseTypeFilter = $('#UseOrderTypeFilter').prop("checked");
+                if (filter.UseTypeFilter) {
+                    filter.TypeId = $('#FilterOrderTypeId').val();
+                }
+                filter.UseOrderPayerFilter = $('#UseOrderPayerFilter').prop("checked");
+                if (filter.UseOrderPayerFilter) {
+                    filter.PayerId = $('#FilterOrderPayerId').val();
+                }
+                filter.UseOrderOrgFromFilter = $('#UseOrderOrgFromFilter').prop("checked");
+                if (filter.UseOrderOrgFromFilter) {
+                    filter.OrgFromId = $('#FilterOrderOrgFromId').val();
+                }
+                filter.UseOrderOrgToFilter = $('#UseOrderOrgToFilter').prop("checked");
+                if (filter.UseOrderOrgToFilter) {
+                    filter.OrgToId = $('#FilterOrderOrgToId').val();
+                }
+                filter.UsePriorityFilter = $('#UseOrderPriorityFilter').prop("checked");
+                if (filter.UsePriorityFilter) {
+                    filter.PriorityType = $('input[name=FilterOrderPriority]:checked').val();
+                }
+                filter.UseDateFilter = $('#UseOrderDateFilter').prop("checked");
+                if (filter.UseDateFilter) {
+                    filter.DeltaDateBeg = DeltaDates(FilterOrderDateBegRaw, DateNow);
+                    filter.DeltaDateEnd = DeltaDates(FilterOrderDateEndRaw, DateNow);
+                } else {
+                    filter.DeltaDateBeg = -8;
+                    filter.DeltaDateEnd = 1;
+                }
+
+                filter.UseExDateFilter = $('#UseOrderExDateFilter').prop("checked");
+                if (filter.UseExDateFilter) {
+                    filter.DeltaDateBegEx = DeltaDates(FilterOrderExDateBegRaw, DateNow);
+                    filter.DeltaDateEndEx = DeltaDates(FilterOrderExDateEndRaw, DateNow);
+                } else {
+                    filter.DeltaDateBegEx = -8;
+                    filter.DeltaDateEndEx = 1;
+                }
+
+
+                filter.UseEndDateFilter = $('#UseOrderEndDateFilter').prop("checked");
+                if (filter.UseEndDateFilter) {
+                    filter.DeltaDateBegEnd = DeltaDates(FilterOrderEndDateBegRaw, DateNow);
+                    filter.DeltaDateEndEnd = DeltaDates(FilterOrderEndDateEndRaw, DateNow);
+                } else {
+                    filter.DeltaDateBegEnd = -8;
+                    filter.DeltaDateEndEnd = 1;
+                }
+
+            var json = JSON.stringify(filter);
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("NewOrderFilter", "Orders")',
+                data: json,
+                async: false,
+                contentType: 'application/json; charset=utf-8',
+                success: function (msg) {
+                    RemoveAllButtons();
+                    GetFiltersForButton(5, 1);
+                    if (msg == 'True') {
+                        window.location.reload(true);
+                    };
+                }
+            });
+
+            return false;
+            };
+
+            function LoadSubmitFilter(FilterId) {
+                $.ajax({
+                    type: 'GET',
+                    url: '@Url.Action("getOrderFilterSettingById", "Orders")',
+                    data: {Id : FilterId},
+                    contentType: 'application/json; charset=utf-8',
+                    success: function (filter) {
+
+
+                        $('#UseStatusFilter').prop("checked", filter.UseStatusFilter);
+                        $('#UseOrderCreatorFilter').prop("checked", filter.UseCreatorFilter);
+                        $('#UseOrderExecuterFilter').prop("checked", filter.UseExecuterFilter);
+                        $('#UseOrderClientFilter').prop("checked", filter.UseClientFilter);
+                        $('#UseOrderTypeFilter').prop("checked", filter.UseTypeFilter);
+                        $('#UseOrderPayerFilter').prop("checked", filter.UseOrderPayerFilter);
+                        $('#UseOrderOrgFromFilter').prop("checked", filter.UseOrderOrgFromFilter);
+                        $('#UseOrderOrgToFilter').prop("checked", filter.UseOrderOrgToFilter);
+
+
+                        $('#UseOrderPriorityFilter').prop("checked", filter.UsePriorityFilter);
+                        $('#UseOrderDateFilter').prop("checked", filter.UseDateFilter);
+                        $('#UseOrderExDateFilter').prop("checked", filter.UseExDateFilter);
+                        $('#UseOrderEndDateFilter').prop("checked", filter.UseEndDateFilter);
+
+                        if (filter.UseStatusFilter) {
+                            $('#FilterStatusId').attr('data_selected_text', filter.FilterStatusName);
+                            $('#FilterStatusId').prop('disabled', false);
+                            $('#FilterStatusId').val(filter.StatusId);
+                        }
+
+                        if (filter.UseCreatorFilter) {
+                            $('#FilterOrderCreatorId').attr('data_selected_text', filter.FilterOrderCreatorName);
+                            $('#FilterOrderCreatorId').prop('disabled', false);
+                            $('#FilterOrderCreatorId').val(filter.CreatorId);
+                        }
+
+                        if (filter.UseExecuterFilter) {
+                            $('#FilterOrderExecuterId').attr('data_selected_text', filter.FilterOrderExecuterName);
+                            $('#FilterOrderExecuterId').prop('disabled', false);
+                            $('#FilterOrderExecuterId').val(filter.ExecuterId);
+                        }
+
+                        if (filter.UseTypeFilter) {
+                            $('#FilterOrderTypeId').attr('data_selected_text', filter.FilterOrderTypeName);
+                            $('#FilterOrderTypeId').prop('disabled', false);
+                            $('#FilterOrderTypeId').val(filter.TypeId);
+                        }
+
+                        if (filter.UseOrderPayerFilter) {
+                            $('#FilterOrderPayerId').attr('data_selected_text', filter.FilterOrderPayerName);
+                            $('#FilterOrderPayerId').prop('disabled', false);
+                            $('#FilterOrderPayerId').val(filter.PayerId);
+                        }
+
+                        if (filter.UseOrderOrgFromFilter) {
+                            $('#FilterOrderOrgFromId').attr('data_selected_text', filter.FilterOrderOrgFromId);
+                            $('#FilterOrderOrgFromId').prop('disabled', false);
+                            $('#FilterOrderOrgFromId').val(filter.OrgFromId);
+                        }
+
+                        if (filter.UseOrderOrgToFilter) {
+                            $('#FilterOrderOrgToId').attr('data_selected_text', filter.FilterOrderOrgToId);
+                            $('#FilterOrderOrgToId').prop('disabled', false);
+                            $('#FilterOrderOrgToId').val(filter.OrgToId);
+                        }
+                        if (filter.UsePriorityFilter) {
+                            $('input[name=FilterOrderPriority]:checked').val(filter.PriorityType);
+                        }
+                        $('#FilterOrderDateBegRaw').val(filter.FilterOrderDateBegRaw);
+                        $('#FilterOrderDateBeg').val(filter.FilterOrderDateBeg);
+                        $('#FilterOrderDateEndRaw').val(filter.FilterOrderDateEndRaw);
+                        $('#FilterOrderDateEnd').val(filter.FilterOrderDateEnd);
+
+                        $('#FilterOrderExDateBegRaw').val(filter.FilterOrderExDateBegRaw);
+                        $('#FilterOrderExDateBeg').val(filter.FilterOrderExDateBeg);
+                        $('#FilterOrderExDateEndRaw').val(filter.FilterOrderExDateEndRaw);
+                        $('#FilterOrderExDateEnd').val(filter.FilterOrderExDateEnd);
+
+                        $('#FilterOrderEndDateBegRaw').val(filter.FilterOrderEndDateBegRaw);
+                        $('#FilterOrderEndDateBeg').val(filter.FilterOrderEndDateBeg);
+                        $('#FilterOrderEndDateEndRaw').val(filter.FilterOrderEndDateEndRaw);
+                        $('#FilterOrderEndDateEnd').val(filter.FilterOrderEndDateEnd);
+                        $("#settingsForm").submit();
+
+
+                    }
+                });
+            };
+
+            function LoadFilter() {
+                $('#loadfilterdialog')
+                    .dialog({
+                        dialogClass: "jq-dialog-window-custom  modal_dialog",
+                        autoOpen: false,
+                        width: 600,
+                        top: 25,
+                        resizable: false,
+                        tags: true,
+                        title: "Сохраненные настройки фильтра",
+                        modal: true,
+                        open: function (event, ui) {
+                            InitFilterDropDowns();
+                        },
+                        close: function (event, ui) {
+                            $(this).dialog('destroy');
+                        },
+                        create: function (event, ui) {
+                            $("#disable_all").addClass("disable_all");
+                        },
+                        beforeClose: function (event, ui) {
+                            $("#disable_all").removeClass("disable_all");
+                        },
+                        buttons:
+                        [
+                            {
+                                text: "Отмена",
+                                "class": 'cancel-btn btn btn-outline',
+                                click: function () {
+
+                                    $(this).dialog("close");
+
+                                }
+                            },
+                            {
+                                text: "Применить",
+                                "class": 'btn btn-primary',
+                                click: function () {
+                                    var FilterId = $('#FilterId').val();
+
+                                    $('#UseStatusFilter').prop("checked", false);
+                                    $('#UseOrderCreatorFilter').prop("checked", false);
+                                    $('#UseOrderExecuterFilter').prop("checked", false);
+                                    $('#UseOrderClientFilter').prop("checked", false);
+                                    $('#UseOrderTypeFilter').prop("checked", false);
+                                    $('#UseOrderPriorityFilter').prop("checked", false);
+                                    $('#UseOrderDateFilter').prop("checked", false);
+                                    $('#UseOrderExDateFilter').prop("checked", false);
+                                    $('#UseOrderEndDateFilter').prop("checked", false);
+                                    $('#UseOrderPayerFilter').prop("checked", false);
+                                    $('#UseOrderOrgFromFilter').prop("checked", false);
+                                    $('#UseOrderOrgToFilter').prop("checked", false);
+
+                                    $('#FilterStatusId').prop('disabled', true);
+                                    $('#FilterOrderCreatorId').prop('disabled', true);
+                                    $('#FilterOrderExecuterId').prop('disabled', true);
+
+                                    $('#FilterOrderPayerId').prop('disabled', true);
+                                    $('#FilterOrderOrgFromId').prop('disabled', true);
+                                    $('#FilterOrderOrgToId').prop('disabled', true);
+
+                                    $('#FilterOrderTypeId').prop('disabled', true);
+                                    $('#FilterOrderClientId').prop('disabled', true);
+                                    $('#FilterOrderPriority').prop('disabled', true);
+                                    LoadSubmitFilter(FilterId);
+                                    return false;
+                                }
+                            }
+                        ]
+                    });
+
+                $('#loadfilterdialog').dialog('open');
+
+                return;
+            }
+
+            $("#FilterLoad").click(function () {
+                LoadFilter();
+            });
+
+            function RemoveAllButtons() {
+                var FilterBtns = document.querySelectorAll("#groupBtn div");
+                var groupBtn = document.querySelector("#groupBtn");
+                for (var i = 0; i < FilterBtns.length; i++) {
+                    groupBtn.removeChild(FilterBtns[i]);
+                }
+            };
+
+            function GetFiltersForButton(groupBtnSize, groupBtnFrom) {
+                $.ajax({
+
+                     type: 'GET',
+                     url: '@Url.Action("GetFilterSettingsBtn", "Orders")',
+                     data: {
+                         groupSize: groupBtnSize, fromNumb: groupBtnFrom
+                     },
+                     contentType: 'application/json; charset=utf-8',
+                     success: function (filter) {
+                         var filterId = [];
+
+                         for (var i = 0; i < filter.Results.length; i++) {
+                             var element = document.createElement("div");
+                             element.className = "btn btn-default";
+                             btnText = filter.Results[i].text;
+                             if (btnText.length > 10) {
+                                 btnText = filter.Results[i].text.substring(0, 9) + ".."
+                             }
+                             element.innerHTML = btnText;
+                             element.style = "margin-left:10px; margin-top: 10px; width: 18%; text-align: left;"
+                             element.value = filter.Results[i].id;
+                             element.title = filter.Results[i].text;
+                             filterId.push(filter.Results[i].id);
+
+                             var groupBtn = document.querySelector("#groupBtn");
+                             groupBtn.appendChild(element);
+
+                             var spanElement = document.createElement("span");
+                             spanElement.className = "glyphicon glyphicon-filter";
+                             element.insertBefore(spanElement, element.firstChild);
+
+                             var spanRemove = document.createElement("span");
+                             spanRemove.className = "glyphicon glyphicon-remove-sign";
+                             spanRemove.style = "float: right;";
+                             spanRemove.title = "Удалить"
+                             spanRemove.value = filter.Results[i].id;
+                             element.appendChild(spanRemove);
+                         }
+
+                         var FilterBtns = document.querySelectorAll("#groupBtn div");
+                         var spanBtnRemove = document.querySelectorAll(".glyphicon-remove-sign");
+
+                         for (var i = 0; i < FilterBtns.length; i++) {
+                             spanBtnRemove[i].addEventListener("click", function (elm) {
+                                 var btnForRemove = this;
+
+                                 $.ajax({
+                                     type: 'GET',
+                                     url: '@Url.Action("RemoveOrderFilter", "Orders")',
+                                     data: { Id: this.value },
+                                     contentType: 'application/json; charset=utf-8',
+                                     success: function () {
+                                         if (btnForRemove.parentNode.parentNode != null) {
+                                             btnForRemove.parentNode.parentNode.removeChild(btnForRemove.parentNode);
+                                             GetFiltersForButton(1, groupBtnFrom + groupBtnSize - 1);
+                                          }
+
+                                     },
+                                     error: function (data) {
+                                         alert("error");
+                                     }
+                                 });
+
+                                 elm.stopPropagation();
+
+                             });
+                                 FilterBtns[i].addEventListener("click", function (elm) {
+                                     LoadSubmitFilter(this.value);
+                                 });
+                             }
+                     }
+                 });
+            }
+
+            GetFiltersForButton(5, 1);
+        </script>
+    }

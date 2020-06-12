@@ -1,0 +1,204 @@
+﻿@model Corum.Models.ProjectNavigationResult<Corum.Models.ViewModels.Orders.OrderProjectViewModel>
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Filtering
+
+<div style="font-size: 12px;">
+    @(Html.Grid(Model.DisplayValues)
+  .Columns(columns =>
+  {
+  if(Model.Code) {
+      columns.Add(model => model.Code)
+      .Titled("Код<br>проекта")
+      .Filterable(true)
+      .Sortable(true);
+  }
+  if (Model.Description)
+  {
+      columns.Add(model => model.Description)
+      .Titled("Наименование<br>проекта")
+      .Filterable(true)
+      .Sortable(true);
+  }
+  if (Model.ProjectTypeName)
+  {
+      columns.Add(model => model.ProjectTypeName)
+       .Titled("Тип проекта")
+       .Filterable(true)
+       .Sortable(true);
+  }
+  if (Model.ProjectCFOName)
+  {
+      columns.Add(model => model.ProjectCFOName)
+           .Titled("ЦФК")
+           .Filterable(true)
+           .Sortable(true);
+  }
+  if (Model.ProjectOrderer)
+  {
+      columns.Add(model => model.ProjectOrderer)
+               .Titled("Заказчик")
+               .Filterable(true)
+               .Sortable(true);
+  }
+  if (Model.ConstructionDesc)
+  {
+      columns.Add(model => model.ConstructionDesc)
+                   .Titled("Обозначение<br>конструкции")
+                   .Filterable(true)
+                   .Sortable(true);
+  }
+  if (Model.PlanCount)
+  {
+      columns.Add(model => model.PlanCount)
+                       .Css("centered_column")
+                       .Titled("План<br>производства")
+                       .Filterable(true)
+                       .Sortable(true);
+  }
+  if (Model.ManufacturingEnterprise)
+  {
+      columns.Add(model => model.ManufacturingEnterprise)
+       .Titled("ПП")
+       .Filterable(true)
+       .Sortable(true);
+  }
+  if (Model.isActive)
+  {
+      columns.Add(model => model.isActive)
+                       .Titled("Активный")
+                       .Css("centered_column")
+                       .Filterable(true)
+                       .Sortable(true)
+                       .Encoded(false)
+                       .Sanitized(false)
+                       .SetInitialFilter(GridFilterType.Equals, "True")
+                       .RenderValueAs(o =>
+                    @<div>
+                        @Html.CheckBox(o.Id.ToString(), @o.isActive, new { disabled = "disabled", @readonly = "readonly" })
+                    </div>);
+            }
+
+            if (Model.NumOrder)
+            {
+                columns.Add(model => model.NumOrder)
+                 .Titled("Номер заказа в производство")
+                 .Filterable(true)
+                 .Sortable(true);
+            }
+            if (Model.DateOpenOrder)
+            {
+                columns.Add(model => model.DateOpenOrder).Format("{0:dd.MM.yyyy}")
+                 .Titled("Дата открытия заказа в производство")
+                 .Filterable(true)
+                 .Sortable(true);
+            }
+
+            if (Model.PlanPeriodForMP)
+            {
+                columns.Add(model => model.PlanPeriodForMP)
+                 .Titled("Плановый срок обеспечения м.п.")
+                 .Filterable(true)
+                 .Sortable(true);
+            }
+            if (Model.PlanPeriodForComponents)
+            {
+                columns.Add(model => model.PlanPeriodForComponents)
+                 .Titled("Плановый срок обеспечения комплектующими")
+                 .Filterable(true)
+                 .Sortable(true);
+            }
+            if (Model.PlanPeriodForSGI)
+            {
+                columns.Add(model => model.PlanPeriodForSGI)
+                 .Titled("План.срок на СГИ")
+                 .Filterable(true)
+                 .Sortable(true);
+            }
+            if (Model.PlanPeriodForTransportation)
+            {
+                columns.Add(model => model.PlanPeriodForTransportation)
+                 .Titled("План.срок подачи транспорта")
+                 .Filterable(true)
+                 .Sortable(true);
+            }
+            if (Model.PlanDeliveryToConsignee)
+            {
+                columns.Add(model => model.PlanDeliveryToConsignee)
+                 .Titled("Плановая дата доставки Грузополучателю")
+                 .Filterable(true)
+                 .Sortable(true);
+            }
+            if (Model.DeliveryBasic)
+            {
+                columns.Add(model => model.DeliveryBasic)
+                 .Titled("Базис поставки правила ИНКОТРЕРМС")
+                 .Filterable(true)
+                 .Sortable(true);
+            }
+            if (Model.ShipperName)
+            {
+                columns.Add(model => model.ShipperName)
+                 .Titled("Грузоотправитель")
+                 .Filterable(true)
+                 .Sortable(true);
+            }
+            if (Model.ConsigneeName)
+            {
+                columns.Add(model => model.ConsigneeName)
+                 .Titled("Грузополучатель")
+                 .Filterable(true)
+                 .Sortable(true);
+            }
+
+    columns.Add()
+ .Encoded(false)
+ .Sanitized(false)
+ .Css("centered_column")
+ .RenderValueAs(o =>@<div class="edit-delete-copy-links">
+    <a class="tarash-i update_link tooltips" href="@Url.Action("UpdateProject", "Projects", new { Id = o.Id })">
+        <span class="tooltip-message">Изменить проект</span>
+        <span class="glyphicon glyphicon-pencil"></span>
+    </a>
+
+    @if (o.CanBeDelete)
+    {
+        <a class="tarash-i delete_link tooltips" href="@Url.Action("RemoveProject", "Projects", new { Id = o.Id })" onclick="var var1='@o.Code'; return confirm('Вы действительно хотите удалить проект - '+var1+' ?');">
+            <span class="tooltip-message">Удалить проект</span>
+            <span class="glyphicon glyphicon-trash"></span>
+        </a>
+    }
+    else
+    {
+        <a class="disable-glyphicon tooltips tarash-i" href="#">
+            <span class="tooltip-message">Проект не может быть удален</span>
+            <span class="glyphicon glyphicon-trash"></span>
+        </a>
+    }
+
+                        <a class="tarash-i tooltips" href="@Url.Action("OrdersProject", "Projects", new {Id = o.Id})">
+                            <span class="tooltip-message">Реестр транспортных заявок</span>
+                            <span class="glyphicon glyphicon-th-list"></span>
+                        </a>
+
+                        <a class="tarash-i tooltips" href="@Url.Action("OrdersBaseProject", "Projects", new {Id = o.Id})">
+                            <span class="tooltip-message">Реестр общих заявок</span>
+                            <span class="glyphicon glyphicon-th"></span>
+                        </a>
+
+                        <a class="tarash-i tooltips" href="@Url.Action("RestReportProject", "Projects", new {Id = o.Id, Code = o.Code })">
+                            <span class="tooltip-message">Реестр остатков</span>
+                            <span class="glyphicon glyphicon-th-large"></span>
+                        </a>
+
+                         <a class="tarash-i tooltips" href="@Url.Action("GroupRestProject", "Projects", new { Id = o.Id, Code = o.Code })">
+                             <span class="tooltip-message">Сводная форма</span>
+                             <span class="glyphicon glyphicon-list-alt"></span>
+                         </a>
+                    </div>);
+
+  }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())
+
+
+</div>
+

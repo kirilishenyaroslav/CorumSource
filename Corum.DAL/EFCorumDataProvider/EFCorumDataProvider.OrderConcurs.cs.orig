@@ -1,0 +1,770 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using Corum.Models;
+using Corum.Common;
+using Corum.Models.ViewModels.OrderConcurs;
+using Corum.DAL.Mappings;
+using Corum.DAL.Entity;
+using Corum.Models.ViewModels.Cars;
+using System.Globalization;
+
+
+
+namespace Corum.DAL
+{
+    public partial class EFCorumDataProvider : EFBaseCorumDataProvider, ICorumDataProvider
+    {
+        public IEnumerable<CompetitiveListStepViewModel> getAvialiableStepsForList(long orderId)
+        {
+            var currentStep = getCurrentStatusForList(orderId);
+            if (currentStep!=null)
+            {
+                return db.OrderConcursSteps.Where(x => x.Id <= currentStep.StepId+1).Select(Mapper.Map);
+            }
+            return db.OrderConcursSteps.Where(x => x.Id == 1).Select(Mapper.Map);
+        }
+
+        public IEnumerable<CompetetiveListStepsInfoViewModel> getTimeLineForList(long orderId)
+        {
+            return db.OrderConcursListsSteps.Where(x => x.OrderId == orderId).OrderBy(x=>x.Id).Select(Mapper.Map);
+        }
+
+        public CompetetiveListStepsInfoViewModel getCurrentStatusForList(long orderId)
+        {
+            var currentStep = db.OrderConcursListsSteps.Where(x => x.OrderId == orderId).OrderByDescending(x => x.Id).FirstOrDefault();
+            if (currentStep!=null)
+            {
+                return Mapper.Map(currentStep);
+            }
+            {
+               var first = db.OrderConcursSteps.Where(x => x.Id == 1).Select(Mapper.Map).FirstOrDefault();
+               return new CompetetiveListStepsInfoViewModel()
+               {
+<<<<<<< local
+                   OrderId=orderId,
+=======
+                   Id = 3,
+                   ListId =0,
+>>>>>>> other
+                   StepId=1,
+                   StepFullCode= first.StepFullName,
+                   StepShortCode=first.StepShortName
+               };
+            }
+        }
+
+        public long SaveListStatus(CompetetiveListStepsInfoViewModel newStatusInfo)
+        {
+           
+                var info = new OrderConcursListsSteps()
+                {
+                    OrderId = newStatusInfo.OrderId,
+                    UserId = newStatusInfo.userId,
+                    StepId = newStatusInfo.StepId
+                };
+
+                db.OrderConcursListsSteps.Add(info);
+                db.SaveChanges();
+
+                return info.Id;
+            
+        }
+
+
+
+        public CompetitiveListViewModel getCompetitiveListInfo(long OrderId)
+        {
+            var orderInfo = db.OrdersBase.AsNoTracking().FirstOrDefault(x => x.Id == OrderId);
+            var passInfo = db.OrdersPassengerTransport.AsNoTracking().FirstOrDefault(x => x.OrderId == OrderId);
+            var truckInfo = db.OrderTruckTransport.AsNoTracking().FirstOrDefault(x => x.OrderId == OrderId);
+            var payers = db.BalanceKeepers.AsNoTracking().FirstOrDefault(x => x.Id == orderInfo.PayerId.Value);
+            var currentStep = getCurrentStatusForList(OrderId);
+            
+                CompetitiveListViewModel compList = new CompetitiveListViewModel();
+            compList.Id = orderInfo.Id;
+            compList.OrderDate = orderInfo.OrderDate.ToString("dd.MM.yyyy");
+            compList.CreatedByUserName = getUser(orderInfo.CreatedByUser).displayName;
+            compList.currentStep = currentStep;
+
+            string cityFrom = "", cityTo = "";
+
+            int VehicleTypeId = 0;
+            string VehicleTypeName = "";
+            bool IsTruck = false;
+
+            int tripType = 0;
+            if ((orderInfo.OrderType == 4) || (orderInfo.OrderType == 5) || (orderInfo.OrderType == 7))
+            {
+                var truckTypeInfo = db.OrderTruckTransport.FirstOrDefault(or => or.OrderId == OrderId);
+                tripType = truckTypeInfo.TripType ?? 0;
+
+                cityFrom = truckTypeInfo.ShipperCity;
+                cityTo = truckTypeInfo.ConsigneeCity;
+
+                IsTruck = true;
+                VehicleTypeId = truckTypeInfo.VehicleTypeId ?? 0;
+                VehicleTypeName = db.OrderVehicleTypes.FirstOrDefault(u => u.Id == VehicleTypeId)?.VehicleTypeName;
+
+            }
+
+            if ((orderInfo.OrderType == 1) || (orderInfo.OrderType == 3) || (orderInfo.OrderType == 6))
+            {
+                var passTypeInfo = db.OrdersPassengerTransport.FirstOrDefault(or => or.OrderId == OrderId);
+                tripType = passTypeInfo.TripType ?? 0;
+
+                cityFrom = passTypeInfo.FromCity;
+                cityTo = passTypeInfo.ToCity;
+            }
+            
+            compList.CityFrom = cityFrom;
+            compList.CityTo = cityTo;
+
+            compList.VehicleTypeId = VehicleTypeId;
+            compList.VehicleTypeName = VehicleTypeName;
+
+            compList.IsTruck = IsTruck;
+
+            // tripType = tripType + 1;
+            compList.tripTypeName = db.RouteTypes.AsNoTracking().FirstOrDefault(x => x.Id == tripType).NameRouteType;            
+            compList.TripType = tripType;
+            string SpecTypeId = "";
+            compList.SpecificationType = "";
+                var Spec = db.OrderBaseSpecification.AsNoTracking().Where(x => x.OrderId == OrderId).ToList();
+            
+            foreach (var spec in Spec)
+            {
+                if (spec.Id != null)
+                {
+                    if (SpecTypeId.Length > 0)
+                    {
+                        SpecTypeId += ",";
+                        compList.SpecificationType += ",";
+                    }
+                    SpecTypeId = string.Concat(SpecTypeId, spec.SpecificationId);
+                    compList.SpecificationType = string.Concat(compList.SpecificationType, spec.SpecificationTypes.SpecificationType);
+                }
+            }          
+            
+            if (payers != null)
+                compList.PayerName = payers.BalanceKeeper;
+
+            if (orderInfo != null)
+            {
+                compList.TotalDistanceLenght = Convert.ToInt32(orderInfo.TotalDistanceLength ?? 0);
+                compList.PriorityType = orderInfo.PriotityType;
+            }
+            if ((orderInfo.OrderType == 4) || (orderInfo.OrderType == 5) || (orderInfo.OrderType == 7))
+            {
+                if (truckInfo != null)
+                {
+                    compList.TruckDescription = truckInfo.TruckDescription;
+                    compList.Weight = (truckInfo.Weight ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA"));
+                    compList.DimenssionH = Convert.ToDouble(truckInfo.DimenssionH ?? 0);
+                    compList.DimenssionL = Convert.ToDouble(truckInfo.DimenssionL ?? 0);
+                    compList.DimenssionW = Convert.ToDouble(truckInfo.DimenssionW ?? 0);
+                    compList.Dimenssion = string.Concat(compList.DimenssionH.ToString(), " * ",
+                    compList.DimenssionL.ToString(), " * ", compList.DimenssionW.ToString());
+
+                    compList.BoxingDescription = truckInfo.BoxingDescription;
+
+                    compList.FromDate = truckInfo.FromShipperDatetime.Value.ToString("dd.MM.yyyy");
+                    compList.FromDateRaw = DateTimeConvertClass.getString(truckInfo.FromShipperDatetime.Value);
+
+                    compList.ToDate = truckInfo.ToConsigneeDatetime.Value.ToString("dd.MM.yyyy");
+                    compList.ToDateRaw = DateTimeConvertClass.getString(truckInfo.ToConsigneeDatetime.Value);
+
+                    compList.Route = string.Concat(compList.FromInfo, " - ", compList.ToInfo);
+                    compList.CarNumber = orderInfo.CarNumber ?? 0;
+
+                    var shipperCountryName =
+                        db.Countries.FirstOrDefault(u => u.Сode == truckInfo.ShipperCountryId)?.Name;
+                    compList.ShipperCountryName = shipperCountryName;
+
+                    if (truckInfo.TripType == 2)
+                        compList.FromInfo = string.Concat(compList.ShipperCountryName, ", ",
+                            truckInfo.ShipperCity, ", ", truckInfo.ShipperAdress);
+                    else
+                        compList.FromInfo = string.Concat(truckInfo.ShipperCity, ", ",
+                            truckInfo.ShipperAdress);
+
+                    var consigneeCountryName =
+                        db.Countries.FirstOrDefault(u => u.Сode == truckInfo.ConsigneeCountryId)?.Name;
+                    compList.ConsigneeCountryName = consigneeCountryName;
+
+                    if (truckInfo.TripType == 2)
+                        compList.ToInfo = string.Concat(compList.ConsigneeCountryName, ", ",
+                            truckInfo.ConsigneeCity, ", ", truckInfo.ConsigneeAdress);
+                    else
+                        compList.ToInfo = string.Concat(truckInfo.ConsigneeCity, ", ",
+                            truckInfo.ConsigneeAdress);
+
+                    compList.CarNumber = orderInfo.CarNumber ?? 0;
+
+                }
+            }
+
+            if ((orderInfo.OrderType == 1) || (orderInfo.OrderType == 3) || (orderInfo.OrderType == 6))
+            {
+                compList.TruckDescription = "";
+                compList.Weight = "";
+                compList.BoxingDescription = "";
+                compList.Dimenssion = "";
+
+                if (passInfo != null)
+                {
+                    compList.FromDate = passInfo.StartDateTimeOfTrip.ToString("dd.MM.yyyy");
+                    compList.FromDateRaw = DateTimeConvertClass.getString(passInfo.StartDateTimeOfTrip);
+
+                    compList.ToDate = passInfo.FinishDateTimeOfTrip.ToString("dd.MM.yyyy");
+                    compList.ToDateRaw = DateTimeConvertClass.getString(passInfo.FinishDateTimeOfTrip);
+
+                    var fromCountryName = db.Countries.FirstOrDefault(u => u.Сode == passInfo.FromCountry)?.Name;
+                    compList.ShipperCountryName = fromCountryName;
+
+                    if (compList.TripType == 2)
+                        compList.FromInfo = string.Concat(compList.ShipperCountryName, ", ", passInfo.FromCity, ", ",
+                            passInfo.AdressFrom);
+                    else
+                        compList.FromInfo = string.Concat(passInfo.FromCity, ", ", passInfo.AdressFrom);
+
+                    var consigneeCountryName = db.Countries.FirstOrDefault(u => u.Сode == passInfo.ToCountry)?.Name;
+                    compList.ConsigneeCountryName = consigneeCountryName;
+
+                    if (compList.TripType == 2)
+                        compList.ToInfo = string.Concat(compList.ConsigneeCountryName, ", ",
+                            passInfo.ToCity, ", ", passInfo.AdressTo);
+                    else
+                        compList.ToInfo = string.Concat(passInfo.ToCity, ", ",
+                            passInfo.AdressTo);
+
+
+                    compList.CarNumber = 1;
+                }
+            }
+
+            compList.Route = string.Concat(compList.FromInfo, " - ", compList.ToInfo);
+
+            compList.FilterTripTypeId = string.IsNullOrEmpty(tripType.ToString()) ? "" : tripType.ToString();
+            
+            if (compList.FilterTripTypeId == "") compList.UseTripTypeFilter = false;
+            else compList.UseTripTypeFilter = true;
+            
+            compList.FilterSpecificationTypeId = string.IsNullOrEmpty(SpecTypeId.ToString()) ? "" : SpecTypeId.ToString();
+            if (compList.FilterSpecificationTypeId == "") compList.UseSpecificationTypeFilter = false;
+            else compList.UseSpecificationTypeFilter = true;
+
+            compList.FilterVehicleTypeId = string.IsNullOrEmpty(VehicleTypeId.ToString()) ? "" : VehicleTypeId.ToString();
+            if (compList.FilterVehicleTypeId == "") compList.UseVehicleTypeFilter = false;
+            else compList.UseVehicleTypeFilter = true;
+
+            // if (compList.Route.Length >= 40)
+            //    compList.Route = compList.Route.Substring(0, 39) + "...";
+            return compList;
+        }
+
+        public IQueryable<OrderCompetitiveListViewModel> getOrderCompetitiveList(string userId, long OrderId)
+        {
+            List<OrderCompetitiveListViewModel> cL = new List<OrderCompetitiveListViewModel>();
+            cL.AddRange(db.OrderCompetitiveList
+                .AsNoTracking()
+                .Where(osh => osh.OrderId == OrderId)
+                .Select(Mapper.Map)
+                .OrderByDescending(o => o.Id));
+
+            foreach (var orderItem in cL)
+            {
+                var orderInfo = db.OrdersBase.AsNoTracking().FirstOrDefault(x => x.Id == orderItem.OrderId);
+                var truckInfo = db.OrderTruckTransport.AsNoTracking().FirstOrDefault(x => x.OrderId == orderInfo.Id);
+                var currentStep = getCurrentStatusForList(OrderId);
+
+                orderItem.currentStep = currentStep;
+                 
+                double DiscountRateInfo = 0;
+                if ((db.ConcursDiscountRate.Any()) && (orderInfo.OrderDate != null))
+                {
+                    var DiscountInfo =
+                        db.ConcursDiscountRate.AsNoTracking()
+                            .FirstOrDefault(x => x.DateBeg <= orderInfo.OrderDate && x.DateEnd >= orderInfo.OrderDate);
+                    if (DiscountInfo != null)
+                        DiscountRateInfo = (double) (DiscountInfo.DiscountRate ?? 0);
+                    else DiscountRateInfo = 0;
+                }
+
+                int TypeVehicleId = 0;
+                string VehicleTypeName = "";
+                bool isTruck = false;
+
+                if ((orderInfo.OrderType == 4) || (orderInfo.OrderType == 5) || (orderInfo.OrderType == 7))
+                {
+                    TypeVehicleId = truckInfo.VehicleTypeId ?? 0;
+                    VehicleTypeName = db.OrderVehicleTypes.FirstOrDefault(u => u.Id == TypeVehicleId)?.VehicleTypeName;
+                    isTruck = true;
+                }
+
+                orderItem.isTruck = isTruck;
+                orderItem.TypeVehicleId = TypeVehicleId;
+                orderItem.VehicleTypeName = VehicleTypeName;
+
+                orderItem.Comments = orderItem.Comments ?? "";
+                if (orderItem.Comments.Length >= 50)
+                    orderItem.Comments_Cut = orderItem.Comments.Substring(0, 49) + "...";
+                else orderItem.Comments_Cut = orderItem.Comments;
+
+                if (orderItem.CarCostDog == null) orderItem.CarCostDog = "0";
+                orderItem.DaysDelay = orderItem.DaysDelay ?? 0;
+                if (orderItem.CarCost == null) orderItem.CarCost = "0";
+                if (orderItem.DelayEffect == null) orderItem.DelayEffect = "0";
+                if (orderItem.PrepaymentEffect == null) orderItem.PrepaymentEffect = "0";
+                if (orderItem.PrepaymentEffect2 == null) orderItem.PrepaymentEffect2 = "0";
+
+                orderItem.PrepaymentEffect = (((double) Convert.ToDecimal(orderItem.CarCost.Replace(".", ","))*0.25*
+                                               orderItem.Prepayment/365*0.5) ?? 0).ToString("F2");
+
+                orderItem.CarCost7 =
+                    (Convert.ToDecimal(orderItem.CarCostDog.Replace(".", ","))*orderItem.CarsOffered).ToString("F2");
+
+
+                orderItem.DelayEffect =
+                    ((int)
+                        -((double) (DiscountRateInfo/100)*orderItem.DaysDelay*
+                          (double) Convert.ToDecimal(orderItem.CarCost.Replace(".", ","))/365)).ToString("F2");
+
+                decimal firstdblCarCost = 0;
+                if ((currentStep != null) && (currentStep.Id == 1))
+                {
+                    firstdblCarCost = Convert.ToDecimal(orderItem.CarCostDog.Replace(".", ","));  //6                                                   
+                }
+
+                if ((currentStep != null) && (currentStep.Id == 2))
+                {
+                    firstdblCarCost = Convert.ToDecimal(orderItem.CarCostDog.Replace(".", ","));  //7
+                }
+
+                if ((currentStep != null) && (currentStep.Id >= 3))
+                {
+                    firstdblCarCost = Convert.ToDecimal(orderItem.CarCost.Replace(".", ","));  //8
+                }
+
+                var dblCarCostWithMoneyCost = firstdblCarCost +
+                                              (int)Convert.ToDecimal(orderItem.DelayEffect.Replace(".", ",")) +
+                                              Convert.ToDecimal(orderItem.PrepaymentEffect.Replace(".", ",")) +
+                                              Convert.ToDecimal(orderItem.PrepaymentEffect2.Replace(".", ","));
+
+                orderItem.CarCostWithMoneyCost = dblCarCostWithMoneyCost.ToString("F2");
+
+
+                var totalDistanceLength = orderInfo.TotalDistanceLength.Value;
+
+                if (orderItem.CarCostWithMoneyCost == null) orderItem.CarCostWithMoneyCost = "0";
+
+                if ((orderInfo != null) && (totalDistanceLength > 0))
+
+                    orderItem.AverageCost = (Convert.ToDecimal(orderItem.CarCostWithMoneyCost.Replace(".", ",")) / orderInfo.TotalDistanceLength.Value).ToString("F2");
+            }
+            
+            var result = cL.OrderBy(o => Convert.ToDecimal(o.CarCostDog.Replace(".", ","))).ThenBy(o => o.GenId).ToList();
+
+            return result.AsQueryable();
+        }
+
+        public IQueryable<SpecificationListViewModel> GetSpecBySearchString(string searchTerm, long OrderId, bool UseTripTypeFilter, string FilterTripTypeId,
+            bool UseSpecificationTypeFilter, string FilterSpecificationTypeId, bool UseVehicleTypeFilter, string FilterVehicleTypeId, int AlgorithmId)
+        {
+            var _FilterTripTypeId = string.IsNullOrEmpty(FilterTripTypeId) ? "-1" : FilterTripTypeId;
+            var _FilterSpecificationTypeId = string.IsNullOrEmpty(FilterSpecificationTypeId) ? "0" : FilterSpecificationTypeId;
+            var _FilterVehicleTypeId = string.IsNullOrEmpty(FilterVehicleTypeId) ? "0" : FilterVehicleTypeId;
+
+            List<SpecificationListViewModel> SpecInfo = new List<SpecificationListViewModel>();
+
+            var orderInfo = db.OrdersBase.AsNoTracking().FirstOrDefault(x => x.Id == OrderId);
+            var AcceptDate = GetAcceptOnlyDate(orderInfo.Id);
+            DateTime FilterAcceptDate = string.IsNullOrEmpty(AcceptDate)
+                ? DateTime.Now
+                : DateTimeConvertClass.getDateTime2(AcceptDate);
+
+            bool isTruck = false;
+            int VehicleTypeId = 0;
+            int TypeSpecId = orderInfo.TypeSpecId ?? 0;
+
+            if ((orderInfo.OrderType == 4) || (orderInfo.OrderType == 5) || (orderInfo.OrderType == 7))
+            {
+                isTruck = true;               
+            }
+
+            int tripType = 0;
+            
+            if ((orderInfo.OrderType == 4) || (orderInfo.OrderType == 5) || (orderInfo.OrderType == 7))
+            {
+                var truckTypeInfo = db.OrderTruckTransport.FirstOrDefault(or => or.OrderId == OrderId);
+                tripType = truckTypeInfo.TripType ?? 0;
+                VehicleTypeId = truckTypeInfo.VehicleTypeId ?? 0;                
+            }
+            if ((orderInfo.OrderType == 1) || (orderInfo.OrderType == 3) || (orderInfo.OrderType == 6))
+            {
+                var passTypeInfo = db.OrdersPassengerTransport.FirstOrDefault(or => or.OrderId == OrderId);
+                tripType = passTypeInfo.TripType ?? 0;             
+            }
+
+            //tripType = tripType + 1;
+            //  var tripTypeName = db.RouteTypes.AsNoTracking().FirstOrDefault(x => x.Id == OrderId).NameRouteType;
+            if (AlgorithmId == 1)
+            {
+                _FilterTripTypeId = string.IsNullOrEmpty(tripType.ToString()) ? "-1" : tripType.ToString();
+                if (_FilterTripTypeId == "-1") UseTripTypeFilter = false;
+                else UseTripTypeFilter = true;
+                _FilterSpecificationTypeId = string.IsNullOrEmpty(TypeSpecId.ToString()) ? "0" : TypeSpecId.ToString();
+                if (_FilterSpecificationTypeId == "0") UseSpecificationTypeFilter = false;
+                else UseSpecificationTypeFilter = true;
+                _FilterVehicleTypeId = string.IsNullOrEmpty(VehicleTypeId.ToString()) ? "0" : VehicleTypeId.ToString();
+                if (_FilterVehicleTypeId == "0") UseVehicleTypeFilter = false;
+                else UseVehicleTypeFilter = true;
+            }
+
+            var SpecItems = db.GetSpecifications(FilterAcceptDate, isTruck, UseTripTypeFilter, _FilterTripTypeId,
+            UseSpecificationTypeFilter, _FilterSpecificationTypeId,
+            UseVehicleTypeFilter, _FilterVehicleTypeId/*tripType, VehicleTypeId, TypeSpecId*/).ToList();            
+            int i = 1;
+            foreach (var spec in SpecItems)
+            {
+                //добавляем только если спецификации еще нет в списке конкурентного листа
+                var concurs = db.OrderCompetitiveList.FirstOrDefault(o => o.OrderId == OrderId && o.SpecificationId == spec.Id && o.GenId == spec.UsedRateId);
+                if (concurs == null)
+                {
+                    SpecificationListViewModel SpecInfoItem = new SpecificationListViewModel();
+                    SpecInfoItem.Id = spec.Id;
+                    SpecInfoItem.GenId = spec.UsedRateId ?? 1;//i;
+                    i++;
+
+            //        SpecInfoItem.tripTypeName = tripTypeName;
+                    SpecInfoItem.IsForwarder = (spec.BalanceKeeperId != null) ? true : false;
+
+                    if (SpecInfoItem.IsForwarder)
+                        SpecInfoItem.ExpeditorName = spec.CarrierName1;
+                    else
+                        SpecInfoItem.ExpeditorName = spec.CarrierName;
+
+                    SpecInfoItem.NameGroupeSpecification = spec.NameGroupSpec;
+
+                    SpecInfoItem.DaysDelay = spec.DaysDelay;
+                    SpecInfoItem.NameSpecification = spec.SpecName;
+                    //SpecInfoItem.FreightName = spec.FreightName;
+                    SpecInfoItem.CarryCapacity = spec.CarryCapacity;
+                    SpecInfoItem.NameIntervalType = spec.NameIntervalType;
+                    //SpecInfoItem.MovingTypeName = spec.MovingTypeName;
+                    SpecInfoItem.FreightName = spec.SpecificationType;
+                    SpecInfoItem.VehicleTypeName = spec.VehicleTypeName;
+                    SpecInfoItem.isTruck = isTruck;
+
+                    SpecInfoItem.UsedRateName = spec.UsedRateName;
+                    SpecInfoItem.UsedRateId = spec.UsedRateId ?? 0;
+                    SpecInfoItem.RateValue = spec.RateValue;
+                    SpecInfoItem.RateValue = spec.RateValue;
+
+                    SpecInfoItem.DeparturePoint = spec.DeparturePoint;
+                    SpecInfoItem.ArrivalPoint = spec.ArrivalPoint;
+
+                    SpecInfoItem.FilterTripTypeId =_FilterTripTypeId;
+                    SpecInfoItem.FilterSpecificationTypeId = _FilterSpecificationTypeId;
+                    SpecInfoItem.FilterVehicleTypeId = _FilterVehicleTypeId;
+
+                    SpecInfoItem.UseTripTypeFilter = UseTripTypeFilter;
+                    SpecInfoItem.UseSpecificationTypeFilter = UseSpecificationTypeFilter;
+                    SpecInfoItem.UseVehicleTypeFilter = UseVehicleTypeFilter;                    
+
+                    SpecInfo.Add(SpecInfoItem);
+                }
+            }
+
+            var result = SpecInfo.OrderBy(o => o.UsedRateName).ThenBy(o => o.NameIntervalType).ToList();
+           
+            return result
+
+                .AsQueryable();            
+        }
+
+        public List<SpecificationListViewModel> GetSpecifications(string searchTerm, int pageSize, int pageNum, long OrderId, bool UseTripTypeFilter, string FilterTripTypeId,
+            bool UseSpecificationTypeFilter, string FilterSpecificationTypeId, bool UseVehicleTypeFilter, string FilterVehicleTypeId, int AlgorithmId)
+        {
+            return GetSpecBySearchString(searchTerm, OrderId, UseTripTypeFilter, FilterTripTypeId,
+            UseSpecificationTypeFilter, FilterSpecificationTypeId, UseVehicleTypeFilter, FilterVehicleTypeId, AlgorithmId)
+                //.Skip(pageSize * (pageNum - 1))
+                //.Take(pageSize)
+                .ToList();
+        }
+
+        public int GetSpecificationsCount(string searchTerm, long OrderId, bool UseTripTypeFilter, string FilterTripTypeId,
+            bool UseSpecificationTypeFilter, string FilterSpecificationTypeId, bool UseVehicleTypeFilter, string FilterVehicleTypeId, int AlgorithmId)
+        {
+            return GetSpecBySearchString(searchTerm, OrderId, UseTripTypeFilter, FilterTripTypeId,
+            UseSpecificationTypeFilter, FilterSpecificationTypeId, UseVehicleTypeFilter, FilterVehicleTypeId, AlgorithmId).Count();
+        }
+
+        public long NewSpecification(SpecificationListViewModel model, string userId)
+        {
+            var cs = db.ContractSpecifications.AsNoTracking().FirstOrDefault(x => x.Id == model.Id);           
+
+            var orderInfo = db.OrdersBase.AsNoTracking().FirstOrDefault(x => x.Id == model.OrderId);
+            
+            decimal _CarCostDog = 0;
+            //если фрахт, то _CarCostDog - это общая стоим-ть фрахта
+            // если фрахт - то длину маршрута брать не из спецификации, а из заявки
+            if /*((cs.IsFreight == true) &&*/ (model.UsedRateId == 1)//)
+                _CarCostDog = (cs.RateTotalFreight ?? 0) * Convert.ToInt32(orderInfo.TotalDistanceLength ?? 0);
+            //предложить выбор, если 1 ненулевой, остальные - 0, то взять ненулевой и умножить на длину маршрута/время в пути 
+            //(запрашивать на отдельной форме), если машино/час = то тариф из услуги * на запрошенный машино/час. Если есть НДС, 
+            //то уменьшить на сумму НДС            
+            else if /*((cs.RateKm > 0) && */(model.UsedRateId == 2)//)
+            {
+                _CarCostDog = (cs.RateKm ?? 0)*(orderInfo.TotalDistanceLength ?? 0);
+                    /*- ((cs.RateKm ?? 0) * (orderInfo.TotalDistanceLength ?? 0) * ((cs.NDSTax ?? 0)/100));*/
+            }
+            else if /*(((cs.RateHour ?? 0) > 0) && */(model.UsedRateId == 3)//)
+            {
+                _CarCostDog = (cs.RateHour ?? 0)*(orderInfo.TimeRoute ?? 0); /*-
+                         ((cs.RateHour ?? 0) * (orderInfo.TimeRoute ?? 0) * ((cs.NDSTax ?? 0) / 100))*/;             
+            }
+
+            else if /*(((cs.RateMachineHour ?? 0) > 0) && */(model.UsedRateId == 4)//)
+            {
+                _CarCostDog = (cs.RateMachineHour ?? 0)*(orderInfo.TimeSpecialVehicles ?? 0); /* -
+                        ((cs.RateMachineHour ?? 0) * (orderInfo.TimeSpecialVehicles ?? 0) * ((cs.NDSTax ?? 0) / 100));*/
+            }
+
+            var concurs = new OrderCompetitiveList()
+            {
+                OrderId = model.OrderId,
+                ExpeditorName = model.ExpeditorName,
+                CarryCapacity = model.CarryCapacity,
+                DaysDelay = model.DaysDelay,
+                CarCostDog = _CarCostDog,
+                SpecificationId = model.Id,
+                GenId = model.UsedRateId,
+                IsChange = false
+            };
+
+            db.OrderCompetitiveList.Add(concurs);
+
+            db.SaveChanges();
+
+            var StepInfo = new OrderConcursListsSteps()
+<<<<<<< local
+            {
+                OrderId = model.OrderId,
+=======
+            {                
+                ListId = concurs.Id,
+>>>>>>> other
+                StepId = 1,
+                UserId = userId
+            };
+
+            db.OrderConcursListsSteps.Add(StepInfo);
+            db.SaveChanges();
+
+            return concurs.Id;
+
+        }
+
+        public bool DeleteConcurs(long id)
+        {
+
+            var concurs = db.OrderCompetitiveList.FirstOrDefault(o => o.Id == id);
+
+            if (concurs != null)
+            {
+                db.OrderCompetitiveList.Remove(concurs);
+                db.SaveChanges();
+            }
+            return true;
+        }
+
+        public void UpdateConcurs(OrderCompetitiveListViewModel model)
+        {
+            var concurs = db.OrderCompetitiveList.FirstOrDefault(o => o.Id == model.Id);
+            if (concurs == null) return;
+
+            concurs.CarsOffered = model.CarsOffered;
+            concurs.CarsAccepted = model.CarsAccepted;
+            concurs.NDS = Convert.ToDecimal(model.NDS.Replace(".", ","));
+            concurs.CarCost = Convert.ToDecimal(model.CarCost.Replace(".", ","));
+            concurs.Prepayment = model.Prepayment;
+
+            concurs.Prepayment2 = model.Prepayment2 ?? 0;
+            if (model.PrepaymentEffect2 != null)
+            concurs.PrepaymentEffect2 = Convert.ToDecimal((model.PrepaymentEffect2).Replace(".", ","));
+
+            concurs.Comments = model.Comments;            
+            concurs.IsSelectedId = model.IsSelectedId;
+
+            if ((model.IsFreight == false) && (model.IsChange == false))
+            {
+                concurs.IsChange = true;
+                //concurs.CarCostDog = 0;
+
+                if (model.IsRateKm)
+                {
+                    concurs.CarCostDog = Convert.ToDecimal(model.RateKm.Replace(".", ","))*
+                                         Convert.ToDecimal(model.RouteLength.Replace(".", ",")); /*-
+                                          (Convert.ToDecimal(model.RateKm.Replace(".", ",")) * Convert.ToDecimal(model.RouteLength.Replace(".", ",")) * (Convert.ToDecimal(model.NDS.Replace(".", ",")) / 100));*/
+                }
+
+                /*  if (model.IsRateHour)
+                   {
+                       concurs.CarCostDog = Convert.ToDecimal(model.RateHour.Replace(".", ",")) * Convert.ToDecimal(model.RouteHours.Replace(".", ",")) -
+                                         (Convert.ToDecimal(model.RateHour.Replace(".", ",")) * Convert.ToDecimal(model.RouteHours.Replace(".", ",")) * (Convert.ToDecimal(model.NDS.Replace(".", ","))/100));
+                   }
+                   else if (model.IsRateMachineHour)
+                   {
+                       concurs.CarCostDog = Convert.ToDecimal(model.RateMachineHour.Replace(".", ",")) * Convert.ToDecimal(model.RouteMachineHour.Replace(".", ",")) -
+                                         (Convert.ToDecimal(model.RateMachineHour.Replace(".", ",")) * Convert.ToDecimal(model.RouteMachineHour.Replace(".", ",")) * (Convert.ToDecimal(model.NDS.Replace(".", ","))/100));
+                   }*/
+                //else 
+                /*if (model.IsRateKm)
+                {
+                    concurs.CarCostDog = Convert.ToDecimal(model.RateKm.Replace(".", ",")) * Convert.ToDecimal(model.RouteLength.Replace(".", ",")) -
+                                      (Convert.ToDecimal(model.RateKm.Replace(".", ",")) * Convert.ToDecimal(model.RouteLength.Replace(".", ",")) * (Convert.ToDecimal(model.NDS.Replace(".", ","))/100));
+                } */
+            }
+            else concurs.CarCostDog = concurs.CarCostDog; /*- concurs.CarCostDog * ((Convert.ToDecimal(model.NDS.Replace(".", ",")) / 100));*/
+
+            //concurs.GenId = concurs.GenId;
+
+            db.SaveChanges();
+        }
+
+        public OrderCompetitiveListViewModel getConcurs(long Id)
+        {
+            OrderCompetitiveListViewModel orderItem = new OrderCompetitiveListViewModel();
+            orderItem = Mapper.Map(db.OrderCompetitiveList.AsNoTracking().FirstOrDefault(u => u.Id == Id));
+
+            var orderInfo = db.OrdersBase.AsNoTracking().FirstOrDefault(x => x.Id == orderItem.OrderId);
+            //                var payers = db.BalanceKeepers.AsNoTracking().FirstOrDefault(x => x.Id == orderInfo.PayerId.Value);
+            var truckInfo = db.OrderTruckTransport.AsNoTracking().FirstOrDefault(x => x.OrderId == orderInfo.Id);
+
+            var currentStep = getCurrentStatusForList(orderItem.OrderId);
+
+            orderItem.currentStep = currentStep;
+
+            var cs = db.ContractSpecifications.AsNoTracking().FirstOrDefault(x => x.Id == orderItem.SpecificationId);
+
+            double DiscountRateInfo = 0;
+            if ((db.ConcursDiscountRate.Any()) && (orderInfo.OrderDate != null))
+            {
+                var DiscountInfo = db.ConcursDiscountRate.AsNoTracking().FirstOrDefault(x => x.DateBeg <= orderInfo.OrderDate && x.DateEnd >= orderInfo.OrderDate);
+                if (DiscountInfo != null)
+                    DiscountRateInfo = (double)(DiscountInfo.DiscountRate ?? 0);
+                else DiscountRateInfo = 0;
+            }
+            //если первый раз
+            if (orderItem.IsChange == false)
+            {
+                //decimal _CarCostDog = 0;
+                orderItem.IsRateKm = false;
+                orderItem.RouteLength = "0";                                
+                orderItem.IsFreight = true;
+                if (cs != null)
+                {
+                    //если тариф грн/км, а длина пути в спецификации не указана
+                    if ((orderItem.GenId == 2) && (cs.RateKm > 0) && ((cs.RouteLength ?? 0) == 0))
+                    {
+                        orderItem.IsRateKm = true;
+                        orderItem.RateKm = (cs.RateKm ?? 00).
+                                 ToString(CultureInfo.CreateSpecificCulture("uk-UA"));
+                    }                    
+                }
+            }
+
+            orderItem.Comments = orderItem.Comments ?? "";
+            if (orderItem.Comments.Length >= 50)
+                orderItem.Comments_Cut = orderItem.Comments.Substring(0, 49) + "...";
+            else orderItem.Comments_Cut = orderItem.Comments;
+
+            /*if ((orderInfo.OrderType == 1) || (orderInfo.OrderType == 3) || (orderInfo.OrderType == 6))
+            {
+                orderItem.CarsOffered = 0; //1;
+            }
+            */
+            if ((orderInfo.OrderType == 4) || (orderInfo.OrderType == 5) || (orderInfo.OrderType == 7))
+            {
+              /*  if (orderInfo != null)
+                    orderItem.CarsOffered = 0;
+                else orderItem.CarsOffered = 0;*/
+            }
+
+            if (orderItem.CarCostDog == null) orderItem.CarCostDog = "0";
+            orderItem.DaysDelay = orderItem.DaysDelay ?? 0;
+            if (orderItem.CarCost == null) orderItem.CarCost = "0";
+            if (orderItem.DelayEffect == null) orderItem.DelayEffect = "0";
+            if (orderItem.PrepaymentEffect == null) orderItem.PrepaymentEffect = "0";
+            if (orderItem.PrepaymentEffect2 == null) orderItem.PrepaymentEffect2 = "0";
+            if (orderItem.NDS == null) orderItem.NDS = "0";
+
+            orderItem.PrepaymentEffect = (((double)Convert.ToDecimal(orderItem.CarCost.Replace(".", ",")) * 0.25 *
+                                                       orderItem.Prepayment / 365 * 0.5) ?? 0).ToString("F2");
+
+
+            orderItem.CarCost7 = (Convert.ToDecimal(orderItem.CarCostDog.Replace(".", ",")) * orderItem.CarsOffered).ToString("F2");
+            orderItem.DelayEffect = ((int)-((double)(DiscountRateInfo / 100) * orderItem.DaysDelay * (double)Convert.ToDecimal(orderItem.CarCost.Replace(".", ",")) / 365)).ToString("F2");
+
+            decimal firstdblCarCost = 0;
+            if ((currentStep != null) && (currentStep.Id == 1))
+            {
+                firstdblCarCost = Convert.ToDecimal(orderItem.CarCostDog.Replace(".", ","));  //6                                                   
+            }
+
+            if ((currentStep != null) && (currentStep.Id == 2))
+            {
+                firstdblCarCost = Convert.ToDecimal(orderItem.CarCostDog.Replace(".", ","));  //7
+            }
+
+            if ((currentStep != null) && (currentStep.Id >= 3))
+            {
+                firstdblCarCost = Convert.ToDecimal(orderItem.CarCost.Replace(".", ","));  //8
+            }
+
+            var dblCarCostWithMoneyCost = firstdblCarCost +
+                                          (int)Convert.ToDecimal(orderItem.DelayEffect.Replace(".", ",")) +
+                                          Convert.ToDecimal(orderItem.PrepaymentEffect.Replace(".", ",")) +
+                                          Convert.ToDecimal(orderItem.PrepaymentEffect2.Replace(".", ","));
+
+            orderItem.CarCostWithMoneyCost = dblCarCostWithMoneyCost.ToString("F2");
+
+
+            var totalDistanceLength = orderInfo.TotalDistanceLength.Value;
+
+            if (orderItem.CarCostWithMoneyCost == null) orderItem.CarCostWithMoneyCost = "0";
+
+            if ((orderInfo != null) && (totalDistanceLength > 0))
+
+                orderItem.AverageCost = (Convert.ToDecimal(orderItem.CarCostWithMoneyCost.Replace(".", ",")) / orderInfo.TotalDistanceLength.Value).ToString("F2");
+        
+
+            return orderItem;
+        }
+
+        public List<SpecificationTypesViewModel> GetSpecificationTypes(string searchTerm, int pageSize, int pageNum)
+       {
+           return GetSpecificationTypesBySearchString(searchTerm)
+                       .Skip(pageSize* (pageNum - 1))
+                        .Take(pageSize)
+                          .ToList();
+       }
+
+       public int GetSpecificationTypesCount(string searchTerm)
+       {
+           return GetSpecificationTypesBySearchString(searchTerm).Count();
+       }
+
+       public IQueryable<SpecificationTypesViewModel> GetSpecificationTypesBySearchString(string searchTerm)
+       {
+           return
+           db.SpecificationTypes
+                 .AsNoTracking()
+                    .Where(s => ((s.SpecificationType.Contains(searchTerm) || s.SpecificationType.StartsWith(searchTerm) || s.SpecificationType.EndsWith(searchTerm))))
+                       .Select(Mapper.Map)
+                       .OrderBy(o => o.Id)
+                        .AsQueryable();
+       }      
+    }
+}

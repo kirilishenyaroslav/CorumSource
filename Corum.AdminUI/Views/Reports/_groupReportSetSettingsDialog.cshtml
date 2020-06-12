@@ -1,0 +1,298 @@
+﻿@model Corum.Models.RestsNavigationResult<Corum.Models.ViewModels.GroupItemRestViewModel>
+
+<style>
+    .select2-container {
+        width: 80%;
+    }
+</style>
+
+
+<div id="restsettings" class="row" style="display: none;">
+
+    @using (Html.BeginForm("GroupRestReport", "Reports", FormMethod.Get, htmlAttributes: new { @id = "settingsForm", style = "margin-left: 35px;" }))
+    {
+        <ul class="nav nav-tabs" role="tablist" style="margin-top: 10px;">
+            <li role="presentation">
+                <a id="aPage1" href="#Page1" role="tab" data-toggle="tab" style="text-decoration: none; font-size: 12px;">Фильтр данных</a>
+            </li>
+            <li role="presentation">
+                <a id="aPage2" href="#Page2" role="tab" data-toggle="tab" style="text-decoration: none; font-size: 12px;">Группировка данных</a>
+            </li>
+            <li role="presentation">
+                <a id="aPage3" href="#Page3" role="tab" data-toggle="tab" style="text-decoration: none; font-size: 12px;">Настройка столбцов</a>
+            </li>
+        </ul>
+
+        <div class="tab-content" style="margin-top: 25px; margin-left: 25px; font-size: 12px; font-weight: normal;">
+
+            <div role="tabpanel" class="active filter-tab-pane tab-pane row" id="Page1">
+
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseCenterFilter, new { onclick = "$('#FilterCenterId').prop('disabled', !this.checked);" })&nbsp;ЦФО
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FilterCenterId,
+                            Model.UseCenterFilter ?
+                            (object)new
+                            {
+                                id = "FilterCenterId",
+                                @class = "filter_dropdown",
+                                @name = "FilterCenterId",
+                                data_source_url = Url.Action("GetCenters", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                data_droplist_placeholder = "Введите название ЦФО"
+                            } :
+                            (object)new
+                            {
+                                id = "FilterCenterId",
+                                @class = "filter_dropdown",
+                                @name = "FilterCenterId",
+                                data_source_url = Url.Action("GetCenters", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                data_droplist_placeholder = "Введите название ЦФО",
+                                @disabled = "disabled"
+                            })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseStorageFilter, new { onclick = "$('#FilterStorageId').prop('disabled', !this.checked);" }) &nbsp;Склад
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FilterStorageId,
+                            Model.UseStorageFilter ?
+                            (object)new
+                            {
+                                id = "FilterStorageId",
+                                @class = "filter_dropdown",
+                                @name = "FilterStorageId",
+                                data_source_url = Url.Action("GetStorages", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                data_droplist_placeholder = "Введите название склада"
+                            } :
+                            (object)new
+                            {
+                                id = "FilterStorageId",
+                                @class = "filter_dropdown",
+                                @name = "FilterStorageId",
+                                data_source_url = Url.Action("GetStorages", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                data_droplist_placeholder = "Введите название склада",
+                                @disabled = "disabled"
+                            })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseRecieverPlanFilter, new { onclick = "$('#FilterRecieverPlanId').prop('disabled', !this.checked);" })&nbsp;Грузополучатель (план)
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FilterRecieverPlanId,
+                            Model.UseRecieverPlanFilter ?
+                            (object)new
+                            {
+                                id = "FilterRecieverPlanId",
+                                @class = "filter_dropdown",
+                                @name = "FilterRecieverPlanId",
+                                data_source_url = Url.Action("GetRecievers", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                data_droplist_placeholder = "Введите название грузополучателя"
+                            } :
+                            (object)new
+                            {
+                                id = "FilterRecieverPlanId",
+                                @class = "filter_dropdown",
+                                @name = "FilterRecieverPlanId",
+                                data_source_url = Url.Action("GetRecievers", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                data_droplist_placeholder = "Введите название грузополучателя",
+                                @disabled = "disabled"
+                            })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseRecieverFactFilter, new { onclick = "$('#FilterRecieverFactId').prop('disabled', !this.checked);" })&nbsp;Грузополучатель (факт)
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FilterRecieverFactId,
+                            Model.UseRecieverFactFilter ?
+                                (object)new
+                                {
+                                    id = "FilterRecieverFactId",
+                                    @class = "filter_dropdown",
+                                    @name = "FilterRecieverFactId",
+                                    data_source_url = Url.Action("GetRecievers", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                    data_droplist_placeholder = "Введите название грузополучателя"
+                                } :
+                                (object)new
+                                {
+                                    id = "FilterRecieverFactId",
+                                    @class = "filter_dropdown",
+                                    @name = "FilterRecieverFactId",
+                                    data_source_url = Url.Action("GetRecievers", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                    data_droplist_placeholder = "Введите название грузополучателя",
+                                    @disabled = "disabled"
+                                })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseKeeperFilter, new { onclick = "$('#FilterKeeperId').prop('disabled', !this.checked);" })&nbsp;Балансодержатель
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FilterKeeperId,
+                            Model.UseKeeperFilter ?
+                                (object)new
+                                {
+                                    id = "FilterKeeperId",
+                                    @class = "filter_dropdown",
+                                    @name = "FilterKeeperId",
+                                    data_source_url = Url.Action("GetKeepers", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                    data_droplist_placeholder = "Введите название балансодержателя"
+                                } :
+                                (object)new
+                                {
+                                    id = "FilterKeeperId",
+                                    @class = "filter_dropdown",
+                                    @name = "FilterKeeperId",
+                                    data_source_url = Url.Action("GetKeepers", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                    data_droplist_placeholder = "Введите название балансодержателя",
+                                    @disabled = "disabled"
+                                })
+                    </div>
+
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseProducerFilter, new {onclick = "$('#FilterProducerId').prop('disabled', !this.checked);"})&nbsp;Производитель
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FilterProducerId,
+                            Model.UseProducerFilter ?
+                                (object) new
+                                {
+                                    id = "FilterProducerId",
+                                    @class = "filter_dropdown",
+                                    @name = "FilterProducerId",
+                                    data_source_url = Url.Action("GetProducers", "Reports", new {snapShot = Model.SnapshotInfo.Id}),
+                                    data_droplist_placeholder = "Введите название производителя"
+                                } :
+                                (object) new
+                                {
+                                    id = "FilterProducerId",
+                                    @class = "filter_dropdown",
+                                    @name = "FilterProducerId",
+                                    data_source_url = Url.Action("GetProducers", "Reports", new {snapShot = Model.SnapshotInfo.Id}),
+                                    data_droplist_placeholder = "Введите название производителя",
+                                    @disabled = "disabled"
+                                })
+                    </div>
+                </div>
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseOrderProjectFilter, new { onclick = "$('#FilterOrderProjectId').prop('disabled', !this.checked);" })&nbsp;Внутренний заказ ПП
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FilterOrderProjectId,
+                            Model.UseOrderProjectFilter ?
+                            (object)new
+                            {
+                                id = "FilterOrderProjectId",
+                                @class = "filter_dropdown",
+                                @name = "FilterOrderProjectId",
+                                data_source_url = Url.Action("GetProjects", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                data_droplist_placeholder = "Введите внутренний заказ ПП"
+                            } :
+                            (object)new
+                            {
+                                id = "FilterOrderProjectId",
+                                @class = "filter_dropdown",
+                                @name = "FilterOrderProjectId",
+                                data_source_url = Url.Action("GetProjects", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                data_droplist_placeholder = "Введите внутренний заказ ПП",
+                                @disabled = "disabled"
+                            })
+                    </div>
+                </div>
+            </div>
+
+            <div role="tabpanel" class="filter-tab-pane tab-pane row" id="Page2">
+
+                <div class="form-group">
+                    <label class="col-md-4" style="font-weight: normal !important;">Группировать данные по:</label>
+                    <div class="col-md-8 center-block" style="font-weight: normal; text-align: center; margin-top: -12px;">
+                        @Html.DropDownList("CurrentGroupFieldName",
+                        new SelectList(Model.AvialableFields.Select(x => new { Value = x.Key, Text = x.Value.Replace("<br>"," ") }), "Value", "Text", Model.CurrentGroupFieldName),
+                        htmlAttributes: new { @style = "width: 100%; margin-top: 10px; margin-bottom: 10px;" })
+                    </div>
+                </div>
+            </div>
+
+            <div role="tabpanel" class="filter-tab-pane tab-pane row" id="Page3">
+                <div class="form-group">
+                    <div class="col-md-1">
+                        <div class="checkbox rest_checkbox">
+                            @Html.EditorFor(model => model.PriceForEndConsumer)
+                        </div>
+                    </div>
+                    @Html.LabelFor(model => model.PriceForEndConsumer, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-1">
+                        <div class="checkbox rest_checkbox">
+                            @Html.EditorFor(model => model.PriceForFirstReciver)
+                        </div>
+                    </div>
+                    @Html.LabelFor(model => model.PriceForFirstReciver, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-1">
+                        <div class="checkbox rest_checkbox">
+                            @Html.EditorFor(model => model.PlanChangableCost)
+                        </div>
+                    </div>
+                    @Html.LabelFor(model => model.PlanChangableCost, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-1">
+                        <div class="checkbox rest_checkbox">
+                            @Html.EditorFor(model => model.PlanFullCost)
+                        </div>
+                    </div>
+                    @Html.LabelFor(model => model.PlanFullCost, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-1">
+                        <div class="checkbox rest_checkbox">
+                            @Html.EditorFor(model => model.FactChangableCosts)
+                        </div>
+                    </div>
+                    @Html.LabelFor(model => model.FactChangableCosts, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-1">
+                        <div class="checkbox rest_checkbox">
+                            @Html.EditorFor(model => model.FactFullCosts)
+                        </div>
+                    </div>
+                    @Html.LabelFor(model => model.FactFullCosts, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-1">
+                        <div class="checkbox rest_checkbox">
+                            @Html.EditorFor(model => model.BalancePrice)
+                        </div>
+                    </div>
+                    @Html.LabelFor(model => model.BalancePrice, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+                </div>
+            </div>
+
+        </div>
+
+    }
+</div>

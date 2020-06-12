@@ -1,0 +1,127 @@
+﻿@model Corum.Models.ViewModels.Orders.OrderPipelineStepViewModel
+@{
+    ViewBag.Title = "Допустимый шаг БП";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("UpdatePipelineStep", "Orders", FormMethod.Post))
+{
+    <div class="form-horizontal">
+
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.OrderTypeId)
+        
+        <h4>Допустимый шаг <br> бизнес-процесса для заявок типа &nbsp; "@Model.OrderTypeName"</h4>
+        
+        <hr />
+
+        <fieldset>
+            <div class="form-group">
+                @Html.LabelFor(model => model.FromStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="form-control-container full-width-select">
+                        @Html.DropDownListFor(model => model.FromStatus,
+                                          new SelectList(Model.AvailiabeFromStatuses.Select(x => new { Value = x.Id, Text = x.StatusName }), "Value", "Text", Model.FromStatus),
+                                          new { @class = "form-control input" })
+                        @Html.ValidationMessageFor(model => model.FromStatus, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.ToStatus, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="form-control-container full-width-select">
+                        @Html.DropDownListFor(model => model.ToStatus,
+                                          new SelectList(Model.AvailiabeToStatuses.Select(x => new { Value = x.Id, Text = x.StatusName }), "Value", "Text", Model.ToStatus),
+                                          new { @class = "form-control input" })
+                        @Html.ValidationMessageFor(model => model.ToStatus, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.AccessRoleId, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="form-control-container full-width-select s2Pipeline">
+                        @Html.TextBoxFor(model => model.AccessRoleId,
+                            (object)new
+                            {
+                                id = "AccessRoleId",
+                                @class = "filter_dropdown form-control input",
+                                @name = "AccessRoleId",
+                                data_source_url = Url.Action("GetRoles", "Orders"),
+                                data_droplist_placeholder = "Введите роль пользователей",
+                                data_selected_text = Model.AccessRoleName
+                            })
+                        @Html.ValidationMessageFor(model => model.AccessRoleId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+            @Html.LabelFor(model => model.StartDateForClientLayer, htmlAttributes: new { @class = "control-label col-md-6" })
+                <div class="col-md-6">
+                    <div class="form-control-container full-width-select">
+                        @Html.EditorFor(model => model.StartDateForClientLayer,
+                                          new { @class = "form-control input reg-info" })
+                        @Html.ValidationMessageFor(model => model.StartDateForClientLayer, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.StartDateForExecuterLayer, htmlAttributes: new { @class = "control-label col-md-6" })
+                <div class="col-md-6">
+                    <div class="form-control-container full-width-select">
+                        @Html.EditorFor(model => model.StartDateForExecuterLayer,
+                                          new { @class = "form-control input reg-info" })
+                        @Html.ValidationMessageFor(model => model.StartDateForExecuterLayer, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.FinishStatusForBP, htmlAttributes: new { @class = "control-label col-md-6" })
+                <div class="col-md-6">
+                    <div class="form-control-container full-width-select">
+                        @Html.EditorFor(model => model.FinishStatusForBP,
+                                          new { @class = "form-control input reg-info" })
+                        @Html.ValidationMessageFor(model => model.FinishStatusForBP, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            <hr>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10 ">
+                    <div class="row">
+                        @Html.ActionLink("Реестр шагов", "PipelineSteps", "Orders", new { OrderTypeId=Model.OrderTypeId }, new { @class = "btn btn-success" })
+                        <input type="submit" value="Добавить" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+
+        </fieldset>
+    </div>
+}
+
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function ()
+        {
+            InitializeDateTimePickers();
+            InitFilterDropDowns();
+
+        });
+
+    </script>
+}

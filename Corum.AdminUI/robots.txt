@@ -1,0 +1,8 @@
+﻿User-agent: *
+Disallow: /ImportFiles/
+Disallow: /Account/
+Disallow: /Admin/
+Disallow: /Orders/
+Disallow: /Reports/
+Disallow: /Users/
+Disallow: /Access/

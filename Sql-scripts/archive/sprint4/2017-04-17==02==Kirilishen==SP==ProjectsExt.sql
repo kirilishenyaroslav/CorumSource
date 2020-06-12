@@ -1,0 +1,19 @@
+﻿CREATE TABLE dbo.ProjectTypes (
+  Id INT IDENTITY
+ ,Name VARCHAR(255) NOT NULL
+ ,CONSTRAINT PK_ProjectTypes_Id PRIMARY KEY CLUSTERED (Id)
+) ON [PRIMARY]
+GO
+
+
+ALTER TABLE dbo.Projects
+ADD FOREIGN KEY (ProjectCFOId) REFERENCES dbo.Centers (Id);
+
+GO
+
+
+
+ALTER TABLE dbo.Projects
+ADD FOREIGN KEY (ProjectTypeId) REFERENCES dbo.ProjectTypes (Id);
+
+GO

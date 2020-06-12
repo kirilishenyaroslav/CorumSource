@@ -1,0 +1,84 @@
+﻿@model Corum.Models.ViewModels.UploadFileViewModel
+
+
+
+<div id="columnsettings" class="row collapse">
+    <br>
+        @using (Html.BeginForm("SetColumnSettings", "Admin", FormMethod.Post, htmlAttributes: new { @id = "columnSettingsForm", style = "margin-left: 35px;" }))
+    {
+        <ul class="nav nav-tabs nav-list" role="tablist">
+            <li role="presentation">
+                <a class="tab-page" id="aRests" href="#RestsTab" role="tab" data-toggle="tab">Остатки</a>
+            </li>
+            <li role="presentation">
+                <a class="tab-page" id="aDocs" href="#DocsTab" role="tab" data-toggle="tab">Документы</a>
+            </li>
+        </ul>
+                
+     <div class="tab-content tab-cont-all">
+         <div role="tabpanel" class="active filter-tab-pane tab-pane row" id="RestsTab">
+             <div class="form-group row">
+                 <label class="col-md-4 columnsettings">Параметр шаблона импорта</label>
+                 <div class="col-md-8">
+                     @Html.DropDownListFor(model => model.SelectedColumnName,
+                      new SelectList(Model.CurrentSettingsRests.Select(x => new { Value = "ddRests" + x.id, Text = x.ColumnName }), "Value", "Text", Model.SelectedColumnName),
+                      new { @Id = "ddRests" }))
+                     <br>
+                     @foreach (var colName in Model.CurrentSettingsRests)
+                     {
+                        String divId = @colName.ColumnName + "_" + "Rests";
+                        <div id=@divId class="collapse">
+                            <span>@Html.CheckBox("isUnique" + "_" + @colName.ColumnName + "_" + "Rests", @colName.isUnique.Value, new { @disabled = "disabled" })&nbsp;Уникален <br /></span>
+                            <span>@Html.CheckBox("isNotNull" + "_" + @colName.ColumnName + "_" + "Rests", @colName.isNotNull.Value, new { @disabled = "disabled" })&nbsp;Не пустое <br /></span>
+                            <span>@Html.CheckBox("isLessActualDateBeg" + "_" + @colName.ColumnName + "_" + "Rests", @colName.isLessActualDateBeg.Value, new { @disabled = "disabled" })&nbsp;Меньше ActualDateBeg <br /></span>
+                            <span>@Html.CheckBox("isBiggerActualDateEnd" + "_" + @colName.ColumnName + "_" + "Rests", @colName.isBiggerActualDateEnd.Value, new { @disabled = "disabled" })&nbsp;Больше ActualDateEnd <br /></span>
+                            <span>@Html.CheckBox("isSimilar" + "_" + @colName.ColumnName + "_" + "Rests", @colName.isSimilar.Value, new { @disabled = "disabled" })&nbsp;Одинаковое для всех записей <br /></span>
+                            <span>@Html.CheckBox("isZeroDateReplace" + "_" + @colName.ColumnName + "_" + "Rests", @colName.isZeroDateReplace.Value, new { @disabled = "disabled" })&nbsp;По всем не Датам уведомлять о заменене на "00.00.00" <br /></span>
+                            <span>@Html.CheckBox("isNumeric" + "_" + @colName.ColumnName + "_" + "Rests", @colName.isNumeric.Value, new { @disabled = "disabled" })&nbsp;Числовое <br /></span>
+                            <span>@Html.CheckBox("isZeroNumericReplace" + "_" + @colName.ColumnName + "_" + "Rests", @colName.isZeroNumericReplace.Value, new { @disabled = "disabled" })&nbsp;По всем не числовым уведомлять о замене на "0" <br /></span>
+                            <span>@Html.CheckBox("isNotNullForRest" + "_" + @colName.ColumnName + "_" + "Rests", @colName.isNotNullForRest.Value, new { @disabled = "disabled" })&nbsp;Не пустое для остатков <br /></span>
+                            <span>@Html.CheckBox("isNotZeroForQPrihodNotZeroForDocs" + "_" + @colName.ColumnName + "_" + "Rests", @colName.isNotZeroForQPrihodNotZeroForDocs.Value, new { @disabled = "disabled" })&nbsp;Если движение, то должно быть при QuantityRashod<>0 <br /></span>
+                            <span>@Html.CheckBox("isNullForQPrihodZeroForDocs" + "_" + @colName.ColumnName + "_" + "Rests", @colName.isNullForQPrihodNotZeroForDocs.Value, new { @disabled = "disabled" })&nbsp;Если движение, то должно быть пустое если=0 <br /></span>
+                            <span>@Html.CheckBox("isNullForQPrihodNotZeroForDocs" + "_" + @colName.ColumnName + "_" + "Rests", @colName.isNullForQPrihodNotZeroForDocs.Value, new { @disabled = "disabled" })&nbsp;Если движение, то должно быть ПУСТО при QuantityPrihod<>0 <br /></span>
+                            <span>@Html.CheckBox("isNullForRest" + "_" + @colName.ColumnName + "_" + "Rests", @colName.isNullForRest.Value, new { @disabled = "disabled" })&nbsp;Пустое для остатков <br /></span>
+                        </div>
+
+                     }
+                 </div>
+             </div>
+         </div>
+
+         <div role="tabpanel" class="filter-tab-pane tab-pane row" id="DocsTab">
+             <div class="form-group row">
+                 <label class="col-md-4 columnsettings">Параметр шаблона импорта</label>
+                 <div class="col-md-8">
+                     @Html.DropDownListFor(model => model.SelectedColumnName,
+  new SelectList(Model.CurrentSettingsDocs.Select(x => new { Value = "ddDocs" + x.id, Text = x.ColumnName }), "Value", "Text", Model.SelectedColumnName), new { @Id = "ddDocs" })
+
+                     @foreach (var colName in Model.CurrentSettingsDocs)
+                     {
+                         String divId = @colName.ColumnName + "_" + "Docs";
+                        <div id=@divId class="collapse">
+
+                            <span>@Html.CheckBox("isUnique" + "_" + @colName.ColumnName + "_" + "Docs", @colName.isUnique.Value, new { @disabled = "disabled" })&nbsp;Уникален <br /></span>
+                            <span>@Html.CheckBox("isNotNull" + "_" + @colName.ColumnName + "_" + "Docs", @colName.isNotNull.Value, new { @disabled = "disabled" })&nbsp;Не пустое <br /></span>
+                            <span>@Html.CheckBox("isLessActualDateBeg" + "_" + @colName.ColumnName + "_" + "Docs", @colName.isLessActualDateBeg.Value, new { @disabled = "disabled" })&nbsp;Меньше ActualDateBeg <br /></span>
+                            <span>@Html.CheckBox("isBiggerActualDateEnd" + "_" + @colName.ColumnName + "_" + "Docs", @colName.isBiggerActualDateEnd.Value, new { @disabled = "disabled" })&nbsp;Больше ActualDateEnd <br /></span>
+                            <span>@Html.CheckBox("isSimilar" + "_" + @colName.ColumnName + "_" + "Docs", @colName.isSimilar.Value, new { @disabled = "disabled" })&nbsp;Одинаковое для всех записей <br /></span>
+                            <span>@Html.CheckBox("isZeroDateReplace" + "_" + @colName.ColumnName + "_" + "Docs", @colName.isZeroDateReplace.Value, new { @disabled = "disabled" })&nbsp;По всем не Датам уведомлять о заменене на "00.00.00" <br /></span>
+                            <span>@Html.CheckBox("isNumeric" + "_" + @colName.ColumnName + "_" + "Docs", @colName.isNumeric.Value, new { @disabled = "disabled" })&nbsp;Числовое <br /></span>
+                            <span>@Html.CheckBox("isZeroNumericReplace" + "_" + @colName.ColumnName + "_" + "Docs", @colName.isZeroNumericReplace.Value, new { @disabled = "disabled" })&nbsp;По всем не числовым уведомлять о замене на "0" <br /></span>
+                            <span>@Html.CheckBox("isNotNullForRest" + "_" + @colName.ColumnName + "_" + "Docs", @colName.isNotNullForRest.Value, new { @disabled = "disabled" })&nbsp;Не пустое для остатков <br /></span>
+                            <span>@Html.CheckBox("isNotZeroForQPrihodNotZeroForDocs" + "_" + @colName.ColumnName + "_" + "Docs", @colName.isNotZeroForQPrihodNotZeroForDocs.Value, new { @disabled = "disabled" })&nbsp;Если движение, то должно быть при QuantityRashod<>0 <br /></span>
+                            <span>@Html.CheckBox("isNullForQPrihodZeroForDocs" + "_" + @colName.ColumnName + "_" + "Docs", @colName.isNullForQPrihodZeroForDocs.Value, new { @disabled = "disabled" })&nbsp;Если движение, то должно быть пустое если=0 <br /></span>
+                            <span>@Html.CheckBox("isNullForQPrihodNotZeroForDocs" + "_" + @colName.ColumnName + "_" + "Docs", @colName.isNullForQPrihodNotZeroForDocs.Value, new { @disabled = "disabled" })&nbsp;Если движение, то должно быть ПУСТО при QuantityPrihod<>0 <br /></span>
+                            <span>@Html.CheckBox("isNullForRest" + "_" + @colName.ColumnName + "_" + "Docs", @colName.isNullForRest.Value, new { @disabled = "disabled" })&nbsp;Пустое для остатков <br /></span>
+                        </div>
+                     }
+                 </div>
+             </div>
+         </div>
+     </div>
+                    }
+                    <hr>
+</div>

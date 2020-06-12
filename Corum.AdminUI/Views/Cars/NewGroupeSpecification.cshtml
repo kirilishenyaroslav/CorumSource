@@ -1,0 +1,86 @@
+﻿@model Corum.Models.ViewModels.Cars.GroupesSpecificationsViewModel
+@{
+    ViewBag.Title = "NewGroupeSpecification";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row ">
+        <div class="col-lg-12 main panel panel-info" style="margin-top:35px;">
+            @using (Html.BeginForm("NewGroupeSpecification", "Cars", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.Id)
+                @Html.HiddenFor(model => model.CreateDate)
+                @Html.HiddenFor(model => model.CreateDateRaw)
+                @Html.HiddenFor(model => model.CreatedByUser)
+                @Html.HiddenFor(model => model.ContractId)
+                @Html.HiddenFor(model => model.IsMainMenu)
+                <div class="form-horizontal">
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    @Html.HiddenFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+                    <div class="row">
+                        <div class="form-group" style="margin-left:20px; font-size:12px;">
+
+                            @Html.ActionLink("В реестр", "GroupesSpecifications", "Cars", new { contractId = @Model.ContractId, IsMainMenu = @Model.IsMainMenu }, new { @class = "btn btn-success col-md-1 col-sm-2 col-xs-4", @style = "margin-left:10px; margin-top:5px;" })
+                            <input type="submit" value="Сохранить" class="btn btn-default col-md-1 col-sm-2 col-xs-4" style="margin-left:10px;margin-top:5px;" />
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="centered_column">Добавление спецификации</h2> <br>
+
+                            <div class="col-md-12">
+
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.ContractInfo.ContractNumber</span>Номер договора
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.ContractInfo.BalanceKeeperName</span>Плательщик
+                                    </li>
+                                    @if (@Model.ContractInfo.IsForwarder)
+                                    {
+                                        <li class="list-group-item">
+                                            <span class="badge">@Model.ContractInfo.CarOwnersName</span>Экспедитор
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="list-group-item">
+                                            <span class="badge">@Model.ContractInfo.ExpeditorName</span>Экспедитор
+                                        </li>
+                                    }
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.CreateDate</span>Дата создания спецификации
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.CreatedByUserName</span>Cоздана специалистом
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        @Html.Partial("_GroupeSpecificationDetails")
+                    </div>
+
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+
+        $(document).ready(function () {
+            InitializeDateTimePickers();
+        });
+
+    </script>
+}
+
+

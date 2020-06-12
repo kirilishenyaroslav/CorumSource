@@ -1,0 +1,402 @@
+﻿@model Corum.Models.RestsNavigationResult<Corum.Models.ViewModels.GroupItemRestViewModel>
+@using System.Globalization;
+
+@{
+    ViewBag.Title = "StorageRests";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    var numberFormat = new CultureInfo("en-US", false).NumberFormat;
+}
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+        @{
+            var proc = string.Concat("OnPageSizeRestsReportsChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                    (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                    new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+    </div>
+}
+
+@Html.Hidden("CurrentGroupFieldName_", Model.CurrentGroupFieldName, new { id = "CurrentGroupFieldName_" })
+
+@Html.Hidden("FilterStorageId_", Model.FilterStorageId, new { id = "FilterStorageId_" })
+@Html.Hidden("FilterCenterId_", Model.FilterCenterId, new { id = "FilterCenterId_" })
+@Html.Hidden("FilterRecieverPlanId_", Model.FilterRecieverPlanId, new { id = "FilterRecieverPlanId_" })
+@Html.Hidden("FilterRecieverFactId_", Model.FilterRecieverFactId, new { id = "FilterRecieverFactId_" })
+@Html.Hidden("FilterKeeperId_", Model.FilterKeeperId, new { id = "FilterKeeperId_" })
+@Html.Hidden("FilterProducerId_", Model.FilterProducerId, new { id = "FilterProducerId_" })
+
+@Html.Hidden("UseStorageFilter_", Model.UseStorageFilter, new { id = "UseStorageFilter_" })
+@Html.Hidden("UseCenterFilter_", Model.UseCenterFilter, new { id = "UseCenterFilter_" })
+@Html.Hidden("UseRecieverPlanFilter_", Model.UseRecieverPlanFilter, new { id = "UseRecieverPlanFilter_" })
+@Html.Hidden("UseRecieverFactFilter_", Model.UseRecieverFactFilter, new { id = "UseRecieverFactFilter_" })
+@Html.Hidden("UseKeeperFilter_", Model.UseKeeperFilter, new { id = "UseKeeperFilter_" })
+@Html.Hidden("UseProducerFilter_", Model.UseProducerFilter, new { id = "UseProducerFilter_" })
+
+
+@Html.Hidden("PriceForEndConsumer_", Model.PriceForEndConsumer, new { id = "PriceForEndConsumer_" })
+@Html.Hidden("PriceForFirstReciver_", Model.PriceForFirstReciver, new { id = "PriceForFirstReciver_" })
+@Html.Hidden("PlanFullCost_", Model.PlanFullCost, new { id = "PlanFullCost_" })
+@Html.Hidden("PlanChangableCost_", Model.PlanChangableCost, new { id = "PlanChangableCost_" })
+@Html.Hidden("FactFullCosts_", Model.FactFullCosts, new { id = "FactFullCosts_" })
+@Html.Hidden("FactChangableCosts_", Model.FactChangableCosts, new { id = "FactChangableCosts_" })
+@Html.Hidden("BalancePrice_", Model.BalancePrice, new { id = "BalancePrice_" })
+
+<div class="container-fluid">
+
+    @Html.Partial("_groupReportSetSettingsDialog")
+
+    <div class="row">
+
+        <div class="col-lg-12 main">
+
+            <div class="row">
+                <div style="margin-bottom: 15px; margin-top:15px; text-align:center;" class="col-md-12">
+                    <span style="margin-bottom: 20px; font-weight: bold;">Сводная форма по остаткам за период: @Model.SnapshotInfo.ActualDateBeg.Value.ToString("dd.MM.yyyy") - @Model.SnapshotInfo.ActualDateEnd.Value.ToString("dd.MM.yyyy")</span>&nbsp;&nbsp;
+                </div>
+            </div>
+
+            <div class="row">
+
+                <div id="showrestsettings" style="margin-bottom: 15px;" class="col-md-8">
+                    <div>                        
+                        <input type="button" value="Конфигурация" class="btn btn-default" onclick="ShowSettings()" />&nbsp;&nbsp;
+
+                        @Html.ActionLink("Экспорт в excel", "SummaryReportAsExcel", "ExportToExcel", new
+                          {
+                              snapshotId = Model.SnapshotInfo.Id,
+
+                              CurrentGroupFieldName=Model.CurrentGroupFieldName,
+
+                              FilterStorageId = Model.FilterStorageId,
+                              FilterCenterId = Model.FilterCenterId,
+                              FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                              FilterRecieverFactId = Model.FilterRecieverFactId,
+                              FilterKeeperId = Model.FilterKeeperId,
+                              FilterProducerId = Model.FilterProducerId,
+
+                              UseStorageFilter = Model.UseStorageFilter,
+                              UseCenterFilter = Model.UseCenterFilter,
+                              UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                              UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                              UseKeeperFilter = Model.UseKeeperFilter,
+                              UseProducerFilter = Model.UseProducerFilter,
+
+                              PriceForEndConsumer = Model.PriceForEndConsumer,
+                              PriceForFirstReciver = Model.PriceForFirstReciver,
+                              PlanFullCost = Model.PlanFullCost,
+                              PlanChangableCost = Model.PlanChangableCost,
+                              FactFullCosts = Model.FactFullCosts,
+                              FactChangableCosts = Model.FactChangableCosts,
+                              BalancePrice = Model.BalancePrice
+                              
+                          }, new { @class = "btn btn-success delete_link" })&nbsp;&nbsp;
+
+                        
+
+                        @Html.ActionLink("Реестр", "RestReport", "Reports", new
+                          {
+                              snapshotId = Model.SnapshotInfo.Id,
+                              CurrentGroupFieldName=Model.CurrentGroupFieldName,
+
+                              FilterStorageId = Model.FilterStorageId,
+                              FilterCenterId = Model.FilterCenterId,
+                              FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                              FilterRecieverFactId = Model.FilterRecieverFactId,
+                              FilterKeeperId = Model.FilterKeeperId,
+                              FilterProducerId = Model.FilterProducerId,
+
+                              UseStorageFilter = Model.UseStorageFilter,
+                              UseCenterFilter = Model.UseCenterFilter,
+                              UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                              UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                              UseKeeperFilter = Model.UseKeeperFilter,
+                              UseProducerFilter = Model.UseProducerFilter,
+
+                              PriceForEndConsumer = Model.PriceForEndConsumer,
+                              PriceForFirstReciver = Model.PriceForFirstReciver,
+                              PlanFullCost = Model.PlanFullCost,
+                              PlanChangableCost = Model.PlanChangableCost,
+                              FactFullCosts = Model.FactFullCosts,
+                              FactChangableCosts = Model.FactChangableCosts,
+                              BalancePrice = Model.BalancePrice
+                              
+                          }, new { @class = "btn btn-info" })&nbsp;&nbsp;
+
+                        @Html.ActionLink("Приходные", "DocsReport", "Reports", new
+                          {
+                              snapshotId = Model.SnapshotInfo.Id,
+                              
+
+                              FilterStorageId = Model.FilterStorageId,
+                              FilterCenterId = Model.FilterCenterId,
+                              FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                              FilterRecieverFactId = Model.FilterRecieverFactId,
+                              FilterKeeperId = Model.FilterKeeperId,
+                              FilterProducerId = Model.FilterProducerId,
+
+                              UseStorageFilter = Model.UseStorageFilter,
+                              UseCenterFilter = Model.UseCenterFilter,
+                              UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                              UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                              UseKeeperFilter = Model.UseKeeperFilter,
+                              UseProducerFilter = Model.UseProducerFilter,
+
+                              PriceForEndConsumer = Model.PriceForEndConsumer,
+                              PriceForFirstReciver = Model.PriceForFirstReciver,
+                              PlanFullCost = Model.PlanFullCost,
+                              PlanChangableCost = Model.PlanChangableCost,
+                              FactFullCosts = Model.FactFullCosts,
+                              FactChangableCosts = Model.FactChangableCosts,
+                              BalancePrice = Model.BalancePrice,
+
+                              IsPrihodDocs = 1
+                              
+                          }, new { @class = "btn btn-info" })&nbsp;&nbsp;
+
+                        @Html.ActionLink("Расходные", "DocsReport", "Reports", new
+                          {
+                              snapshotId = Model.SnapshotInfo.Id,
+                              
+
+                              FilterStorageId = Model.FilterStorageId,
+                              FilterCenterId = Model.FilterCenterId,
+                              FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                              FilterRecieverFactId = Model.FilterRecieverFactId,
+                              FilterKeeperId = Model.FilterKeeperId,
+                              FilterProducerId = Model.FilterProducerId,
+
+                              UseStorageFilter = Model.UseStorageFilter,
+                              UseCenterFilter = Model.UseCenterFilter,
+                              UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                              UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                              UseKeeperFilter = Model.UseKeeperFilter,
+                              UseProducerFilter = Model.UseProducerFilter,
+
+                              PriceForEndConsumer = Model.PriceForEndConsumer,
+                              PriceForFirstReciver = Model.PriceForFirstReciver,
+                              PlanFullCost = Model.PlanFullCost,
+                              PlanChangableCost = Model.PlanChangableCost,
+                              FactFullCosts = Model.FactFullCosts,
+                              FactChangableCosts = Model.FactChangableCosts,
+                              BalancePrice = Model.BalancePrice,
+
+                              IsPrihodDocs = 0
+                              
+                          }, new { @class = "btn btn-info" })&nbsp;&nbsp;
+
+                        @Html.ActionLink("Сводка", "BriefReport", "Reports", new
+                          {
+                              snapshotId = Model.SnapshotInfo.Id,
+                              
+                              FilterStorageId = Model.FilterStorageId,
+                              FilterCenterId = Model.FilterCenterId,
+                              FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                              FilterRecieverFactId = Model.FilterRecieverFactId,
+                              FilterKeeperId = Model.FilterKeeperId,
+                              FilterProducerId = Model.FilterProducerId,
+
+                              UseStorageFilter = Model.UseStorageFilter,
+                              UseCenterFilter = Model.UseCenterFilter,
+                              UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                              UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                              UseKeeperFilter = Model.UseKeeperFilter,
+                              UseProducerFilter = Model.UseProducerFilter,
+
+                              PriceForEndConsumer = Model.PriceForEndConsumer,
+                              PriceForFirstReciver = Model.PriceForFirstReciver,
+                              PlanFullCost = Model.PlanFullCost,
+                              PlanChangableCost = Model.PlanChangableCost,
+                              FactFullCosts = Model.FactFullCosts,
+                              FactChangableCosts = Model.FactChangableCosts,
+                              BalancePrice = Model.BalancePrice
+                              
+                          }, new { @class = "btn btn-info" })
+
+                    </div>
+                </div>
+
+                <div class="col-md-4" style="font-size: 10px !important;">
+                    @Html.Partial("_groupReportFilterSettings")
+                </div>
+            </div>
+
+            <div id="detailValuesGrid" class="table-header clearfix row" style="font-size: 10px !important; ">
+                @Html.Partial("_groupReportDetailsValues")
+            </div>
+            @TPagging("GroupRestReport", "Reports", @Model.RequestParams, this)
+        </div>
+    </div>
+
+</div>
+
+@section scripts
+{
+    <script>
+        var offset = $('.navbar').height();
+        $("html:not(.legacy) table").stickyTableHeaders({ fixedOffset: offset });
+
+
+        $(document).ready(function ()
+        {
+            if ($(".filtered").length == 0) {
+
+                var table = document.getElementsByTagName("table")[0];
+                var footer = table.createTFoot();
+                var row = footer.insertRow(0);
+
+                var cell = row.insertCell(0);
+                cell.innerHTML = "@Model.DisplayTotalValues.groupItem";
+                addClass(cell, "structure_info main_column new_columns_block_start");
+
+                var inCountCell = row.insertCell(1);
+                inCountCell.innerHTML = "<span class='pull-right'>@Model.DisplayTotalValues.QuantityBefore</span>";
+                addClass(inCountCell, "rigth_column quantity_column in_rests new_columns_block_start");
+
+                var inMassCell = row.insertCell(2);
+                inMassCell.innerHTML = "<span class='pull-right'>@Model.DisplayTotalValues.WeightBefore.ToString("N", numberFormat)</span>";
+                addClass(inMassCell, "rigth_column quantity_column in_rests");
+
+                var inSumCell = row.insertCell(3);
+                addClass(inSumCell, "right_column prices_column in_rests");
+
+                var inSumCellBody = "<span>в БС:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.BP_Before.ToString("N", numberFormat)</span><br>" +
+                (('@Model.PriceForEndConsumer' === 'True') ? "<span>в ЦКП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PE_Before.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.PriceForFirstReciver' === 'True') ? "<span>в ЦПП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PF_Before.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.PlanFullCost' === 'True') ? "<span>в СПП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PCP_Before.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.PlanChangableCost' === 'True') ? "<span>в СППР:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PCPC_Before.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.FactFullCosts' === 'True') ? "<span>в СФП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.FCP_Before.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.FactChangableCosts' === 'True') ? "<span>в СФПР:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.FCPC_Before.ToString("N", numberFormat)</span><br>" : "");
+
+                inSumCell.innerHTML = inSumCellBody;
+
+                var prihodCountCell = row.insertCell(4);
+                addClass(prihodCountCell, "right_column quantity_column prihod new_columns_block_start");
+                prihodCountCell.innerHTML = "<span class='pull-right'>@Model.DisplayTotalValues.QuantityPrihod</span>";
+
+                var prihodMassCell = row.insertCell(5);
+                addClass(prihodMassCell, "right_column quantity_column prihod");
+                prihodMassCell.innerHTML = "<span class='pull-right'>@Model.DisplayTotalValues.MassPrihod.ToString("N", numberFormat)</span>";
+
+                var prihodSumCell = row.insertCell(6);
+                addClass(prihodSumCell, "right_column prices_column prihod");
+
+                var prihodSumCellBody = "<span>в БС:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.BP_Prihod.ToString("N", numberFormat)</span><br>" +
+                (('@Model.PriceForEndConsumer' === 'True') ? "<span>в ЦКП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PE_Prihod.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.PriceForFirstReciver' === 'True') ? "<span>в ЦПП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PF_Prihod.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.PlanFullCost' === 'True') ? "<span>в СПП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PCP_Prihod.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.PlanChangableCost' === 'True') ? "<span>в СППР:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PCPC_Prihod.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.FactFullCosts' === 'True') ? "<span>в СФП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.FCP_Prihod.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.FactChangableCosts' === 'True') ? "<span>в СФПР:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.FCPC_Prihod.ToString("N", numberFormat)</span><br>" : "");
+
+                prihodSumCell.innerHTML = prihodSumCellBody;
+
+                var rashodCountCell = row.insertCell(7);
+                rashodCountCell.innerHTML = "<span class='pull-right'>@Model.DisplayTotalValues.QuantityRashod</span>";
+                addClass(rashodCountCell, "right_column quantity_column rashod new_columns_block_start");
+
+                var rashodMassCell = row.insertCell(8);
+                rashodMassCell.innerHTML = "<span class='pull-right'>@Model.DisplayTotalValues.MassRashod.ToString("N", numberFormat)</span>";
+                addClass(rashodMassCell, "right_column quantity_column rashod");
+
+                var rashodSumCell = row.insertCell(9);
+                addClass(rashodSumCell, "right_column prices_column rashod");
+                var rashodSumCellBody = "<span>в БС:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.BP_Rashod.ToString("N", numberFormat)</span><br>" +
+                (('@Model.PriceForEndConsumer' === 'True') ? "<span>в ЦКП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PE_Rashod.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.PriceForFirstReciver' === 'True') ? "<span>в ЦПП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PF_Rashod.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.PlanFullCost' === 'True') ? "<span>в СПП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PCP_Rashod.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.PlanChangableCost' === 'True') ? "<span>в СППР:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PCPC_Rashod.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.FactFullCosts' === 'True') ? "<span>в СФП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.FCP_Rashod.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.FactChangableCosts' === 'True') ? "<span>в СФПР:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.FCPC_Rashod.ToString("N", numberFormat)</span><br>" : "");
+
+                rashodSumCell.innerHTML = rashodSumCellBody;
+
+                var outCountCell = row.insertCell(10);
+                addClass(outCountCell, "right_column quantity_column new_columns_block_start");
+                outCountCell.innerHTML = "<span class='pull-right'>@Model.DisplayTotalValues.QuantityAfter</span>";
+
+                var outMassCell = row.insertCell(11);
+                addClass(outMassCell, "right_column quantity_column");
+                outMassCell.innerHTML = "<span class='pull-right'>@Model.DisplayTotalValues.WeightAfter.ToString("N", numberFormat)</span>";
+
+                var outSumCell = row.insertCell(12);
+                addClass(outSumCell, "right_column prices_column new_columns_block_end");
+                var outSumCellBody = "<span>в БС:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.BP_After.ToString("N", numberFormat)</span><br>" +
+                (('@Model.PriceForEndConsumer' === 'True') ? "<span>в ЦКП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PE_After.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.PriceForFirstReciver' === 'True') ? "<span>в ЦПП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PF_After.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.PlanFullCost' === 'True') ? "<span>в СПП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PCP_After.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.PlanChangableCost' === 'True') ? "<span>в СППР:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.PCPC_After.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.FactFullCosts' === 'True') ? "<span>в СФП:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.FCP_After.ToString("N", numberFormat)</span><br>" : "") +
+                (('@Model.FactChangableCosts' === 'True') ? "<span>в СФПР:</span> <span style='font-weight: bold;' class='pull-right'>@Model.DisplayTotalValues.FCPC_After.ToString("N", numberFormat)</span><br>" : "");
+
+                outSumCell.innerHTML = outSumCellBody;
+            }
+        });
+
+
+
+        function ShowSettings() {
+            ShowDialogColumnSettings();
+        }
+
+        function ShowDialogColumnSettings() {
+
+            $('#restsettings')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 650,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Конфигурация сводного отчета",
+                    modal: true,
+                    open: function(event, ui) {
+                        InitFilterDropDowns();
+                    },
+                    close: function(event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function(event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function(event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function() {
+
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Ок",
+                            "class": 'btn btn-primary',
+                            click: function() {
+                                $("#settingsForm").submit();
+                            }
+                        }
+                    ]
+                });
+
+            $('#restsettings').dialog('open');
+
+            return;
+        }
+
+    </script>
+}
+

@@ -1,0 +1,154 @@
+﻿@model Corum.Models.RestsNavigationResult<Corum.Models.ViewModels.RestViewModel>
+@using System.Globalization
+@using GridMvc.Html
+
+@{
+    var numberFormat = new CultureInfo("en-US", false).NumberFormat;
+}
+
+
+@(Html.Grid(Model.DisplayValues)
+                      .Columns(columns =>
+                      {
+
+                      columns.Add(model => model.Storage).Css("new_columns_block_start")
+                          .Titled("Cклад").Filterable(true).Sortable(true);
+
+                      columns.Add(model => model.Product)
+                      .Titled("Продукт <br> (шифр/артикул)")
+                      .Filterable(true).Sortable(true)
+                      .Encoded(false)
+                      .Sanitized(false)
+                      .SetWidth(100)
+                      .RenderValueAs(o =>
+                        @<div>@o.Product (@o.Shifr)</div>); ;
+
+                      columns.Add(model => model.Figure)
+                          .Titled("Чертеж").Filterable(true).Sortable(true);
+
+                      columns.Add(model => model.InnerOrderNum)
+                                .Titled("Внутрений<br> заказ ПП").Filterable(true).Sortable(true);
+
+                      columns.Add(model => model.Weight)
+                          .Titled("Вес, <br> (1 ед./кг.)")
+                          .Css("rigth_column")
+                          .Filterable(true)
+                          .Sortable(true)
+                          .Encoded(false)
+                          .Sanitized(false)
+                          .RenderValueAs(o =>
+                        @<div>@o.Weight.ToString()</div>);
+
+                      columns.Add(model => model.QuantityAfter)
+                  .Titled("Кол-во на <br> конец <br> периода")
+                  .Css("rigth_column new_columns_block_start")
+                  .Filterable(true)
+                  .Sortable(true)
+                  .Encoded(false)
+                          .Sanitized(false)
+                          .RenderValueAs(o =>
+                        @<div>@o.QuantityAfter.ToString()</div>);
+
+                      columns.Add()
+                      .Titled("Масса,<br> (кг.) <br> на начало <br> периода")
+                      .Css("rigth_column")
+                      .Filterable(true)
+                      .Sortable(true)
+                      .Encoded(false)
+                              .Sanitized(false)
+                              .RenderValueAs(o => @<div>@(o.QuantityAfter * o.Weight)</div>);
+
+                      if ((Model.BalancePrice) ||
+                      (Model.PriceForEndConsumer) ||
+                      (Model.PriceForFirstReciver) ||
+                      (Model.PlanFullCost) ||
+                      (Model.PlanChangableCost) ||
+                      (Model.FactFullCosts) ||
+                      (Model.FactChangableCosts))
+                      {
+                          columns.Add()
+                          .Encoded(false)
+                          .Titled("Сумма, <br> (грн. в ценах учета)")
+                          .Sanitized(false)
+                          .Css("right_column new_columns_block_end")
+                          .RenderValueAs(o =>
+                        @<div>
+                            @if (Model.BalancePrice)
+                                {
+                                <span>в БС:</span>
+                                    <span style="font-weight: bold;" class="pull-right"> @o.BP_After.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.PriceForEndConsumer)
+                                {
+                                <span>в ЦКП:</span>
+                                    <span style="font-weight: bold" class="pull-right"> @o.PE_After.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.PriceForFirstReciver)
+                                {
+                                <span>в ЦПП:</span>
+                                    <span style="font-weight: bold" class="pull-right"> @o.PF_After.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.PlanFullCost)
+                                {
+                                <span>в СПП:</span>
+                                    <span style="font-weight: bold" class="pull-right"> @o.PCPC_After.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.PlanChangableCost)
+                                {
+                                <span>в СППР:</span>
+                                    <span style="font-weight: bold" class="pull-right"> @o.PCPC_After.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.FactFullCosts)
+                                {
+                                <span>в СФП:</span>
+                                    <span style="font-weight: bold" class="pull-right"> @o.FCP_After.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.FactChangableCosts)
+                                {
+                                <span>в СФПР:</span>
+                                    <span style="font-weight: bold" class="pull-right"> @o.FCPC_After.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                        </div>);
+                          }
+
+                          columns.Add(model => model.RecieverGroupPlan)
+                          .Titled("Клиент<br>(Тип<br>грузополучателя)")
+                          .Filterable(true)
+                           .Css("new_columns_block_start")
+                          .Sortable(true)
+                           .Encoded(false)
+                          .Sanitized(false)
+                          .RenderValueAs(o =>
+                        @<div>@o.RecieverGroupPlan</div>);
+
+                          columns.Add(model => model.OrderNum)
+                               .Titled("Номер<br> заказа").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.ReadyForSaleStatus)
+                               .Titled("Готовность к<br>реализации").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.ReserveStatus)
+                               .Titled("Статус<br>резервирования").Filterable(true).Sortable(true);
+
+                          columns.Add()
+                       .Encoded(false).Css("new_columns_block_end")
+                       .Sanitized(false)
+                       .Css("centered_column")
+                       .RenderValueAs(o =>
+                    @<div>
+                        <a class="tarash-i update_link tooltips" href="@Url.Action("PartyCard", "Reports", new { InnerPartyKey = o.InnerPartyKey, snapshoId = Model.SnapshotInfo.Id })">
+                            <span class="tooltip-message">Просмотр карточки партии</span>
+                            <span class="glyphicon glyphicon-list-alt"></span>
+                        </a>                    
+                    </div>);
+
+
+
+                      }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())

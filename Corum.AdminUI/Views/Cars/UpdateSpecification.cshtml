@@ -1,0 +1,282 @@
+﻿@model Corum.Models.ViewModels.Cars.ContractSpecificationsViewModel
+@{
+    ViewBag.Title = "UpdateSpecification";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row ">
+        <div class="col-lg-12 main panel panel-info" style="margin-top:35px;">
+            @using (Html.BeginForm("UpdateSpecification", "Cars", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                @Html.HiddenFor(model => model.Id)
+                @Html.HiddenFor(model => model.CreateDate)
+                @Html.HiddenFor(model => model.CreateDateRaw)
+                @Html.HiddenFor(model => model.CreatedByUser)
+                @Html.HiddenFor(model => model.GroupeSpecId)
+                @Html.HiddenFor(model => model.IsMainMenu)
+                @Html.HiddenFor(model => model.RouteId)
+                <div class="form-horizontal">
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                    @Html.HiddenFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+                    <div class="row">
+                        <div class="form-group" style="margin-left:20px; font-size:12px;">
+
+                            @Html.ActionLink("В реестр", "Specifications", "Cars", new { groupeSpecId = @Model.GroupeSpecId, IsMainMenu = @Model.IsMainMenu }, new { @class = "btn btn-success col-md-1 col-sm-2 col-xs-4", @style = "margin-left:10px; margin-top:5px;" })
+                            <input type="submit" value="Сохранить" class="btn btn-default col-md-1 col-sm-2 col-xs-4" style="margin-left:10px;margin-top:5px;" />
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div class="col-md-12">
+                            <h2 class="centered_column">Изменение услуги</h2> <br>
+
+                            <div class="col-md-4">
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.ContractInfo.ContractNumber</span>Номер  договора
+                                    </li>
+                                    @if (@Model.ContractInfo.IsForwarder)
+                                    {
+                                        <li class="list-group-item">
+                                            <span class="badge">@Model.ContractInfo.CarOwnersName</span>Экспедитор
+                                        </li>
+                                    }
+                                    else
+                                    {
+                                        <li class="list-group-item">
+                                            <span class="badge">@Model.ContractInfo.ExpeditorName</span>Экспедитор
+                                        </li>
+                                    }
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.ContractInfo.BalanceKeeperName</span>Плательщик
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.GroupeSpecInfo.NameGroupeSpecification</span>Спецификация
+                                    </li>
+
+                                    <li class="list-group-item">
+                                        <span class="badge">с @Model.ContractInfo.DateBeg по @Model.ContractInfo.DateEnd</span>Период действия договора
+                                    </li>
+
+                                    <li class="list-group-item">
+                                        <span class="badge">с @Model.GroupeSpecInfo.DateBeg по @Model.GroupeSpecInfo.DateEnd</span>Период действия спецификации
+                                    </li>
+
+                                </ul>
+                            </div>
+                            <div class="col-md-4">
+
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.GroupeSpecInfo.CreateDate</span>Дата создания спецификации
+                                    </li>
+
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.GroupeSpecInfo.CreatedByUserName</span>Спецификация создана специалистом
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.GroupeSpecInfo.DaysDelay</span>Отсрочка в днях
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                    </div>
+        
+                       @Html.Partial("_SpecificationsDetails")
+                </div>
+
+            }
+        </div>
+    </div>
+    @Html.Partial("_SelectRouteGrid")
+</div>
+
+
+@section scripts
+{
+    <script>
+
+        $(document).ready(function () {
+            InitializeDateTimePickers();
+            InitFilterDropDowns();
+
+            var isFreight = $('input[name=TypeSpecId]:checked').val();
+
+            if (isFreight == 1) {
+                $(".fixRoute").hide();
+            } else if (isFreight == 2) {
+                $(".freight").hide();
+                if ($('input[name=IsPriceNegotiated]:checked').val() == "true") {
+                    $('input[name=TypeSpecId]').filter("[value=1]").parent().hide();
+                    $(".priceNegotiatedFix").hide();
+                }
+            };
+
+            $('input[name=TypeSpecId]').click(function () {
+                isFreight = $('input[name=TypeSpecId]:checked').val();
+                if (isFreight == 2) {
+                    $("#RateTotalFreight").val("0,00");
+                    $("#DeparturePoint").val("");
+                    $("#ArrivalPoint").val("");
+                    $("#RouteLength").val("0,00");
+                    $(".fixRoute").show();
+                    $(".freight").hide();
+                    LoadInfoPriceNegotiated("priceNegotiatedFix");
+                } else if (isFreight == 1) {
+                    $("#RateKm").val("0,00");
+                    $("#RateHour").val("0,00");
+                    $("#RateMachineHour").val("0,00");
+                    $(".fixRoute").hide();
+                    $(".freight").show();
+                };
+            });
+            function LoadInfoPriceNegotiated(classPriceNegotiated) {
+                if ($('input[name=IsPriceNegotiated]:checked').val() == "true") {
+                    $("." + classPriceNegotiated).hide();
+                } else {
+                    $("." + classPriceNegotiated).show();
+                };
+            };
+
+
+            $('input[name=IsPriceNegotiated]').click(function () {
+                var isPriceNegotiated = $('input[name=IsPriceNegotiated]:checked').val();
+
+                if (isPriceNegotiated == "true") {
+                    $('input[name=TypeSpecId]').filter("[value=2]").prop("checked", true).trigger("click");;
+                    $('input[name=TypeSpecId]').filter("[value=1]").parent().hide();
+                    $('input[name=TypeSpecId]').filter("[value=2]").trigger("click");
+                    $("#IntervalTypeId").val(null);
+                    $("#RateKm").val("0,00");
+                    $("#RateHour").val("0,00");
+                    $("#RateMachineHour").val("0,00");
+                    $(".priceNegotiatedFix").hide();
+                } else {
+                    $('input[name=TypeSpecId]').filter("[value=1]").parent().show();
+                    $(".priceNegotiatedFix").show();
+                }
+            });
+            
+            var orgFilter = {
+                NameFrom: "",
+                NameTo: "",
+                CountryFrom: "",
+                CountryTo: ""
+            }
+            InitializeRoutes(orgFilter);
+
+        });
+
+        function SelectRoute() {
+            $('#addroutesdialog')
+                .dialog(
+                {
+
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 1000,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Выбор маршрута",
+                    modal: true,
+                    open: function (event, ui) {
+                    },
+
+                    close: function (event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Выбрать",
+                            "class": 'btn btn-primary',
+                            click: function () {
+
+                                var getselectedrowindexes = $('#jqxgridRoutes').jqxGrid('getselectedrowindexes');
+
+                                if (getselectedrowindexes.length > 0) {
+                                    getselectedrowindexes.forEach(function (item, i, getselectedrowindexes) {
+
+                                        var selectedRowData = $('#jqxgridRoutes').jqxGrid('getrowdata', getselectedrowindexes[i]);
+
+                                        var _Id = selectedRowData.Id;
+                                        var _OrgFromName = selectedRowData.OrgFromName;
+                                        var _OrgFromCountry = selectedRowData.OrgFromCountry;
+                                        var _OrgFromCity = selectedRowData.OrgFromCity;
+                                        var _OrgFromAddress = selectedRowData.OrgFromAddress;
+                                        var _OrgToName = selectedRowData.OrgToName;
+                                        var _OrgToCountry = selectedRowData.OrgToCountry;
+                                        var _OrgToCity = selectedRowData.OrgToCity;
+                                        var _OrgToAddress = selectedRowData.OrgToAddress;
+
+                                        var DeparturePoint;
+                                        if ((_OrgFromCountry != "")&&(_OrgFromCountry !=null)) {
+                                            DeparturePoint = _OrgFromCountry;
+
+                                            if ((_OrgFromCity != "") && (_OrgFromCity != null)) {
+                                                DeparturePoint = DeparturePoint + ' , ' + _OrgFromCity;
+                                            }
+                                        } else {
+                                            if ((_OrgFromCity != "") && (_OrgFromCity != null)) {
+                                                DeparturePoint = _OrgFromCity;
+                                            }
+                                        }
+
+                                        var ArrivalPoint;
+                                        if ((_OrgToCountry != "") && (_OrgToCountry != null)) {
+                                            ArrivalPoint = _OrgToCountry;
+                                            if ((_OrgToCity != "") && (_OrgToCity != null)) {
+                                                ArrivalPoint = ArrivalPoint + ' , ' + _OrgToCity;
+                                            }
+                                        } else {
+                                            if ((_OrgToCity != "") && (_OrgToCity != null)) {
+                                                ArrivalPoint =  _OrgToCity;
+                                            }
+                                        }
+
+                                        $('#DeparturePoint').val(DeparturePoint);
+                                        $('#ArrivalPoint').val(ArrivalPoint);
+                                        $('#RouteId').val(_Id);
+                                    });
+
+
+                                }
+                                $(this).dialog("close");
+
+                            }
+                        }
+                    ]
+                });
+
+            $('#addroutesdialog').dialog('open');
+
+            return;
+        }
+
+</script>
+}

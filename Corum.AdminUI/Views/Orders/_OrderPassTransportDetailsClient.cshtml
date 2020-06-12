@@ -1,0 +1,475 @@
+﻿@model Corum.Models.ViewModels.Orders.OrdersPassTransportViewModel
+
+@Html.HiddenFor(model => model.DefaultCountry)
+@Html.HiddenFor(model => model.OrgFromId)
+@Html.HiddenFor(model => model.OrgToId)
+
+<div class="row">
+
+    <div class="col-md-3">
+        <div class="form-group" style="margin-left:5px;">
+            @Html.LabelFor(model => model.PassInfo, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                    @Html.TextAreaFor(model => model.PassInfo, new { @class = "form-control input client-info" })
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.PassInfo)
+                    @Html.HiddenFor(model => model.PassInfo)
+                }
+
+                @Html.ValidationMessageFor(model => model.PassInfo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.TripDescription, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                    @Html.TextAreaFor(model => model.TripDescription, new { @class = "form-control input client-info" })
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.TripDescription)
+                    @Html.HiddenFor(model => model.TripDescription)
+                }
+
+                @Html.ValidationMessageFor(model => model.TripDescription, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.TripType, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                    @Html.TextBoxFor(model => model.TripType,
+                                (object)new
+                                {
+                                    id = "TripType",
+                                    @class = "filter_dropdown form-control input",
+                                    @name = "TripType",
+                                    data_source_url = Url.Action("GetTripTypes", "Orders"),
+                                    data_droplist_placeholder = "Выберите тип маршрута",
+                                    data_selected_text = Model.NameRouteType
+                                })
+                }
+                else
+                {
+                    @Html.TextBoxFor(model => model.TripType,
+                                (object)new
+                                {
+                                    id = "TripType",
+                                    @class = "filter_dropdown form-control input",
+                                    @name = "TripType",
+                                    @disabled = "disabled",
+                                    data_source_url = Url.Action("GetTripTypes", "Orders"),
+                                    data_droplist_placeholder = "Выберите тип маршрута",
+                                    data_selected_text = Model.NameRouteType
+                                })
+
+
+                }
+                @Html.HiddenFor(model => model.TripType)
+                @Html.ValidationMessageFor(model => model.OrderDescription, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @if (Model.AllowClientData)
+            {
+                @Html.CheckBoxFor(model => model.NeedReturn, new { @onchange = "HideDiv('retun_params', this.checked); HideDiv('waitingTime', this.checked);" })
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.NeedReturn)
+                @Html.HiddenFor(model => model.NeedReturn)
+            }
+            @Html.LabelFor(model => model.NeedReturn, htmlAttributes: new { @class = "control-label", @style = "text-align:left;" })
+            <div id="waitingTime">
+                <hr>
+                @Html.LabelFor(model => model.ReturnWaitingTime, htmlAttributes: new { @class = "control-label", @style = "font-weight: inherit;" })
+                @if (Model.AllowClientData)
+            {
+                    @Html.TextBoxFor(model => model.ReturnWaitingTime, new { @class = "form-control input client-info", @readonly = "readonly" })
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.ReturnWaitingTime)
+                    @Html.HiddenFor(model => model.ReturnWaitingTime)
+                }
+            </div>
+        </div>
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group" style="margin-left:5px;">
+            @Html.LabelFor(model => model.CountryFrom, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @Html.TextBoxFor(model => model.CountryFrom,
+
+                    (Model.TripType < 2) ?
+
+                        (object) new
+                        {
+                            id = "CountryFrom",
+                            @class = "filter_dropdown form-control input",
+                            @name = "CountryFrom",
+                            @disabled = "disabled",
+                            data_source_url = Url.Action("GetCountries", "Orders"),
+                            data_droplist_placeholder = "Выберите страну отправления",
+                            data_selected_text = Model.CountryFromName
+                        } :
+                        (object) new
+                        {
+                            id = "CountryFrom",
+                            @class = "filter_dropdown form-control input",
+                            @name = "CountryFrom",
+                            data_source_url = Url.Action("GetCountries", "Orders"),
+                            data_droplist_placeholder = "Выберите страну отправления",
+                            data_selected_text = Model.CountryFromName
+                        })
+
+            </div>
+            @Html.HiddenFor(model => model.CountryFrom)
+        </div>
+        <div class="form-group" style="margin-left:5px;">
+            @Html.LabelFor(model => model.CityFrom, htmlAttributes: new { @class = "control-label" })
+
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                    @Html.TextBoxFor(model => model.CityFrom, new { @class = "form-control input client-info" })
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.CityFrom)
+                    @Html.HiddenFor(model => model.CityFrom)
+                }
+                @Html.ValidationMessageFor(model => model.CityFrom, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+    </div>
+    <div class="col-md-3">
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.AdressFrom, htmlAttributes: new { @class = "control-label" })
+
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                    @Html.TextBoxFor(model => model.AdressFrom, new { @class = "form-control input client-info" })
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.AdressFrom)
+                    @Html.HiddenFor(model => model.AdressFrom)
+                }
+                @Html.ValidationMessageFor(model => model.AdressFrom, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrgFrom, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                    <div class="input-group">
+                        @Html.EditorFor(model => model.OrgFrom, new { htmlAttributes = new { @class = "form-control client-info", autocomplete = "off" } })
+                        <span id="ShowOrgFrom" class="input-group-addon glyphicon glyphicon-list"></span>
+                    </div>
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.OrgFrom)
+                    @Html.HiddenFor(model => model.OrgFrom)
+                }
+                @Html.ValidationMessageFor(model => model.OrgFrom, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.CountryTo, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @Html.TextBoxFor(model => model.CountryTo,
+
+                    (Model.TripType < 2) ?
+                        (object) new
+                        {
+                            id = "CountryTo",
+                            @class = "filter_dropdown form-control input",
+                            @name = "CountryTo",
+                            @disabled = "disabled",
+                            data_source_url = Url.Action("GetCountries", "Orders"),
+                            data_droplist_placeholder = "Выберите страну прибытия",
+                            data_selected_text = Model.CountryToName
+                        } :
+                        (object) new
+                        {
+                            id = "CountryTo",
+                            @class = "filter_dropdown form-control input",
+                            @name = "CountryTo",
+                            data_source_url = Url.Action("GetCountries", "Orders"),
+                            data_droplist_placeholder = "Выберите страну прибытия",
+                            data_selected_text = Model.CountryToName
+                        })
+
+            </div>
+            @Html.HiddenFor(model => model.CountryTo)
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.CityTo, htmlAttributes: new { @class = "control-label" })
+
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                    if (Model.TripType < 1)
+                    {
+                        @Html.TextBoxFor(model => model.CityTo, new { @class = "form-control input client-info", @readonly = "readonly" })
+                    }
+                    else
+                    {
+                        @Html.TextBoxFor(model => model.CityTo, new { @class = "form-control input client-info" })
+                    }
+
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.CityTo)
+                    @Html.HiddenFor(model => model.CityTo)
+                }
+                @Html.ValidationMessageFor(model => model.CityTo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.AdressTo, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+
+                    @Html.TextBoxFor(model => model.AdressTo,
+                                               new { @class = "form-control input client-info" })
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.AdressTo)
+                    @Html.HiddenFor(model => model.AdressTo)
+                }
+                @Html.ValidationMessageFor(model => model.AdressTo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrgTo, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                    <div class="input-group">
+                        @Html.EditorFor(model => model.OrgTo, new { htmlAttributes = new { @class = "form-control client-info", autocomplete = "off" } })
+                        <span id="ShowOrgTo" class="input-group-addon glyphicon glyphicon-list"></span>
+                    </div>
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.OrgTo)
+                    @Html.HiddenFor(model => model.OrgTo)
+                }
+                @Html.ValidationMessageFor(model => model.OrgTo, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+    </div>
+</div>
+<hr>
+<div class="row">
+    <div class="col-md-3 col-sm-6">
+        <div class="form-group" style="margin-left:5px;">
+            @Html.LabelFor(model => model.StartDateTimeOfTrip, htmlAttributes: new { @class = "control-label" })
+
+            @if (Model.AllowClientData)
+            {
+                <div class="input-group">
+                    @Html.EditorFor(model => model.StartDateTimeOfTrip, new { htmlAttributes = new { @class = "form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "StartDateTimeOfTripRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="StartDateTimeOfTripRaw" data-linked-input="StartDateTimeOfTrip"></span>
+                </div>
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.StartDateTimeOfTrip)
+                @Html.HiddenFor(model => model.StartDateTimeOfTrip)
+            }
+
+            @Html.HiddenFor(model => model.StartDateTimeOfTripRaw)
+            @Html.ValidationMessageFor(model => model.StartDateTimeOfTrip, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="form-group">
+
+            @Html.LabelFor(model => model.StartDateTimeExOfTrip, htmlAttributes: new { @class = "control-label" })
+
+            @if (Model.AllowClientData)
+            {
+                <div class="input-group">
+                    @Html.EditorFor(model => model.StartDateTimeExOfTrip, new { htmlAttributes = new { @class = "form-control timepicker client-info timechange", autocomplete = "off", data_raw_element = "StartDateTimeExOfTripRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-time timepicker" data-raw-element="StartDateTimeExOfTripRaw" data-linked-input="StartDateTimeExOfTrip"></span>
+                </div>
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.StartDateTimeExOfTrip)
+                @Html.HiddenFor(model => model.StartDateTimeExOfTrip)
+            }
+            @Html.HiddenFor(model => model.StartDateTimeExOfTripRaw)
+            @Html.ValidationMessageFor(model => model.StartDateTimeExOfTrip, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="form-group">
+
+            @Html.LabelFor(model => model.FinishDateTimeOfTrip, htmlAttributes: new { @class = "control-label" })
+
+            @if (Model.AllowClientData)
+            {
+                <div class="input-group">
+                    @Html.EditorFor(model => model.FinishDateTimeOfTrip, new { htmlAttributes = new { @class = "form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FinishDateTimeOfTripRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="FinishDateTimeOfTripRaw" data-linked-input="FinishDateTimeOfTrip"></span>
+                </div>
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.FinishDateTimeOfTrip)
+                @Html.HiddenFor(model => model.FinishDateTimeOfTrip)
+            }
+            @Html.HiddenFor(model => model.FinishDateTimeOfTripRaw)
+            @Html.ValidationMessageFor(model => model.StartDateTimeOfTrip, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.FinishDateTimeExOfTrip, htmlAttributes: new { @class = "control-label" })
+
+            @if (Model.AllowClientData)
+            {
+                <div class="input-group">
+                    @Html.EditorFor(model => model.FinishDateTimeExOfTrip, new { htmlAttributes = new { @class = "form-control timepicker client-info timechange", autocomplete = "off", data_raw_element = "FinishDateTimeExOfTripRaw", @readonly = "readonly" } })
+                    <span id="kkk" class="input-group-addon glyphicon glyphicon-time timepicker" data-raw-element="FinishDateTimeExOfTripRaw" data-linked-input="FinishDateTimeExOfTrip"></span>
+                </div>
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.FinishDateTimeExOfTrip)
+                @Html.HiddenFor(model => model.FinishDateTimeExOfTrip)
+            }
+            @Html.HiddenFor(model => model.FinishDateTimeExOfTripRaw)
+            @Html.ValidationMessageFor(model => model.FinishDateTimeExOfTrip, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+</div>
+
+<div class="row" id="retun_params" @Html.Raw(Model.NeedReturn ? "style='display:block;'" : "style='display:none;'")>
+    <div class="col-md-3 col-sm-6">
+        <div class="form-group" style="margin-left:5px;">
+            @Html.LabelFor(model => model.ReturnStartDateTimeOfTrip, htmlAttributes: new { @class = "control-label" })
+            @if (Model.AllowClientData)
+            {
+                <div class="input-group">
+                    @Html.EditorFor(model => model.ReturnStartDateTimeOfTrip, new { htmlAttributes = new { @class = "form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "ReturnStartDateTimeOfTripRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="ReturnStartDateTimeOfTripRaw" data-linked-input="ReturnStartDateTimeOfTrip"></span>
+                </div>
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.ReturnStartDateTimeOfTrip)
+                @Html.HiddenFor(model => model.ReturnStartDateTimeOfTrip)
+            }
+            @Html.HiddenFor(model => model.ReturnStartDateTimeOfTripRaw)
+            @Html.ValidationMessageFor(model => model.ReturnStartDateTimeOfTrip, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ReturnStartDateTimeExOfTrip, htmlAttributes: new { @class = "control-label" })
+
+            @if (Model.AllowClientData)
+            {
+                <div class="input-group">
+                    @Html.EditorFor(model => model.ReturnStartDateTimeExOfTrip, new { htmlAttributes = new { @class = "form-control timepicker client-info timechange", autocomplete = "off", data_raw_element = "ReturnStartDateTimeExOfTripRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-time timepicker" data-raw-element="ReturnStartDateTimeExOfTripRaw" data-linked-input="ReturnStartDateTimeExOfTrip"></span>
+                </div>
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.ReturnStartDateTimeExOfTrip)
+                @Html.HiddenFor(model => model.ReturnStartDateTimeExOfTrip)
+            }
+            @Html.HiddenFor(model => model.ReturnStartDateTimeExOfTripRaw)
+            @Html.ValidationMessageFor(model => model.ReturnStartDateTimeExOfTrip, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ReturnFinishDateTimeOfTrip, htmlAttributes: new { @class = "control-label" })
+            @if (Model.AllowClientData)
+            {
+                <div class="input-group">
+                    @Html.EditorFor(model => model.ReturnFinishDateTimeOfTrip, new { htmlAttributes = new { @class = "form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "ReturnFinishDateTimeOfTripRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="ReturnFinishDateTimeOfTripRaw" data-linked-input="ReturnFinishDateTimeOfTrip"></span>
+                </div>
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.ReturnFinishDateTimeOfTrip)
+                @Html.HiddenFor(model => model.ReturnFinishDateTimeOfTrip)
+            }
+            @Html.HiddenFor(model => model.ReturnFinishDateTimeOfTripRaw)
+            @Html.ValidationMessageFor(model => model.ReturnStartDateTimeOfTrip, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="col-md-3 col-sm-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ReturnFinishDateTimeExOfTrip, htmlAttributes: new { @class = "control-label" })
+            @if (Model.AllowClientData)
+            {
+                <div class="input-group">
+                    @Html.EditorFor(model => model.ReturnFinishDateTimeExOfTrip, new { htmlAttributes = new { @class = "form-control timepicker client-info timechange", autocomplete = "off", data_raw_element = "ReturnFinishDateTimeExOfTripRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-time timepicker client-info" data-raw-element="ReturnFinishDateTimeExOfTripRaw" data-linked-input="ReturnFinishDateTimeExOfTrip"></span>
+                </div>
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.ReturnFinishDateTimeExOfTrip)
+                @Html.HiddenFor(model => model.ReturnFinishDateTimeExOfTrip)
+            }
+            @Html.HiddenFor(model => model.ReturnFinishDateTimeExOfTripRaw)
+            @Html.ValidationMessageFor(model => model.ReturnFinishDateTimeExOfTrip, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+
+
+</div>
+
+<hr>

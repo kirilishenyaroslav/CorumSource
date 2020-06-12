@@ -1,0 +1,166 @@
+﻿@model Corum.Models.ViewModels.UploadFileViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container-fluid">
+    @Html.Partial("_partialSetColumnSettingsDialog")
+    <div class="row">
+        <div class="col-md-6 main">
+            <h4>Контроль целостности данных при импорте</h4>
+
+            @using (Html.BeginForm("UploadFile", "Admin", FormMethod.Post, new {enctype = "multipart/form-data"}))
+            {
+                <div class="row">
+                    <div class="col-md-10">
+                        <div class="radio">
+                            <label>
+                                @Html.RadioButton("FileType", "0", @Model.IsRestFile) <span class="lbl">Файл с остатками</span>
+                            </label>
+                            <br/>
+                            <label>
+                                @Html.RadioButton("FileType", "1", @Model.IsDocsFile) <span class="lbl">Файл с документами</span>
+                            </label>
+                            <br />
+                            <label>
+                                @Html.RadioButton("FileType", "2", @Model.IsOrdersFile) <span class="lbl">Файл с заявками (легковые)</span>
+                            </label>
+                            <br />
+                            <label>
+                                @Html.RadioButton("FileType", "3", @Model.IsTruckOrdersFile) <span class="lbl">Файл с заявками (грузовые)</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-lg" onclick="ShowDialogColumnSettings()">
+                            <span class="glyphicon glyphicon-cog" aria-hidden="true"></span>
+                        </button>
+                    </div>
+                    <br>
+                </div>
+                <br>
+                <div class="row">
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <input type="file" name="ExternalFile" id="ExternalFile" style="display: none" onchange="handlechange('ExternalFile', 'filename');">
+                        <div class="load-file-container">
+
+                            <input class="btn btn-success pull-left" type="button" value="Выберите файл" id="fakeBrowse" onclick="handleBrowseClick('ExternalFile');"/>
+                            <input class="form-control" type="text" id="filename" readonly value="Файл не выбран" />
+
+                        </div>
+                    </div>
+                </div>
+                <br>
+                <hr>
+                <div class="form-group">
+                    <div class="col-md-12 pull-left">
+                        <input id="submit_button" type="submit" value="Начать загрузку" class="btn btn-primary" disabled/>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+
+        function handleBrowseClick(fileinputname) {
+            var fileinput = document.getElementById(fileinputname);
+            fileinput.click();
+            return;
+        }
+
+        function handlechange(fileinputname, textinputname) {
+            debugger;
+            var fileinput = document.getElementById(fileinputname);
+            var fileExt = (/[.]/.exec(fileinput.files[0].name)) ? /[^.]+$/.exec(fileinput.files[0].name) : undefined;
+
+            if (fileExt[0] === "txt") {
+                $('#submit_button').removeAttr('disabled');
+                var textinput = document.getElementById(textinputname);
+                textinput.value = fileinput.value;
+            }
+            else {
+                alert("Выберите файл в txt формате!");
+            }
+
+
+            return;
+        }
+
+        function ShowDialogColumnSettings() {
+
+            $('#columnsettings')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,                    
+                    resizable: false,
+                    title: "Конфигурация настроек проверок данных файла",
+                    modal: true,
+                    open: function (event, ui) {
+
+                    },
+                    close: function (event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Ок",
+                            "class": 'btn btn-primary',
+                            click: function () {
+                                $("#columnSettingsForm").submit();
+                            }
+                        }
+                    ]
+                });
+
+            $('#columnsettings').dialog('open');
+
+            return;
+        }
+
+        $(document).ready(function () {
+            debugger;
+
+            //$("div[id$='_Rests']").css('display', 'none'); //Скрываем все блоки
+            //$("div[id$='_Docs']").css('display', 'none'); //Скрываем все блоки
+
+            $("#ddRests").change(function () {
+                var nameElem = 'Rests';
+                $("div[id$= _" + nameElem + "]").css('display', 'none'); //Скрываем все блоки
+                var valDropDown = $('#dd' + nameElem + ' option:selected').text(); //Вытаскиваем text                
+                $("div[id=" + valDropDown + "_" + nameElem + "]").css('display', 'block'); //показываем соотв. div
+            });
+      
+            $("#ddDocs").change(function () {
+                var nameElem = 'Docs';
+                $("div[id$= _" + nameElem + "]").css('display', 'none'); //Скрываем все блоки
+                var valDropDown = $('#dd' + nameElem + ' option:selected').text(); //Вытаскиваем text                
+                $("div[id=" + valDropDown + "_" + nameElem + "]").css('display', 'block'); //показываем соотв. div
+            });          
+        });
+
+    </script>
+}

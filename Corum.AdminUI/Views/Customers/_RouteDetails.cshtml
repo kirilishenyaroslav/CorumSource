@@ -1,0 +1,85 @@
+﻿@model Corum.Models.ViewModels.Customers.RouteViewModel
+<div class="row" style="font-size: 12px;">
+    <div class="col-md-6" style="margin-left: 25px">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ShortName, htmlAttributes: new {@class = "control-label"})
+            <div class="form-control-container full-width-select" style="width: 100% !important;">
+                @Html.EditorFor(model => model.ShortName, new {htmlAttributes = new {@class = "form-control", autocomplete = "off",  @style = "background-color: #fff; max-width: 90% !important; width: 90% !important;"}})
+                @Html.ValidationMessageFor(model => model.ShortName, "", new {@class = "text-danger"})
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="font-size:12px;">
+    <div class="col-md-6" style="margin-left: 25px">
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrgFromName, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select" style="width: 100%!important;">
+                @Html.EditorFor(model => model.OrgFromName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", @readonly = "true", @style = "background-color: #fff; max-width: 90% !important; width: 90% !important;" } })
+                @Html.ValidationMessageFor(model => model.OrgFromId, "", new { @class = "text-danger" })
+                @Html.ValidationMessageFor(model => model.OrgFromName, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+</div>
+ 
+<div class="row">
+    <div class="col-md-6" style="margin-left: 25px">
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrgToName, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                <div class="input-group" style="width: 90%!important;">
+                    @Html.EditorFor(model => model.OrgToName, new { htmlAttributes = new { @class = "form-control client-info", autocomplete = "off", @style = "background-color: #fff; max-width: 100% !important; width: 100% !important;" } })
+
+                    <span class="input-group-addon glyphicon glyphicon-list" id="ShowOrg"></span>
+                    @Html.Hidden("OrgToId", Model.OrgToId, new { @id = "OrgToId" })
+                </div>
+                @Html.ValidationMessageFor(model => model.OrgToId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row" style="font-size: 12px;">
+    <div class="col-md-3" style="margin-left: 10px;">
+        @Html.LabelFor(model => model.RouteDistance, htmlAttributes: new {@class = "control-label"})
+        @Html.EditorFor(model => model.RouteDistance, new {htmlAttributes = new {@class = "form-control", autocomplete = "off"}})
+        @Html.ValidationMessageFor(model => model.RouteDistance, "", new {@class = "text-danger"})
+    </div>
+
+    <div class="col-md-3" style="margin-left: -10px;">
+        @Html.LabelFor(model => model.RouteTime, htmlAttributes: new {@class = "control-label"})
+        @Html.EditorFor(model => model.RouteTime, new {htmlAttributes = new {@class = "form-control", autocomplete = "off"}})
+        @Html.ValidationMessageFor(model => model.RouteTime, "", new {@class = "text-danger"})
+    </div>
+</div>
+@Html.Partial("~/Views/Shared/_GetOrganizations.cshtml")
+
+
+    <div class="row AddPointLoadOrg" style="margin-left: -10px;">
+        @Html.Label("Дополнительные точки", htmlAttributes: new { @class = "control-label", @style = "margin-top: 15px;font-size: 12px!important; margin-left:20px;" })<br>
+        <div class="col-md-6">
+            <input type="button" value="Добавить" class="btn btn-default" style="margin: 5px 5px 5px 5px; width: 90px;" onclick="NewAddRoutePointOrg(@Model.Id)" />
+            <input type="button" value="Изменить" id="UpdateRoutePointLoadButtonOrg" class="btn disabled" style="margin: 5px 5px 5px 5px; width: 90px;" onclick="UpdateAddRoutePointOrg()" />
+            <input type="button" value="Удалить" id="DeleteRoutePointLoadButtonOrg" class="btn disabled" style="margin: 5px 5px 5px 5px; width: 90px;" onclick="DeleteAddRoutePointOrg()" /><br>
+        </div>
+    </div>
+
+    <div class="row AddPointLoadOrg" style="margin-left: -10px;">
+        <div class="col-md-6">
+            <div class="form-group" style="margin-left: 20px;">
+                <div id="AddRoutePointLoadOrg" class="row">
+                    <div id="jqxWidgetPointLoadOrg">
+                        <div id="jqxgridPointLoadOrg">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+@Html.Partial("_AddRoutePoint")

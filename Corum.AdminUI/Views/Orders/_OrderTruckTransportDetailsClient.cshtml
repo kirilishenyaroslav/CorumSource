@@ -1,0 +1,806 @@
+﻿@model Corum.Models.ViewModels.Orders.OrdersTruckTransportViewModel
+
+@Html.HiddenFor(model => model.DefaultCountry)
+
+@Html.Partial("_OrderAddRoutePoint")
+@Html.HiddenFor(model => model.ShipperId)
+@Html.HiddenFor(model => model.ConsigneeId)
+
+@*<hr style="border-top: 3px solid black!important;">*@
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group" style="margin-left:5px;">
+            @Html.LabelFor(model => model.TruckDescription, htmlAttributes: new { @class = "control-label first-label", @style= "text-transform: uppercase!important;font-size: 15px!important;" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                @Html.TextAreaFor(model => model.TruckDescription, new { @class = "form-control input client-info" })
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.TruckDescription)
+                @Html.HiddenFor(model => model.TruckDescription)
+                }
+
+                @Html.ValidationMessageFor(model => model.TruckDescription, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.TruckTypeId, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                @Html.TextBoxFor(model => model.TruckTypeId,
+                                     new
+                                     {
+                                         id = "TruckTypeId",
+                                         @class = "filter_dropdown form-control input",
+                                         @name = "TruckTypeId",
+                                         data_source_url = Url.Action("GetTruckTypes", "Orders"),
+                                         data_droplist_placeholder = "Выберите тип груза",
+                                         data_selected_text = Model.TruckTypeName
+                                     })
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.TruckTypeName)
+                @Html.HiddenFor(model => model.TruckTypeId)
+                }
+
+                @Html.ValidationMessageFor(model => model.TruckTypeId, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+
+            <div class="row">
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.Weight, htmlAttributes: new { @class = "control-label" })
+                    <div class="form-control-container full-width-select">
+                        @if (Model.AllowClientData)
+                 {
+                @Html.TextBoxFor(model => model.Weight,
+                          new
+                          {
+                              id = "Weight",
+                              @class = "form-control input",
+                              @name = "Weight"
+                          })
+                 }
+                 else
+                 {
+                @Html.DisplayFor(model => model.Weight)
+                @Html.HiddenFor(model => model.Weight)
+                 }
+
+                        @Html.ValidationMessageFor(model => model.Weight, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    @Html.LabelFor(model => model.Volume, htmlAttributes: new { @class = "control-label" })
+                    <div class="form-control-container full-width-select">
+                        @if (Model.AllowClientData)
+                        {
+                        @Html.TextBoxFor(model => model.Volume,
+                                     new
+                                     {
+                                         id = "Volume",
+                                         @class = "form-control input",
+                                         @name = "Volume"
+                                     })
+                        }
+                        else
+                        {
+                        @Html.DisplayFor(model => model.Volume)
+                        @Html.HiddenFor(model => model.Volume)
+                        }
+
+                        @Html.ValidationMessageFor(model => model.Volume, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+
+                <div class="col-md-4">
+                    @Html.LabelFor(model => model.DimenssionL, htmlAttributes: new { @class = "control-label" })
+                    <div class="form-control-container full-width-select">
+                        @if (Model.AllowClientData)
+                        {
+                        @Html.TextBoxFor(model => model.DimenssionL,
+                                     new
+                                     {
+                                         id = "DimenssionL",
+                                         @class = "form-control input",
+                                         @name = "DimenssionL"
+                                     })
+                        }
+                        else
+                        {
+                        @Html.DisplayFor(model => model.DimenssionL)
+                        @Html.HiddenFor(model => model.DimenssionL)
+                        }
+
+                        @Html.ValidationMessageFor(model => model.DimenssionL, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(model => model.DimenssionW, htmlAttributes: new { @class = "control-label" })
+                    <div class="form-control-container full-width-select">
+                        @if (Model.AllowClientData)
+                        {
+                        @Html.TextBoxFor(model => model.DimenssionW,
+                                     new
+                                     {
+                                         id = "DimenssionW",
+                                         @class = "form-control",
+                                         @name = "DimenssionW"
+                                     })
+                        }
+                        else
+                        {
+                        @Html.DisplayFor(model => model.DimenssionW)
+                        @Html.HiddenFor(model => model.DimenssionW)
+                        }
+
+                        @Html.ValidationMessageFor(model => model.DimenssionW, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    @Html.LabelFor(model => model.DimenssionH, htmlAttributes: new { @class = "control-label" })
+                    <div class="form-control-container full-width-select">
+                        @if (Model.AllowClientData)
+                        {
+                        @Html.TextBoxFor(model => model.DimenssionH,
+                                     new
+                                     {
+                                         id = "DimenssionH",
+                                         @class = "form-control input",
+                                         @name = "DimenssionH"
+                                     })
+                        }
+                        else
+                        {
+                        @Html.DisplayFor(model => model.DimenssionH)
+                        @Html.HiddenFor(model => model.DimenssionH)
+                        }
+
+                        @Html.ValidationMessageFor(model => model.DimenssionH, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group" style="margin-left:5px;">
+            @Html.LabelFor(model => model.BoxingDescription, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                @Html.TextAreaFor(model => model.BoxingDescription, new { @class = "form-control input client-info", @style="width:80%;" })
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.BoxingDescription)
+                @Html.HiddenFor(model => model.BoxingDescription)
+                }
+
+                @Html.ValidationMessageFor(model => model.BoxingDescription, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+    </div>
+</div>
+<hr style="border-top: 3px solid black!important;">
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group" style="margin-left:5px;">
+            @Html.LabelFor(model => model.VehicleTypeId, htmlAttributes: new { @class = "control-label", @style = "text-transform: uppercase!important;font-size: 15px!important;" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                @Html.TextBoxFor(model => model.VehicleTypeId,
+                                     new
+                                     {
+                                         id = "VehicleTypeId",
+                                         @class = "filter_dropdown form-control input",
+                                         @name = "VehicleTypeId",
+                                         data_source_url = Url.Action("GetVehicleTypes", "Orders"),
+                                         data_droplist_placeholder = "Выберите тип авто",
+                                         data_selected_text = Model.VehicleTypeName
+                                     })
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.VehicleTypeName)
+                @Html.HiddenFor(model => model.VehicleTypeId)
+                }
+
+                @Html.ValidationMessageFor(model => model.VehicleTypeId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.TripType, htmlAttributes: new {@class = "control-label"})
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                @Html.TextBoxFor(model => model.TripType,
+                        (object) new
+                        {
+                            id = "TripType",
+                            @class = "filter_dropdown form-control input",
+                            @name = "TripType",
+                            data_source_url = Url.Action("GetTripTypes", "Orders"),
+                            data_droplist_placeholder = "Выберите тип маршрута",
+                            data_selected_text = Model.NameRouteType
+                        })
+                }
+                else
+                {
+                @Html.TextBoxFor(model => model.TripType,
+                        (object) new
+                        {
+                            id = "TripType",
+                            @class = "filter_dropdown form-control input",
+                            @name = "TripType",
+                            @disabled = "disabled",
+                            data_source_url = Url.Action("GetTripTypes", "Orders"),
+                            data_droplist_placeholder = "Выберите тип маршрута",
+                            data_selected_text = Model.NameRouteType
+                        })
+                }
+                @Html.HiddenFor(model => model.TripType)
+                @Html.ValidationMessageFor(model => model.OrderDescription, "", new {@class = "text-danger"})
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.CarNumber, htmlAttributes: new { @class = "control-label" })
+
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                @Html.TextBoxFor(model => model.CarNumber, new { @class = "form-control input reg-info" })
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.CarNumber)
+                @Html.HiddenFor(model => model.CarNumber)
+                }
+
+                @Html.ValidationMessageFor(model => model.CarNumber, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+    </div>
+   <div class="col-md-3 col-sm-6 IsAdditionalRoutePoints">
+        <div class="form-group" style="margin-left:10px;">
+            @Html.LabelFor(model => model.IsAdditionalRoutePoints, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                    @Html.CheckBoxFor(model => model.IsAdditionalRoutePoints)
+                }
+                else
+                {
+                    //@Html.DisplayFor(model => model.IsAdditionalRoutePoints)
+                    <input checked="checked" disabled="disabled" data-val="true" id="IsAdditionalRoutePoints" name="IsAdditionalRoutePoints" type="checkbox" value="true" onclick="return false;">
+                }
+
+                        @Html.ValidationMessageFor(model => model.IsAdditionalRoutePoints, "", new { @class = "text-danger" })
+
+</div>
+        </div>
+    </div>
+</div>
+<hr style="border-top: 3px solid black!important;">
+<div class="row">
+    <div class="col-md-3">
+        <div class="form-group" style="margin-left:5px;">
+            @Html.LabelFor(model => model.Shipper, htmlAttributes: new { @class = "control-label", @style = "text-transform: uppercase!important;font-size: 15px!important;" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                    <div class="input-group">
+                        @Html.EditorFor(model => model.Shipper, new { htmlAttributes = new { @class = "form-control client-info", autocomplete = "on" } })
+                        <span id="ShowOrgFrom" class="input-group-addon glyphicon glyphicon-list"></span>
+                    </div>
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.Shipper)
+                    @Html.HiddenFor(model => model.Shipper)
+                }
+                @Html.ValidationMessageFor(model => model.Shipper, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group" style="margin-left:5px;">
+            @Html.LabelFor(model => model.FromShipperDate, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+            {
+                <div class="input-group">
+                    @Html.EditorFor(model => model.FromShipperDate, new { htmlAttributes = new { @class = "form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FromShipperDateRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="FromShipperDateRaw" data-linked-input="FromShipperDate"></span>
+                </div>
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.FromShipperDate)<br>
+                @Html.HiddenFor(model => model.FromShipperDate)
+                }
+            </div>
+
+            @Html.HiddenFor(model => model.FromShipperDateRaw)
+            @Html.ValidationMessageFor(model => model.FromShipperDate, "", new { @class = "text-danger" })
+
+
+        </div>
+
+
+
+
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ShipperCountryId, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+               @* @if (Model.AllowClientData)
+    {*@
+                    @Html.TextBoxFor(model => model.ShipperCountryId,
+
+                                     (Model.TripType < 2) ?
+
+                                     (object)new
+                                     {
+                                         id = "ShipperCountryId",
+                                         @class = "filter_dropdown form-control input",
+                                         @name = "ShipperCountryId",
+                                         @disabled = "disabled",
+                                         data_source_url = Url.Action("GetCountries", "Orders"),
+                                         data_droplist_placeholder = "Выберите страну грузоотправителя",
+                                         data_selected_text = Model.ShipperCountryName
+                                     } :
+                                     (object)new
+                                     {
+                                         id = "ShipperCountryId",
+                                         @class = "filter_dropdown form-control input",
+                                         @name = "ShipperCountryId",
+                                         data_source_url = Url.Action("GetCountries", "Orders"),
+                                         data_droplist_placeholder = "Выберите страну грузоотправителя",
+                                         data_selected_text = Model.ShipperCountryName
+                                     })
+       @*         }
+    else
+    {
+        @Html.DisplayFor(model => model.ShipperCountryName)
+
+    }*@
+                @Html.HiddenFor(model => model.ShipperCountryId)
+                @Html.ValidationMessageFor(model => model.ShipperCountryId, "", new { @class = "text-danger" })
+            </div>
+
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.FromShipperTime, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                <div class="input-group">
+                    @Html.EditorFor(model => model.FromShipperTime, new { htmlAttributes = new { @class = "form-control timepicker client-info timechange", autocomplete = "off", data_raw_element = "FromShipperTimeRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-time timepicker" data-raw-element="FromShipperTimeRaw" data-linked-input="FromShipperTime"></span>
+                </div>
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.FromShipperTime)<br>
+                @Html.HiddenFor(model => model.FromShipperTime)
+                }
+            </div>
+            @Html.HiddenFor(model => model.FromShipperTimeRaw)
+            @Html.ValidationMessageFor(model => model.FromShipperTime, "", new { @class = "text-danger" })
+        </div>
+
+
+
+
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ShipperCity, htmlAttributes: new { @class = "control-label" })
+
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                @Html.TextBoxFor(model => model.ShipperCity, new { @class = "form-control input client-info" })
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.ShipperCity)
+                @Html.HiddenFor(model => model.ShipperCity)
+                }
+                @Html.ValidationMessageFor(model => model.ShipperCity, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ShipperContactPerson, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+
+                @Html.EditorFor(model => model.ShipperContactPerson, new { htmlAttributes = new { @class = "form-control client-info" } })
+
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.ShipperContactPerson)<br>
+                @Html.HiddenFor(model => model.ShipperContactPerson)
+                }
+            </div>
+
+        </div>
+
+
+
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ShipperAdress, htmlAttributes: new { @class = "control-label" })
+
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                @Html.TextBoxFor(model => model.ShipperAdress, new { @class = "form-control input client-info" })
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.ShipperAdress)
+                @Html.HiddenFor(model => model.ShipperAdress)
+                }
+                @Html.ValidationMessageFor(model => model.ShipperAdress, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.HiddenFor(model => model.ShipperContactPerson)
+            @Html.ValidationMessageFor(model => model.ShipperContactPerson, "", new { @class = "text-danger" })
+
+            @Html.LabelFor(model => model.ShipperContactPersonPhone, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+
+                @Html.EditorFor(model => model.ShipperContactPersonPhone, new { htmlAttributes = new { @class = "form-control client-info" } })
+
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.ShipperContactPersonPhone)<br>
+                @Html.HiddenFor(model => model.ShipperContactPersonPhone)
+                }
+            </div>
+            @Html.HiddenFor(model => model.ShipperContactPersonPhone)
+            @Html.ValidationMessageFor(model => model.ShipperContactPersonPhone, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.LoadingTypeId, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                @Html.TextBoxFor(model => model.LoadingTypeId,
+                                     new
+                                     {
+                                         id = "LoadingTypeId",
+                                         @class = "filter_dropdown form-control input",
+                                         @name = "LoadingTypeId",
+                                         data_source_url = Url.Action("GetLoadingTypes", "Orders"),
+                                         data_droplist_placeholder = "Выберите тип загрузки",
+                                         data_selected_text = Model.LoadingTypeName
+                                     })
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.LoadingTypeName)
+                @Html.HiddenFor(model => model.LoadingTypeId)
+                }
+
+                @Html.ValidationMessageFor(model => model.LoadingTypeId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+    </div>
+</div>
+<hr style="border-top: 3px solid black!important;">
+<div class="row">
+    <div class="col-md-3 col-sm-6">
+        <div class="form-group" style="margin-left:5px;">
+            @Html.LabelFor(model => model.Consignee, htmlAttributes: new { @class = "control-label", @style = "text-transform: uppercase!important;font-size: 15px!important;" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                    <div class="input-group">
+                        @Html.EditorFor(model => model.Consignee, new { htmlAttributes = new { @class = "form-control client-info", autocomplete = "on" } })
+                        <span id="ShowOrgTo" class="input-group-addon glyphicon glyphicon-list"></span>
+                    </div>
+                }
+                else
+                {
+                    @Html.DisplayFor(model => model.Consignee)
+                    @Html.HiddenFor(model => model.Consignee)
+                }
+                @Html.ValidationMessageFor(model => model.Consignee, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group" style="margin-left:5px;">
+            @Html.LabelFor(model => model.ToConsigneeDate, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+            {
+                <div class="input-group">
+                    @Html.EditorFor(model => model.ToConsigneeDate, new { htmlAttributes = new { @class = "form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "ToConsigneeDateRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="ToConsigneeDateRaw" data-linked-input="ToConsigneeDate"></span>
+                </div>
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.ToConsigneeDate)<br>
+                @Html.HiddenFor(model => model.ToConsigneeDate)
+                }
+            </div>
+            @Html.HiddenFor(model => model.ToConsigneeDateRaw)
+            @Html.ValidationMessageFor(model => model.ToConsigneeDate, "", new { @class = "text-danger" })
+        </div>
+
+
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConsigneeCountryId, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+               @* @if (Model.AllowClientData)
+    {*@
+                    @Html.TextBoxFor(model => model.ConsigneeCountryId,
+
+                                     (Model.TripType < 2) ?
+                                     (object)new
+                                     {
+                                         id = "ConsigneeCountryId",
+                                         @class = "filter_dropdown form-control input",
+                                         @name = "ConsigneeCountryId",
+                                         @disabled = "disabled",
+                                         data_source_url = Url.Action("GetCountries", "Orders"),
+                                         data_droplist_placeholder = "Выберите страну грузополучателя",
+                                         data_selected_text = Model.ConsigneeCountryName
+                                     } :
+                                     (object)new
+                                     {
+                                         id = "ConsigneeCountryId",
+                                         @class = "filter_dropdown form-control input",
+                                         @name = "ConsigneeCountryId",
+                                         data_source_url = Url.Action("GetCountries", "Orders"),
+                                         data_droplist_placeholder = "Выберите страну грузополучателя",
+                                         data_selected_text = Model.ConsigneeCountryName
+                                     })
+       @*         }
+    else
+    {
+        @Html.DisplayFor(model => model.ConsigneeCountryName)
+
+    }*@
+                @Html.HiddenFor(model => model.ConsigneeCountryId)
+                @Html.ValidationMessageFor(model => model.ConsigneeCountryId, "", new { @class = "text-danger" })
+            </div>
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ToConsigneeTime, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                <div class="input-group">
+                    @Html.EditorFor(model => model.ToConsigneeTime, new { htmlAttributes = new { @class = "form-control timepicker client-info timechange", autocomplete = "off", data_raw_element = "ToConsigneeTimeRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-time timepicker" data-raw-element="ToConsigneeTimeRaw" data-linked-input="ToConsigneeTime"></span>
+                </div>
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.ToConsigneeTime)<br>
+                @Html.HiddenFor(model => model.ToConsigneeTime)
+                }
+            </div>
+            @Html.HiddenFor(model => model.ToConsigneeTimeRaw)
+            @Html.ValidationMessageFor(model => model.ToConsigneeTime, "", new { @class = "text-danger" })
+        </div>
+
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="form-group">
+
+            @Html.LabelFor(model => model.ConsigneeCity, htmlAttributes: new { @class = "control-label" })
+
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                    if (Model.TripType < 1)
+                    {
+                @Html.TextBoxFor(model => model.ConsigneeCity, new { @class = "form-control input client-info", @readonly = "readonly" })
+                    }
+                    else
+                    {
+                @Html.TextBoxFor(model => model.ConsigneeCity, new { @class = "form-control input client-info" })
+                    }
+
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.ConsigneeCity)
+                @Html.HiddenFor(model => model.ConsigneeCity)
+                }
+                @Html.ValidationMessageFor(model => model.ConsigneeCity, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConsigneeContactPerson, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+            {
+
+                @Html.EditorFor(model => model.ConsigneeContactPerson, new { htmlAttributes = new { @class = "form-control client-info" } })
+
+            }
+            else
+            {
+                @Html.DisplayFor(model => model.ConsigneeContactPerson)<br>
+                @Html.HiddenFor(model => model.ConsigneeContactPerson)
+            }
+            </div>
+            @Html.HiddenFor(model => model.ConsigneeContactPerson)
+            @Html.ValidationMessageFor(model => model.ConsigneeContactPerson, "", new { @class = "text-danger" })
+
+
+
+
+        </div>
+    </div>
+    <div class="col-md-3 col-sm-6">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConsigneeAdress, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+
+                @Html.TextBoxFor(model => model.ConsigneeAdress,
+                                               new { @class = "form-control input client-info" })
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.ConsigneeAdress)
+                @Html.HiddenFor(model => model.ConsigneeAdress)
+                }
+                @Html.ValidationMessageFor(model => model.ConsigneeAdress, "", new { @class = "text-danger" })
+            </div>
+
+
+
+
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConsigneeContactPersonPhone, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+
+                @Html.EditorFor(model => model.ConsigneeContactPersonPhone, new { htmlAttributes = new { @class = "form-control client-info" } })
+
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.ConsigneeContactPersonPhone)<br>
+                @Html.HiddenFor(model => model.ConsigneeContactPersonPhone)
+                }
+            </div>
+            @Html.HiddenFor(model => model.ConsigneeContactPersonPhone)
+            @Html.ValidationMessageFor(model => model.ConsigneeContactPersonPhone, "", new { @class = "text-danger" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.UnloadingTypeId, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">
+                @if (Model.AllowClientData)
+                {
+                @Html.TextBoxFor(model => model.UnloadingTypeId,
+                                     new
+                                     {
+                                         id = "UnloadingTypeId",
+                                         @class = "filter_dropdown form-control input",
+                                         @name = "UnloadingTypeId",
+                                         data_source_url = Url.Action("GetUnloadingTypes", "Orders"),
+                                         data_droplist_placeholder = "Выберите тип разгрузки",
+                                         data_selected_text = Model.UnloadingTypeName
+                                     })
+                }
+                else
+                {
+                @Html.DisplayFor(model => model.UnloadingTypeName)
+                @Html.HiddenFor(model => model.UnloadingTypeId)
+                }
+
+                @Html.ValidationMessageFor(model => model.UnloadingTypeId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<hr style="border-top: 3px solid black!important;">
+
+    <div class="row AddPointLoad">
+        @Html.Label("Дополнительные точки", htmlAttributes: new { @class = "control-label", @style = "text-transform: uppercase!important;font-size: 15px!important; margin-left:20px;" })<br>
+        <div class="col-md-6">
+
+                @Html.Label("Загрузки", htmlAttributes: new { @class = "control-label", @style = "margin-left:5px; font-size: 15px!important;" }) <br>
+                @if (Model.AllowExecuterData || Model.AllowClientData)
+                {
+                <input type="button" value="Добавить" class="btn btn-default" style="margin: 5px 5px 5px 5px; width:90px;" onclick="NewAddRoutePoint(@Model.Id, true)" />
+                <input type="button" value="Изменить" id="UpdateRoutePointLoadButton"  class="btn disabled" style="margin: 5px 5px 5px 5px; width:90px;" onclick="UpdateAddRoutePoint(true)" />
+                <input type="button" value="Удалить" id="DeleteRoutePointLoadButton" class="btn disabled" style="margin: 5px 5px 5px 5px;width:90px;" onclick="DeleteAddRoutePoint(true)" /><br>
+
+                }
+
+        </div>
+        <div class="col-md-6">
+
+                @Html.Label("Выгрузки", htmlAttributes: new { @class = "control-label", @style = "margin-left:-5px; font-size: 15px!important;" }) <br>
+                @if (Model.AllowExecuterData || Model.AllowClientData)
+                {
+                    <div style="margin-left: -10px;">
+                        <input type="button" value="Добавить" class="btn btn-default" style="margin: 5px 5px 5px 5px; width:90px;" onclick="NewAddRoutePoint(@Model.Id, false)" />
+                        <input type="button" value="Изменить" id="UpdateRoutePointUnLoadButton"  class="btn disabled" style="margin: 5px 5px 5px 5px; width:90px;" onclick="UpdateAddRoutePoint(false)" />
+                        <input type="button" value="Удалить" id="DeleteRoutePointUnLoadButton" class="btn disabled" style="margin: 5px 5px 5px 5px;width:90px;" onclick="DeleteAddRoutePoint(false)" /><br>
+                    </div>
+                }
+
+         </div>
+    </div>
+
+
+@if (Model.AllowExecuterData || Model.AllowClientData)
+{
+    <div class="row AddPointLoad">
+        <div class="col-md-6">
+            <a href="~/Views/Orders/_OrderTruckTransportDetailsClient.cshtml"></a>
+            <div class="form-group" style="margin-left: 20px;">
+                <div id="AddRoutePointLoad" class="row">
+                    <div id="jqxWidgetPointLoad">
+                        <div id="jqxgridPointLoad">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <a href="~/Views/Orders/_OrderTruckTransportDetailsClient.cshtml"></a>
+            <div class="form-group" style="margin-left: 5px;">
+                <div id="AddRoutePointUnLoad" class="row">
+                    <div id="jqxWidgetPointUnLoad">
+                        <div id="jqxgridPointUnLoad">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}

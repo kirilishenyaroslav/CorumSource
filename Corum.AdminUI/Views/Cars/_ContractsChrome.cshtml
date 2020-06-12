@@ -1,0 +1,217 @@
+﻿@model Corum.Models.ContractNavigationResult<Corum.Models.ViewModels.Cars.ContractsViewModel>
+@using GridMvc.Html
+
+<div style="font-size: 13px;">
+    @(Html.Grid(Model.DisplayValues)
+                          .Columns(columns =>
+                          {
+
+                          if (Model.isForwarder)
+                          {
+                              if (Model.isMainMenu)
+                              {
+                                  columns.Add()
+                                  .Titled("Экспедитор")
+                                  .Css("colored-cell new_columns_block_start min-height-cell")
+                                  .Filterable(true)
+                                  .Sortable(true)
+                                  .Encoded(false)
+                                  .Sanitized(false)
+                                  .RenderValueAs(o =>
+                                @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+                                    @o.CarOwnersName
+                                </div>);
+                                  }
+                                  else
+                                  {
+                                      columns.Add()
+                                      .Titled("Экспедитор")
+                                      .Css("colored-cell new_columns_block_start min-height-cell")
+                                      .Filterable(true)
+                                      .Sortable(true)
+                                      .Encoded(false)
+                                      .Sanitized(false)
+                                      .RenderValueAs(o =>
+                                    @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+                                        @Model.carOwnerInfo.CarrierName
+                                    </div>);
+    }
+    columns.Add()
+      .Titled("Плательщик")
+      .Css("colored-cell min-height-cell")
+      .Filterable(true)
+      .Sortable(true)
+      .Encoded(false)
+      .Sanitized(false)
+      .RenderValueAs(o =>
+    @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+        @o.BalanceKeeperName
+    </div>);
+    }
+    else
+    {
+        columns.Add()
+           .Titled("Экспедитор")
+          .Css("colored-cell min-height-cell")
+          .Filterable(true)
+          .Sortable(true)
+          .Encoded(false)
+          .Sanitized(false)
+          .RenderValueAs(o =>
+        @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+            @o.ExpeditorName
+        </div>);
+                              };
+
+
+                              columns.Add()
+                                .Titled("Номер<br>договора")
+                                .Css("colored-cell rigth_column new_columns_block_start  min-height-cell")
+                                .Filterable(true)
+                                .Sortable(true)
+                                .Encoded(false)
+                                .Sanitized(false)
+                                .RenderValueAs(o =>
+                                @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+                                    @o.ContractNumber
+                                </div>);
+
+
+    columns.Add()
+          .Titled("Дата<br>договора")
+          .Css("colored-cell rigth_column min-height-cell")
+          .Filterable(true)
+          .Sortable(true)
+          .Encoded(false)
+          .Sanitized(false)
+          .RenderValueAs(o =>
+        @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+            @o.ContractDate
+        </div>);
+
+    columns.Add()
+          .Titled("Дата<br>начала<br>действия<br>договора")
+          .Css("colored-cell rigth_column new_columns_block_start min-height-cell")
+          .Filterable(true)
+          .Sortable(true)
+          .Encoded(false)
+          .Sanitized(false)
+          .RenderValueAs(o =>
+        @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+            @o.DateBeg
+        </div>);
+
+    columns.Add()
+          .Titled("Дата<br>окончания<br>действия<br>договора")
+          .Css("colored-cell rigth_column min-height-cell")
+          .Filterable(true)
+          .Sortable(true)
+          .Encoded(false)
+          .Sanitized(false)
+          .RenderValueAs(o =>
+        @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+            @o.DateEnd
+        </div>);
+
+    columns.Add()
+          .Titled("Дата<br>реального<br>получения<br>договора")
+          .Css("colored-cell rigth_column new_columns_block_start min-height-cell")
+          .Filterable(true)
+          .Sortable(true)
+          .Encoded(false)
+          .Sanitized(false)
+          .RenderValueAs(o =>
+        @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+            @o.ReceiveDateReal
+        </div>);
+
+    columns.Add(model => model.DaysDelay)
+          .Titled("Время<br>отсрочки")
+          .Css("colored-cell centered_column min-height-cell")
+          .Filterable(true)
+          .Sortable(true)
+          .Encoded(false)
+          .Sanitized(false)
+          .RenderValueAs(o =>
+        @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+            @o.DaysDelay
+        </div>);
+
+    columns.Add(model => model.IsActive).Filterable(true).Sortable(true)
+        .Encoded(false)
+        .Sanitized(false)
+        .Css("colored-cell right_column new_columns_block_end centered_column min-height-cell")
+        .Titled("Активный")
+        .RenderValueAs(o =>
+        @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+            @Html.CheckBox(o.Id.ToString(), @o.IsActive, new { disabled = "disabled", @readonly = "readonly" })
+        </div>);
+
+    columns.Add()
+          .Titled("Кол-во<br>специфи-<br>каций")
+          .Css("colored-cell centered_column min-height-cell")
+          .Filterable(true)
+          .Sortable(true)
+          .Encoded(false)
+          .Sanitized(false)
+          .RenderValueAs(o =>
+        @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+            @o.CountGroupeSpecifications
+        </div>);
+
+    columns.Add()
+           .Titled("Действия")
+           .Encoded(false)
+           .Sanitized(false)
+           .SetWidth("10%")
+           .Css("colored-cell centered_column min-height-cell")
+           .RenderValueAs(o =>
+        @<div class="edit-delete-copy-links" @Html.Raw("style='color:#330033!important; background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+            <a class="tarash-i update_link tooltips" href="@Url.Action("UpdateContract", "Cars", new { contractId = o.Id, isMainMenu = Model.isMainMenu })">
+                <span class="tooltip-message">Изменить договор</span>
+                <span style="color: #330033!important;" class="glyphicon glyphicon-pencil"></span>
+            </a>
+
+            @if (@o.CanBeDelete)
+            {
+                if (!Model.isMainMenu)
+                {
+
+                    <a class="tarash-i tooltips" href="@Url.Action("DeleteContract", "Cars", new { contractId = o.Id, carOwnersId = Model.carOwnerInfo.Id, IsForwarder = Model.isForwarder, IsMainMenu = Model.isMainMenu })" onclick="return confirm('Хотите удалить договор?');">
+                        <span class="tooltip-message">Удалить договор</span>
+                        <span style="color: #330033!important;" class="glyphicon glyphicon-trash"></span>
+                    </a>
+                }
+                else
+                {
+                    <a class="tarash-i tooltips" href="@Url.Action("DeleteContract", "Cars", new { contractId = o.Id, carOwnersId = 0, isForwarder = Model.isForwarder, IsMainMenu = Model.isMainMenu })" onclick="return confirm('Хотите удалить договор?');">
+                        <span class="tooltip-message">Удалить договор</span>
+                        <span style="color: #330033!important;" class="glyphicon glyphicon-trash"></span>
+                    </a>
+                }
+            }
+            else
+            {
+                <a class="disable-glyphicon tooltips tarash-i" href="#">
+                    <span class="tooltip-message">Договор не может быть удален</span>
+                    <span style="color: #330033!important; opacity: 0.3;" class="glyphicon glyphicon-trash"></span>
+                </a>
+            }
+
+            <a class="tarash-i tooltips" href="@Url.Action("CloneContract", "Cars", new { contractId = o.Id, IsMainMenu = Model.isMainMenu })">
+                <span class="tooltip-message">Клонировать договор</span>
+                <span style="color: #330033!important;" class="glyphicon glyphicon-plus-sign"></span>
+            </a>
+
+            <a class="tarash-i tooltips" href="@Url.Action("GroupesSpecifications", "Cars", new { contractId = o.Id, IsMainMenu = Model.isMainMenu })">
+                <span class="tooltip-message">Спецификации</span>
+                <span style="color: #330033!important;" class="glyphicon glyphicon-th-list"></span>
+            </a>
+
+        </div>);
+
+
+                          }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())
+</div>
+
+

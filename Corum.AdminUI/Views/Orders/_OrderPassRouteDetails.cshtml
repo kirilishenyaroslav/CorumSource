@@ -1,0 +1,40 @@
+﻿ @using Corum.Models.ViewModels.Orders;
+
+ @model Corum.Models.ViewModels.Orders.OrdersPassTransportViewModel
+<div id="detailValuesGrid" class="table-header clearfix col-md-12" style="padding:0px; font-size: 11px; margin-left: 3px;">
+    @Html.HiddenFor(model => model.RouteId)
+    <table class="table table-striped table-bordered no-footer grid-table table-points">
+        <thead>
+            <tr class="tr-points">
+                <td width="20%"></td>
+                <td width="10%">Страна</td>
+                <td width="30%">Город, адрес</td>
+                <td width="25%">Наименование</td>
+                <td style="width:15%;">
+                    <a id="SelectRouteBtn" class="btn btn-default" onclick="SelectRoute()">
+                        <span class="tooltip-message" style="padding: 15px;">Маршрут</span>
+                    </a>
+                </td>
+                <td style="width:5%;"></td>
+            </tr>
+            <tr class="tr-points-orange">
+                <td>Точка отправления</td>
+                <td id="countryFromName">@Model.CountryFromName</td>
+                <td id="cityAdressFrom">@Model.CityFrom, @Model.AdressFrom</td>
+                <td id="nameFrom">@Model.OrgFrom</td>
+                <td id="RouteInfo" rowspan="2" style="color: #000; vertical-align: middle;"> @Model.RouteInfoStr</td>
+                <td id="RouteInfo" rowspan="2" style="color: #000; vertical-align: middle;">
+                    <a class="tarash-i tooltips" onclick="CleanRoute()">
+                        <span class="tooltip-message">Очистить маршрут</span>
+                        <span class="glyphicon glyphicon-remove" style="padding: 1px;"></span>
+                    </a>
+            </tr>
+            <tr class="tr-points-brown">
+                <td>Точка прибытия</td>
+                <td id="countryToName">@Model.CountryToName</td>
+                <td id="cityAdressTo">@Model.CityTo, @Model.AdressTo</td>
+                <td id="nameTo">@Model.OrgTo</td>
+            </tr>
+        </thead>
+    </table>
+</div>

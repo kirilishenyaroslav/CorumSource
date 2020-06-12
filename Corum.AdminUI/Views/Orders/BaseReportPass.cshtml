@@ -1,0 +1,498 @@
+﻿@model Corum.Models.OrdersReportsNavigationResult
+
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+
+@{
+    ViewBag.Title = "Общий отчет";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .select2-container {
+        width: 80%;
+    }
+</style>
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeOrdersReportsChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+
+}
+
+
+<div class="container-fluid">
+    <div class="row ">
+        <div class="col-lg-12" style="margin-top:35px;">
+            <div class="row panel-title">
+                <h2 class="centered_column">Отчет выполнения заявок на транспортные услуги (легковые заявки)</h2> <br>
+            </div>
+
+            @using (Html.BeginForm("BaseReportPass", "Orders", FormMethod.Get))
+            {
+                <div class="table-header clearfix" style="margin-top: 20px;">
+                    <div class="row panel panel-info">
+                        <div class="col-md-8" style="margin-top: 10px;">
+                            <div class="form-group row">
+                                <div class="col-md-4">
+                                    @Html.RadioButton("DateType", 0) <span>&nbsp;</span>
+                                    @Html.Label("Дата (от/до):", htmlAttributes: new { @style = "font-weight: inherit;" })<br>
+                                    @Html.RadioButton("DateType", 1) <span>&nbsp;</span>
+                                    @Html.Label("Дата подачи авто:", htmlAttributes: new { @style = "font-weight: inherit;" })<br>
+                                    @Html.HiddenFor(model => model.DateType)
+                                </div>
+                              @if (Model.DateType == 0)
+                              {
+                                  <div class="col-md-3" id="dateOrderP1">
+                                      @Html.EditorFor(model => model.FilterOrderDateBeg, new {htmlAttributes = new {@class = "order-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderDateBegRaw", @style = "height: 2em!important; display:inline;"}})
+                                      @Html.HiddenFor(model => model.FilterOrderDateBeg)
+                                      @Html.HiddenFor(model => model.FilterOrderDateBegRaw)
+                                  </div>
+                                  <div class="col-md-3" id="dateOrderP2">
+                                      @Html.EditorFor(model => model.FilterOrderDateEnd, new {htmlAttributes = new {@class = "order-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderDateEndRaw", @style = "height: 2em!important;display:inline;"}})
+                                      @Html.HiddenFor(model => model.FilterOrderDateEnd)
+                                      @Html.HiddenFor(model => model.FilterOrderDateEndRaw)
+                                  </div>
+
+                                  <div class="col-md-3 collapse" id="dateAcceptP1">
+                                      <br>
+                                      @Html.EditorFor(model => model.FilterAcceptDateBeg, new {htmlAttributes = new {@class = "order-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterAcceptDateBegRaw", @style = "height: 2em!important; display:inline;"}})
+                                      @Html.HiddenFor(model => model.FilterAcceptDateBeg)
+                                      @Html.HiddenFor(model => model.FilterAcceptDateBegRaw)
+                                  </div>
+                                  <div class="col-md-3 collapse" id="dateAcceptP2">
+                                      <br>
+                                      @Html.EditorFor(model => model.FilterAcceptDateEnd, new {htmlAttributes = new {@class = "order-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterAcceptDateEndRaw", @style = "height: 2em!important;display:inline;"}})
+                                      @Html.HiddenFor(model => model.FilterAcceptDateEnd)
+                                      @Html.HiddenFor(model => model.FilterAcceptDateEndRaw)
+                                  </div>
+                              }
+                              else
+                              {
+                                <div class="col-md-3 collapse" id="dateOrderP1">
+                                    @Html.EditorFor(model => model.FilterOrderDateBeg, new { htmlAttributes = new { @class = "order-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderDateBegRaw", @style = "height: 2em!important; display:inline;" } })
+                                    @Html.HiddenFor(model => model.FilterOrderDateBeg)
+                                    @Html.HiddenFor(model => model.FilterOrderDateBegRaw)
+                                </div>
+                                <div class="col-md-3 collapse" id="dateOrderP2">
+                                    @Html.EditorFor(model => model.FilterOrderDateEnd, new { htmlAttributes = new { @class = "order-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderDateEndRaw", @style = "height: 2em!important;display:inline;" } })
+                                    @Html.HiddenFor(model => model.FilterOrderDateEnd)
+                                    @Html.HiddenFor(model => model.FilterOrderDateEndRaw)
+                                </div>
+
+                                <div class="col-md-3" id="dateAcceptP1">
+                                    <br>
+                                    @Html.EditorFor(model => model.FilterAcceptDateBeg, new { htmlAttributes = new { @class = "order-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterAcceptDateBegRaw", @style = "height: 2em!important; display:inline;" } })
+                                    @Html.HiddenFor(model => model.FilterAcceptDateBeg)
+                                    @Html.HiddenFor(model => model.FilterAcceptDateBegRaw)
+                                </div>
+                                <div class="col-md-3" id="dateAcceptP2">
+                                    <br>
+                                    @Html.EditorFor(model => model.FilterAcceptDateEnd, new { htmlAttributes = new { @class = "order-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterAcceptDateEndRaw", @style = "height: 2em!important;display:inline;" } })
+                                    @Html.HiddenFor(model => model.FilterAcceptDateEnd)
+                                    @Html.HiddenFor(model => model.FilterAcceptDateEndRaw)
+                                </div>
+                              }
+
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4" style="font-weight: normal !important;">
+                                    @Html.CheckBoxFor(model => model.UseOrderClientFilter, new { onclick = "$('#FilterOrderClientId').prop('disabled', !this.checked);" })&nbsp;ЦФО/Подразделение
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.FilterOrderClientId,
+                            Model.UseOrderClientFilter ?
+                                (object)new
+                                {
+                                    
+                                    id = "FilterOrderClientId",
+                                    @class = "filter_dropdown",
+                                    @name = "FilterOrderClientId",
+                                    data_source_url = Url.Action("GetOrderClients", "Orders"),
+                                    data_droplist_placeholder = "Введите наименование подразделения",
+                                    data_selected_text = Model.FilterOrderClientName
+                                } :
+                                (object)new
+                                {
+                                    id = "FilterOrderClientId",
+                                    @class = "filter_dropdown",
+                                    @name = "FilterOrderClientId",
+                                    data_source_url = Url.Action("GetOrderClients", "Orders"),
+                                    data_droplist_placeholder = "Введите наименование подразделения",
+                                    @disabled = "disabled",
+                                    data_selected_text = Model.FilterOrderClientName
+                                })
+                                </div>
+                                @Html.HiddenFor(model => model.FilterOrderClientId)
+                                @Html.HiddenFor(model => model.UseOrderClientFilter)
+
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4" style="font-weight: normal !important;">
+                                    @Html.CheckBoxFor(model => model.UseOrderTypeFilter, new {onclick = "$('#FilterOrderTypeId').prop('disabled', !this.checked);"})&nbsp;Тип заявки
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.FilterOrderTypeId,
+                                        Model.UseOrderTypeFilter ?
+                                            (object) new
+                                            {
+                                                id = "FilterOrderTypeId",
+                                                @class = "filter_dropdown",
+                                                @name = "FilterOrderTypeId",
+                                                data_source_url = Url.Action("GetOrderPassTypes", "Orders"),
+                                                data_droplist_placeholder = "Введите тип заявки",
+                                                data_selected_text = Model.FilterOrderTypeName
+                                            } :
+                                            (object) new
+                                            {
+                                                id = "FilterOrderTypeId",
+                                                @class = "filter_dropdown",
+                                                @name = "FilterOrderTypeId",
+                                                data_source_url = Url.Action("GetOrderPassTypes", "Orders"),
+                                                data_droplist_placeholder = "Введите тип заявки",
+                                                @disabled = "disabled",
+                                                data_selected_text = Model.FilterOrderTypeName
+                                            })
+                                </div>
+                                @Html.HiddenFor(model => model.FilterOrderTypeId)
+                                @Html.HiddenFor(model => model.UseOrderTypeFilter)
+
+
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-md-4" style="font-weight: normal !important;">
+                                    @Html.CheckBoxFor(model => model.UseTripTypeFilter, new { onclick = "$('#FilterTripTypeId').prop('disabled', !this.checked);" })&nbsp;Тип поездки
+                                </label>
+                                <div class="col-md-8">
+                                    @Html.TextBoxFor(model => model.FilterTripTypeId,
+                            Model.UseTripTypeFilter ?
+                                (object)new
+                                {
+                                    id = "FilterTripTypeId",
+                                    @class = "filter_dropdown",
+                                    @name = "FilterTripTypeId",
+                                    data_source_url = Url.Action("GetOrderPassTripTypes", "Orders"),
+                                    data_droplist_placeholder = "Введите тип поездки",
+                                    data_selected_text = Model.FilterTripTypeName
+                                } :
+                                (object)new
+                                {
+                                    id = "FilterTripTypeId",
+                                    @class = "filter_dropdown",
+                                    @name = "FilterTripTypeId",
+                                    data_source_url = Url.Action("GetOrderPassTripTypes", "Orders"),
+                                    data_droplist_placeholder = "Введите тип поездки",
+                                    @disabled = "disabled",
+                                    data_selected_text = Model.FilterTripTypeName
+                                })
+                                </div>
+                                @Html.HiddenFor(model => model.FilterTripTypeId)
+                                @Html.HiddenFor(model => model.UseTripTypeFilter)
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div style="margin-top: 10px;">
+                                
+                                @Html.HiddenFor(model => model.PageNumber)
+
+
+                                <input type="submit" value="Применить" class="btn btn-default"/>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+            <ul class="nav nav-tabs" role="tablist" style="margin-top: 10px;">
+            <li role="presentation" class="active">
+                <a id="aPage1" href="#Page1" role="tab" data-toggle="tab" style="text-decoration: none; font-size: 12px;">Общий отчет</a>
+            </li>
+                <li role="presentation">
+                    <a id="aPage2" href="#Page2" role="tab" data-toggle="tab" style="text-decoration: none; font-size: 12px;">Срочные и плановые заявки</a>
+                </li>
+                <li role="presentation">
+                    <a id="aPage3" href="#Page3" role="tab" data-toggle="tab" style="text-decoration: none; font-size: 12px;">Поступило заявок</a>
+                </li>
+                <li role="presentation">
+                    <a id="aPage4" href="#Page4" role="tab" data-toggle="tab" style="text-decoration: none; font-size: 12px;">Статусы</a>
+                </li>
+            </ul>
+
+            <div class="tab-content" style="margin-top: 25px; margin-left: 25px; font-size: 12px; font-weight: normal;">
+                <div role="tabpanel" class="active filter-tab-pane tab-pane row" id="Page1">
+                    <div class="form-group">
+                        @Html.ActionLink("В excel", "BaseReportAsExcel", "ExportToExcel",
+                            new
+                            {
+                                FilterOrderClientId = Model.FilterOrderClientId,
+                                UseOrderClientFilter = Model.UseOrderClientFilter,
+                                FilterOrderTypeId = Model.FilterOrderTypeId,
+                                UseOrderTypeFilter = Model.UseOrderTypeFilter,
+                                FilterTripTypeId = Model.FilterTripTypeId,
+                                UseTripTypeFilter = Model.UseTripTypeFilter,
+                                FilterOrderDateBeg = Model.FilterOrderDateBeg,
+                                FilterOrderDateBegRaw = Model.FilterOrderDateBegRaw,
+                                FilterOrderDateEnd = Model.FilterOrderDateEnd,
+                                FilterOrderDateEndRaw = Model.FilterOrderDateEndRaw,
+                                FilterAcceptDateBeg = Model.FilterAcceptDateBeg,
+                                FilterAcceptDateBegRaw = Model.FilterAcceptDateBegRaw,
+                                FilterAcceptDateEnd = Model.FilterAcceptDateEnd,
+                                FilterAcceptDateEndRaw = Model.FilterAcceptDateEndRaw,
+
+                                DateType = Model.DateType,
+                                isPassOrders = true
+                            },
+                            new { @class = "delete_link btn btn-success", @style = "margin-left:10px;" })
+                    </div>
+                    @Html.Partial("_BaseReportPassDetails")
+                    
+
+                </div>
+                <div role="tabpanel" class="filter-tab-pane tab-pane row" id="Page2">
+                    <div class="form-group">
+                        @Html.ActionLink("В excel", "StatusReportAsExcel", "ExportToExcel",
+                            new
+                            {
+                                FilterOrderClientId = Model.FilterOrderClientId,
+                                UseOrderClientFilter = Model.UseOrderClientFilter,
+                                FilterOrderTypeId = Model.FilterOrderTypeId,
+                                UseOrderTypeFilter = Model.UseOrderTypeFilter,
+                                FilterTripTypeId = Model.FilterTripTypeId,
+                                UseTripTypeFilter = Model.UseTripTypeFilter,
+                                FilterOrderDateBeg = Model.FilterOrderDateBeg,
+                                FilterOrderDateBegRaw = Model.FilterOrderDateBegRaw,
+                                FilterOrderDateEnd = Model.FilterOrderDateEnd,
+                                FilterOrderDateEndRaw = Model.FilterOrderDateEndRaw,
+                                FilterAcceptDateBeg = Model.FilterAcceptDateBeg,
+                                FilterAcceptDateBegRaw = Model.FilterAcceptDateBegRaw,
+                                FilterAcceptDateEnd = Model.FilterAcceptDateEnd,
+                                FilterAcceptDateEndRaw = Model.FilterAcceptDateEndRaw,
+                                DateType = Model.DateType,
+                                isPassOrders = true
+                            },
+                            new { @class = "delete_link btn btn-success", @style = "margin-left:10px;" })
+                    </div>
+                    
+                    @Html.Partial("_StatusReportDetail")
+                    
+                    
+                </div>
+                <div role="tabpanel" class="filter-tab-pane tab-pane row" id="Page3">                    
+                        <div class="form-group">
+                            @Html.ActionLink("В excel", "OrdersReportAsExcel", "ExportToExcel",
+                            new
+                            {
+                                FilterOrderClientId = Model.FilterOrderClientId,
+                                UseOrderClientFilter = Model.UseOrderClientFilter,
+                                FilterOrderTypeId = Model.FilterOrderTypeId,
+                                UseOrderTypeFilter = Model.UseOrderTypeFilter,
+                                FilterTripTypeId = Model.FilterTripTypeId,
+                                UseTripTypeFilter = Model.UseTripTypeFilter,
+                                FilterOrderDateBeg = Model.FilterOrderDateBeg,
+                                FilterOrderDateBegRaw = Model.FilterOrderDateBegRaw,
+                                FilterOrderDateEnd = Model.FilterOrderDateEnd,
+                                FilterOrderDateEndRaw = Model.FilterOrderDateEndRaw,
+                                FilterAcceptDateBeg = Model.FilterAcceptDateBeg,
+                                FilterAcceptDateBegRaw = Model.FilterAcceptDateBegRaw,
+                                FilterAcceptDateEnd = Model.FilterAcceptDateEnd,
+                                FilterAcceptDateEndRaw = Model.FilterAcceptDateEndRaw,
+                                DateType = Model.DateType,
+                                isPassOrders = true
+                            },
+                            new { @class = "delete_link btn btn-success", @style = "margin-left:10px;" })
+                        </div>
+
+                        @Html.Partial("_OrdersReportDetail")
+
+                </div>
+                <div role="tabpanel" class="filter-tab-pane tab-pane row" id="Page4">
+                    <div class="form-group">
+                        @Html.ActionLink("В excel", "FinalReportAsExcel", "ExportToExcel",
+                            new
+                            {
+                                FilterOrderClientId = Model.FilterOrderClientId,
+                                UseOrderClientFilter = Model.UseOrderClientFilter,
+                                FilterOrderTypeId = Model.FilterOrderTypeId,
+                                UseOrderTypeFilter = Model.UseOrderTypeFilter,
+                                FilterTripTypeId = Model.FilterTripTypeId,
+                                UseTripTypeFilter = Model.UseTripTypeFilter,
+                                FilterOrderDateBeg = Model.FilterOrderDateBeg,
+                                FilterOrderDateBegRaw = Model.FilterOrderDateBegRaw,
+                                FilterOrderDateEnd = Model.FilterOrderDateEnd,
+                                FilterOrderDateEndRaw = Model.FilterOrderDateEndRaw,
+                                FilterAcceptDateBeg = Model.FilterAcceptDateBeg,
+                                FilterAcceptDateBegRaw = Model.FilterAcceptDateBegRaw,
+                                FilterAcceptDateEnd = Model.FilterAcceptDateEnd,
+                                FilterAcceptDateEndRaw = Model.FilterAcceptDateEndRaw,
+                                DateType = Model.DateType,
+                                isPassOrders = true
+                            },
+                            new { @class = "delete_link btn btn-success", @style = "margin-left:10px;" })
+                    </div>
+
+                        @Html.Partial("_FinalReportDetail")
+
+                </div>
+                </div>    
+            </div>
+        </div>
+</div>
+
+
+@section scripts
+{
+    <script>
+        var selected_tab = 1;
+        var namePage = '#aPage';
+        selected_tab = @Model.PageNumber;
+        selected_type = @Model.DateType;
+
+        function setMyValue(value) {
+            $('#PageNumber').val(value);
+        }
+
+        $(document).ready(function() {
+            InitializeDateTimePickers();
+            InitFilterMultipleDropDowns();
+
+            namePage = '#aPage' + selected_tab;
+            if (namePage === "#aPage1")
+                $('#aPage1').tab('show');
+            else if (namePage === "#aPage2")
+                $('#aPage2').tab('show');
+            else if (namePage === "#aPage3")
+                $('#aPage3').tab('show');
+            else $('#aPage4').tab('show');
+
+            $(document.body).on("click", "a[data-toggle]", function(event) {
+                namePage = this.getAttribute("id");
+
+                if (namePage === "aPage1") selected_tab = 1;
+                else if (namePage === "aPage2") selected_tab = 2;
+                else if (namePage === "aPage3") selected_tab = 3;
+                else selected_tab = 4;
+                setMyValue(selected_tab);
+
+                namePage = "#aPage" + selected_tab;
+                $(' + namePage + ').tab('show');
+                // document.getElementById('PageNumber').value = selected_tab;
+
+            });
+
+            var table = document.getElementsByTagName("table")[0];
+            var footer = table.createTFoot();
+            var row = footer.insertRow(0);
+
+            var cell = row.insertCell(0);
+            cell.innerHTML = "<strong>ВСЕГО:</strong>";
+            addClass(cell, "right_column main_column new_columns_block_start");
+
+            var i;
+            for (i = 1; i < 8; i++) {
+                var EmptyCell = row.insertCell(i);
+                EmptyCell.innerHTML = "";
+            }
+            addClass(EmptyCell, "new_columns_block_end");
+            i = 8;
+
+            @{
+                foreach (var item in Model.BaseReport.orderFinalStatusesDict)
+                {
+                    if (Model.BaseReport.DisplayValues.Count(x => x.CurrentOrderStatusName == item.Key) > 0)
+                    {
+                        @:var EmptyCell = row.insertCell(i);
+                        @:EmptyCell.innerHTML = "<span class='pull-right'>@item.Value</span>";
+                        @:i++;
+                      }
+                }
+            }
+
+            addClass(EmptyCell, "new_columns_block_end");
+
+            var j;
+            for (j = i; j < i + 2; j++) {
+                var EmptyCell = row.insertCell(j);
+                EmptyCell.innerHTML = "";
+            }
+            addClass(EmptyCell, "new_columns_block_end");
+            j = i + 2;
+            var EmptyCell = row.insertCell(j);
+            EmptyCell.innerHTML = "<span class='pull-right'>@Model.BaseReport.SumPlanCarNumber/@Model.BaseReport.SumFactCarNumber</span>";
+
+            addClass(EmptyCell, "new_columns_block_end");
+
+            //итоги для таблицы Срочные и плановые заявки
+            var tableStatus = document.getElementsByTagName("table")[1];
+            var footerStatus = tableStatus.createTFoot();
+            var rowStatus = footerStatus.insertRow(0);
+
+            var cellStatus = rowStatus.insertCell(0);
+            cellStatus.innerHTML = "<strong>Общий итог</strong>";
+            addClass(cellStatus, "right_column main_column new_columns_block_start");
+
+            cellStatus = rowStatus.insertCell(1);
+            cellStatus.innerHTML = "";
+
+            var i = 2;
+            @{
+                foreach (var item in Model.StatusReport.FinalStatuses)
+                {
+                    @:var EmptyCellStatus = rowStatus.insertCell(i);
+                                @:EmptyCellStatus.innerHTML = "<span style='font-weight: bold;' class='pull-right'>@item</span>";
+                                @:i++;
+
+                }
+            }
+
+            addClass(EmptyCellStatus, "new_columns_block_end");
+
+            $(':radio[name=DateType]').change(function() {
+
+                var value = $(this).val();
+                
+                if (value == '0') {
+                    $("div[id^=dateAcceptP]").css('display', 'none'); //Скрываем все блоки
+                    $("div[id^=dateOrderP]").css('display', 'block'); //показываем соотв. div
+
+                }
+                if (value == '1') {
+
+                    $("div[id^=dateOrderP]").css('display', 'none'); //Скрываем все блоки
+                    $("div[id^=dateAcceptP]").css('display', 'block'); //показываем соотв. div
+
+
+                }
+            });
+        });
+
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+

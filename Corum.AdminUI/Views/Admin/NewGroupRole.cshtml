@@ -1,0 +1,50 @@
+﻿@model Corum.Models.ViewModels.RoleGroupsViewModel
+
+@{
+    ViewBag.Title = "NewGroupRole";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("NewGroupRole", "Admin", FormMethod.Post))
+{
+    <div class="form-horizontal">
+        <h4>Создание новой группы ролей</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new {htmlAttributes = new {@class = "form-control", autocomplete = "off"}})
+                @Html.ValidationMessageFor(model => model.Name, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.parentId, htmlAttributes: new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                <div class="form-control-container full-width-select">
+                    @Html.DropDownListFor(model => model.parentId,
+                        new SelectList(Model.AvailableRoleGroups.Select(x => new {Value = x.Id, Text = x.GroupRolesName}), "Value", "Text", Model.parentId),
+                        new {@class = "form-control input"})
+                    @Html.ValidationMessageFor(model => model.parentId, "", new {@class = "text-danger"})
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.isRoot, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="form-control-container full-width-select">
+                    @Html.CheckBoxFor(m => m.isRoot)
+                </div>
+            </div>
+        </div>     
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Создать" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+

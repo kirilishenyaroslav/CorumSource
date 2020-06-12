@@ -1,0 +1,133 @@
+﻿@model Corum.Models.ViewModels.Orders.OrderStatusViewModel
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group" style="margin-left:20px;">
+            @Html.LabelFor(model => model.StatusName, htmlAttributes: new { @class = "control-label" })
+            
+                @Html.EditorFor(model => model.StatusName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                @Html.ValidationMessageFor(model => model.StatusName, "", new { @class = "text-danger" })
+
+        </div>
+     </div>
+    <div class="col-md-6">
+        <div class="form-group" style="margin-left:20px;">
+            @Html.LabelFor(model => model.ActionName, htmlAttributes: new { @class = "control-label" })
+
+                @Html.EditorFor(model => model.ActionName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                @Html.ValidationMessageFor(model => model.ActionName, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group" style="margin-left:20px;">
+            @Html.LabelFor(model => model.ShortName, htmlAttributes: new { @class = "control-label" })
+
+                @Html.EditorFor(model => model.ShortName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                @Html.ValidationMessageFor(model => model.ShortName, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group" style="margin-left:20px;">
+                <div class="row">
+                    <div class="col-md-12" >
+                      @Html.LabelFor(model => model.IconFile, htmlAttributes: new { @class = "control-label" }) 
+                    </div>
+                    
+                </div>
+                <select name="IconFile" id="IconFile" style="display:none;">
+
+                    @for (var i = 1; i <= 30; i++)
+                    {
+                        <option @Html.Raw((Model.IconFile == "Icon"+i.ToString()) ? "selected" : "") value="@("Icon"+i.ToString())" data-class="@("status-icon"+i.ToString())">Icon@(i.ToString())</option>
+                    }
+                    
+                </select>
+                <img id="selectedIcon" src="~/Content/icons/@(Model.IconFile).png" width="24" height="24" alt="@Model.IconFile">
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-6">
+        <div class="form-group" style="margin-left:20px;">
+            @Html.LabelFor(model => model.AllowClientData, htmlAttributes: new { @class = "control-label" })<br>
+
+                
+                    @Html.CheckBoxFor(model => model.AllowClientData)
+                    @Html.ValidationMessageFor(model => model.AllowClientData, "", new { @class = "text-danger" })
+
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="form-group" style="margin-left:20px;">
+            @Html.LabelFor(model => model.AllowExecuterData, htmlAttributes: new { @class = "control-label" })<br>
+
+                    @Html.CheckBoxFor(model => model.AllowExecuterData)
+                    @Html.ValidationMessageFor(model => model.AllowExecuterData, "", new { @class = "text-danger" })
+
+
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="form-group" style="margin-left:20px;">
+            @Html.LabelFor(model => model.IconDescription, htmlAttributes: new { @class = "control-label" })<br>
+
+
+            <div class="form-control-container full-width-select">
+                
+                    @Html.TextAreaFor(model => model.IconDescription,
+                                               new { @class = "form-control input client-info" })
+                
+                    @Html.ValidationMessageFor(model => model.IconDescription, "", new { @class = "text-danger" })
+            </div>            
+        </div>
+    </div>
+</div>
+
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group" style="margin-left:20px;">
+            @Html.LabelFor(model => model.StatusColor, htmlAttributes: new { @class = "control-label" })
+
+            @Html.EditorFor(model => model.StatusColor, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+            @Html.ValidationMessageFor(model => model.StatusColor, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.FontColor, htmlAttributes: new { @class = "control-label" })
+
+            @Html.EditorFor(model => model.FontColor, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+            @Html.ValidationMessageFor(model => model.FontColor, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.BackgroundColor, htmlAttributes: new { @class = "control-label" })
+
+            @Html.EditorFor(model => model.BackgroundColor, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+            @Html.ValidationMessageFor(model => model.BackgroundColor, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+
+

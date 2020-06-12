@@ -1,0 +1,122 @@
+﻿@model Corum.Models.MenuUserViewModel
+
+@{
+    Layout = null; 
+}
+
+@{
+    var displayName = string.IsNullOrEmpty(Model.currentUserId)? string.Empty:  Model.context.GetDisplayName(Model.currentUserId);
+}
+
+<ul class="nav navbar-nav" style="font-size: 13px!important;">
+    <li class="dropdown main_menu_item" @Html.Raw(@Model.MenuItems.Any(r => r.Id == 1) ? "style=\"display:list-item\"" : "style=\"display:none\"")>
+        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Администрирование &nbsp;&nbsp;<span class="caret"></span></a>
+        <ul class="dropdown-menu" style="font-size: 13px!important;">
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 2) ? "style=\"display:list-item\"" : "style=\"display:none\"")> @Html.ActionLink("Пользователи", "Users", "Users") </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 3) ? "style=\"display:list-item\"" : "style=\"display:none\"")> @Html.ActionLink("Роли", "RoleGroups", "Admin") </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 4) ? "style=\"display:list-item\"" : "style=\"display:none\"")> @Html.ActionLink("История рабочих сессий", "LoginHistory", "Admin") </li>
+
+            @{ int[] firstSeparator = { 5, 6 }; }
+
+            <li role="separator" class="divider" @Html.Raw(@Model.MenuItems.Any(r => firstSeparator.Contains(r.Id)) ? "style=\"display:list-item\"" : "style=\"display:none\"")></li>
+
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 5) ? "style=\"display:list-item\"" : "style=\"display:none\"")> @Html.ActionLink("Импорт данных", "UploadFile", "Admin") </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 6) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Иcтория снимков данных", "Snapshots", "Admin") </li>
+
+            <li role="separator" class="divider" @Html.Raw(@Model.MenuItems.Any(r => r.Id == 7) ? "style=\"display:list-item\"" : "style=\"display:none\"")></li>
+
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 7) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Настройка доступа", "MenuTree", "Access") </li>
+
+            @{ int[] thirdSeparator = { 8, 9, 10 }; }
+            <li role="separator" class="divider" @Html.Raw(@Model.MenuItems.Any(r => firstSeparator.Contains(r.Id)) ? "style=\"display:list-item\"" : "style=\"display:none\"")></li>
+
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 8) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Статусы заявок", "Statuses", "Orders") </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 9) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Настройка БП заявок", "PipelineSteps", "Orders") </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 10) ? "style=\"display:list-item\"" : "style=\"display:none\"")> @Html.ActionLink("Типы заявок", "OrderTypes", "Settings") </li>
+            <li role="separator" class="divider" @Html.Raw(@Model.MenuItems.Any(r => r.Id == 21) ? "style=\"display:list-item\"" : "style=\"display:none\"")></li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 21) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Частозадаваемые вопросы", "FAQ", "Admin") </li>
+
+        </ul>
+    </li>
+
+
+    <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 11) ? "style=\"display:list-item\"" : "style=\"display:none\"") class="dropdown main_menu_item">
+        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Логистика &nbsp;&nbsp;<span class="caret"></span></a>
+        <ul class="dropdown-menu" style="font-size: 13px!important;">
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 12) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестр остатков", "RestReport", "Reports") </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 13) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Сводная форма", "GroupRestReport", "Reports") </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 14) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестры документов", "DocsReport", "Reports") </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 15) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Сводка", "BriefReport", "Reports") </li>
+        </ul>
+    </li>
+
+
+    <li class="dropdown main_menu_item" @Html.Raw(@Model.MenuItems.Any(r => r.Id == 16) ? "style=\"display:list-item\"" : "style=\"display:none\"")>
+        <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Заявки &nbsp;&nbsp;<span class="caret"></span></a>
+        <ul class="dropdown-menu" style="font-size: 13px!important;">
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 17) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестр заказчиков", "OrdersClients", "Orders")</li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 30) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестр организаций", "Organizations", "Customers") </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 31) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестр проектов", "ProjectsList", "Projects",
+                                                                                                                             routeValues: new RouteValueDictionary { { "grid-init", "1" },
+                                                                                                                                 { "Code", "true" },
+                                                                                                                                 { "Description", "true" },
+                                                                                                                                 { "ProjectTypeName", "true" },
+                                                                                                                                 { "ProjectCFOName", "true" },
+                                                                                                                                 { "ProjectOrderer", "true" },
+                                                                                                                                 { "ConstructionDesc", "true" },
+                                                                                                                                 { "PlanCount", "true" },
+                                                                                                                                 { "ManufacturingEnterprise", "true" },
+                                                                                                                                 { "isActive", "true" },
+                                                                                                                             },  htmlAttributes: null) </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 26) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестр общих заявок", "OrdersBase", "Orders")</li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 18) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестр транспортных заявок", "Orders", "Orders")</li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 19) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Калькулятор поездки", "TripCalculator", "Settings")</li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 20) ? "style=\"display:list-item\"" : "style=\"display:none\"")> @Html.ActionLink("Автопарк", "CarOwners", "Cars") </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 29) ? "style=\"display:list-item\"" : "style=\"display:none\"")> @Html.ActionLink("Договора транспортно-экпедиторских услуг", "Contracts", "Cars", new { IsMainMenu = true.ToString().ToLower(), IsForwarder = true.ToString().ToLower() }, null) </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 27) ? "style=\"display:list-item\"" : "style=\"display:none\"")> @Html.ActionLink("Общий отчет (легковые заявки)", "BaseReportPass", "Orders") </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 28) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Общий отчет (грузовые заявки)", "BaseReportTruck", "Orders") </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 32) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестр типов грузоподъемностей", "CarryCapacities", "Cars")</li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 33) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестр типов интервалов маршрутов", "RouteIntervalTypes", "Cars")</li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 34) ? "style=\"display:list-item\"" : "style=\"display:none\"")> @Html.ActionLink("Реестр наименований услуг", "SpecificationNames", "Cars")</li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 35) ? "style=\"display:list-item\"" : "style=\"display:none\"")> @Html.ActionLink("Фактическое использование автопарка", "FactCars", "Orders")</li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 36) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Отчет по грузоотправителю/грузополучателю", "TruckReport", "Orders")</li>
+        </ul>
+    </li>
+</ul>
+
+    @if (Request.IsAuthenticated)
+    {
+        using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.Hidden("urlMsg", Url.Action("GetUserCountMessages", "Users"))
+            <ul class="nav navbar-nav navbar-right nav-bar-right-padding" style="font-size: 13px!important;">
+                <li>
+                    <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">@displayName &nbsp;&nbsp;<span id="CountMsg"  class="count-msg"></span>&nbsp;&nbsp;&nbsp; <span class="caret"></span></a>
+                    <ul class="dropdown-menu" style="font-size: 13px!important;">
+                        <li> @Html.ActionLink("Профиль пользователя", "UserProfile", "Users", new { userId = Model.currentUserId }, null)</li>
+                        <li> @Html.ActionLink("Сообщения пользователя", "UserMessages", "Users")</li>
+                        <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 24) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Помощь по вопросам логистики", "FAQHelpUsers", "Admin", new { groupeId = 1 }, null) </li>
+                        <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 25) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Помощь по вопросам заявок", "FAQHelpUsers", "Admin", new { groupeId = 2 }, null) </li>
+
+                    </ul>
+                </li>
+                <li><a href="javascript:document.getElementById('logoutForm').submit()">Выйти</a></li>
+                @if (Session["emulationMode"] != null)
+                {
+                    if ((bool)Session["emulationMode"])
+                    {
+                        <li>@Html.ActionLink("Завершить эмуляцию", "FinishEmulatinMode", "Users", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+                    }
+                }
+            </ul>
+        }
+    }
+    else
+    {
+        <ul class="nav navbar-nav navbar-right nav-bar-right-padding">
+            <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+
+
+        </ul>
+    }

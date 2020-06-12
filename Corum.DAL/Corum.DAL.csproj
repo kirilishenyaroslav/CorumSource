@@ -218,6 +218,9 @@
     <Compile Include="Entity\GetRestDataBySnapshot_Result.cs">
       <DependentUpon>Corum.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entity\GetRestInfoByRestMultiKey_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entity\GetSpecifications_Result.cs">
       <DependentUpon>Corum.tt</DependentUpon>
     </Compile>

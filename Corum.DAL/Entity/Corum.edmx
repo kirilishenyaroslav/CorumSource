@@ -880,6 +880,10 @@
           <Property Name="PrihodDocDate" Type="varchar" MaxLength="50" />
           <Property Name="BalanceCurrency" Type="varchar" MaxLength="50" />
           <Property Name="CurrencyIndexToUAH" Type="decimal" Precision="18" Scale="2" />
+          <Property Name="BacodeProduct" Type="nvarchar" MaxLength="50" />
+          <Property Name="BacodeConsignment" Type="nvarchar" MaxLength="50" />
+          <Property Name="BacodesAll" Type="nvarchar(max)" />
+          <Property Name="Shifr_MDM" Type="nvarchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="RoleGroups">
           <Key>
@@ -993,7 +997,7 @@
           <Property Name="PageSize" Type="int" Nullable="false" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
-        <Association Name="FK__OrdersBas__Proje__73501C2F">
+        <Association Name="FK__OrdersBas__Proje__7B7B4DDC">
           <End Role="Projects" Type="Self.Projects" Multiplicity="0..1" />
           <End Role="OrdersBase" Type="Self.OrdersBase" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1005,7 +1009,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__038683F8">
+        <Association Name="FK__Projects__Projec__420DC656">
           <End Role="Centers" Type="Self.Centers" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1017,7 +1021,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__047AA831">
+        <Association Name="FK__Projects__Projec__4301EA8F">
           <End Role="ProjectTypes" Type="Self.ProjectTypes" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -3008,6 +3012,48 @@
           <Parameter Name="UseProducerFilter" Type="int" Mode="In" />
           <Parameter Name="UseOrderProjectFilter" Type="int" Mode="In" />
         </Function>
+        <Function Name="GetRestInfoByRestMultiKey" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="snapShotId" Type="int" Mode="In" />
+          <Parameter Name="Product" Type="varchar" Mode="In" />
+          <Parameter Name="Shifr" Type="varchar" Mode="In" />
+          <Parameter Name="Figure" Type="varchar" Mode="In" />
+          <Parameter Name="Measure" Type="varchar" Mode="In" />
+          <Parameter Name="Storage" Type="varchar" Mode="In" />
+          <Parameter Name="Shifr_MDM" Type="varchar" Mode="In" />
+          <Parameter Name="BacodeProduct" Type="varchar" Mode="In" />
+          <Parameter Name="BacodeConsignment" Type="varchar" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="InnerPartyKey" Type="varchar" MaxLength="500" />
+                <Property Name="Producer" Type="varchar" MaxLength="500" />
+                <Property Name="Weight" Type="decimal" Precision="16" Scale="2" />
+                <Property Name="pType" Type="varchar" MaxLength="100" />
+                <Property Name="pGroup" Type="varchar" MaxLength="500" />
+                <Property Name="pRecieverPlan" Type="varchar" MaxLength="500" />
+                <Property Name="pRecieverFact" Type="varchar" MaxLength="500" />
+                <Property Name="RecieverGroupPlan" Type="varchar" MaxLength="100" />
+                <Property Name="InnerOrderNum" Type="varchar" MaxLength="50" />
+                <Property Name="OrderedBy" Type="varchar" MaxLength="500" />
+                <Property Name="OrderNum" Type="varchar" MaxLength="50" />
+                <Property Name="StorageCity" Type="varchar" MaxLength="50" />
+                <Property Name="StorageCountry" Type="varchar" MaxLength="10" />
+                <Property Name="Сenter" Type="varchar" MaxLength="100" />
+                <Property Name="BalanceKeeper" Type="varchar" MaxLength="100" />
+                <Property Name="ReadyForSaleStatus" Type="varchar" MaxLength="50" />
+                <Property Name="ReserveStatus" Type="varchar" MaxLength="50" />
+                <Property Name="ProduceDate" Type="varchar" MaxLength="50" />
+                <Property Name="ReconcervationDate" Type="varchar" MaxLength="50" />
+                <Property Name="TermOnStorage" Type="int" />
+                <Property Name="PrihodDocType" Type="varchar" MaxLength="100" />
+                <Property Name="PrihodDocNum" Type="varchar" MaxLength="50" />
+                <Property Name="PrihodDocDate" Type="varchar" MaxLength="50" />
+                <Property Name="BalanceCurrency" Type="varchar" MaxLength="50" />
+                <Property Name="CurrencyIndexToUAH" Type="decimal" Precision="18" Scale="2" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
         <Function Name="GetSpecifications" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="AcceptDate" Type="datetime2" Mode="In" />
           <Parameter Name="isTruck" Type="bit" Mode="In" />
@@ -3177,6 +3223,10 @@
           <Parameter Name="PrihodDocDate" Type="varchar" Mode="In" />
           <Parameter Name="BalanceCurrency" Type="varchar" Mode="In" />
           <Parameter Name="CurrencyIndexToUAH" Type="decimal" Mode="In" />
+          <Parameter Name="BacodeProduct" Type="nvarchar" Mode="In" />
+          <Parameter Name="BacodeConsignment" Type="nvarchar" Mode="In" />
+          <Parameter Name="BacodesAll" Type="nvarchar(max)" Mode="In" />
+          <Parameter Name="Shifr_MDM" Type="nvarchar" Mode="In" />
           <Parameter Name="id_snapshot" Type="int" Mode="In" />
         </Function>
         <Function Name="SelectColumnConfig" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
@@ -3291,15 +3341,15 @@
           <EntitySet Name="UserMessages" EntityType="Self.UserMessages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserSettings" EntityType="Self.UserSettings" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__OrdersBas__Proje__73501C2F" Association="Self.FK__OrdersBas__Proje__73501C2F">
+          <AssociationSet Name="FK__OrdersBas__Proje__7B7B4DDC" Association="Self.FK__OrdersBas__Proje__7B7B4DDC">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="OrdersBase" EntitySet="OrdersBase" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__038683F8" Association="Self.FK__Projects__Projec__038683F8">
+          <AssociationSet Name="FK__Projects__Projec__420DC656" Association="Self.FK__Projects__Projec__420DC656">
             <End Role="Centers" EntitySet="Centers" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__047AA831" Association="Self.FK__Projects__Projec__047AA831">
+          <AssociationSet Name="FK__Projects__Projec__4301EA8F" Association="Self.FK__Projects__Projec__4301EA8F">
             <End Role="ProjectTypes" EntitySet="ProjectTypes" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
@@ -3972,6 +4022,10 @@
             <Parameter Name="PrihodDocDate" Mode="In" Type="String" />
             <Parameter Name="BalanceCurrency" Mode="In" Type="String" />
             <Parameter Name="CurrencyIndexToUAH" Mode="In" Type="Decimal" />
+            <Parameter Name="BacodeProduct" Mode="In" Type="String" />
+            <Parameter Name="BacodeConsignment" Mode="In" Type="String" />
+            <Parameter Name="BacodesAll" Mode="In" Type="String" />
+            <Parameter Name="Shifr_MDM" Mode="In" Type="String" />
             <Parameter Name="id_snapshot" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GetDocsDataBySnapshot" ReturnType="Collection(CorumModel.GetDocsDataBySnapshot_Result)">
@@ -4026,10 +4080,6 @@
           <EntitySet Name="LoginHistory" EntityType="CorumModel.LoginHistory" />
           <EntitySet Name="BalanceKeepers" EntityType="CorumModel.BalanceKeepers" />
           <EntitySet Name="Centers" EntityType="CorumModel.Centers" />
-          <FunctionImport Name="GetRestDataByInnerPartyKey" ReturnType="Collection(CorumModel.GetRestDataByInnerPartyKey_Result)">
-            <Parameter Name="snapShotId" Mode="In" Type="Int32" />
-            <Parameter Name="InnerPartyKey" Mode="In" Type="String" />
-          </FunctionImport>
           <FunctionImport Name="GetDocsDataByInnerPartyKey" ReturnType="Collection(CorumModel.GetDocsDataByInnerPartyKey_Result)">
             <Parameter Name="snapShotId" Mode="In" Type="Int32" />
             <Parameter Name="InnerPartyKey" Mode="In" Type="String" />
@@ -4719,23 +4769,6 @@
             <Parameter Name="searchTerm" Mode="In" Type="String" />
             <Parameter Name="snapShot" Mode="In" Type="Int64" />
           </FunctionImport>
-          <FunctionImport Name="GetRestDataBySnapshot" ReturnType="Collection(CorumModel.GetRestDataBySnapshot_Result)">
-            <Parameter Name="snapShotId" Mode="In" Type="Int32" />
-            <Parameter Name="FilterStorageId" Mode="In" Type="String" />
-            <Parameter Name="FilterCenterId" Mode="In" Type="String" />
-            <Parameter Name="FilterRecieverPlanId" Mode="In" Type="String" />
-            <Parameter Name="FilterRecieverFactId" Mode="In" Type="String" />
-            <Parameter Name="FilterKeeperId" Mode="In" Type="String" />
-            <Parameter Name="FilterProducerId" Mode="In" Type="String" />
-            <Parameter Name="FilterOrderProjectId" Mode="In" Type="String" />
-            <Parameter Name="UseStorageFilter" Mode="In" Type="Int32" />
-            <Parameter Name="UseCenterFilter" Mode="In" Type="Int32" />
-            <Parameter Name="UseRecieverPlanFilter" Mode="In" Type="Int32" />
-            <Parameter Name="UseRecieverFactFilter" Mode="In" Type="Int32" />
-            <Parameter Name="UseKeeperFilter" Mode="In" Type="Int32" />
-            <Parameter Name="UseProducerFilter" Mode="In" Type="Int32" />
-            <Parameter Name="UseOrderProjectFilter" Mode="In" Type="Int32" />
-          </FunctionImport>
           <FunctionImport Name="GetSummaryDataBySnapshot" ReturnType="Collection(CorumModel.GetSummaryDataBySnapshot_Result)">
             <Parameter Name="snapShotId" Mode="In" Type="Int32" />
             <Parameter Name="FilterStorageId" Mode="In" Type="String" />
@@ -4948,6 +4981,38 @@
             <Parameter Name="FilterOrderTypeId" Mode="In" Type="String" />
             <Parameter Name="FilterOrderDate" Mode="In" Type="DateTime" />
             <Parameter Name="UseOrderDateFilter" Mode="In" Type="Boolean" />
+          </FunctionImport>
+          <FunctionImport Name="GetRestDataByInnerPartyKey" ReturnType="Collection(CorumModel.GetRestDataByInnerPartyKey_Result)">
+            <Parameter Name="snapShotId" Mode="In" Type="Int32" />
+            <Parameter Name="InnerPartyKey" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="GetRestDataBySnapshot" ReturnType="Collection(CorumModel.GetRestDataBySnapshot_Result)">
+            <Parameter Name="snapShotId" Mode="In" Type="Int32" />
+            <Parameter Name="FilterStorageId" Mode="In" Type="String" />
+            <Parameter Name="FilterCenterId" Mode="In" Type="String" />
+            <Parameter Name="FilterRecieverPlanId" Mode="In" Type="String" />
+            <Parameter Name="FilterRecieverFactId" Mode="In" Type="String" />
+            <Parameter Name="FilterKeeperId" Mode="In" Type="String" />
+            <Parameter Name="FilterProducerId" Mode="In" Type="String" />
+            <Parameter Name="FilterOrderProjectId" Mode="In" Type="String" />
+            <Parameter Name="UseStorageFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseCenterFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseRecieverPlanFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseRecieverFactFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseKeeperFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseProducerFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseOrderProjectFilter" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="GetRestInfoByRestMultiKey" IsComposable="true" ReturnType="Collection(CorumModel.GetRestInfoByRestMultiKey_Result)">
+            <Parameter Name="snapShotId" Mode="In" Type="Int32" />
+            <Parameter Name="Product" Mode="In" Type="String" />
+            <Parameter Name="Shifr" Mode="In" Type="String" />
+            <Parameter Name="Figure" Mode="In" Type="String" />
+            <Parameter Name="Measure" Mode="In" Type="String" />
+            <Parameter Name="Storage" Mode="In" Type="String" />
+            <Parameter Name="Shifr_MDM" Mode="In" Type="String" />
+            <Parameter Name="BacodeProduct" Mode="In" Type="String" />
+            <Parameter Name="BacodeConsignment" Mode="In" Type="String" />
           </FunctionImport>
           </EntityContainer>
         <ComplexType Name="SelectFieldsOfStuctureForImport_Result">
@@ -5227,6 +5292,10 @@
           <Property Name="BalanceCurrency" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="CurrencyIndexToUAH" Type="Decimal" Precision="18" Scale="2" />
           <NavigationProperty Name="LogisticSnapshots" Relationship="CorumModel.FK_RestsSnapshot_LogisticSnapshots" FromRole="RestsSnapshot" ToRole="LogisticSnapshots" />
+          <Property Name="BacodeProduct" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BacodeConsignment" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BacodesAll" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Shifr_MDM" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
         </EntityType>
         <ComplexType Name="GetDocsDataBySnapshot_Result">
           <Property Type="Int64" Name="idrow" Nullable="false" />
@@ -5431,54 +5500,6 @@
           <NavigationProperty Name="OrderClients" Relationship="CorumModel.FK_OrderClients_Centers" FromRole="Centers" ToRole="OrderClients" />
           <NavigationProperty Name="Projects" Relationship="CorumModel.FK_ProjectsCFO" FromRole="Centers" ToRole="Projects" />
         </EntityType>
-        <ComplexType Name="GetRestDataByInnerPartyKey_Result">
-          <Property Type="String" Name="Product" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="Shifr" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Figure" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Measure" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Storage" Nullable="true" MaxLength="100" />
-          <Property Type="Decimal" Name="QuantityAfter" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="QuantityBefore" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PE_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PF_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PCP_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PCPC_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="FCP_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="FCPC_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="BP_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PE_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PF_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PCP_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PCPC_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="FCP_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="FCPC_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="BP_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="String" Name="Producer" Nullable="true" MaxLength="500" />
-          <Property Type="Decimal" Name="Weight" Nullable="true" Precision="16" Scale="2" />
-          <Property Type="String" Name="pType" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="pGroup" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="pRecieverPlan" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="pRecieverFact" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="RecieverGroupPlan" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="InnerOrderNum" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="OrderedBy" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="OrderNum" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="StorageCity" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="StorageCountry" Nullable="true" MaxLength="10" />
-          <Property Type="String" Name="Сenter" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="BalanceKeeper" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="ReadyForSaleStatus" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="ReserveStatus" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="ProduceDate" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="ReconcervationDate" Nullable="true" MaxLength="50" />
-          <Property Type="Int32" Name="TermOnStorage" Nullable="true" />
-          <Property Type="String" Name="PrihodDocType" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="PrihodDocNum" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="PrihodDocDate" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="BalanceCurrency" Nullable="true" MaxLength="50" />
-          <Property Type="Decimal" Name="CurrencyIndexToUAH" Nullable="true" Precision="18" Scale="2" />
-          <Property Type="String" Name="InnerPartyKey" Nullable="true" MaxLength="500" />
-        </ComplexType>
         <ComplexType Name="GetDocsDataByInnerPartyKey_Result">
           <Property Type="Int64" Name="idrow" Nullable="false" />
           <Property Type="Int32" Name="id_snapshot" Nullable="false" />
@@ -7914,55 +7935,6 @@
           <Property Type="String" Name="InnerOrderNum" Nullable="true" MaxLength="50" />
           <Property Type="Int64" Name="idrow" Nullable="true" />
         </ComplexType>
-        <ComplexType Name="GetRestDataBySnapshot_Result">
-          <Property Type="Int64" Name="idrow0" Nullable="true" />
-          <Property Type="String" Name="Product" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="Shifr" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Figure" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Measure" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="Storage" Nullable="true" MaxLength="100" />
-          <Property Type="Decimal" Name="QuantityAfter" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="QuantityBefore" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PE_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PF_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PCP_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PCPC_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="FCP_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="FCPC_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="BP_Before" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PE_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PF_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PCP_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="PCPC_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="FCP_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="FCPC_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="Decimal" Name="BP_After" Nullable="true" Precision="38" Scale="2" />
-          <Property Type="String" Name="Producer" Nullable="true" MaxLength="500" />
-          <Property Type="Decimal" Name="Weight" Nullable="true" Precision="16" Scale="2" />
-          <Property Type="String" Name="pType" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="pGroup" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="pRecieverPlan" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="pRecieverFact" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="RecieverGroupPlan" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="InnerOrderNum" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="OrderedBy" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="OrderNum" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="StorageCity" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="StorageCountry" Nullable="true" MaxLength="10" />
-          <Property Type="String" Name="Сenter" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="BalanceKeeper" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="ReadyForSaleStatus" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="ReserveStatus" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="ProduceDate" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="ReconcervationDate" Nullable="true" MaxLength="50" />
-          <Property Type="Int32" Name="TermOnStorage" Nullable="true" />
-          <Property Type="String" Name="PrihodDocType" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="PrihodDocNum" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="PrihodDocDate" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="BalanceCurrency" Nullable="true" MaxLength="50" />
-          <Property Type="Decimal" Name="CurrencyIndexToUAH" Nullable="true" Precision="18" Scale="2" />
-          <Property Type="String" Name="InnerPartyKey" Nullable="true" MaxLength="500" />
-        </ComplexType>
         <ComplexType Name="GetSummaryDataBySnapshot_Result">
           <Property Type="Int64" Name="idrow" Nullable="false" />
           <Property Type="Int32" Name="id_snapshot" Nullable="false" />
@@ -8391,6 +8363,133 @@
           <Property Type="DateTime" Name="FactConsignee" Nullable="true" Precision="23" />
           <Property Type="DateTime" Name="FactShipper" Nullable="true" Precision="23" />
         </ComplexType>
+        <ComplexType Name="GetRestDataByInnerPartyKey_Result">
+          <Property Type="String" Name="Product" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Shifr" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Figure" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Measure" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Storage" Nullable="true" MaxLength="100" />
+          <Property Type="Decimal" Name="QuantityAfter" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="QuantityBefore" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PE_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PF_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PCP_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PCPC_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="FCP_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="FCPC_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="BP_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PE_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PF_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PCP_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PCPC_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="FCP_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="FCPC_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="BP_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="String" Name="Producer" Nullable="true" MaxLength="500" />
+          <Property Type="Decimal" Name="Weight" Nullable="true" Precision="16" Scale="2" />
+          <Property Type="String" Name="pType" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="pGroup" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="pRecieverPlan" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="pRecieverFact" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="RecieverGroupPlan" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="InnerOrderNum" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="OrderedBy" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="OrderNum" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="StorageCity" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="StorageCountry" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="Сenter" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="BalanceKeeper" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="ReadyForSaleStatus" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ReserveStatus" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ProduceDate" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ReconcervationDate" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="TermOnStorage" Nullable="true" />
+          <Property Type="String" Name="PrihodDocType" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="PrihodDocNum" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="PrihodDocDate" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="BalanceCurrency" Nullable="true" MaxLength="50" />
+          <Property Type="Decimal" Name="CurrencyIndexToUAH" Nullable="true" Precision="18" Scale="2" />
+          <Property Type="String" Name="InnerPartyKey" Nullable="true" MaxLength="500" />
+        </ComplexType>
+        <ComplexType Name="GetRestDataBySnapshot_Result">
+          <Property Type="Int64" Name="idrow0" Nullable="true" />
+          <Property Type="String" Name="Product" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Shifr" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Figure" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Measure" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Storage" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="Shifr_MDM" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="BacodeProduct" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="BacodeConsignment" Nullable="true" MaxLength="50" />
+          <Property Type="Decimal" Name="QuantityAfter" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="QuantityBefore" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PE_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PF_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PCP_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PCPC_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="FCP_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="FCPC_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="BP_Before" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PE_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PF_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PCP_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="PCPC_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="FCP_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="FCPC_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="Decimal" Name="BP_After" Nullable="true" Precision="38" Scale="2" />
+          <Property Type="String" Name="Producer" Nullable="true" MaxLength="500" />
+          <Property Type="Decimal" Name="Weight" Nullable="true" Precision="16" Scale="2" />
+          <Property Type="String" Name="pType" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="pGroup" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="pRecieverPlan" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="pRecieverFact" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="RecieverGroupPlan" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="InnerOrderNum" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="OrderedBy" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="OrderNum" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="StorageCity" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="StorageCountry" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="Сenter" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="BalanceKeeper" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="ReadyForSaleStatus" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ReserveStatus" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ProduceDate" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ReconcervationDate" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="TermOnStorage" Nullable="true" />
+          <Property Type="String" Name="PrihodDocType" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="PrihodDocNum" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="PrihodDocDate" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="BalanceCurrency" Nullable="true" MaxLength="50" />
+          <Property Type="Decimal" Name="CurrencyIndexToUAH" Nullable="true" Precision="18" Scale="2" />
+          <Property Type="String" Name="InnerPartyKey" Nullable="true" MaxLength="500" />
+        </ComplexType>
+        <ComplexType Name="GetRestInfoByRestMultiKey_Result">
+          <Property Type="String" Name="InnerPartyKey" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="Producer" Nullable="true" MaxLength="500" />
+          <Property Type="Decimal" Name="Weight" Nullable="true" Precision="16" Scale="2" />
+          <Property Type="String" Name="pType" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="pGroup" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="pRecieverPlan" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="pRecieverFact" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="RecieverGroupPlan" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="InnerOrderNum" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="OrderedBy" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="OrderNum" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="StorageCity" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="StorageCountry" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="Сenter" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="BalanceKeeper" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="ReadyForSaleStatus" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ReserveStatus" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ProduceDate" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ReconcervationDate" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="TermOnStorage" Nullable="true" />
+          <Property Type="String" Name="PrihodDocType" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="PrihodDocNum" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="PrihodDocDate" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="BalanceCurrency" Nullable="true" MaxLength="50" />
+          <Property Type="Decimal" Name="CurrencyIndexToUAH" Nullable="true" Precision="18" Scale="2" />
+        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -8636,6 +8735,10 @@
           <EntitySetMapping Name="RestsSnapshot">
             <EntityTypeMapping TypeName="CorumModel.RestsSnapshot">
               <MappingFragment StoreEntitySet="RestsSnapshot">
+                <ScalarProperty Name="Shifr_MDM" ColumnName="Shifr_MDM" />
+                <ScalarProperty Name="BacodesAll" ColumnName="BacodesAll" />
+                <ScalarProperty Name="BacodeConsignment" ColumnName="BacodeConsignment" />
+                <ScalarProperty Name="BacodeProduct" ColumnName="BacodeProduct" />
                 <ScalarProperty Name="CurrencyIndexToUAH" ColumnName="CurrencyIndexToUAH" />
                 <ScalarProperty Name="BalanceCurrency" ColumnName="BalanceCurrency" />
                 <ScalarProperty Name="PrihodDocDate" ColumnName="PrihodDocDate" />
@@ -8858,58 +8961,6 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <FunctionImportMapping FunctionImportName="GetRestDataByInnerPartyKey" FunctionName="CorumModel.Store.GetRestDataByInnerPartyKey">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="CorumModel.GetRestDataByInnerPartyKey_Result">
-                <ScalarProperty Name="Product" ColumnName="Product" />
-                <ScalarProperty Name="Shifr" ColumnName="Shifr" />
-                <ScalarProperty Name="Figure" ColumnName="Figure" />
-                <ScalarProperty Name="Measure" ColumnName="Measure" />
-                <ScalarProperty Name="Storage" ColumnName="Storage" />
-                <ScalarProperty Name="QuantityAfter" ColumnName="QuantityAfter" />
-                <ScalarProperty Name="QuantityBefore" ColumnName="QuantityBefore" />
-                <ScalarProperty Name="PE_Before" ColumnName="PE_Before" />
-                <ScalarProperty Name="PF_Before" ColumnName="PF_Before" />
-                <ScalarProperty Name="PCP_Before" ColumnName="PCP_Before" />
-                <ScalarProperty Name="PCPC_Before" ColumnName="PCPC_Before" />
-                <ScalarProperty Name="FCP_Before" ColumnName="FCP_Before" />
-                <ScalarProperty Name="FCPC_Before" ColumnName="FCPC_Before" />
-                <ScalarProperty Name="BP_Before" ColumnName="BP_Before" />
-                <ScalarProperty Name="PE_After" ColumnName="PE_After" />
-                <ScalarProperty Name="PF_After" ColumnName="PF_After" />
-                <ScalarProperty Name="PCP_After" ColumnName="PCP_After" />
-                <ScalarProperty Name="PCPC_After" ColumnName="PCPC_After" />
-                <ScalarProperty Name="FCP_After" ColumnName="FCP_After" />
-                <ScalarProperty Name="FCPC_After" ColumnName="FCPC_After" />
-                <ScalarProperty Name="BP_After" ColumnName="BP_After" />
-                <ScalarProperty Name="Producer" ColumnName="Producer" />
-                <ScalarProperty Name="Weight" ColumnName="Weight" />
-                <ScalarProperty Name="pType" ColumnName="pType" />
-                <ScalarProperty Name="pGroup" ColumnName="pGroup" />
-                <ScalarProperty Name="pRecieverPlan" ColumnName="pRecieverPlan" />
-                <ScalarProperty Name="pRecieverFact" ColumnName="pRecieverFact" />
-                <ScalarProperty Name="RecieverGroupPlan" ColumnName="RecieverGroupPlan" />
-                <ScalarProperty Name="InnerOrderNum" ColumnName="InnerOrderNum" />
-                <ScalarProperty Name="OrderedBy" ColumnName="OrderedBy" />
-                <ScalarProperty Name="OrderNum" ColumnName="OrderNum" />
-                <ScalarProperty Name="StorageCity" ColumnName="StorageCity" />
-                <ScalarProperty Name="StorageCountry" ColumnName="StorageCountry" />
-                <ScalarProperty Name="Сenter" ColumnName="Сenter" />
-                <ScalarProperty Name="BalanceKeeper" ColumnName="BalanceKeeper" />
-                <ScalarProperty Name="ReadyForSaleStatus" ColumnName="ReadyForSaleStatus" />
-                <ScalarProperty Name="ReserveStatus" ColumnName="ReserveStatus" />
-                <ScalarProperty Name="ProduceDate" ColumnName="ProduceDate" />
-                <ScalarProperty Name="ReconcervationDate" ColumnName="ReconcervationDate" />
-                <ScalarProperty Name="TermOnStorage" ColumnName="TermOnStorage" />
-                <ScalarProperty Name="PrihodDocType" ColumnName="PrihodDocType" />
-                <ScalarProperty Name="PrihodDocNum" ColumnName="PrihodDocNum" />
-                <ScalarProperty Name="PrihodDocDate" ColumnName="PrihodDocDate" />
-                <ScalarProperty Name="BalanceCurrency" ColumnName="BalanceCurrency" />
-                <ScalarProperty Name="CurrencyIndexToUAH" ColumnName="CurrencyIndexToUAH" />
-                <ScalarProperty Name="InnerPartyKey" ColumnName="InnerPartyKey" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="GetDocsDataByInnerPartyKey" FunctionName="CorumModel.Store.GetDocsDataByInnerPartyKey">
             <ResultMapping>
               <ComplexTypeMapping TypeName="CorumModel.GetDocsDataByInnerPartyKey_Result">
@@ -10058,59 +10109,6 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GetRestDataBySnapshot" FunctionName="CorumModel.Store.GetRestDataBySnapshot">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="CorumModel.GetRestDataBySnapshot_Result">
-                <ScalarProperty Name="idrow0" ColumnName="idrow0" />
-                <ScalarProperty Name="Product" ColumnName="Product" />
-                <ScalarProperty Name="Shifr" ColumnName="Shifr" />
-                <ScalarProperty Name="Figure" ColumnName="Figure" />
-                <ScalarProperty Name="Measure" ColumnName="Measure" />
-                <ScalarProperty Name="Storage" ColumnName="Storage" />
-                <ScalarProperty Name="QuantityAfter" ColumnName="QuantityAfter" />
-                <ScalarProperty Name="QuantityBefore" ColumnName="QuantityBefore" />
-                <ScalarProperty Name="PE_Before" ColumnName="PE_Before" />
-                <ScalarProperty Name="PF_Before" ColumnName="PF_Before" />
-                <ScalarProperty Name="PCP_Before" ColumnName="PCP_Before" />
-                <ScalarProperty Name="PCPC_Before" ColumnName="PCPC_Before" />
-                <ScalarProperty Name="FCP_Before" ColumnName="FCP_Before" />
-                <ScalarProperty Name="FCPC_Before" ColumnName="FCPC_Before" />
-                <ScalarProperty Name="BP_Before" ColumnName="BP_Before" />
-                <ScalarProperty Name="PE_After" ColumnName="PE_After" />
-                <ScalarProperty Name="PF_After" ColumnName="PF_After" />
-                <ScalarProperty Name="PCP_After" ColumnName="PCP_After" />
-                <ScalarProperty Name="PCPC_After" ColumnName="PCPC_After" />
-                <ScalarProperty Name="FCP_After" ColumnName="FCP_After" />
-                <ScalarProperty Name="FCPC_After" ColumnName="FCPC_After" />
-                <ScalarProperty Name="BP_After" ColumnName="BP_After" />
-                <ScalarProperty Name="Producer" ColumnName="Producer" />
-                <ScalarProperty Name="Weight" ColumnName="Weight" />
-                <ScalarProperty Name="pType" ColumnName="pType" />
-                <ScalarProperty Name="pGroup" ColumnName="pGroup" />
-                <ScalarProperty Name="pRecieverPlan" ColumnName="pRecieverPlan" />
-                <ScalarProperty Name="pRecieverFact" ColumnName="pRecieverFact" />
-                <ScalarProperty Name="RecieverGroupPlan" ColumnName="RecieverGroupPlan" />
-                <ScalarProperty Name="InnerOrderNum" ColumnName="InnerOrderNum" />
-                <ScalarProperty Name="OrderedBy" ColumnName="OrderedBy" />
-                <ScalarProperty Name="OrderNum" ColumnName="OrderNum" />
-                <ScalarProperty Name="StorageCity" ColumnName="StorageCity" />
-                <ScalarProperty Name="StorageCountry" ColumnName="StorageCountry" />
-                <ScalarProperty Name="Сenter" ColumnName="Сenter" />
-                <ScalarProperty Name="BalanceKeeper" ColumnName="BalanceKeeper" />
-                <ScalarProperty Name="ReadyForSaleStatus" ColumnName="ReadyForSaleStatus" />
-                <ScalarProperty Name="ReserveStatus" ColumnName="ReserveStatus" />
-                <ScalarProperty Name="ProduceDate" ColumnName="ProduceDate" />
-                <ScalarProperty Name="ReconcervationDate" ColumnName="ReconcervationDate" />
-                <ScalarProperty Name="TermOnStorage" ColumnName="TermOnStorage" />
-                <ScalarProperty Name="PrihodDocType" ColumnName="PrihodDocType" />
-                <ScalarProperty Name="PrihodDocNum" ColumnName="PrihodDocNum" />
-                <ScalarProperty Name="PrihodDocDate" ColumnName="PrihodDocDate" />
-                <ScalarProperty Name="BalanceCurrency" ColumnName="BalanceCurrency" />
-                <ScalarProperty Name="CurrencyIndexToUAH" ColumnName="CurrencyIndexToUAH" />
-                <ScalarProperty Name="InnerPartyKey" ColumnName="InnerPartyKey" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="GetSummaryDataBySnapshot" FunctionName="CorumModel.Store.GetSummaryDataBySnapshot">
             <ResultMapping>
               <ComplexTypeMapping TypeName="CorumModel.GetSummaryDataBySnapshot_Result">
@@ -10349,6 +10347,145 @@
                 <ScalarProperty Name="CreatorByUserName" ColumnName="CreatorByUserName" />
                 <ScalarProperty Name="FactConsignee" ColumnName="FactConsignee" />
                 <ScalarProperty Name="FactShipper" ColumnName="FactShipper" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetRestDataByInnerPartyKey" FunctionName="CorumModel.Store.GetRestDataByInnerPartyKey">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CorumModel.GetRestDataByInnerPartyKey_Result">
+                <ScalarProperty Name="Product" ColumnName="Product" />
+                <ScalarProperty Name="Shifr" ColumnName="Shifr" />
+                <ScalarProperty Name="Figure" ColumnName="Figure" />
+                <ScalarProperty Name="Measure" ColumnName="Measure" />
+                <ScalarProperty Name="Storage" ColumnName="Storage" />
+                <ScalarProperty Name="QuantityAfter" ColumnName="QuantityAfter" />
+                <ScalarProperty Name="QuantityBefore" ColumnName="QuantityBefore" />
+                <ScalarProperty Name="PE_Before" ColumnName="PE_Before" />
+                <ScalarProperty Name="PF_Before" ColumnName="PF_Before" />
+                <ScalarProperty Name="PCP_Before" ColumnName="PCP_Before" />
+                <ScalarProperty Name="PCPC_Before" ColumnName="PCPC_Before" />
+                <ScalarProperty Name="FCP_Before" ColumnName="FCP_Before" />
+                <ScalarProperty Name="FCPC_Before" ColumnName="FCPC_Before" />
+                <ScalarProperty Name="BP_Before" ColumnName="BP_Before" />
+                <ScalarProperty Name="PE_After" ColumnName="PE_After" />
+                <ScalarProperty Name="PF_After" ColumnName="PF_After" />
+                <ScalarProperty Name="PCP_After" ColumnName="PCP_After" />
+                <ScalarProperty Name="PCPC_After" ColumnName="PCPC_After" />
+                <ScalarProperty Name="FCP_After" ColumnName="FCP_After" />
+                <ScalarProperty Name="FCPC_After" ColumnName="FCPC_After" />
+                <ScalarProperty Name="BP_After" ColumnName="BP_After" />
+                <ScalarProperty Name="Producer" ColumnName="Producer" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="pType" ColumnName="pType" />
+                <ScalarProperty Name="pGroup" ColumnName="pGroup" />
+                <ScalarProperty Name="pRecieverPlan" ColumnName="pRecieverPlan" />
+                <ScalarProperty Name="pRecieverFact" ColumnName="pRecieverFact" />
+                <ScalarProperty Name="RecieverGroupPlan" ColumnName="RecieverGroupPlan" />
+                <ScalarProperty Name="InnerOrderNum" ColumnName="InnerOrderNum" />
+                <ScalarProperty Name="OrderedBy" ColumnName="OrderedBy" />
+                <ScalarProperty Name="OrderNum" ColumnName="OrderNum" />
+                <ScalarProperty Name="StorageCity" ColumnName="StorageCity" />
+                <ScalarProperty Name="StorageCountry" ColumnName="StorageCountry" />
+                <ScalarProperty Name="Сenter" ColumnName="Сenter" />
+                <ScalarProperty Name="BalanceKeeper" ColumnName="BalanceKeeper" />
+                <ScalarProperty Name="ReadyForSaleStatus" ColumnName="ReadyForSaleStatus" />
+                <ScalarProperty Name="ReserveStatus" ColumnName="ReserveStatus" />
+                <ScalarProperty Name="ProduceDate" ColumnName="ProduceDate" />
+                <ScalarProperty Name="ReconcervationDate" ColumnName="ReconcervationDate" />
+                <ScalarProperty Name="TermOnStorage" ColumnName="TermOnStorage" />
+                <ScalarProperty Name="PrihodDocType" ColumnName="PrihodDocType" />
+                <ScalarProperty Name="PrihodDocNum" ColumnName="PrihodDocNum" />
+                <ScalarProperty Name="PrihodDocDate" ColumnName="PrihodDocDate" />
+                <ScalarProperty Name="BalanceCurrency" ColumnName="BalanceCurrency" />
+                <ScalarProperty Name="CurrencyIndexToUAH" ColumnName="CurrencyIndexToUAH" />
+                <ScalarProperty Name="InnerPartyKey" ColumnName="InnerPartyKey" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetRestDataBySnapshot" FunctionName="CorumModel.Store.GetRestDataBySnapshot">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CorumModel.GetRestDataBySnapshot_Result">
+                <ScalarProperty Name="idrow0" ColumnName="idrow0" />
+                <ScalarProperty Name="Product" ColumnName="Product" />
+                <ScalarProperty Name="Shifr" ColumnName="Shifr" />
+                <ScalarProperty Name="Figure" ColumnName="Figure" />
+                <ScalarProperty Name="Measure" ColumnName="Measure" />
+                <ScalarProperty Name="Storage" ColumnName="Storage" />
+                <ScalarProperty Name="Shifr_MDM" ColumnName="Shifr_MDM" />
+                <ScalarProperty Name="BacodeProduct" ColumnName="BacodeProduct" />
+                <ScalarProperty Name="BacodeConsignment" ColumnName="BacodeConsignment" />
+                <ScalarProperty Name="QuantityAfter" ColumnName="QuantityAfter" />
+                <ScalarProperty Name="QuantityBefore" ColumnName="QuantityBefore" />
+                <ScalarProperty Name="PE_Before" ColumnName="PE_Before" />
+                <ScalarProperty Name="PF_Before" ColumnName="PF_Before" />
+                <ScalarProperty Name="PCP_Before" ColumnName="PCP_Before" />
+                <ScalarProperty Name="PCPC_Before" ColumnName="PCPC_Before" />
+                <ScalarProperty Name="FCP_Before" ColumnName="FCP_Before" />
+                <ScalarProperty Name="FCPC_Before" ColumnName="FCPC_Before" />
+                <ScalarProperty Name="BP_Before" ColumnName="BP_Before" />
+                <ScalarProperty Name="PE_After" ColumnName="PE_After" />
+                <ScalarProperty Name="PF_After" ColumnName="PF_After" />
+                <ScalarProperty Name="PCP_After" ColumnName="PCP_After" />
+                <ScalarProperty Name="PCPC_After" ColumnName="PCPC_After" />
+                <ScalarProperty Name="FCP_After" ColumnName="FCP_After" />
+                <ScalarProperty Name="FCPC_After" ColumnName="FCPC_After" />
+                <ScalarProperty Name="BP_After" ColumnName="BP_After" />
+                <ScalarProperty Name="Producer" ColumnName="Producer" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="pType" ColumnName="pType" />
+                <ScalarProperty Name="pGroup" ColumnName="pGroup" />
+                <ScalarProperty Name="pRecieverPlan" ColumnName="pRecieverPlan" />
+                <ScalarProperty Name="pRecieverFact" ColumnName="pRecieverFact" />
+                <ScalarProperty Name="RecieverGroupPlan" ColumnName="RecieverGroupPlan" />
+                <ScalarProperty Name="InnerOrderNum" ColumnName="InnerOrderNum" />
+                <ScalarProperty Name="OrderedBy" ColumnName="OrderedBy" />
+                <ScalarProperty Name="OrderNum" ColumnName="OrderNum" />
+                <ScalarProperty Name="StorageCity" ColumnName="StorageCity" />
+                <ScalarProperty Name="StorageCountry" ColumnName="StorageCountry" />
+                <ScalarProperty Name="Сenter" ColumnName="Сenter" />
+                <ScalarProperty Name="BalanceKeeper" ColumnName="BalanceKeeper" />
+                <ScalarProperty Name="ReadyForSaleStatus" ColumnName="ReadyForSaleStatus" />
+                <ScalarProperty Name="ReserveStatus" ColumnName="ReserveStatus" />
+                <ScalarProperty Name="ProduceDate" ColumnName="ProduceDate" />
+                <ScalarProperty Name="ReconcervationDate" ColumnName="ReconcervationDate" />
+                <ScalarProperty Name="TermOnStorage" ColumnName="TermOnStorage" />
+                <ScalarProperty Name="PrihodDocType" ColumnName="PrihodDocType" />
+                <ScalarProperty Name="PrihodDocNum" ColumnName="PrihodDocNum" />
+                <ScalarProperty Name="PrihodDocDate" ColumnName="PrihodDocDate" />
+                <ScalarProperty Name="BalanceCurrency" ColumnName="BalanceCurrency" />
+                <ScalarProperty Name="CurrencyIndexToUAH" ColumnName="CurrencyIndexToUAH" />
+                <ScalarProperty Name="InnerPartyKey" ColumnName="InnerPartyKey" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetRestInfoByRestMultiKey" FunctionName="CorumModel.Store.GetRestInfoByRestMultiKey">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CorumModel.GetRestInfoByRestMultiKey_Result">
+                <ScalarProperty Name="InnerPartyKey" ColumnName="InnerPartyKey" />
+                <ScalarProperty Name="Producer" ColumnName="Producer" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="pType" ColumnName="pType" />
+                <ScalarProperty Name="pGroup" ColumnName="pGroup" />
+                <ScalarProperty Name="pRecieverPlan" ColumnName="pRecieverPlan" />
+                <ScalarProperty Name="pRecieverFact" ColumnName="pRecieverFact" />
+                <ScalarProperty Name="RecieverGroupPlan" ColumnName="RecieverGroupPlan" />
+                <ScalarProperty Name="InnerOrderNum" ColumnName="InnerOrderNum" />
+                <ScalarProperty Name="OrderedBy" ColumnName="OrderedBy" />
+                <ScalarProperty Name="OrderNum" ColumnName="OrderNum" />
+                <ScalarProperty Name="StorageCity" ColumnName="StorageCity" />
+                <ScalarProperty Name="StorageCountry" ColumnName="StorageCountry" />
+                <ScalarProperty Name="Сenter" ColumnName="Сenter" />
+                <ScalarProperty Name="BalanceKeeper" ColumnName="BalanceKeeper" />
+                <ScalarProperty Name="ReadyForSaleStatus" ColumnName="ReadyForSaleStatus" />
+                <ScalarProperty Name="ReserveStatus" ColumnName="ReserveStatus" />
+                <ScalarProperty Name="ProduceDate" ColumnName="ProduceDate" />
+                <ScalarProperty Name="ReconcervationDate" ColumnName="ReconcervationDate" />
+                <ScalarProperty Name="TermOnStorage" ColumnName="TermOnStorage" />
+                <ScalarProperty Name="PrihodDocType" ColumnName="PrihodDocType" />
+                <ScalarProperty Name="PrihodDocNum" ColumnName="PrihodDocNum" />
+                <ScalarProperty Name="PrihodDocDate" ColumnName="PrihodDocDate" />
+                <ScalarProperty Name="BalanceCurrency" ColumnName="BalanceCurrency" />
+                <ScalarProperty Name="CurrencyIndexToUAH" ColumnName="CurrencyIndexToUAH" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

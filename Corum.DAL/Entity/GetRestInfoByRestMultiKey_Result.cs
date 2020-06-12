@@ -11,33 +11,9 @@ namespace Corum.DAL.Entity
 {
     using System;
     
-    public partial class GetRestDataBySnapshot_Result
+    public partial class GetRestInfoByRestMultiKey_Result
     {
-        public Nullable<long> idrow0 { get; set; }
-        public string Product { get; set; }
-        public string Shifr { get; set; }
-        public string Figure { get; set; }
-        public string Measure { get; set; }
-        public string Storage { get; set; }
-        public string Shifr_MDM { get; set; }
-        public string BacodeProduct { get; set; }
-        public string BacodeConsignment { get; set; }
-        public Nullable<decimal> QuantityAfter { get; set; }
-        public Nullable<decimal> QuantityBefore { get; set; }
-        public Nullable<decimal> PE_Before { get; set; }
-        public Nullable<decimal> PF_Before { get; set; }
-        public Nullable<decimal> PCP_Before { get; set; }
-        public Nullable<decimal> PCPC_Before { get; set; }
-        public Nullable<decimal> FCP_Before { get; set; }
-        public Nullable<decimal> FCPC_Before { get; set; }
-        public Nullable<decimal> BP_Before { get; set; }
-        public Nullable<decimal> PE_After { get; set; }
-        public Nullable<decimal> PF_After { get; set; }
-        public Nullable<decimal> PCP_After { get; set; }
-        public Nullable<decimal> PCPC_After { get; set; }
-        public Nullable<decimal> FCP_After { get; set; }
-        public Nullable<decimal> FCPC_After { get; set; }
-        public Nullable<decimal> BP_After { get; set; }
+        public string InnerPartyKey { get; set; }
         public string Producer { get; set; }
         public Nullable<decimal> Weight { get; set; }
         public string pType { get; set; }
@@ -62,6 +38,5 @@ namespace Corum.DAL.Entity
         public string PrihodDocDate { get; set; }
         public string BalanceCurrency { get; set; }
         public Nullable<decimal> CurrencyIndexToUAH { get; set; }
-        public string InnerPartyKey { get; set; }
     }
 }

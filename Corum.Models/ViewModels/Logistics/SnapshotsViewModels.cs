@@ -50,7 +50,7 @@ namespace Corum.Models.ViewModels
         public string pGroup { get; set; }
         public string pRecieverPlan { get; set; }
         public string pRecieverFact { get; set; }
-        public string RecieverGroupPlan { get; set; }        
+        public string RecieverGroupPlan { get; set; }
         public string InnerOrderNum { get; set; }
         public string OrderedBy { get; set; }
         public string OrderNum { get; set; }
@@ -88,6 +88,9 @@ namespace Corum.Models.ViewModels
         public string BalanceCurrency { get; set; }
         public Nullable<decimal> CurrencyIndexToUAH { get; set; }
         public string FullSellStatus { get; set; }
+        public string BacodeProduct { get; set; }
+        public string BacodeConsignment { get; set; }
+        public string Shifr_MDM { get; set; }
     }
 
     public class GroupItemRestViewModel

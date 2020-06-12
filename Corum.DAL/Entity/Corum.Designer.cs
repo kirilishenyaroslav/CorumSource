@@ -1,4 +1,4 @@
-﻿// T4 code generation is enabled for model 'E:\Private\Simonova\Загрузки\Corum\12_05_2018\Corum.DAL\Entity\Corum.edmx'. 
+﻿// T4 code generation is enabled for model 'D:\CorumSourceGit\Corum.DAL\Entity\Corum.edmx'. 
 // To enable legacy code generation, change the value of the 'Code Generation Strategy' designer
 // property to 'Legacy ObjectContext'. This property is available in the Properties Window when the model
 // is open in the designer.

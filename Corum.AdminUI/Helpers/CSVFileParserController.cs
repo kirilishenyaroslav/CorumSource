@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-using System.Web.Mvc;
-using System.Text;
+﻿using System.Text;
 
 namespace CorumAdminUI.Helpers
 {
@@ -14,7 +9,7 @@ namespace CorumAdminUI.Helpers
         {            
             string[] DataFromCSVFile = null;
             // общая загрузка данных из csv-файла
-            DataFromCSVFile = System.IO.File.ReadAllLines(ServerFileName, Encoding.Default);
+            DataFromCSVFile = System.IO.File.ReadAllLines(ServerFileName, Encoding.UTF8);
             return DataFromCSVFile;
         }
 
@@ -22,18 +17,18 @@ namespace CorumAdminUI.Helpers
         public static string[] GetHeaderCSVFile(string ServerFileName)
         {
             // общая загрузка данных из csv-файла
-            string[] DataFromCSVFile = System.IO.File.ReadAllLines(ServerFileName, Encoding.Default);
+            string[] DataFromCSVFile = System.IO.File.ReadAllLines(ServerFileName, Encoding.UTF8);
             // получение заголовков из csv-файла
             string[] HeadersCSVFile = null;
             HeadersCSVFile = DataFromCSVFile[0].Split('\t');
-            return HeadersCSVFile;           
+            return HeadersCSVFile;
         }
 
         //получение первой строки с данными CSV-файла
         public static string[] GetFirstDataRowCSVFile(string ServerFileName)
         {
             // общая загрузка данных из csv-файла
-            string[] DataFromCSVFile = System.IO.File.ReadAllLines(ServerFileName, Encoding.Default);
+            string[] DataFromCSVFile = System.IO.File.ReadAllLines(ServerFileName, Encoding.UTF8);
             // получение заголовков из csv-файла
             string[] FirstDataRowCSVFile = null;
             FirstDataRowCSVFile = DataFromCSVFile[1].Split('\t');

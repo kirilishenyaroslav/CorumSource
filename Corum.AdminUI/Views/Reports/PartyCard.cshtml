@@ -27,6 +27,9 @@
                     <li role="presentation">
                         <a class="tab-page" id="aPage5" href="#Page5" role="tab" data-toggle="tab">Документы и <br> движение</a>
                     </li>
+                    <li role="presentation">
+                        <a class="tab-page" id="aPage6" href="#Page6" role="tab" data-toggle="tab">Все<br> штрихкоды</a>
+                    </li>
                 </ul>
 
                 <div class="tab-content tab-cont-all">
@@ -47,22 +50,26 @@
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <div class="form-group">
-                                        <strong>Чертеж</strong>
-                                        @Html.EditorFor(model => model.restRow.Figure, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", @readonly = "readonly" } })
+                                        <strong>Артикул МДМ</strong>
+                                        @Html.EditorFor(model => model.restRow.Shifr_MDM, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", @readonly = "readonly" } })
                                     </div>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <div class="form-group">
-                                        <strong>Единица измерения</strong>
-                                        @Html.EditorFor(model => model.restRow.Measure, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", @readonly = "readonly" } })
+                                        <strong>Штрихкод номенклатуры</strong>
+                                        @Html.EditorFor(model => model.restRow.BacodeProduct, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", @readonly = "readonly" } })
                                     </div>
                                 </div>
-                                
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <strong>Штрихкод партии</strong>
+                                        @Html.EditorFor(model => model.restRow.BacodeConsignment, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", @readonly = "readonly" } })
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
                             <div class="row">
-                                
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <div class="form-group">
                                         <strong>Вес единицы, кг</strong>
@@ -79,6 +86,18 @@
                                     <div class="form-group">
                                         <strong>Текущий остаток (количество)</strong>
                                         @Html.EditorFor(model => model.restRow.QuantityAfter, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", @readonly = "readonly" } })
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <strong>Единица измерения</strong>
+                                        @Html.EditorFor(model => model.restRow.Measure, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", @readonly = "readonly" } })
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        <strong>Чертеж</strong>
+                                        @Html.EditorFor(model => model.restRow.Figure, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", @readonly = "readonly" } })
                                     </div>
                                 </div>
                             </div>
@@ -110,7 +129,7 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>                  
+                        </div>
                     </div>
                     <div role="tabpanel" class="filter-tab-pane tab-pane row" id="Page2">
                         <div class="col-lg-4 col-md-4 col-sm-12 col-xs-12">
@@ -192,7 +211,7 @@
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <div class="form-group">
                                         <strong>Номер заказа получателя</strong>
-                                        @Html.EditorFor(model => model.restRow.OrderNum , new { htmlAttributes = new { @class = "form-control", autocomplete = "off", @readonly = "readonly" } })
+                                        @Html.EditorFor(model => model.restRow.OrderNum, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", @readonly = "readonly" } })
                                     </div>
                                 </div>
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
@@ -229,7 +248,7 @@
                                         @Html.EditorFor(model => model.restRow.RecieverGroupPlan, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", @readonly = "readonly" } })
                                     </div>
                                 </div>
-                                
+
                                 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
                                     <div class="form-group">
                                         <strong>Получатель фактический</strong>
@@ -287,10 +306,10 @@
                                             {
                                                 <tr class="odd gradeX">
                                                     <td class="centered_column">
-                                                          @doc.DocDate
+                                                        @doc.DocDate
                                                     </td>
                                                     <td>
-                                                          @doc.DocNum 
+                                                        @doc.DocNum
                                                     </td>
                                                     <td>
                                                         @doc.DocType
@@ -302,6 +321,17 @@
                                             }
                                         </tbody>
                                     </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="filter-tab-pane tab-pane row" id="Page6">
+                        <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                            <div class="row">
+                                <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+                                    <div class="form-group">
+                                        @Html.TextAreaFor(model => model.restRow.BacodesAll, new { htmlAttributes = new { @class = "form-control", autocomplete = "off", @readonly = "readonly" } })
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -2280,7 +2280,7 @@ namespace Corum.DAL.Entity
         }
     
         [DbFunction("Entities", "GetRestInfoByRestMultiKey")]
-        public virtual IQueryable<GetRestInfoByRestMultiKey_Result> GetRestInfoByRestMultiKey(Nullable<int> snapShotId, string product, string shifr, string figure, string measure, string storage, string shifr_MDM, string bacodeProduct, string bacodeConsignment)
+        public virtual IQueryable<GetRestInfoByRestMultiKey_Result> GetRestInfoByRestMultiKey(Nullable<int> snapShotId, string product, string shifr, string figure, string measure, string storage, string shifr_MDM, string bacodeProduct, string bacodeConsignment, string bacodesAll)
         {
             var snapShotIdParameter = snapShotId.HasValue ?
                 new ObjectParameter("snapShotId", snapShotId) :
@@ -2318,7 +2318,11 @@ namespace Corum.DAL.Entity
                 new ObjectParameter("BacodeConsignment", bacodeConsignment) :
                 new ObjectParameter("BacodeConsignment", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<GetRestInfoByRestMultiKey_Result>("[Entities].[GetRestInfoByRestMultiKey](@snapShotId, @Product, @Shifr, @Figure, @Measure, @Storage, @Shifr_MDM, @BacodeProduct, @BacodeConsignment)", snapShotIdParameter, productParameter, shifrParameter, figureParameter, measureParameter, storageParameter, shifr_MDMParameter, bacodeProductParameter, bacodeConsignmentParameter);
+            var bacodesAllParameter = bacodesAll != null ?
+                new ObjectParameter("BacodesAll", bacodesAll) :
+                new ObjectParameter("BacodesAll", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<GetRestInfoByRestMultiKey_Result>("[Entities].[GetRestInfoByRestMultiKey](@snapShotId, @Product, @Shifr, @Figure, @Measure, @Storage, @Shifr_MDM, @BacodeProduct, @BacodeConsignment, @BacodesAll)", snapShotIdParameter, productParameter, shifrParameter, figureParameter, measureParameter, storageParameter, shifr_MDMParameter, bacodeProductParameter, bacodeConsignmentParameter, bacodesAllParameter);
         }
     }
 }

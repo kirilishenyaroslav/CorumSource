@@ -997,7 +997,7 @@
           <Property Name="PageSize" Type="int" Nullable="false" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
-        <Association Name="FK__OrdersBas__Proje__7B7B4DDC">
+        <Association Name="FK__OrdersBas__Proje__73501C2F">
           <End Role="Projects" Type="Self.Projects" Multiplicity="0..1" />
           <End Role="OrdersBase" Type="Self.OrdersBase" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1009,7 +1009,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__420DC656">
+        <Association Name="FK__Projects__Projec__038683F8">
           <End Role="Centers" Type="Self.Centers" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1021,7 +1021,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__4301EA8F">
+        <Association Name="FK__Projects__Projec__047AA831">
           <End Role="ProjectTypes" Type="Self.ProjectTypes" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -3022,6 +3022,7 @@
           <Parameter Name="Shifr_MDM" Type="varchar" Mode="In" />
           <Parameter Name="BacodeProduct" Type="varchar" Mode="In" />
           <Parameter Name="BacodeConsignment" Type="varchar" Mode="In" />
+          <Parameter Name="BacodesAll" Type="varchar(max)" Mode="In" />
           <ReturnType>
             <CollectionType>
               <RowType>
@@ -3341,15 +3342,15 @@
           <EntitySet Name="UserMessages" EntityType="Self.UserMessages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserSettings" EntityType="Self.UserSettings" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__OrdersBas__Proje__7B7B4DDC" Association="Self.FK__OrdersBas__Proje__7B7B4DDC">
+          <AssociationSet Name="FK__OrdersBas__Proje__73501C2F" Association="Self.FK__OrdersBas__Proje__73501C2F">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="OrdersBase" EntitySet="OrdersBase" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__420DC656" Association="Self.FK__Projects__Projec__420DC656">
+          <AssociationSet Name="FK__Projects__Projec__038683F8" Association="Self.FK__Projects__Projec__038683F8">
             <End Role="Centers" EntitySet="Centers" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__4301EA8F" Association="Self.FK__Projects__Projec__4301EA8F">
+          <AssociationSet Name="FK__Projects__Projec__047AA831" Association="Self.FK__Projects__Projec__047AA831">
             <End Role="ProjectTypes" EntitySet="ProjectTypes" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
@@ -5013,6 +5014,7 @@
             <Parameter Name="Shifr_MDM" Mode="In" Type="String" />
             <Parameter Name="BacodeProduct" Mode="In" Type="String" />
             <Parameter Name="BacodeConsignment" Mode="In" Type="String" />
+            <Parameter Name="BacodesAll" Mode="In" Type="String" />
           </FunctionImport>
           </EntityContainer>
         <ComplexType Name="SelectFieldsOfStuctureForImport_Result">
@@ -8366,6 +8368,10 @@
         <ComplexType Name="GetRestDataByInnerPartyKey_Result">
           <Property Type="String" Name="Product" Nullable="true" MaxLength="100" />
           <Property Type="String" Name="Shifr" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="Shifr_MDM" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="BarcodeProduct" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="BacodeConsignment" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="BacodesAll" Nullable="true" />
           <Property Type="String" Name="Figure" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="Measure" Nullable="true" MaxLength="50" />
           <Property Type="String" Name="Storage" Nullable="true" MaxLength="100" />
@@ -10355,6 +10361,10 @@
               <ComplexTypeMapping TypeName="CorumModel.GetRestDataByInnerPartyKey_Result">
                 <ScalarProperty Name="Product" ColumnName="Product" />
                 <ScalarProperty Name="Shifr" ColumnName="Shifr" />
+                <ScalarProperty Name="Shifr_MDM" ColumnName="Shifr_MDM" />
+                <ScalarProperty Name="BarcodeProduct" ColumnName="BarcodeProduct" />
+                <ScalarProperty Name="BacodeConsignment" ColumnName="BacodeConsignment" />
+                <ScalarProperty Name="BacodesAll" ColumnName="BacodesAll" />
                 <ScalarProperty Name="Figure" ColumnName="Figure" />
                 <ScalarProperty Name="Measure" ColumnName="Measure" />
                 <ScalarProperty Name="Storage" ColumnName="Storage" />

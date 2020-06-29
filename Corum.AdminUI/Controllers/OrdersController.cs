@@ -1552,62 +1552,6 @@ namespace CorumAdminUI.Controllers
                                 }
                             }
                         }
-                        /*
-                        if (pointListLoads != null)
-                        {
-                            foreach (var pointListLoad in pointListLoads)
-                            {
-                                //если координаты не заданы, то пытаемся получить их по адресу
-                                if ((pointListLoad.Latitude == 0) &&
-                                    (pointListLoad.Longitude == 0))
-                                {
-                                    decimal latitude, longitude;
-                                    string address = string.Concat(pointListLoad.CountryPoint, ", ",
-                                        pointListLoad.CityPoint, ", ", pointListLoad.AddressPoint);
-                                    context.GetCoordinates(address, out latitude, out longitude);
-                                    pointListLoad.Latitude = latitude;
-                                    pointListLoad.Longitude = longitude;
-                                }
-
-
-                                if ((pointListLoad.Latitude != 0) || (pointListLoad.Longitude != 0))
-                                {
-                                    numbPoint = numbPoint + 1;
-                                    pointMapListTruck.Add(new OrdersMapPointsViewModel(pointListLoad.NamePoint, pointListLoad.Latitude, pointListLoad.Longitude, numbPoint));
-                                }
-                                else
-                                {
-                                    OrderTypeModel.IsLatLngAbsent = true;
-                                }
-                            }
-                        }
-
-                        if (pointListUnLoads != null)
-                         {
-                             foreach (var pointListUnLoad in pointListUnLoads)
-                             {
-                                //если координаты не заданы, то пытаемся получить их по адресу
-                                if ((pointListUnLoad.Latitude == 0) &&
-                                    (pointListUnLoad.Longitude == 0))
-                                {
-                                    decimal latitude, longitude;
-                                    string address = string.Concat(pointListUnLoad.CountryPoint, ", ",
-                                        pointListUnLoad.CityPoint, ", ", pointListUnLoad.AddressPoint);
-                                    context.GetCoordinates(address, out latitude, out longitude);
-                                    pointListUnLoad.Latitude = latitude;
-                                    pointListUnLoad.Longitude = longitude;
-                                }
-
-                                if ((pointListUnLoad.Latitude != 0) || (pointListUnLoad.Longitude != 0))
-                                {
-                                    numbPoint = numbPoint + 1;
-                                    pointMapListTruck.Add(new OrdersMapPointsViewModel(pointListUnLoad.NamePoint, pointListUnLoad.Latitude, pointListUnLoad.Longitude, numbPoint));
-                                } else
-                                {
-                                    OrderTypeModel.IsLatLngAbsent = true;
-                                };
-                            }
-                         }*/
                         numbPoint = numbPoint + 1;
 
                         //если координаты не заданы, то пытаемся получить их по адресу
@@ -1691,7 +1635,7 @@ namespace CorumAdminUI.Controllers
                 if (ProjectList.Count() > 0)
                 {
                      string ProjectNum = "";
-                     string MultiProjectId = "";                   
+                     string MultiProjectId = "";
 
                         foreach (var i in ProjectList)
                         {
@@ -1717,11 +1661,8 @@ namespace CorumAdminUI.Controllers
                         }
                         OrderTypeModel.ProjectNum = ProjectNum;
                         OrderTypeModel.MultiProjectId = MultiProjectId;
-                    }                
+                    }
             }
-
-
-
 
             return View(OrderTypeModel);
         }

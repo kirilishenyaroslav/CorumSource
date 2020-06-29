@@ -34,8 +34,9 @@ namespace Corum.Models
         int GetBalanceKeepersCount(int snapShot, string searchTerm);
         List<GroupItemViewModel> GetProducers(int snapShot, string searchTerm, int pageSize, int pageNum);
         int GetProducersCount(int snapShot, string searchTerm);
-
         List<RestViewModel> GetProjects(int snapShot, string searchTerm, int pageSize, int pageNum);
-        int GetProjectsCount(int snapShot, string searchTerm);       
+        int GetProjectsCount(int snapShot, string searchTerm);
+        List<RestViewModel> GetBarcodes(int snapShot, string searchTerm, int pageSize, int pageNum);
+        int GetBarcodesCount(int snapShot, string searchTerm);
     }
 }

@@ -255,13 +255,15 @@ namespace Corum.DAL
                       filters.FilterKeeperId,
                       filters.FilterProducerId,
                       filters.FilterOrderProjectId,
+                      filters.FilterProductBarcodeId,
                       Convert.ToInt32(filters.UseStorageFilter),
                       Convert.ToInt32(filters.UseCenterFilter),
                       Convert.ToInt32(filters.UseRecieverPlanFilter),
                       Convert.ToInt32(filters.UseRecieverFactFilter),
                       Convert.ToInt32(filters.UseKeeperFilter),
                       Convert.ToInt32(filters.UseProducerFilter),
-                      Convert.ToInt32(filters.UseOrderProjectFilter)
+                      Convert.ToInt32(filters.UseOrderProjectFilter),
+                      Convert.ToInt32(filters.UseProductBarcodeFilter)
                       )
                         .Select(s => new RestViewModel
                         {
@@ -645,12 +647,25 @@ namespace Corum.DAL
                              .AsQueryable();
         }
 
-            public List<RestViewModel> GetProjects(int snapShot, string searchTerm, int pageSize, int pageNum)
+        public List<RestViewModel> GetProjects(int snapShot, string searchTerm, int pageSize, int pageNum)
         {
             return GetProjectsBySearchString(snapShot, searchTerm)
                         .Skip(pageSize * (pageNum - 1))
                          .Take(pageSize)
                            .ToList();
+        }
+
+        public List<RestViewModel> GetBarcodes(int snapShot, string searchTerm, int pageSize, int pageNum)
+        {
+            return GetBarcodesBySearchString(snapShot, searchTerm)
+                        .Skip(pageSize * (pageNum - 1))
+                         .Take(pageSize)
+                           .ToList();
+        }
+
+        public int GetBarcodesCount(int snapShot, string searchTerm)
+        {
+            return GetBarcodesBySearchString(snapShot, searchTerm).Count();
         }
 
         public int GetProjectsCount(int snapShot, string searchTerm)
@@ -661,8 +676,11 @@ namespace Corum.DAL
         private IQueryable<RestViewModel> GetProjectsBySearchString(int snapShot, string searchTerm)
         {
             return db.GetInnerOrderNumFilter(searchTerm,snapShot).ToList().Select(Mapper.Map).AsQueryable();
+        }
 
-          
+        private IQueryable<RestViewModel> GetBarcodesBySearchString(int snapShot, string searchTerm)
+        {
+            return db.GetProductBarcodeFilter(searchTerm, snapShot).ToList().Select(Mapper.Map).AsQueryable();
         }
     }
 }

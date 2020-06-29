@@ -16,6 +16,7 @@
         public string FilterKeeperId { get; set; }
         public string FilterProducerId { get; set; }
         public string FilterOrderProjectId { get; set; }
+        public string FilterProductBarcodeId { get; set; }
 
         public bool UseStorageFilter { get; set; }
         public bool UseCenterFilter { get; set; }
@@ -24,8 +25,8 @@
         public bool UseKeeperFilter { get; set; }
         public bool UseProducerFilter { get; set; }
         public bool UseOrderProjectFilter { get; set; }
+        public bool UseProductBarcodeFilter { get; set; }
 
         public int IsPrihodDocs { get; set; }
-
     }
 }

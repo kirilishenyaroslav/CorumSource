@@ -8,22 +8,20 @@ using Corum.Models.ViewModels;
 using Corum.Models.ViewModels.Cars;
 using Corum.Models.ViewModels.Orders;
 using Corum.Models.ViewModels.Admin;
-using Corum.Models.ViewModels.Customers;
 using Corum.Models.ViewModels.OrderConcurs;
 
 namespace Corum.Models
 {
-    
     public class OrdersReportsNavigationResult
     {
         public OrdersNavigationResult<BaseReportViewModel> BaseReport { get; set; }
         public OrdersNavigationResult<StatusReportViewModel> StatusReport { get; set; }
         public OrdersNavigationResult<OrdersReportViewModel> OrdersReport { get; set; }
-        public OrdersNavigationResult<FinalReportViewModel> FinalReport { get; set; }        
-        public OrdersNavigationResult<TruckViewModel> TruckReport { get; set; }        
+        public OrdersNavigationResult<FinalReportViewModel> FinalReport { get; set; }
+        public OrdersNavigationResult<TruckViewModel> TruckReport { get; set; }
         public OrdersNavigationResult<TruckViewModel> TruckReportDetail { get; set; }
         
-        public string JSONData { get; set; }       
+        public string JSONData { get; set; }
 
         public bool UseOrderDateFilter { get; set; }
         public string FilterOrderDateBeg { get; set; }
@@ -73,12 +71,11 @@ namespace Corum.Models
     public class NavigationResult<T> where T : class
     {
         private ICorumDataProvider context;
-        private string userId = "";        
-        public NavigationInfo RequestParams { get; set; }                
+        private string userId = "";
+        public NavigationInfo RequestParams { get; set; }
         public IQueryable<T> DisplayValues { get; set; }
         
-        public NavigationResult(NavigationInfo request,                                
-                                string userId)
+        public NavigationResult(NavigationInfo request, string userId)
         {
             try
             {
@@ -90,8 +87,8 @@ namespace Corum.Models
 
                 RequestParams = new NavigationInfo()
                 {
-                    PageSize = currentPageSize,                                       
-                    PageSizeTemplates = NavigationProperties.GetPageSizeTemplates(currentPageSize)                    
+                    PageSize = currentPageSize,
+                    PageSizeTemplates = NavigationProperties.GetPageSizeTemplates(currentPageSize)
                 };
             }
             catch 
@@ -108,7 +105,7 @@ namespace Corum.Models
             }
 
             return NewPageSizeValue;
-        }                                
+        }
     }
 
 
@@ -129,7 +126,7 @@ namespace Corum.Models
         public ICorumDataProvider context { get; set; }
 
         public List<CompetetiveListStepsInfoViewModel> Timeline { get; set; } 
-        public IQueryable<T> DataDisplayValues { get; set; }       
+        public IQueryable<T> DataDisplayValues { get; set; }
         public String IdTree { get; set; }  
 
         public OrdersNavigationResult(NavigationInfo request, string userId) : base(request, userId)
@@ -192,9 +189,9 @@ namespace Corum.Models
 
         public string FilterOrderClientId { get; set; }
         public string FilterOrderClientName { get; set; }
-        public bool UseOrderClientFilter { get; set; }   
+        public bool UseOrderClientFilter { get; set; }
 
-        public int FilterOrderPriority { get; set; }        
+        public int FilterOrderPriority { get; set; }
         public bool UseOrderPriorityFilter { get; set; }
 
         public bool UseOrderDateFilter { get; set; }
@@ -221,16 +218,9 @@ namespace Corum.Models
         public string FilterOrderProjectCode { get; set; }
 
         public string OrgName { get; set; }
-       /* public int OrgId { get; set; }
-        public DateTime ReportDate { get; set; }
-        public String Address { get; set; }
-        public int IdGroup { get; set; }
-        public String CurrentId { get; set; }*/
-        
         public List<string> FinalStatuses { get; set; }
 
         public Dictionary<string, int> orderFinalStatusesDict { get; set; }
-        
     }
 
     public class OrderNavigationResult<T> : NavigationResult<T> where T : class
@@ -314,6 +304,8 @@ namespace Corum.Models
         public string FilterProducerId { get; set; }
         public string FilterOrderProjectId { get; set; }
         public string FilterOrderProjectCode { get; set; }
+        public string FilterProductBarcodeId { get; set; }
+        public string FilterProductBarcodeCode { get; set; }
 
         public bool UseStorageFilter { get; set; }
         public bool UseCenterFilter { get; set; }
@@ -322,6 +314,7 @@ namespace Corum.Models
         public bool UseKeeperFilter { get; set; }
         public bool UseProducerFilter { get; set; }
         public bool UseOrderProjectFilter { get; set; }
+        public bool UseProductBarcodeFilter { get; set; }
 
         public int IsPrihodDocs { get; set; }
 
@@ -421,21 +414,6 @@ namespace Corum.Models
         public string FilterFactConsigneeBegRaw { get; set; }
         public string FilterFactConsigneeEnd { get; set; }
         public string FilterFactConsigneeEndRaw { get; set; }
-        
-        /*public bool UseOrderExDateFilter { get; set; }
-        public string FilterOrderExDateBeg { get; set; }
-        public string FilterOrderExDateBegRaw { get; set; }
-        public string FilterOrderExDateEnd { get; set; }
-        public string FilterOrderExDateEndRaw { get; set; }
-
-
-        public bool UseOrderEndDateFilter { get; set; }
-        public string FilterOrderEndDateBeg { get; set; }
-        public string FilterOrderEndDateBegRaw { get; set; }
-        public string FilterOrderEndDateEnd { get; set; }
-        public string FilterOrderEndDateEndRaw { get; set; }
-        */
-
 
         public OrderCarsNavigationResult(NavigationInfo request, string userId)
             : base(request, userId)
@@ -594,8 +572,6 @@ namespace Corum.Models
         public bool ConsigneeName { get; set; }
 
         public bool CanShowManufacture { get; set; }
-
-
     }
 
 }

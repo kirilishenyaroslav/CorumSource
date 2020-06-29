@@ -212,6 +212,9 @@
     <Compile Include="Entity\GetOrdersReport_Result.cs">
       <DependentUpon>Corum.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entity\GetProductBarcodeFilter_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entity\GetRestDataByInnerPartyKey_Result.cs">
       <DependentUpon>Corum.tt</DependentUpon>
     </Compile>

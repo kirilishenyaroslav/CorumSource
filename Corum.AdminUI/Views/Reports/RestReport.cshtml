@@ -1,7 +1,5 @@
 ﻿@model Corum.Models.RestsNavigationResult<Corum.Models.ViewModels.RestViewModel>
 @using System.Globalization
-@using GridMvc.Html
-@using GridMvc.Sorting
 
 @{
     var numberFormat = new CultureInfo("en-US", false).NumberFormat;
@@ -37,6 +35,7 @@
 @Html.Hidden("FilterRecieverFactId_", Model.FilterRecieverFactId, new { id = "FilterRecieverFactId_" })
 @Html.Hidden("FilterKeeperId_", Model.FilterKeeperId, new { id = "FilterKeeperId_" })
 @Html.Hidden("FilterProducerId_", Model.FilterProducerId, new { id = "FilterProducerId_" })
+@Html.Hidden("FilterProductBarcodeId_", Model.FilterProductBarcodeId, new { id = "FilterProductBarcodeId_" })
 
 @Html.Hidden("UseStorageFilter_", Model.UseStorageFilter, new { id = "UseStorageFilter_" })
 @Html.Hidden("UseCenterFilter_", Model.UseCenterFilter, new { id = "UseCenterFilter_" })
@@ -44,6 +43,7 @@
 @Html.Hidden("UseRecieverFactFilter_", Model.UseRecieverFactFilter, new { id = "UseRecieverFactFilter_" })
 @Html.Hidden("UseKeeperFilter_", Model.UseKeeperFilter, new { id = "UseKeeperFilter_" })
 @Html.Hidden("UseProducerFilter_", Model.UseProducerFilter, new { id = "UseProducerFilter_" })
+@Html.Hidden("UseProductBarcodeFilter_", Model.UseProductBarcodeFilter, new { id = "UseProductBarcodeFilter_" })
 
 
 @Html.Hidden("PriceForEndConsumer_", Model.PriceForEndConsumer, new { id = "PriceForEndConsumer_" })
@@ -56,7 +56,7 @@
 
 <div class="container-fluid">
 
-    @Html.Partial("_restReportSetSettingsDialog");
+    @Html.Partial("_restReportSetSettingsDialog")
 
     <div class="row">
         <div class="col-lg-12 main">
@@ -69,41 +69,11 @@
 
             <div class="row">
                 <div id="showrestsettings" style="margin-bottom: 15px;" class="col-md-8">
-                        <input type="button" value="Конфигурация" class="btn btn-default" onclick="ShowSettings()"/>&nbsp;&nbsp;                     
-                      @Html.ActionLink("Экспорт в excel", "ReestrReportAsExcel", "ExportToExcel", new
-                          {
-                              snapshotId = Model.SnapshotInfo.Id,
-
-                              CurrentGroupFieldName = Model.CurrentGroupFieldName,
-
-                              FilterStorageId = Model.FilterStorageId,
-                              FilterCenterId = Model.FilterCenterId,
-                              FilterRecieverPlanId = Model.FilterRecieverPlanId,
-                              FilterRecieverFactId = Model.FilterRecieverFactId,
-                              FilterKeeperId = Model.FilterKeeperId,
-                              FilterProducerId = Model.FilterProducerId,
-
-                              UseStorageFilter = Model.UseStorageFilter,
-                              UseCenterFilter = Model.UseCenterFilter,
-                              UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
-                              UseRecieverFactFilter = Model.UseRecieverFactFilter,
-                              UseKeeperFilter = Model.UseKeeperFilter,
-                              UseProducerFilter = Model.UseProducerFilter,
-
-                              PriceForEndConsumer = Model.PriceForEndConsumer,
-                              PriceForFirstReciver = Model.PriceForFirstReciver,
-                              PlanFullCost = Model.PlanFullCost,
-                              PlanChangableCost = Model.PlanChangableCost,
-                              FactFullCosts = Model.FactFullCosts,
-                              FactChangableCosts = Model.FactChangableCosts,
-                              BalancePrice = Model.BalancePrice
-
-                          }, new { @class = "btn btn-success delete_link" })&nbsp;&nbsp;
-
-
-                        @Html.ActionLink("Сводная", "GroupRestReport", "Reports", new
+                    <input type="button" value="Конфигурация" class="btn btn-default" onclick="ShowSettings()" />&nbsp;&nbsp;
+                    @Html.ActionLink("Экспорт в excel", "ReestrReportAsExcel", "ExportToExcel", new
                         {
                             snapshotId = Model.SnapshotInfo.Id,
+
                             CurrentGroupFieldName = Model.CurrentGroupFieldName,
 
                             FilterStorageId = Model.FilterStorageId,
@@ -127,7 +97,38 @@
                             FactFullCosts = Model.FactFullCosts,
                             FactChangableCosts = Model.FactChangableCosts,
                             BalancePrice = Model.BalancePrice
-                        }, new { @class = "btn btn-info" })
+
+                        }, new { @class = "btn btn-success delete_link" })&nbsp;&nbsp;
+
+
+                    @Html.ActionLink("Сводная", "GroupRestReport", "Reports", new
+                    {
+                        snapshotId = Model.SnapshotInfo.Id,
+                        CurrentGroupFieldName = Model.CurrentGroupFieldName,
+
+                        FilterStorageId = Model.FilterStorageId,
+                        FilterCenterId = Model.FilterCenterId,
+                        FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                        FilterRecieverFactId = Model.FilterRecieverFactId,
+                        FilterKeeperId = Model.FilterKeeperId,
+                        FilterProducerId = Model.FilterProducerId,
+
+                        UseStorageFilter = Model.UseStorageFilter,
+                        UseCenterFilter = Model.UseCenterFilter,
+                        UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                        UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                        UseKeeperFilter = Model.UseKeeperFilter,
+                        UseProducerFilter = Model.UseProducerFilter,
+
+                        PriceForEndConsumer = Model.PriceForEndConsumer,
+                        PriceForFirstReciver = Model.PriceForFirstReciver,
+                        PlanFullCost = Model.PlanFullCost,
+                        PlanChangableCost = Model.PlanChangableCost,
+                        FactFullCosts = Model.FactFullCosts,
+                        FactChangableCosts = Model.FactChangableCosts,
+                        BalancePrice = Model.BalancePrice
+
+                    }, new { @class = "btn btn-info" })
                 </div>
                 <div class="col-md-4" style="font-size: 10px !important;">
                     @Html.Partial("_restReportFilterSettings")
@@ -136,7 +137,7 @@
 
             <div id="RestReportTableWrapper" class="table-header clearfix row" style="font-size: 10px !important;">
                 @Html.Partial("_restReportDetailsValues")
-                
+
             </div>
 
             @TPagging("RestReport", "Reports", @Model.RequestParams, this)
@@ -167,20 +168,27 @@
 
                 var EmptyCell = row.insertCell(1);
                 EmptyCell.innerHTML = "";
+
                 var EmptyCell = row.insertCell(2);
                 EmptyCell.innerHTML = "";
+
                 var EmptyCell = row.insertCell(3);
                 EmptyCell.innerHTML = "";
+
                 var EmptyCell = row.insertCell(4);
                 EmptyCell.innerHTML = "";
+
                 var EmptyCell = row.insertCell(5);
                 EmptyCell.innerHTML = "";
+
                 var EmptyCell = row.insertCell(6);
                 EmptyCell.innerHTML = "";
+
                 var EmptyCell = row.insertCell(7);
                 EmptyCell.innerHTML = "";
-                var EmptyCell = row.insertCell(8);
 
+                var EmptyCell = row.insertCell(8);
+                EmptyCell.innerHTML = "";
 
                 var EmptyCell = row.insertCell(9);
                 addClass(EmptyCell, "right_column new_columns_block_start new_columns_block_end");
@@ -197,7 +205,6 @@
 
                 var EmptyCell = row.insertCell(13);
                 EmptyCell.innerHTML = "";
-
 
                 var EmptyCell = row.insertCell(14);
                 addClass(EmptyCell, "new_columns_block_end");

@@ -160,7 +160,7 @@
 
                 <div class="form-group row">
                     <label class="col-md-4" style="font-weight: normal !important;">
-                        @Html.CheckBoxFor(model => model.UseProducerFilter, new {onclick = "$('#FilterProducerId').prop('disabled', !this.checked);"})&nbsp;Производитель
+                        @Html.CheckBoxFor(model => model.UseProducerFilter, new { onclick = "$('#FilterProducerId').prop('disabled', !this.checked);" })&nbsp;Производитель
                     </label>
                     <div class="col-md-8">
                         @Html.TextBoxFor(model => model.FilterProducerId,
@@ -185,7 +185,6 @@
                     </div>
                 </div>
 
-
                 <div class="form-group row">
                     <label class="col-md-4" style="font-weight: normal !important;">
                         @Html.CheckBoxFor(model => model.UseOrderProjectFilter, new { onclick = "$('#FilterOrderProjectId').prop('disabled', !this.checked);" })&nbsp;Внутренний заказ ПП
@@ -208,6 +207,33 @@
                                 @name = "FilterOrderProjectId",
                                 data_source_url = Url.Action("GetProjects", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
                                 data_droplist_placeholder = "Введите внутренний заказ ПП",
+                                @disabled = "disabled"
+                            })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseProductBarcodeFilter, new { onclick = "$('#FilterProductBarcodeId').prop('disabled', !this.checked);" })&nbsp;Штрихкод
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FilterProductBarcodeId,
+                            Model.UseProductBarcodeFilter ?
+                            (object)new
+                            {
+                                id = "FilterProductBarcodeId",
+                                @class = "filter_dropdown",
+                                @name = "FilterProductBarcodeId",
+                                data_source_url = Url.Action("GetBarcodes", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                data_droplist_placeholder = "Введите штрихкод или его часть"
+                            } :
+                            (object)new
+                            {
+                                id = "FilterProductBarcodeId",
+                                @class = "filter_dropdown",
+                                @name = "FilterProductBarcodeId",
+                                data_source_url = Url.Action("GetBarcodes", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
+                                data_droplist_placeholder = "Введите штрихкод или его часть",
                                 @disabled = "disabled"
                             })
                     </div>

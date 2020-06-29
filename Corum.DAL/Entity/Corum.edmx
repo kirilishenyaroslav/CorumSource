@@ -2991,6 +2991,18 @@
           <Parameter Name="UseAcceptDateFilter" Type="bit" Mode="In" />
           <Parameter Name="isPassOrders" Type="bit" Mode="In" />
         </Function>
+        <Function Name="GetProductBarcodeFilter" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="searchTerm" Type="varchar" Mode="In" />
+          <Parameter Name="snapShot" Type="bigint" Mode="In" />
+          <ReturnType>
+            <CollectionType>
+              <RowType>
+                <Property Name="ProductBarcode" Type="nvarchar(max)" />
+                <Property Name="idrow" Type="bigint" />
+              </RowType>
+            </CollectionType>
+          </ReturnType>
+        </Function>
         <Function Name="GetRestDataByInnerPartyKey" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="snapShotId" Type="int" Mode="In" />
           <Parameter Name="InnerPartyKey" Type="varchar" Mode="In" />
@@ -3004,6 +3016,7 @@
           <Parameter Name="FilterKeeperId" Type="varchar" Mode="In" />
           <Parameter Name="FilterProducerId" Type="varchar" Mode="In" />
           <Parameter Name="FilterOrderProjectId" Type="varchar" Mode="In" />
+          <Parameter Name="FilterProductBarcodeId" Type="nvarchar(max)" Mode="In" />
           <Parameter Name="UseStorageFilter" Type="int" Mode="In" />
           <Parameter Name="UseCenterFilter" Type="int" Mode="In" />
           <Parameter Name="UseRecieverPlanFilter" Type="int" Mode="In" />
@@ -3011,6 +3024,7 @@
           <Parameter Name="UseKeeperFilter" Type="int" Mode="In" />
           <Parameter Name="UseProducerFilter" Type="int" Mode="In" />
           <Parameter Name="UseOrderProjectFilter" Type="int" Mode="In" />
+          <Parameter Name="UseProductBarcodeFilter" Type="int" Mode="In" />
         </Function>
         <Function Name="GetRestInfoByRestMultiKey" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="snapShotId" Type="int" Mode="In" />
@@ -4987,23 +5001,6 @@
             <Parameter Name="snapShotId" Mode="In" Type="Int32" />
             <Parameter Name="InnerPartyKey" Mode="In" Type="String" />
           </FunctionImport>
-          <FunctionImport Name="GetRestDataBySnapshot" ReturnType="Collection(CorumModel.GetRestDataBySnapshot_Result)">
-            <Parameter Name="snapShotId" Mode="In" Type="Int32" />
-            <Parameter Name="FilterStorageId" Mode="In" Type="String" />
-            <Parameter Name="FilterCenterId" Mode="In" Type="String" />
-            <Parameter Name="FilterRecieverPlanId" Mode="In" Type="String" />
-            <Parameter Name="FilterRecieverFactId" Mode="In" Type="String" />
-            <Parameter Name="FilterKeeperId" Mode="In" Type="String" />
-            <Parameter Name="FilterProducerId" Mode="In" Type="String" />
-            <Parameter Name="FilterOrderProjectId" Mode="In" Type="String" />
-            <Parameter Name="UseStorageFilter" Mode="In" Type="Int32" />
-            <Parameter Name="UseCenterFilter" Mode="In" Type="Int32" />
-            <Parameter Name="UseRecieverPlanFilter" Mode="In" Type="Int32" />
-            <Parameter Name="UseRecieverFactFilter" Mode="In" Type="Int32" />
-            <Parameter Name="UseKeeperFilter" Mode="In" Type="Int32" />
-            <Parameter Name="UseProducerFilter" Mode="In" Type="Int32" />
-            <Parameter Name="UseOrderProjectFilter" Mode="In" Type="Int32" />
-          </FunctionImport>
           <FunctionImport Name="GetRestInfoByRestMultiKey" IsComposable="true" ReturnType="Collection(CorumModel.GetRestInfoByRestMultiKey_Result)">
             <Parameter Name="snapShotId" Mode="In" Type="Int32" />
             <Parameter Name="Product" Mode="In" Type="String" />
@@ -5015,6 +5012,29 @@
             <Parameter Name="BacodeProduct" Mode="In" Type="String" />
             <Parameter Name="BacodeConsignment" Mode="In" Type="String" />
             <Parameter Name="BacodesAll" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="GetProductBarcodeFilter" IsComposable="true" ReturnType="Collection(CorumModel.GetProductBarcodeFilter_Result)">
+            <Parameter Name="searchTerm" Mode="In" Type="String" />
+            <Parameter Name="snapShot" Mode="In" Type="Int64" />
+          </FunctionImport>
+          <FunctionImport Name="GetRestDataBySnapshot" ReturnType="Collection(CorumModel.GetRestDataBySnapshot_Result)">
+            <Parameter Name="snapShotId" Mode="In" Type="Int32" />
+            <Parameter Name="FilterStorageId" Mode="In" Type="String" />
+            <Parameter Name="FilterCenterId" Mode="In" Type="String" />
+            <Parameter Name="FilterRecieverPlanId" Mode="In" Type="String" />
+            <Parameter Name="FilterRecieverFactId" Mode="In" Type="String" />
+            <Parameter Name="FilterKeeperId" Mode="In" Type="String" />
+            <Parameter Name="FilterProducerId" Mode="In" Type="String" />
+            <Parameter Name="FilterOrderProjectId" Mode="In" Type="String" />
+            <Parameter Name="FilterProductBarcodeId" Mode="In" Type="String" />
+            <Parameter Name="UseStorageFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseCenterFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseRecieverPlanFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseRecieverFactFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseKeeperFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseProducerFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseOrderProjectFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseProductBarcodeFilter" Mode="In" Type="Int32" />
           </FunctionImport>
           </EntityContainer>
         <ComplexType Name="SelectFieldsOfStuctureForImport_Result">
@@ -8417,6 +8437,37 @@
           <Property Type="Decimal" Name="CurrencyIndexToUAH" Nullable="true" Precision="18" Scale="2" />
           <Property Type="String" Name="InnerPartyKey" Nullable="true" MaxLength="500" />
         </ComplexType>
+        <ComplexType Name="GetRestInfoByRestMultiKey_Result">
+          <Property Type="String" Name="InnerPartyKey" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="Producer" Nullable="true" MaxLength="500" />
+          <Property Type="Decimal" Name="Weight" Nullable="true" Precision="16" Scale="2" />
+          <Property Type="String" Name="pType" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="pGroup" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="pRecieverPlan" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="pRecieverFact" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="RecieverGroupPlan" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="InnerOrderNum" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="OrderedBy" Nullable="true" MaxLength="500" />
+          <Property Type="String" Name="OrderNum" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="StorageCity" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="StorageCountry" Nullable="true" MaxLength="10" />
+          <Property Type="String" Name="Сenter" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="BalanceKeeper" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="ReadyForSaleStatus" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ReserveStatus" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ProduceDate" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="ReconcervationDate" Nullable="true" MaxLength="50" />
+          <Property Type="Int32" Name="TermOnStorage" Nullable="true" />
+          <Property Type="String" Name="PrihodDocType" Nullable="true" MaxLength="100" />
+          <Property Type="String" Name="PrihodDocNum" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="PrihodDocDate" Nullable="true" MaxLength="50" />
+          <Property Type="String" Name="BalanceCurrency" Nullable="true" MaxLength="50" />
+          <Property Type="Decimal" Name="CurrencyIndexToUAH" Nullable="true" Precision="18" Scale="2" />
+        </ComplexType>
+        <ComplexType Name="GetProductBarcodeFilter_Result">
+          <Property Type="String" Name="ProductBarcode" Nullable="true" MaxLength="50" />
+          <Property Type="Int64" Name="idrow" Nullable="true" />
+        </ComplexType>
         <ComplexType Name="GetRestDataBySnapshot_Result">
           <Property Type="Int64" Name="idrow0" Nullable="true" />
           <Property Type="String" Name="Product" Nullable="true" MaxLength="100" />
@@ -8468,33 +8519,6 @@
           <Property Type="String" Name="BalanceCurrency" Nullable="true" MaxLength="50" />
           <Property Type="Decimal" Name="CurrencyIndexToUAH" Nullable="true" Precision="18" Scale="2" />
           <Property Type="String" Name="InnerPartyKey" Nullable="true" MaxLength="500" />
-        </ComplexType>
-        <ComplexType Name="GetRestInfoByRestMultiKey_Result">
-          <Property Type="String" Name="InnerPartyKey" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="Producer" Nullable="true" MaxLength="500" />
-          <Property Type="Decimal" Name="Weight" Nullable="true" Precision="16" Scale="2" />
-          <Property Type="String" Name="pType" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="pGroup" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="pRecieverPlan" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="pRecieverFact" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="RecieverGroupPlan" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="InnerOrderNum" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="OrderedBy" Nullable="true" MaxLength="500" />
-          <Property Type="String" Name="OrderNum" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="StorageCity" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="StorageCountry" Nullable="true" MaxLength="10" />
-          <Property Type="String" Name="Сenter" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="BalanceKeeper" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="ReadyForSaleStatus" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="ReserveStatus" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="ProduceDate" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="ReconcervationDate" Nullable="true" MaxLength="50" />
-          <Property Type="Int32" Name="TermOnStorage" Nullable="true" />
-          <Property Type="String" Name="PrihodDocType" Nullable="true" MaxLength="100" />
-          <Property Type="String" Name="PrihodDocNum" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="PrihodDocDate" Nullable="true" MaxLength="50" />
-          <Property Type="String" Name="BalanceCurrency" Nullable="true" MaxLength="50" />
-          <Property Type="Decimal" Name="CurrencyIndexToUAH" Nullable="true" Precision="18" Scale="2" />
         </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
@@ -10412,6 +10436,45 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetRestInfoByRestMultiKey" FunctionName="CorumModel.Store.GetRestInfoByRestMultiKey">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CorumModel.GetRestInfoByRestMultiKey_Result">
+                <ScalarProperty Name="InnerPartyKey" ColumnName="InnerPartyKey" />
+                <ScalarProperty Name="Producer" ColumnName="Producer" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="pType" ColumnName="pType" />
+                <ScalarProperty Name="pGroup" ColumnName="pGroup" />
+                <ScalarProperty Name="pRecieverPlan" ColumnName="pRecieverPlan" />
+                <ScalarProperty Name="pRecieverFact" ColumnName="pRecieverFact" />
+                <ScalarProperty Name="RecieverGroupPlan" ColumnName="RecieverGroupPlan" />
+                <ScalarProperty Name="InnerOrderNum" ColumnName="InnerOrderNum" />
+                <ScalarProperty Name="OrderedBy" ColumnName="OrderedBy" />
+                <ScalarProperty Name="OrderNum" ColumnName="OrderNum" />
+                <ScalarProperty Name="StorageCity" ColumnName="StorageCity" />
+                <ScalarProperty Name="StorageCountry" ColumnName="StorageCountry" />
+                <ScalarProperty Name="Сenter" ColumnName="Сenter" />
+                <ScalarProperty Name="BalanceKeeper" ColumnName="BalanceKeeper" />
+                <ScalarProperty Name="ReadyForSaleStatus" ColumnName="ReadyForSaleStatus" />
+                <ScalarProperty Name="ReserveStatus" ColumnName="ReserveStatus" />
+                <ScalarProperty Name="ProduceDate" ColumnName="ProduceDate" />
+                <ScalarProperty Name="ReconcervationDate" ColumnName="ReconcervationDate" />
+                <ScalarProperty Name="TermOnStorage" ColumnName="TermOnStorage" />
+                <ScalarProperty Name="PrihodDocType" ColumnName="PrihodDocType" />
+                <ScalarProperty Name="PrihodDocNum" ColumnName="PrihodDocNum" />
+                <ScalarProperty Name="PrihodDocDate" ColumnName="PrihodDocDate" />
+                <ScalarProperty Name="BalanceCurrency" ColumnName="BalanceCurrency" />
+                <ScalarProperty Name="CurrencyIndexToUAH" ColumnName="CurrencyIndexToUAH" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="GetProductBarcodeFilter" FunctionName="CorumModel.Store.GetProductBarcodeFilter">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="CorumModel.GetProductBarcodeFilter_Result">
+                <ScalarProperty Name="ProductBarcode" ColumnName="ProductBarcode" />
+                <ScalarProperty Name="idrow" ColumnName="idrow" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
           <FunctionImportMapping FunctionImportName="GetRestDataBySnapshot" FunctionName="CorumModel.Store.GetRestDataBySnapshot">
             <ResultMapping>
               <ComplexTypeMapping TypeName="CorumModel.GetRestDataBySnapshot_Result">
@@ -10465,37 +10528,6 @@
                 <ScalarProperty Name="BalanceCurrency" ColumnName="BalanceCurrency" />
                 <ScalarProperty Name="CurrencyIndexToUAH" ColumnName="CurrencyIndexToUAH" />
                 <ScalarProperty Name="InnerPartyKey" ColumnName="InnerPartyKey" />
-              </ComplexTypeMapping>
-            </ResultMapping>
-          </FunctionImportMapping>
-          <FunctionImportMapping FunctionImportName="GetRestInfoByRestMultiKey" FunctionName="CorumModel.Store.GetRestInfoByRestMultiKey">
-            <ResultMapping>
-              <ComplexTypeMapping TypeName="CorumModel.GetRestInfoByRestMultiKey_Result">
-                <ScalarProperty Name="InnerPartyKey" ColumnName="InnerPartyKey" />
-                <ScalarProperty Name="Producer" ColumnName="Producer" />
-                <ScalarProperty Name="Weight" ColumnName="Weight" />
-                <ScalarProperty Name="pType" ColumnName="pType" />
-                <ScalarProperty Name="pGroup" ColumnName="pGroup" />
-                <ScalarProperty Name="pRecieverPlan" ColumnName="pRecieverPlan" />
-                <ScalarProperty Name="pRecieverFact" ColumnName="pRecieverFact" />
-                <ScalarProperty Name="RecieverGroupPlan" ColumnName="RecieverGroupPlan" />
-                <ScalarProperty Name="InnerOrderNum" ColumnName="InnerOrderNum" />
-                <ScalarProperty Name="OrderedBy" ColumnName="OrderedBy" />
-                <ScalarProperty Name="OrderNum" ColumnName="OrderNum" />
-                <ScalarProperty Name="StorageCity" ColumnName="StorageCity" />
-                <ScalarProperty Name="StorageCountry" ColumnName="StorageCountry" />
-                <ScalarProperty Name="Сenter" ColumnName="Сenter" />
-                <ScalarProperty Name="BalanceKeeper" ColumnName="BalanceKeeper" />
-                <ScalarProperty Name="ReadyForSaleStatus" ColumnName="ReadyForSaleStatus" />
-                <ScalarProperty Name="ReserveStatus" ColumnName="ReserveStatus" />
-                <ScalarProperty Name="ProduceDate" ColumnName="ProduceDate" />
-                <ScalarProperty Name="ReconcervationDate" ColumnName="ReconcervationDate" />
-                <ScalarProperty Name="TermOnStorage" ColumnName="TermOnStorage" />
-                <ScalarProperty Name="PrihodDocType" ColumnName="PrihodDocType" />
-                <ScalarProperty Name="PrihodDocNum" ColumnName="PrihodDocNum" />
-                <ScalarProperty Name="PrihodDocDate" ColumnName="PrihodDocDate" />
-                <ScalarProperty Name="BalanceCurrency" ColumnName="BalanceCurrency" />
-                <ScalarProperty Name="CurrencyIndexToUAH" ColumnName="CurrencyIndexToUAH" />
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>

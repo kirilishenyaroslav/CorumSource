@@ -81,7 +81,7 @@ namespace CorumAdminUI.Controllers
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult RestReport(RestNavigationInfo navInfo)
         {
-            SnapshotInfoViewModel maxAvialiableSnapshot=null;
+            SnapshotInfoViewModel maxAvialiableSnapshot = null;
 
             maxAvialiableSnapshot = navInfo.snapshotId > 0 ? 
                 context.GetScreenShotById(navInfo.snapshotId) : context.GetMaxScreenShot();
@@ -98,6 +98,7 @@ namespace CorumAdminUI.Controllers
                     FilterKeeperId = navInfo.FilterKeeperId,
                     FilterProducerId = navInfo.FilterProducerId,
                     FilterOrderProjectId = navInfo.FilterOrderProjectId,
+                    FilterProductBarcodeId = navInfo.FilterProductBarcodeId,
 
                     UseStorageFilter = string.IsNullOrEmpty(navInfo.FilterStorageId) ? false : navInfo.UseStorageFilter,
                     UseCenterFilter = string.IsNullOrEmpty(navInfo.FilterCenterId) ? false : navInfo.UseCenterFilter,
@@ -105,7 +106,8 @@ namespace CorumAdminUI.Controllers
                     UseRecieverFactFilter = string.IsNullOrEmpty(navInfo.FilterRecieverFactId) ? false : navInfo.UseRecieverFactFilter,
                     UseKeeperFilter = string.IsNullOrEmpty(navInfo.FilterKeeperId) ? false : navInfo.UseKeeperFilter,
                     UseProducerFilter = string.IsNullOrEmpty(navInfo.FilterProducerId) ? false : navInfo.UseProducerFilter,
-                    UseOrderProjectFilter = string.IsNullOrEmpty(navInfo.FilterOrderProjectId) ? false : navInfo.UseOrderProjectFilter
+                    UseOrderProjectFilter = string.IsNullOrEmpty(navInfo.FilterOrderProjectId) ? false : navInfo.UseOrderProjectFilter,
+                    UseProductBarcodeFilter = string.IsNullOrEmpty(navInfo.FilterProductBarcodeId) ? false : navInfo.UseProductBarcodeFilter,
                 }),
 
                 PriceForEndConsumer = navInfo.PriceForEndConsumer,
@@ -124,6 +126,7 @@ namespace CorumAdminUI.Controllers
                 FilterKeeperId = navInfo.FilterKeeperId,
                 FilterProducerId = navInfo.FilterProducerId,
                 FilterOrderProjectId = navInfo.FilterOrderProjectId,
+                FilterProductBarcodeId = navInfo.FilterProductBarcodeId,
 
                 UseStorageFilter = string.IsNullOrEmpty(navInfo.FilterStorageId) ? false : navInfo.UseStorageFilter,
                 UseCenterFilter = string.IsNullOrEmpty(navInfo.FilterCenterId) ? false : navInfo.UseCenterFilter,
@@ -131,7 +134,8 @@ namespace CorumAdminUI.Controllers
                 UseRecieverFactFilter = string.IsNullOrEmpty(navInfo.FilterRecieverFactId) ? false : navInfo.UseRecieverFactFilter,
                 UseKeeperFilter = string.IsNullOrEmpty(navInfo.FilterKeeperId) ? false : navInfo.UseKeeperFilter,
                 UseProducerFilter = string.IsNullOrEmpty(navInfo.FilterProducerId) ? false : navInfo.UseProducerFilter,
-                UseOrderProjectFilter = string.IsNullOrEmpty(navInfo.FilterOrderProjectId) ? false : navInfo.UseOrderProjectFilter
+                UseOrderProjectFilter = string.IsNullOrEmpty(navInfo.FilterOrderProjectId) ? false : navInfo.UseOrderProjectFilter,
+                UseProductBarcodeFilter = string.IsNullOrEmpty(navInfo.FilterProductBarcodeId) ? false : navInfo.UseProductBarcodeFilter,
             };
 
             if (!((model.BalancePrice) ||
@@ -144,7 +148,6 @@ namespace CorumAdminUI.Controllers
             {
                 model.BalancePrice = true;
             }
-
 
             model.DisplayTotalValues = model.DisplayValues
                                            .GroupBy(ri => navInfo.CurrentGroupFieldName)
@@ -159,9 +162,6 @@ namespace CorumAdminUI.Controllers
                                                 FCP_After = g.Sum(s => s.FCP_After),
                                                 FCPC_After = g.Sum(s => s.FCPC_After),
                                                 BP_After = g.Sum(s => s.BP_After)
-
-                                                
-
                                             }).FirstOrDefault();
 
 
@@ -180,8 +180,6 @@ namespace CorumAdminUI.Controllers
                     BP_After = 0
                 };
             }
-
-
 
             return View(model);
         }
@@ -592,7 +590,7 @@ namespace CorumAdminUI.Controllers
             return View(result);
         }
 
-           [HttpGet]
+        [HttpGet]
         public ActionResult GetProjects(int snapShot, string searchTerm, int pageSize, int pageNum)
         {
             var storages = context.GetProjects(snapShot, searchTerm, pageSize, pageNum);
@@ -607,20 +605,49 @@ namespace CorumAdminUI.Controllers
             };
         }
 
-          private static Select2PagedResult ProjectsVmToSelect2Format(IEnumerable<RestViewModel> groupItems, int totalStorages)
+        [HttpGet]
+        public ActionResult GetBarcodes(int snapShot, string searchTerm, int pageSize, int pageNum)
         {
-            var jsonGroupItems = new Select2PagedResult {Results = new List<Select2Result>()};
+            var storages = context.GetBarcodes(snapShot, searchTerm, pageSize, pageNum);
+            var storagesCount = context.GetBarcodesCount(snapShot, searchTerm);
+
+            var pagedAttendees = ProductBarcodesVmToSelect2Format(storages, storagesCount);
+
+            return new JsonpResult
+            {
+                Data = pagedAttendees,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
+
+        private static Select2PagedResult ProductBarcodesVmToSelect2Format(IEnumerable<RestViewModel> groupItems, int totalStorages)
+        {
+            var jsonGroupItems = new Select2PagedResult { Results = new List<Select2Result>() };
             foreach (var groupItem in groupItems)
             {
                 jsonGroupItems.Results.Add(new Select2Result
                 {
-                    id = groupItem.InnerOrderNum, //groupItem.idrow.ToString(),
-                    text = groupItem.InnerOrderNum
+                    id = groupItem.BacodesAll,
+                    text = groupItem.BacodesAll
                 });
             }
             jsonGroupItems.Total = totalStorages;
             return jsonGroupItems;
         }
 
+        private static Select2PagedResult ProjectsVmToSelect2Format(IEnumerable<RestViewModel> groupItems, int totalStorages)
+        {
+            var jsonGroupItems = new Select2PagedResult {Results = new List<Select2Result>()};
+            foreach (var groupItem in groupItems)
+            {
+                jsonGroupItems.Results.Add(new Select2Result
+                {
+                    id = groupItem.InnerOrderNum,
+                    text = groupItem.InnerOrderNum
+                });
+            }
+            jsonGroupItems.Total = totalStorages;
+            return jsonGroupItems;
+        }
     }
 }

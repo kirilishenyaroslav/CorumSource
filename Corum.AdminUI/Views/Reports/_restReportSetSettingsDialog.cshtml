@@ -4,6 +4,13 @@
     .select2-container {
         width: 80%;
     }
+
+    .barcode-search-input {
+        border-width: 1px !important;
+        border-radius: 4px !important;
+        padding: 2px 8px !important;
+        color: #999 !important;
+    }
 </style>
 
 
@@ -222,18 +229,16 @@
                             (object)new
                             {
                                 id = "FilterProductBarcodeId",
-                                @class = "filter_dropdown",
+                                @class= "select2-search input barcode-search-input",
                                 @name = "FilterProductBarcodeId",
-                                data_source_url = Url.Action("GetBarcodes", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
-                                data_droplist_placeholder = "Введите штрихкод или его часть"
+                                @placeholder = "Введите штрихкод или его часть"
                             } :
                             (object)new
                             {
                                 id = "FilterProductBarcodeId",
-                                @class = "filter_dropdown",
+                                @class = "select2-search input barcode-search-input",
                                 @name = "FilterProductBarcodeId",
-                                data_source_url = Url.Action("GetBarcodes", "Reports", new { snapShot = Model.SnapshotInfo.Id }),
-                                data_droplist_placeholder = "Введите штрихкод или его часть",
+                                @placeholder = "Введите штрихкод или его часть",
                                 @disabled = "disabled"
                             })
                     </div>

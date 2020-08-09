@@ -103,27 +103,34 @@
                         .RenderValueAs(o =>
                         @<div>@o.RecieverGroupPlan</div>);
 
-                          columns.Add(model => model.OrderNum)
-                               .Titled("Номер<br> заказа").Filterable(true).Sortable(true);
+                      columns.Add(model => model.OrderNum)
+                        .Titled("Номер<br> заказа")
+                        .Filterable(true)
+                        .Sortable(true);
 
-                          columns.Add(model => model.ReadyForSaleStatus)
-                               .Titled("Готовность к<br>реализации").Filterable(true).Sortable(true);
+                      columns.Add(model => model.ReadyForSaleStatus)
+                        .Titled("Готовность к<br>реализации")
+                        .Filterable(true)
+                        .Sortable(true);
 
-                          columns.Add(model => model.ReserveStatus)
-                               .Titled("Статус<br>резервирования").Filterable(true).Sortable(true);
+                      columns.Add(model => model.ReserveStatus)
+                        .Titled("Статус<br>резервирования")
+                        .Filterable(true)
+                        .Sortable(true);
 
                       columns.Add()
-                       .Encoded(false).Css("new_columns_block_end")
-                       .Sanitized(false)
-                       .Css("centered_column")
-                       .RenderValueAs(o =>
+                        .Encoded(false).Css("new_columns_block_end")
+                        .Sanitized(false)
+                        .Css("centered_column")
+                        .RenderValueAs(o =>
                     @<div>
                         <a class="tarash-i update_link tooltips" href="@Url.Action("PartyCard", "Reports", new { InnerPartyKey = o.InnerPartyKey, snapshoId = Model.SnapshotInfo.Id })">
                             <span class="tooltip-message">Просмотр карточки партии</span>
                             <span class="glyphicon glyphicon-list-alt"></span>
-                        </a>                    
+                        </a>
+                        <a class="tarash-i update_link tooltips" onclick="ShowItemBeforeAddToBusket('@o.InnerPartyKey','@o.Storage','@o.Product', '@o.Shifr', '@o.Shifr_MDM', '@o.BacodeConsignment', '@o.BacodeProduct')">
+                            <span class="tooltip-message">Добавить товар в корзину</span>
+                            <span class="glyphicon glyphicon-plus"></span>
+                        </a>
                     </div>);
-
-
-
-                      }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())
+                    }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())

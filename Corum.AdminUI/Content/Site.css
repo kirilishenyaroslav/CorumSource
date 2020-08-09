@@ -436,6 +436,15 @@ a:hover.tooltips span.tooltip200down-message {
     height:60px;
 }
 
+.bucket-icon {
+    background: url(/Content/images/busket.png) no-repeat;
+    background-size: 40px auto;
+    background-position: center center;
+    margin: 0;
+    width: 60px;
+    height: 60px;
+}
+
 /*pagination*/
 
 .pagination{

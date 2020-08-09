@@ -57,6 +57,9 @@
 <div class="container-fluid">
 
     @Html.Partial("_restReportSetSettingsDialog")
+    @Html.Partial("_restReportAddItemToBasket")
+    @Html.Partial("_restReportBasketContent")
+    @Html.Partial("_restReportBasket")
 
     <div class="row">
         <div class="col-lg-12 main">
@@ -71,62 +74,61 @@
                 <div id="showrestsettings" style="margin-bottom: 15px;" class="col-md-8">
                     <input type="button" value="Конфигурация" class="btn btn-default" onclick="ShowSettings()" />&nbsp;&nbsp;
                     @Html.ActionLink("Экспорт в excel", "ReestrReportAsExcel", "ExportToExcel", new
-                        {
-                            snapshotId = Model.SnapshotInfo.Id,
+                    {
+                       snapshotId = Model.SnapshotInfo.Id,
 
-                            CurrentGroupFieldName = Model.CurrentGroupFieldName,
+                       CurrentGroupFieldName = Model.CurrentGroupFieldName,
 
-                            FilterStorageId = Model.FilterStorageId,
-                            FilterCenterId = Model.FilterCenterId,
-                            FilterRecieverPlanId = Model.FilterRecieverPlanId,
-                            FilterRecieverFactId = Model.FilterRecieverFactId,
-                            FilterKeeperId = Model.FilterKeeperId,
-                            FilterProducerId = Model.FilterProducerId,
+                       FilterStorageId = Model.FilterStorageId,
+                       FilterCenterId = Model.FilterCenterId,
+                       FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                       FilterRecieverFactId = Model.FilterRecieverFactId,
+                       FilterKeeperId = Model.FilterKeeperId,
+                       FilterProducerId = Model.FilterProducerId,
 
-                            UseStorageFilter = Model.UseStorageFilter,
-                            UseCenterFilter = Model.UseCenterFilter,
-                            UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
-                            UseRecieverFactFilter = Model.UseRecieverFactFilter,
-                            UseKeeperFilter = Model.UseKeeperFilter,
-                            UseProducerFilter = Model.UseProducerFilter,
+                       UseStorageFilter = Model.UseStorageFilter,
+                       UseCenterFilter = Model.UseCenterFilter,
+                       UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                       UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                       UseKeeperFilter = Model.UseKeeperFilter,
+                       UseProducerFilter = Model.UseProducerFilter,
 
-                            PriceForEndConsumer = Model.PriceForEndConsumer,
-                            PriceForFirstReciver = Model.PriceForFirstReciver,
-                            PlanFullCost = Model.PlanFullCost,
-                            PlanChangableCost = Model.PlanChangableCost,
-                            FactFullCosts = Model.FactFullCosts,
-                            FactChangableCosts = Model.FactChangableCosts,
-                            BalancePrice = Model.BalancePrice
+                       PriceForEndConsumer = Model.PriceForEndConsumer,
+                       PriceForFirstReciver = Model.PriceForFirstReciver,
+                       PlanFullCost = Model.PlanFullCost,
+                       PlanChangableCost = Model.PlanChangableCost,
+                       FactFullCosts = Model.FactFullCosts,
+                       FactChangableCosts = Model.FactChangableCosts,
+                       BalancePrice = Model.BalancePrice
 
-                        }, new { @class = "btn btn-success delete_link" })&nbsp;&nbsp;
-
+                    }, new { @class = "btn btn-success delete_link" })&nbsp;&nbsp;
 
                     @Html.ActionLink("Сводная", "GroupRestReport", "Reports", new
                     {
-                        snapshotId = Model.SnapshotInfo.Id,
-                        CurrentGroupFieldName = Model.CurrentGroupFieldName,
+                       snapshotId = Model.SnapshotInfo.Id,
+                       CurrentGroupFieldName = Model.CurrentGroupFieldName,
 
-                        FilterStorageId = Model.FilterStorageId,
-                        FilterCenterId = Model.FilterCenterId,
-                        FilterRecieverPlanId = Model.FilterRecieverPlanId,
-                        FilterRecieverFactId = Model.FilterRecieverFactId,
-                        FilterKeeperId = Model.FilterKeeperId,
-                        FilterProducerId = Model.FilterProducerId,
+                       FilterStorageId = Model.FilterStorageId,
+                       FilterCenterId = Model.FilterCenterId,
+                       FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                       FilterRecieverFactId = Model.FilterRecieverFactId,
+                       FilterKeeperId = Model.FilterKeeperId,
+                       FilterProducerId = Model.FilterProducerId,
 
-                        UseStorageFilter = Model.UseStorageFilter,
-                        UseCenterFilter = Model.UseCenterFilter,
-                        UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
-                        UseRecieverFactFilter = Model.UseRecieverFactFilter,
-                        UseKeeperFilter = Model.UseKeeperFilter,
-                        UseProducerFilter = Model.UseProducerFilter,
+                       UseStorageFilter = Model.UseStorageFilter,
+                       UseCenterFilter = Model.UseCenterFilter,
+                       UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                       UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                       UseKeeperFilter = Model.UseKeeperFilter,
+                       UseProducerFilter = Model.UseProducerFilter,
 
-                        PriceForEndConsumer = Model.PriceForEndConsumer,
-                        PriceForFirstReciver = Model.PriceForFirstReciver,
-                        PlanFullCost = Model.PlanFullCost,
-                        PlanChangableCost = Model.PlanChangableCost,
-                        FactFullCosts = Model.FactFullCosts,
-                        FactChangableCosts = Model.FactChangableCosts,
-                        BalancePrice = Model.BalancePrice
+                       PriceForEndConsumer = Model.PriceForEndConsumer,
+                       PriceForFirstReciver = Model.PriceForFirstReciver,
+                       PlanFullCost = Model.PlanFullCost,
+                       PlanChangableCost = Model.PlanChangableCost,
+                       FactFullCosts = Model.FactFullCosts,
+                       FactChangableCosts = Model.FactChangableCosts,
+                       BalancePrice = Model.BalancePrice
 
                     }, new { @class = "btn btn-info" })
                 </div>
@@ -137,7 +139,6 @@
 
             <div id="RestReportTableWrapper" class="table-header clearfix row" style="font-size: 10px !important;">
                 @Html.Partial("_restReportDetailsValues")
-
             </div>
 
             @TPagging("RestReport", "Reports", @Model.RequestParams, this)
@@ -157,7 +158,8 @@
 
         $(document).ready(function ()
         {
-            if ($(".filtered").length == 0) {
+            if ($(".filtered").length == 0)
+            {
                 var table = document.getElementsByTagName("table")[0];
                 var footer = table.createTFoot();
                 var row = footer.insertRow(0);
@@ -212,10 +214,13 @@
             }
         });
 
+        function ShowItemBeforeAddToBusket(InnerPartyKey, Storage, Product, Shifr, Shifr_MDM, BacodeConsignment, BacodeProduct)
+        {
+            ShowDialogItemSettings(InnerPartyKey, Storage, Product, Shifr, Shifr_MDM, BacodeConsignment, BacodeProduct);
+        }
 
-
-
-        function ShowSettings() {
+        function ShowSettings()
+        {
             ShowDialogColumnSettings();
         }
 
@@ -267,7 +272,207 @@
             return;
         }
 
+        function ShowDialogItemSettings(InnerPartyKey, Storage, Product, Shifr, Shifr_MDM, BacodeConsignment, BacodeProduct)
+        {
+            $('#additemtobasket')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,
+                    resizable: false,
+                    title: "Параметры добавления остатка в корзину",
+                    modal: true,
+                    open: function (event, ui) {
 
+                        $("#innerPartyKey").html(InnerPartyKey);
+                        $("#Storage").html(Storage);
+                        $("#Product").html(Product);
+                        $("#Shifr").html(Shifr);
+                        $("#Shifr_MDM").html(Shifr_MDM);
+                        $("#BacodeConsignment").html(BacodeConsignment);
+                        $("#BacodeProduct").html(BacodeProduct);
+
+                    },
+                    close: function (event, ui) {
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                        [
+                            {
+                                text: "Отмена",
+                                "class": 'cancel-btn btn btn-outline',
+                                click: function () {
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Добавить",
+                                "class": 'btn btn-primary',
+                                click: function () {
+
+                                    let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+
+                                    if (bucketValues === null || bucketValues === undefined) {
+                                        bucketValues = [];
+                                    }
+
+                                    var theSameProduct = bucketValues.find((element) =>
+                                    {
+                                        if (element.InnerPartyKey === InnerPartyKey) {
+                                            element.Count = element.Count + 1;
+                                            return true;
+                                        }
+                                    });
+
+                                    if (theSameProduct === null || theSameProduct === undefined)
+                                    {
+                                        let newBuckekItem = new Object();
+
+                                        newBuckekItem.InnerPartyKey = InnerPartyKey;
+                                        newBuckekItem.Storage = Storage;
+                                        newBuckekItem.Product = Product;
+                                        newBuckekItem.Shifr = Shifr;
+                                        newBuckekItem.Shifr_MDM = Shifr_MDM;
+                                        newBuckekItem.BacodeConsignment = BacodeConsignment;
+                                        newBuckekItem.BacodeProduct = BacodeProduct;
+                                        newBuckekItem.Count = 1;
+
+                                        bucketValues.push(newBuckekItem);
+                                    }
+
+                                    sessionStorage.setItem('bucketValues', JSON.stringify(bucketValues));
+                                    $('.basketCount').html(bucketValues.length);
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                });
+
+            $('#additemtobasket').dialog('open');
+
+            return;
+        }
+
+        function ShowBusketDialog() {
+            $('#busketContent')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom modal_dialog",
+                    autoOpen: false,
+                    width: 1200,
+                    resizable: false,
+                    title: "Содержимое корзины",
+                    modal: true,
+                    position: {
+                        my: "top",
+                        at: "top+100",
+                        of: ".container-fluid"
+                    },
+                    open: function (event, ui) {
+                        let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+
+                        if (bucketValues === null || bucketValues === undefined) {
+                            bucketValues = [];
+                        }
+
+                        var sourceBusketItems =
+                        {
+                            localData: bucketValues,
+                            dataType: "array",
+                            datafields: [
+                                { name: 'InnerPartyKey' },
+                                { name: 'Storage' },
+                                { name: 'Product' },
+                                { name: 'Shifr' },
+                                { name: 'Shifr_MDM' },
+                                { name: 'BacodeConsignment' },
+                                { name: 'BacodeProduct' },
+                                { name: 'Count' }
+                            ],
+                            id: 'InnerPartyKey'
+                        };
+
+                        var dataAdapterBusketItems = new $.jqx.dataAdapter(sourceBusketItems);
+
+                        $("#jqxgridUC").jqxDataTable(
+                            {
+                                width: 1150,
+                                source: dataAdapterBusketItems,
+                                theme: 'arctic',
+                                columnsheight: 80,
+                                pageSize: 10,
+                                sortable: true,
+                                filterable: true,
+                                pageable: true,
+                                columns: [
+                                    { text: 'Товар', datafield: 'Product', width: 350 },
+                                    { text: 'Склад', datafield: 'Storage', width: 150 },
+                                    { text: 'Артикул', datafield: 'Shifr', width: 150 },
+                                    { text: 'Артикул МДМ', datafield: 'Shifr_MDM', width: 125 },
+                                    { text: 'Штрих-код<br/>партии', datafield: 'BacodeConsignment', width: 125 },
+                                    { text: 'Штрих-код<br/>товара', datafield: 'BacodeProduct', width: 125 },
+                                    { text: 'Кол-во<br/>ед.', datafield: 'Count', width: 125 }
+                                ]
+                            });
+                    },
+                    close: function (event, ui) {
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                        [
+                            {
+                                text: "Очистить корзину",
+                                "class": 'btn',
+                                click: function () {
+                                    sessionStorage.setItem('bucketValues', JSON.stringify([]));
+                                    $('.basketCount').html(0);
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Отмена",
+                                "class": 'btn',
+                                click: function () {
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Создать документ",
+                                "class": 'btn btn-primary',
+                                click: function () {
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                });
+
+            $('#busketContent').dialog('open');
+
+            return;
+        }
+
+        function ShowBusket() {
+            ShowBusketDialog();
+        }
+
+        $(document).ready(function () {
+            let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+            if (bucketValues === null || bucketValues === undefined) {
+                bucketValues = [];
+            }
+            $('.basketCount').html(bucketValues.length);
+        });
     </script>
 }
 

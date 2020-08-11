@@ -282,8 +282,16 @@
                     resizable: false,
                     title: "Параметры добавления остатка в корзину",
                     modal: true,
+                    position: {
+                        my: "top",
+                        at: "top+100",
+                        of: ".container-fluid"
+                    },
                     open: function (event, ui) {
 
+                        $("#Comments").val("");
+                        $("#StorageCode").val("");
+                        $("#Count").val("1");
                         $("#innerPartyKey").html(InnerPartyKey);
                         $("#Storage").html(Storage);
                         $("#Product").html(Product);
@@ -341,7 +349,9 @@
                                         newBuckekItem.Shifr_MDM = Shifr_MDM;
                                         newBuckekItem.BacodeConsignment = BacodeConsignment;
                                         newBuckekItem.BacodeProduct = BacodeProduct;
-                                        newBuckekItem.Count = 1;
+                                        newBuckekItem.Count = $("#Count").val();
+                                        newBuckekItem.Comments = $("#comments").val();
+                                        newBuckekItem.StorageCode = $("#StorageCode").val();
 
                                         bucketValues.push(newBuckekItem);
                                     }
@@ -364,13 +374,13 @@
                 .dialog({
                     dialogClass: "jq-dialog-window-custom modal_dialog",
                     autoOpen: false,
-                    width: 1200,
+                    width: 1350,
                     resizable: false,
                     title: "Содержимое корзины",
                     modal: true,
                     position: {
                         my: "top",
-                        at: "top+100",
+                        at: "top+50",
                         of: ".container-fluid"
                     },
                     open: function (event, ui) {
@@ -392,7 +402,9 @@
                                 { name: 'Shifr_MDM' },
                                 { name: 'BacodeConsignment' },
                                 { name: 'BacodeProduct' },
-                                { name: 'Count' }
+                                { name: 'Count' },
+                                { name: 'Comments' },
+                                { name: 'StorageCode' }
                             ],
                             id: 'InnerPartyKey'
                         };
@@ -401,22 +413,69 @@
 
                         $("#jqxgridUC").jqxDataTable(
                             {
-                                width: 1150,
+                                width: 1300,
                                 source: dataAdapterBusketItems,
-                                theme: 'arctic',
+                                theme: 'orange',
+                                altRows: false,
                                 columnsheight: 80,
-                                pageSize: 10,
+                                pageSize: 6,
                                 sortable: true,
-                                filterable: true,
+                                filterable: false,
                                 pageable: true,
+                                showAggregates: true,
+                                aggregatesHeight: 50,
                                 columns: [
-                                    { text: 'Товар', datafield: 'Product', width: 350 },
-                                    { text: 'Склад', datafield: 'Storage', width: 150 },
-                                    { text: 'Артикул', datafield: 'Shifr', width: 150 },
-                                    { text: 'Артикул МДМ', datafield: 'Shifr_MDM', width: 125 },
-                                    { text: 'Штрих-код<br/>партии', datafield: 'BacodeConsignment', width: 125 },
-                                    { text: 'Штрих-код<br/>товара', datafield: 'BacodeProduct', width: 125 },
-                                    { text: 'Кол-во<br/>ед.', datafield: 'Count', width: 125 }
+                                    {
+                                        text: 'НАИМЕНОВАНИЕ<br/>ТОВАРА', datafield: 'Product', width: 300, renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>"+text+"</div>";
+                                        },
+                                    },
+                                    {
+                                        text: 'СКЛАД', datafield: 'Storage', width: 100, renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    ,
+                                    {
+                                        text: 'КОД<br>МЕСТА<br>ХРАНЕНИЯ', datafield: 'StorageCode', width: 100, renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'АРТИКУЛ', datafield: 'Shifr', width: 125, renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'АРТИКУЛ МДМ', datafield: 'Shifr_MDM', width: 125, renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'ШТРИХ-КОД<br/>ПАРТИИ', datafield: 'BacodeConsignment', width: 125, renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'ШТРИХ-КОД<br/>ТОВАРА', datafield: 'BacodeProduct', width: 125, renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'КОЛ_ВО<br/>ЕД.', datafield: 'Count', width: 100, type: 'float', cellsFormat: 'F2', cellsalign: 'right', renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }, aggregates: ['sum'],
+                                        aggregatesRenderer: function (aggregates, column, element) {
+                                            var renderString = "<div style='margin: 4px; float: right;  height: 100%;'>";
+                                            renderString += "<strong>Всего, eд: </strong><br><span style='color:green;'>" + aggregates.sum + "</span></div>";
+                                            return renderString;
+                                        }
+                                    },
+                                    {
+                                        text: 'КОММЕНТАРИЙ', datafield: 'Comments', width: 225, renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    }
                                 ]
                             });
                     },
@@ -441,7 +500,7 @@
                                 }
                             },
                             {
-                                text: "Отмена",
+                                text: "Закрыть",
                                 "class": 'btn',
                                 click: function () {
                                     $(this).dialog("close");

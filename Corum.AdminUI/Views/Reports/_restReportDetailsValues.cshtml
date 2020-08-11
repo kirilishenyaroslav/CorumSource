@@ -122,8 +122,9 @@
                         .Encoded(false).Css("new_columns_block_end")
                         .Sanitized(false)
                         .Css("centered_column")
+                        .SetWidth(40)
                         .RenderValueAs(o =>
-                    @<div>
+                    @<div style="min-width:40px!important;">
                         <a class="tarash-i update_link tooltips" href="@Url.Action("PartyCard", "Reports", new { InnerPartyKey = o.InnerPartyKey, snapshoId = Model.SnapshotInfo.Id })">
                             <span class="tooltip-message">Просмотр карточки партии</span>
                             <span class="glyphicon glyphicon-list-alt"></span>

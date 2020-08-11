@@ -1,23 +1,29 @@
-﻿<div id="additemtobasket" class="row" style="display: none;">
+﻿<div id="additemtobasket" class="row" style="display: none; font-size:14px;">
 
-        <span id="innerPartyKey" style="visibility:hidden;"></span>
+    <span id="innerPartyKey" style="visibility:hidden;"></span>
 
-        <div style="margin-top: 25px; margin-left: 25px; font-size: 12px; font-weight: normal;">
-            <span style="font-weight:bold;">Tовар:</span> <span id="Product"></span>
-        </div>
-        <div style="margin-top: 25px; margin-left: 25px; font-size: 12px; font-weight: normal;">
-            <span style="font-weight:bold;">Склад:</span> <span id="Storage"></span>
-        </div>
-        <div style="margin-top: 25px; margin-left: 25px; font-size: 12px; font-weight: normal;">
-            <span style="font-weight:bold;">Артикул:</span> <span id="Shifr"></span>
-        </div>
-        <div style="margin-top: 25px; margin-left: 25px; font-size: 12px; font-weight: normal;">
-            <span style="font-weight:bold;">Артикул МДМ:</span> <span id="Shifr_MDM"></span>
-        </div>
-        <div style="margin-top: 25px; margin-left: 25px; font-size: 12px; font-weight: normal;">
-            <span style="font-weight:bold;">Штрих-код товара:</span> <span id="BacodeProduct"></span>
-        </div>
-        <div style="margin-top: 25px; margin-left: 25px; margin-bottom:25px; font-size: 12px; font-weight: normal;">
-            <span style="font-weight:bold;">Штрих-код партии:</span> <span id="BacodeConsignment"></span>
-        </div>
+    <div style="margin-top: 25px; margin-left: 25px; font-size: 12px; font-weight: normal;">
+        <span style="font-size:20px;font-weight:bold;">Tовар:</span>
+        <br>
+        <span id="Product" style="font-size:20px;color:green;font-weight:bold;"></span>
+    </div>
+    <div style="margin-top: 25px; margin-left: 25px; font-size: 12px; font-weight: normal;">
+        <span style="font-size:20px;font-weight:bold;">Количество единиц:</span>
+        <input id="Count" type="number" min="1" max="1000" step="1" value="1" style="font-size:20px;" />
+    </div>
+    <div style="margin-top: 25px; margin-left: 25px; font-size: 12px; font-weight: normal;">
+        <span style="font-size:20px;font-weight:bold;">Код хранения:</span>
+        <input id="StorageCode" type="text" value="" style="font-size:20px;" />
+    </div>
+    <div style="margin-top: 25px; margin-left: 25px; font-size: 12px; font-weight: normal;">
+        <span>Склад:</span> <span id="Storage"></span><br>
+        <span>Артикул:</span> <span id="Shifr"></span><br>
+        <span>Артикул МДМ:</span> <span id="Shifr_MDM"></span><br>
+        <span>Штрих-код товара:</span> <span id="BacodeProduct"></span><br>
+        <span>Штрих-код партии:</span> <span id="BacodeConsignment"></span><br>
+    </div>
+    <div style="margin-top: 25px; margin-left: 25px; margin-bottom:25px; font-size: 12px; font-weight: normal;">
+        <span style="font-weight:bold;">Комментарий:</span><br />
+        <textarea id="comments"></textarea>
+    </div>
 </div>

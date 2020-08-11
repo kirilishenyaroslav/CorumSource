@@ -274,6 +274,7 @@
     <Content Include="Content\img\icon_close_dilog.png" />
     <Content Include="Content\img\logo_logistic.jpg" />
     <Content Include="Content\img\select2.png" />
+    <Content Include="Content\jqx.orange.css" />
     <Content Include="Content\select2-spinner.gif" />
     <Content Include="Content\select2.png" />
     <Content Include="Content\select2x2.png" />

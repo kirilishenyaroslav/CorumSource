@@ -65,8 +65,11 @@
         <div class="col-lg-12 main">
 
             <div class="row">
+                @{ 
+                    var monthStart = new DateTime(Model.SnapshotInfo.ActualDateBeg.Value.Year, Model.SnapshotInfo.ActualDateBeg.Value.Month, 1);
+                }
                 <div style="margin-bottom: 15px; text-align:center;" class="col-md-12">
-                    <span style="margin-bottom: 20px; font-weight: bold;">Реестр остатков за период: @Model.SnapshotInfo.ActualDateBeg.Value.ToString("dd.MM.yyyy") - @Model.SnapshotInfo.ActualDateEnd.Value.ToString("dd.MM.yyyy")</span>
+                    <span style="margin-bottom: 20px; font-weight: bold;">Реестр остатков за период: @monthStart.ToString("dd.MM.yyyy") - @Model.SnapshotInfo.ActualDateEnd.Value.ToString("dd.MM.yyyy")</span>
                 </div>
             </div>
 
@@ -152,7 +155,6 @@
 @section scripts
 {
     <script>
-
         var offset = $('.navbar').height();
         $("html:not(.legacy) table").stickyTableHeaders({ fixedOffset: offset });
 
@@ -374,9 +376,8 @@
                 .dialog({
                     dialogClass: "jq-dialog-window-custom modal_dialog",
                     autoOpen: false,
-                    width: 1350,
+                    width: 1150,
                     resizable: false,
-                    title: "Содержимое корзины",
                     modal: true,
                     position: {
                         my: "top",
@@ -413,71 +414,208 @@
 
                         $("#jqxgridUC").jqxDataTable(
                             {
-                                width: 1300,
+                                width: 1100,
                                 source: dataAdapterBusketItems,
                                 theme: 'orange',
                                 altRows: false,
                                 columnsheight: 80,
-                                pageSize: 6,
+                                pageSize: 5,
                                 sortable: true,
-                                filterable: false,
+                                filterable: true,
                                 pageable: true,
+                                editable: true,
+                                editSettings: { saveOnPageChange: true, saveOnBlur: true, saveOnSelectionChange: true, cancelOnEsc: true, saveOnEnter: true, editSingleCell: true, editOnDoubleClick: true, editOnF2: false },
+                                rendering: function () {
+                                    // destroys all buttons.
+                                    if ($(".editButtons").length > 0) {
+                                        $(".editButtons").jqxButton('destroy');
+                                    }
+                                },
+                                // called when jqxDataTable is rendered.
+                                rendered: function () {
+                                    if ($(".editButtons").length > 0) {
+
+                                        var editClick = function (event) {
+
+                                            debugger;
+                                            var target = $(event.target);
+                                            // get button's value.
+                                            var value = target.val();
+                                            // get clicked row.
+                                            var rowIndex = parseInt(event.target.getAttribute('data-row'));
+                                            if (isNaN(rowIndex)) {
+                                                return;
+                                            }
+
+                                            var rowKey = event.target.getAttribute('data-key');
+                                            if (rowKey === null || rowKey === undefined) {
+                                                return;
+                                            }
+
+                                            let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+
+                                            if (bucketValues === null || bucketValues === undefined) {
+                                                bucketValues = [];
+                                            }
+
+                                            var filtered = bucketValues.filter(function (el) { return el.InnerPartyKey != rowKey; });
+
+                                            sessionStorage.setItem('bucketValues', JSON.stringify(filtered));
+
+                                            $('.basketCount').html(filtered.length);
+
+                                            $("#jqxgridUC").jqxDataTable('beginUpdate', rowIndex);
+                                            $("#jqxgridUC").jqxDataTable('deleteRow', rowIndex);
+                                            $("#jqxgridUC").jqxDataTable('endUpdate', rowIndex);
+                                        }
+
+                                        $(".editButtons").on('click', function (event) {
+                                            editClick(event);
+                                        });
+                                    }
+                                },
+                                pagerButtonsCount: 8,
                                 showAggregates: true,
                                 aggregatesHeight: 50,
                                 columns: [
                                     {
-                                        text: 'НАИМЕНОВАНИЕ<br/>ТОВАРА', datafield: 'Product', width: 300, renderer: function (text, align, height) {
+                                        text: '#', sortable: false, filterable: false, editable: false, pinned: true,
+                                        groupable: false, draggable: false, resizable: false,
+                                        datafield: null, columntype: 'number', width: 35,
+                                        cellsrenderer: function (row, column, value) {
+                                            return "<div style='margin:4px;'>" + (row + 1) + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'АРТИКУЛ', editable: false, datafield: 'Shifr', width: 125, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'НОМЕНКЛАТУРА', editable: false, datafield: 'Product', width: 300, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
                                             return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>"+text+"</div>";
                                         },
                                     },
                                     {
-                                        text: 'СКЛАД', datafield: 'Storage', width: 100, renderer: function (text, align, height) {
-                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
-                                        }
-                                    },
-                                    ,
-                                    {
-                                        text: 'КОД<br>МЕСТА<br>ХРАНЕНИЯ', datafield: 'StorageCode', width: 100, renderer: function (text, align, height) {
+                                        text: 'СКЛАД', editable: false, datafield: 'Storage', width: 150, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
                                             return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
                                         }
                                     },
                                     {
-                                        text: 'АРТИКУЛ', datafield: 'Shifr', width: 125, renderer: function (text, align, height) {
+                                        text: 'КОД МЕСТА ХР.', editable: false, datafield: 'StorageCode', width: 150, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
                                             return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
                                         }
                                     },
                                     {
-                                        text: 'АРТИКУЛ МДМ', datafield: 'Shifr_MDM', width: 125, renderer: function (text, align, height) {
-                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
-                                        }
-                                    },
-                                    {
-                                        text: 'ШТРИХ-КОД<br/>ПАРТИИ', datafield: 'BacodeConsignment', width: 125, renderer: function (text, align, height) {
-                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
-                                        }
-                                    },
-                                    {
-                                        text: 'ШТРИХ-КОД<br/>ТОВАРА', datafield: 'BacodeProduct', width: 125, renderer: function (text, align, height) {
-                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
-                                        }
-                                    },
-                                    {
-                                        text: 'КОЛ_ВО<br/>ЕД.', datafield: 'Count', width: 100, type: 'float', cellsFormat: 'F2', cellsalign: 'right', renderer: function (text, align, height) {
-                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
-                                        }, aggregates: ['sum'],
+                                        text: 'КОЛ-ВО ЕД.', editable: true, datafield: 'Count', width: 100, type: 'float', cellsFormat: 'F2', cellsalign: 'right',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'><strong>" + text + "</strong></div>";
+                                        },
+                                        cellsrenderer: function (row, column, value) {
+                                            return "<div style='margin:4px;'><strong>" + value + "</strong></div>";
+                                        },
+                                        validation: function (cell, value) {
+                                            if (value < 0) return { message: "Количество должно быть больше 0!", result: false };
+                                            return true;
+                                        },
+                                        aggregates: ['sum'],
                                         aggregatesRenderer: function (aggregates, column, element) {
-                                            var renderString = "<div style='margin: 4px; float: right;  height: 100%;'>";
-                                            renderString += "<strong>Всего, eд: </strong><br><span style='color:green;'>" + aggregates.sum + "</span></div>";
+                                            let renderString = "<div style='margin: 4px; float: right;  height: 100%;'>";
+                                            let renderedValue = 0;
+                                            if (aggregates === null || aggregates.sum === undefined || aggregates === undefined || aggregates.sum === undefined) {
+                                                renderedValue = 0;
+                                            }
+                                            else {
+                                                renderedValue = aggregates.sum;
+                                            }
+
+                                            renderString += "<strong>Всего, eд:<br><span style='color:green;'>" + renderedValue + "</span></strong></div>";
                                             return renderString;
                                         }
                                     },
                                     {
-                                        text: 'КОММЕНТАРИЙ', datafield: 'Comments', width: 225, renderer: function (text, align, height) {
+                                        text: 'АРТИКУЛ МДМ', editable: false, datafield: 'Shifr_MDM', width: 150, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
                                             return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'Ш.К. ПАРТИИ', editable: false, datafield: 'BacodeConsignment', width: 150, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'Ш.К. ТОВАРА', editable: false, datafield: 'BacodeProduct', width: 150, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'КОММЕНТАРИЙ', datafield: 'Comments', width: 200, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: '', cellsAlign: 'center', align: "center", columnType: 'string', editable: false, sortable: false, dataField: 'InnerPartyKey', width: 45,
+                                        cellsRenderer: function (row, column, value) {
+                                            return "<button data-row='" + row + "' data-key='" + value +"' class='editButtons'></button>";
                                         }
                                     }
                                 ]
                             });
+
+                        $("#jqxgridUC").on('cellEndEdit', function (event) {
+                            var args = event.args;
+                            // row key
+                            var rowKey = args.key;
+                            var value = args.value;
+
+                            let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+
+                            if (bucketValues === null || bucketValues === undefined) {
+                                bucketValues = [];
+                            }
+
+                            bucketValues.find((element) => {
+                                if (element.InnerPartyKey === rowKey) {
+                                    element.Count = value.toFixed();
+                                    return true;
+                                }
+                            });
+
+                            sessionStorage.setItem('bucketValues', JSON.stringify(bucketValues));
+                        });
+
+                        $("#jqxgridUC").jqxDataTable('beginUpdate');
+                        $("#jqxgridUC").jqxDataTable('hideColumn', 'Shifr_MDM');
+                        $("#jqxgridUC").jqxDataTable('hideColumn', 'BacodeConsignment');
+                        $("#jqxgridUC").jqxDataTable('hideColumn', 'BacodeProduct');
+                        $("#jqxgridUC").jqxDataTable('endUpdate');
+
+                        $("#shortForm").on('change', function (event)
+                        {
+                            $("#jqxgridUC").jqxDataTable('beginUpdate');
+
+                            if (event.currentTarget.checked) {
+                                $("#jqxgridUC").jqxDataTable('showColumn', 'Shifr_MDM');
+                                $("#jqxgridUC").jqxDataTable('showColumn', 'BacodeConsignment');
+                                $("#jqxgridUC").jqxDataTable('showColumn', 'BacodeProduct');
+                            }
+                            else {
+                                $("#jqxgridUC").jqxDataTable('hideColumn', 'Shifr_MDM');
+                                $("#jqxgridUC").jqxDataTable('hideColumn', 'BacodeConsignment');
+                                $("#jqxgridUC").jqxDataTable('hideColumn', 'BacodeProduct');
+                            }
+
+                            $("#jqxgridUC").jqxDataTable('endUpdate');
+
+                        });
                     },
                     close: function (event, ui) {
                         $(this).dialog('destroy');

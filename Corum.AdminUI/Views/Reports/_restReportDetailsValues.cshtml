@@ -6,7 +6,6 @@
     var numberFormat = new CultureInfo("en-US", false).NumberFormat;
 }
 
-
 @(Html.Grid(Model.DisplayValues)
                       .Columns(columns =>
                       {
@@ -19,7 +18,7 @@
                         .Sortable(true);
 
                       columns.Add(model => model.Product)
-                        .Titled("Продукт")
+                        .Titled("Номенклатура")
                         .Filterable(true).Sortable(true)
                         .Encoded(false)
                         .Sanitized(false)

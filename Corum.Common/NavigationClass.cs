@@ -9,6 +9,7 @@ using Corum.Models.ViewModels.Cars;
 using Corum.Models.ViewModels.Orders;
 using Corum.Models.ViewModels.Admin;
 using Corum.Models.ViewModels.OrderConcurs;
+using Corum.Models.ViewModels.Bucket;
 
 namespace Corum.Models
 {
@@ -119,7 +120,17 @@ namespace Corum.Models
 
         }
     }
-    
+
+    public class BucketDocsDocsNavigationResult<T> : NavigationResult<T> where T : class
+    {
+        public List<BucketDocument> BucketDocuments { get; set; }
+
+        public BucketDocsDocsNavigationResult(NavigationInfo request, string userId) : base(request, userId)
+        {
+
+        }
+    }
+
     public class OrdersNavigationResult<T> : NavigationResult<T> where T : class
     {
         public List<OrderTypeViewModel> AvailiableTypes { get; set; }

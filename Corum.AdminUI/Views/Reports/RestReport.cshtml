@@ -133,7 +133,8 @@
                        FactChangableCosts = Model.FactChangableCosts,
                        BalancePrice = Model.BalancePrice
 
-                    }, new { @class = "btn btn-info" })
+                    }, new { @class = "btn btn-info" }) &nbsp;
+                    @Html.ActionLink("Реестр документов корзины", "BucketDocuments", "Reports", null, new { @class = "btn btn-info" })
                 </div>
                 <div class="col-md-4" style="font-size: 10px !important;">
                     @Html.Partial("_restReportFilterSettings")
@@ -648,6 +649,33 @@
                                 text: "Создать документ",
                                 "class": 'btn btn-primary',
                                 click: function () {
+
+                                    let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+
+                                    if (bucketValues === null || bucketValues === undefined) {
+                                        bucketValues = [];
+                                    }
+
+                                    $.ajax({
+                                        type: "POST",
+                                        url: '@Url.Action("SaveBucketDocument", "Reports")',
+                                        data: JSON.stringify(bucketValues),
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (response) {
+                                            alert('Документ корзины № ' + response + ' был успешно сохранен!!');
+                                        },
+                                        failure: function (response) {
+                                            alert('При сохранении возникла ошибка!');
+                                        },
+                                        error: function (response) {
+                                            alert('При сохранении возникла ошибка!');
+                                        }
+                                    });
+
+                                    sessionStorage.setItem('bucketValues', JSON.stringify([]));
+                                    $('.basketCount').html(0);
+
                                     $(this).dialog("close");
                                 }
                             }

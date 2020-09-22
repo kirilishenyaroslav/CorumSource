@@ -7,6 +7,7 @@ using Corum.DAL.Entity;
 using Corum.Models;
 using Corum.DAL.Mappings;
 using Corum.Models.ViewModels;
+using Corum.Models.ViewModels.Bucket;
 
 namespace Corum.DAL
 {
@@ -671,6 +672,96 @@ namespace Corum.DAL
         public int GetProjectsCount(int snapShot, string searchTerm)
         {
             return GetProjectsBySearchString(snapShot, searchTerm).Count();
+        }
+
+        public long SaveBucketDocument(IEnumerable<BucketItem> items, string userId)
+        {
+            var document = new BucketDocuments
+            {
+                DocDate = DateTime.Now,
+                DocNumber = DateTime.Now.Ticks.ToString(),
+                CreatedBy = userId
+            };
+
+            db.BucketDocuments.Add(document);
+            db.SaveChanges();
+
+            foreach (var item in items)
+            {
+                var documentItem = new BucketDocumentRows
+                {
+                    IdBucketDocument = document.IdBucketDocument,
+                    InnerPartyKey = item.InnerPartyKey,
+                    Storage = item.Storage,
+                    Product = item.Product,
+                    Shifr = string.IsNullOrEmpty(item.Shifr) ? string.Empty : item.Shifr,
+                    Shifr_MDM = string.IsNullOrEmpty(item.Shifr_MDM) ? string.Empty : item.Shifr_MDM,
+                    BacodeConsignment = item.BacodeConsignment,
+                    BacodeProduct = item.BacodeProduct,
+                    StorageCode = string.IsNullOrEmpty(item.StorageCode)? string.Empty: item.StorageCode,
+                    Comments = string.IsNullOrEmpty(item.Comments)? string.Empty: item.Comments,
+                    Count = item.Count
+                };
+
+                db.BucketDocumentRows.Add(documentItem);
+            }
+
+            db.SaveChanges();
+            return document.IdBucketDocument;
+        }
+
+        public IQueryable<BucketDocument> GetBucketDocuments()
+        {
+            var query = from d in db.BucketDocuments
+                        join u in db.AspNetUsers on d.CreatedBy equals u.Id
+                               select new BucketDocument
+                               {
+                                   Id = d.IdBucketDocument,
+                                   Date = d.DocDate,
+                                   Number = d.DocNumber,
+                                   CreatedBy = u.UserName
+                               };
+
+            return query.OrderByDescending(o => o.Id).AsQueryable();
+        }
+
+        public BucketDocument GetBucketDocument(long Id)
+        {
+            var query = from d in db.BucketDocuments
+                        join u in db.AspNetUsers on d.CreatedBy equals u.Id
+                        where d.IdBucketDocument ==  Id
+                        select new BucketDocument
+                        {
+                            Id = d.IdBucketDocument,
+                            Date = d.DocDate,
+                            Number = d.DocNumber,
+                            CreatedBy = u.UserName
+                        };
+
+            var items = from r in db.BucketDocumentRows
+                        where r.IdBucketDocument == Id
+                        select new BucketItem
+                        {
+                            InnerPartyKey = r.InnerPartyKey,
+                            Storage = r.Storage,
+                            Product = r.Product,
+                            Shifr = r.Shifr,
+                            Shifr_MDM = r.Shifr_MDM,
+                            BacodeConsignment = r.BacodeConsignment,
+                            BacodeProduct = r.BacodeProduct,
+                            StorageCode = r.StorageCode,
+                            Comments = r.Comments,
+                            Count = r.Count
+                        };
+
+            var doc = query.FirstOrDefault();
+
+            if (doc != null)
+            {
+                doc.Items = items.AsQueryable();
+            }
+
+            return doc;
         }
 
         private IQueryable<RestViewModel> GetProjectsBySearchString(int snapShot, string searchTerm)

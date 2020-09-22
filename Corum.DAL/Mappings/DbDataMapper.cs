@@ -10,6 +10,7 @@ using Corum.Models.ViewModels.Cars;
 using Corum.Models.ViewModels.Customers;
 using Corum.Models.ViewModels.OrderConcurs;
 using System.Globalization;
+using Corum.Models.ViewModels.Bucket;
 
 namespace Corum.DAL.Mappings
 {
@@ -32,6 +33,16 @@ namespace Corum.DAL.Mappings
             };
         }
 
+
+        public static BucketDocument Map(BucketDocuments bd)
+        {
+            return new BucketDocument()
+            {
+                Id = bd.IdBucketDocument,
+                Number = bd.DocNumber,
+                CreatedBy = bd.CreatedBy
+            };
+        }
 
         public static CompetitiveListStepViewModel Map(OrderConcursSteps o)
         {

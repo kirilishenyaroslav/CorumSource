@@ -1261,6 +1261,8 @@
     <Content Include="Views\Reports\_restReportBasketContent.cshtml" />
     <Content Include="Views\Reports\_restReportBasket.cshtml" />
     <Content Include="Views\Reports\_restReportAddItemToBasket.cshtml" />
+    <Content Include="Views\Reports\BucketDocuments.cshtml" />
+    <Content Include="Views\Reports\ViewBucketDocument.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

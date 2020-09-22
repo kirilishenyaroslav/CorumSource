@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Corum.Models.ViewModels;
+using Corum.Models.ViewModels.Bucket;
 
 namespace Corum.Models
 {
@@ -38,5 +39,9 @@ namespace Corum.Models
         int GetProjectsCount(int snapShot, string searchTerm);
         List<RestViewModel> GetBarcodes(int snapShot, string searchTerm, int pageSize, int pageNum);
         int GetBarcodesCount(int snapShot, string searchTerm);
+
+        long SaveBucketDocument(IEnumerable<BucketItem> items, string userId);
+        IQueryable<BucketDocument> GetBucketDocuments();
+        BucketDocument GetBucketDocument(long Id);
     }
 }

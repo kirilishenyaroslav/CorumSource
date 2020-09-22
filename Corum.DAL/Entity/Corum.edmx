@@ -69,6 +69,32 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BalanceKeeper" Type="nvarchar" MaxLength="500" Nullable="false" />
         </EntityType>
+        <EntityType Name="BucketDocumentRows">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IdBucketDocument" Type="int" Nullable="false" />
+          <Property Name="InnerPartyKey" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="Storage" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Product" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Shifr" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Shifr_MDM" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="BacodeConsignment" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="BacodeProduct" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="StorageCode" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Comments" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Count" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BucketDocuments">
+          <Key>
+            <PropertyRef Name="IdBucketDocument" />
+          </Key>
+          <Property Name="IdBucketDocument" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DocDate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="DocNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreatedBy" Type="nvarchar" MaxLength="128" Nullable="false" />
+        </EntityType>
         <EntityType Name="CarCarryCapacity">
           <Key>
             <PropertyRef Name="Id" />
@@ -3293,6 +3319,8 @@
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BalanceKeepers" EntityType="Self.BalanceKeepers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BucketDocumentRows" EntityType="Self.BucketDocumentRows" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BucketDocuments" EntityType="Self.BucketDocuments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CarCarryCapacity" EntityType="Self.CarCarryCapacity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CarOwners" EntityType="Self.CarOwners" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Cars" EntityType="Self.Cars" Schema="dbo" store:Type="Tables" />
@@ -5036,6 +5064,8 @@
             <Parameter Name="UseOrderProjectFilter" Mode="In" Type="Int32" />
             <Parameter Name="UseProductBarcodeFilter" Mode="In" Type="Int32" />
           </FunctionImport>
+          <EntitySet Name="BucketDocumentRows" EntityType="CorumModel.BucketDocumentRows" />
+          <EntitySet Name="BucketDocuments" EntityType="CorumModel.BucketDocuments" />
           </EntityContainer>
         <ComplexType Name="SelectFieldsOfStuctureForImport_Result">
           <Property Type="String" Name="ColumnName" Nullable="true" />
@@ -8520,6 +8550,32 @@
           <Property Type="Decimal" Name="CurrencyIndexToUAH" Nullable="true" Precision="18" Scale="2" />
           <Property Type="String" Name="InnerPartyKey" Nullable="true" MaxLength="500" />
         </ComplexType>
+        <EntityType Name="BucketDocumentRows">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IdBucketDocument" Type="Int32" Nullable="false" />
+          <Property Name="InnerPartyKey" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="Storage" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Product" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Shifr" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Shifr_MDM" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BacodeConsignment" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BacodeProduct" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="StorageCode" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Count" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="BucketDocuments">
+          <Key>
+            <PropertyRef Name="IdBucketDocument" />
+          </Key>
+          <Property Name="IdBucketDocument" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DocDate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="DocNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10531,6 +10587,34 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="BucketDocumentRows">
+            <EntityTypeMapping TypeName="CorumModel.BucketDocumentRows">
+              <MappingFragment StoreEntitySet="BucketDocumentRows">
+                <ScalarProperty Name="Count" ColumnName="Count" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="StorageCode" ColumnName="StorageCode" />
+                <ScalarProperty Name="BacodeProduct" ColumnName="BacodeProduct" />
+                <ScalarProperty Name="BacodeConsignment" ColumnName="BacodeConsignment" />
+                <ScalarProperty Name="Shifr_MDM" ColumnName="Shifr_MDM" />
+                <ScalarProperty Name="Shifr" ColumnName="Shifr" />
+                <ScalarProperty Name="Product" ColumnName="Product" />
+                <ScalarProperty Name="Storage" ColumnName="Storage" />
+                <ScalarProperty Name="InnerPartyKey" ColumnName="InnerPartyKey" />
+                <ScalarProperty Name="IdBucketDocument" ColumnName="IdBucketDocument" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="BucketDocuments">
+            <EntityTypeMapping TypeName="CorumModel.BucketDocuments">
+              <MappingFragment StoreEntitySet="BucketDocuments">
+                <ScalarProperty Name="CreatedBy" ColumnName="CreatedBy" />
+                <ScalarProperty Name="DocNumber" ColumnName="DocNumber" />
+                <ScalarProperty Name="DocDate" ColumnName="DocDate" />
+                <ScalarProperty Name="IdBucketDocument" ColumnName="IdBucketDocument" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

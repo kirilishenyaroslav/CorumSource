@@ -110,6 +110,8 @@
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\Access\MenuAccessViewModel.cs" />
+    <Compile Include="ViewModels\Bucket\BucketDocument.cs" />
+    <Compile Include="ViewModels\Bucket\BucketItem.cs" />
     <Compile Include="ViewModels\Cars\CarOwnersViewModel.cs" />
     <Compile Include="ViewModels\Cars\ContractSpecificationsViewModel.cs" />
     <Compile Include="ViewModels\Customers\RoutePointsViewModel.cs" />

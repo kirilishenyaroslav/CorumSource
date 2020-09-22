@@ -14,7 +14,7 @@ using Corum.Models.Interfaces;
 using CorumAdminUI.Controllers;
 using Corum.Models.ViewModels.Orders;
 using Corum.Models.ViewModels.OrderConcurs;
-
+using Corum.Models.ViewModels.Bucket;
 
 namespace Corum.ReportsUI
 {
@@ -3257,6 +3257,154 @@ namespace Corum.ReportsUI
 
         }
 
+        [HttpGet]
+        [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
+        public FileResult BucketDocumentAsExcel(long Id)
+        {
+            var Header = new RestHeaderInfo();
 
+            Header.Headers.Add(new HeaderItemInfo()
+            {
+                columnName = "№",
+                columnOrder = 1,
+                columnField = "OrderNum",
+                columnWidth = 10,
+                ColumnBlockStart = false,
+                ColumnBlockEnd = false,
+                ColumnType = 3
+            });
+
+            Header.Headers.Add(new HeaderItemInfo()
+            {
+                columnName = "Номенклатура",
+                columnOrder = 2,
+                columnField = "Product",
+                columnWidth = 25,
+                ColumnBlockStart = false,
+                ColumnBlockEnd = false,
+                ColumnType = 3
+            });
+
+            Header.Headers.Add(new HeaderItemInfo()
+            {
+                columnName = "Склад",
+                columnOrder = 3,
+                columnField = "Storage",
+                columnWidth = 25,
+                ColumnBlockStart = false,
+                ColumnBlockEnd = false,
+                ColumnType = 3
+            });
+
+            Header.Headers.Add(new HeaderItemInfo()
+            {
+                columnName = "Код места хранения",
+                columnOrder = 4,
+                columnField = "StorageCode",
+                columnWidth = 25,
+                ColumnBlockStart = false,
+                ColumnBlockEnd = false,
+                ColumnType = 3
+            });
+
+            Header.Headers.Add(new HeaderItemInfo()
+            {
+                columnName = "Артикул",
+                columnOrder = 5,
+                columnField = "Shifr",
+                columnWidth = 25,
+                ColumnBlockStart = false,
+                ColumnBlockEnd = false,
+                ColumnType = 3
+            });
+
+            Header.Headers.Add(new HeaderItemInfo()
+            {
+                columnName = "Артикул МДМ",
+                columnOrder = 6,
+                columnField = "Shifr_MDM",
+                columnWidth = 25,
+                ColumnBlockStart = false,
+                ColumnBlockEnd = false,
+                ColumnType = 3
+            });
+
+            Header.Headers.Add(new HeaderItemInfo()
+            {
+                columnName = "Штрих код номенклатуры",
+                columnOrder = 7,
+                columnField = "BacodeProduct",
+                columnWidth = 25,
+                ColumnBlockStart = false,
+                ColumnBlockEnd = false,
+                ColumnType = 3
+            });
+
+            Header.Headers.Add(new HeaderItemInfo()
+            {
+                columnName = "Штрих код партии",
+                columnOrder = 8,
+                columnField = "BacodeConsignment",
+                columnWidth = 25,
+                ColumnBlockStart = false,
+                ColumnBlockEnd = false,
+                ColumnType = 3
+            });
+
+            Header.Headers.Add(new HeaderItemInfo()
+            {
+                columnName = "Кол-во",
+                columnOrder = 9,
+                columnField = "Count",
+                columnWidth = 10,
+                ColumnBlockStart = false,
+                ColumnBlockEnd = false,
+                ColumnType = 1
+            });
+
+            Header.Headers.Add(new HeaderItemInfo()
+            {
+                columnName = "Коментарии",
+                columnOrder = 10,
+                columnField = "Comments",
+                columnWidth = 50,
+                ColumnBlockStart = false,
+                ColumnBlockEnd = false,
+                ColumnType = 3
+            });
+
+            //************************** тело отчета   ******************************************************************/
+            var Data = new RestDataInfo<BucketItem>();
+            var document = context.GetBucketDocument(Id);
+
+            if (document.Items != null)
+            {
+                var order = 1;
+                var items = document.Items.ToList();
+                foreach(var item in items)
+                {
+                    item.OrderNum = order++;
+                }
+                Data.Rows.AddRange(items);
+            }
+
+            //************************** итоговые цифры   ******************************************************************/
+
+            var Footer = new RestFooterInfo();
+            Footer.Footers.Add(8, "ВСЕГО:");
+            Footer.Footers.Add(9, document.Items.Sum(s=>s.Count));
+
+            var Param = new RestParamsInfo();
+            Param.Language = Request.UserLanguages[0];
+
+            string MainHeader = "Документ корзины: ";
+            
+            Param.MainHeader = MainHeader + document.Id.ToString() + " от " + document.Date.ToString("dd.mm.yyyy") + " автор: " + document.CreatedBy;
+
+            byte[] fileContents;
+            fileContents = report.RenderReport<BucketItem>(Header, Data, Footer, Param);
+
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "BucketDocument"+document.Id.ToString()+".xlsx");
+        }
     }
 }

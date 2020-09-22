@@ -3,6 +3,7 @@ using System.Linq;
 using System.Web.Mvc;
 using Corum.Models;
 using Corum.Models.ViewModels;
+using Corum.Models.ViewModels.Bucket;
 using CorumAdminUI.Common;
 
 
@@ -83,7 +84,7 @@ namespace CorumAdminUI.Controllers
         {
             SnapshotInfoViewModel maxAvialiableSnapshot = null;
 
-            maxAvialiableSnapshot = navInfo.snapshotId > 0 ? 
+            maxAvialiableSnapshot = navInfo.snapshotId > 0 ?
                 context.GetScreenShotById(navInfo.snapshotId) : context.GetMaxScreenShot();
 
             var model = new RestsNavigationResult<RestViewModel>(navInfo, userId)
@@ -154,7 +155,7 @@ namespace CorumAdminUI.Controllers
                                             .Select(g => new RestViewModel
                                             {
                                                 QuantityAfter = g.Sum(s => s.QuantityAfter),
-                                                Weight = g.Sum(s => s.QuantityAfter*s.Weight),
+                                                Weight = g.Sum(s => s.QuantityAfter * s.Weight),
                                                 PE_After = g.Sum(s => s.PE_After),
                                                 PF_After = g.Sum(s => s.PF_After),
                                                 PCP_After = g.Sum(s => s.PCP_After),
@@ -185,6 +186,39 @@ namespace CorumAdminUI.Controllers
         }
 
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
+        public ActionResult BucketDocuments(NavigationInfo navInfo)
+        {
+            var model = new BucketDocsDocsNavigationResult<BucketDocument>(navInfo, userId)
+            {
+                DisplayValues = context.GetBucketDocuments()
+            };
+
+            return View(model);
+        }
+
+        [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
+        public ActionResult ViewBucketDocument(long Id)
+        {
+            var doc = context.GetBucketDocument(Id);
+
+            if (doc.Items != null)
+            {
+                var items = doc.Items.ToList();
+                var order = 1;
+                foreach(var item in items)
+                {
+                    item.OrderNum = order++;
+                }
+
+                doc.Items = items.AsQueryable();
+            }
+
+            return View(doc);
+        }
+
+
+
+        [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult GroupRestReport(RestNavigationInfo navInfo)
         {
             SnapshotInfoViewModel maxAvialiableSnapshot = null;
@@ -200,8 +234,9 @@ namespace CorumAdminUI.Controllers
                 navInfo.CurrentGroupFieldName = defColumn.Key;
                 navInfo.CurrentGroupFieldNameDescription = defColumn.Value;
             }
-            else{
-                navInfo.CurrentGroupFieldNameDescription = columns.FirstOrDefault(c=>c.Key== navInfo.CurrentGroupFieldName).Value;
+            else
+            {
+                navInfo.CurrentGroupFieldNameDescription = columns.FirstOrDefault(c => c.Key == navInfo.CurrentGroupFieldName).Value;
             }
 
             var model = new RestsNavigationResult<GroupItemRestViewModel>(navInfo, userId)
@@ -324,7 +359,7 @@ namespace CorumAdminUI.Controllers
                                             }).FirstOrDefault();
 
 
-            if (model.DisplayTotalValues==null)
+            if (model.DisplayTotalValues == null)
             {
                 model.DisplayTotalValues = new GroupItemRestViewModel()
                 {
@@ -372,7 +407,7 @@ namespace CorumAdminUI.Controllers
             }
 
 
-            
+
 
             return View(model);
         }
@@ -404,7 +439,7 @@ namespace CorumAdminUI.Controllers
                     UseKeeperFilter = string.IsNullOrEmpty(navInfo.FilterKeeperId) ? false : navInfo.UseKeeperFilter,
                     UseProducerFilter = string.IsNullOrEmpty(navInfo.FilterProducerId) ? false : navInfo.UseProducerFilter,
 
-                    IsPrihodDocs= navInfo.IsPrihodDocs
+                    IsPrihodDocs = navInfo.IsPrihodDocs
                 }),
                 //Price columns settings
                 PriceForEndConsumer = navInfo.PriceForEndConsumer,
@@ -416,7 +451,7 @@ namespace CorumAdminUI.Controllers
                 BalancePrice = navInfo.BalancePrice,
                 SnapshotInfo = maxAvialiableSnapshot,
 
-                
+
                 //Filter settings
                 FilterStorageId = navInfo.FilterStorageId,
                 FilterCenterId = navInfo.FilterCenterId,
@@ -458,7 +493,7 @@ namespace CorumAdminUI.Controllers
                                             .Select(g => new DocViewModel
                                             {
                                                 Quantity = g.Sum(s => s.Quantity),
-                                                Weight = g.Sum(s => s.Weight*s.Quantity),
+                                                Weight = g.Sum(s => s.Weight * s.Quantity),
                                                 PE = g.Sum(s => s.PE),
                                                 PF = g.Sum(s => s.PF),
                                                 PCP = g.Sum(s => s.PCP),
@@ -563,9 +598,22 @@ namespace CorumAdminUI.Controllers
             };
         }
 
+        [HttpPost]
+        public ActionResult SaveBucketDocument(IEnumerable<BucketItem> items)
+        {
+            if (items == null) return Json("Success");
+            if (!items.Any()) return Json("Success");
+
+            var id = context.SaveBucketDocument(items, userId);
+
+            if (id > 0)
+                return Json(id.ToString());
+            else return Json("Error");
+        }
+
         private static Select2PagedResult StoragesVmToSelect2Format(IEnumerable<GroupItemViewModel> groupItems, int totalStorages)
         {
-            var jsonGroupItems = new Select2PagedResult {Results = new List<Select2Result>()};
+            var jsonGroupItems = new Select2PagedResult { Results = new List<Select2Result>() };
             foreach (var groupItem in groupItems)
             {
                 jsonGroupItems.Results.Add(new Select2Result
@@ -581,10 +629,10 @@ namespace CorumAdminUI.Controllers
         [HttpGet]
         public ActionResult PartyCard(string InnerPartyKey, int snapshoId)
         {
-            var result= new PartyCardViewModel()
+            var result = new PartyCardViewModel()
             {
                 restRow = context.GetRestById(InnerPartyKey, snapshoId),
-                docs    = context.GetDocsById(InnerPartyKey, snapshoId)
+                docs = context.GetDocsById(InnerPartyKey, snapshoId)
             };
 
             return View(result);
@@ -637,7 +685,7 @@ namespace CorumAdminUI.Controllers
 
         private static Select2PagedResult ProjectsVmToSelect2Format(IEnumerable<RestViewModel> groupItems, int totalStorages)
         {
-            var jsonGroupItems = new Select2PagedResult {Results = new List<Select2Result>()};
+            var jsonGroupItems = new Select2PagedResult { Results = new List<Select2Result>() };
             foreach (var groupItem in groupItems)
             {
                 jsonGroupItems.Results.Add(new Select2Result

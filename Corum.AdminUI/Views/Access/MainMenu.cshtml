@@ -44,6 +44,7 @@
         <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Логистика &nbsp;&nbsp;<span class="caret"></span></a>
         <ul class="dropdown-menu" style="font-size: 13px!important;">
             <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 12) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестр остатков", "RestReport", "Reports") </li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 12) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестр документов остатков", "BucketDocuments", "Reports") </li>
             <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 13) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Сводная форма", "GroupRestReport", "Reports") </li>
             <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 14) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестры документов", "DocsReport", "Reports") </li>
             <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 15) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Сводка", "BriefReport", "Reports") </li>

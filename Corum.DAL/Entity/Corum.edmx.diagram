@@ -195,7 +195,7 @@
         <AssociationConnector Association="CorumModel.FK_OrderUsedCarsContract" />
         <AssociationConnector Association="CorumModel.FK_OrderUsedCarsContracts1" />
         <AssociationConnector Association="CorumModel.FK_OrderUsedCarsOrder" />
-        <EntityTypeShape EntityType="CorumModel.BucketDocumentRows" Width="1.5" PointX="2.375" PointY="9.875" />
+        <EntityTypeShape EntityType="CorumModel.BucketDocumentRows" Width="1.5" PointX="2.25" PointY="9.125" />
         <EntityTypeShape EntityType="CorumModel.BucketDocuments" Width="1.5" PointX="0.5" PointY="10.625" />
         </Diagram>
     </edmx:Diagrams>

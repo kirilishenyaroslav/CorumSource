@@ -32,7 +32,7 @@
 
 <div class="container-fluid">
     <div class="row ">
-        <div class="col-lg-12 main panel panel-info" style="margin-top:35px;">
+        <div class="col-lg-12 main panel" style="margin-top:35px;">
             <div class="row ">
                 <h2 class="centered_column" style="margin-top:0px!important;">Реестр документов корзины</h2> <br>
             </div>
@@ -49,14 +49,14 @@
                                                    .Encoded(false)
                                                    .Sanitized(false)
                                                    .Css("centered_column")
-                                                   .RenderValueAs(o =>@<div style="text-align:center!important;">@o.Date.ToString("dd.mm.yyyy")</div>);
+                                                   .RenderValueAs(o =>@<div style="text-align:center!important;">@o.Date.ToString("dd.MM.yyyy")</div>);
 
                                                   columns.Add(model => model.Number).SetWidth(250)
                                                    .Titled("Время создания<br>документа").Filterable(false).Sortable(true)
                                                    .Encoded(false)
                                                    .Sanitized(false)
                                                    .Css("centered_column new_columns_block_end")
-                                                   .RenderValueAs(o =>@<div style="text-align:center!important;">@o.Date.ToString("MM:hh:ss")</div>);
+                                                   .RenderValueAs(o =>@<div style="text-align:center!important;">@o.Date.ToString("hh:mm:ss")</div>);
 
                                                   columns.Add(model => model.CreatedBy)
                                                    .Titled("Автор<br>документа").Filterable(true).Sortable(true);

@@ -627,12 +627,17 @@ namespace CorumAdminUI.Controllers
         }
 
         [HttpGet]
-        public ActionResult PartyCard(string InnerPartyKey, int snapshoId)
+        public ActionResult PartyCard(string InnerPartyKey, int? snapshoId)
         {
+            if (!snapshoId.HasValue)
+            {
+                snapshoId = context.GetDefaultSnapshotId();
+            }
+
             var result = new PartyCardViewModel()
             {
-                restRow = context.GetRestById(InnerPartyKey, snapshoId),
-                docs = context.GetDocsById(InnerPartyKey, snapshoId)
+                restRow = context.GetRestById(InnerPartyKey, snapshoId.Value),
+                docs = context.GetDocsById(InnerPartyKey, snapshoId.Value)
             };
 
             return View(result);

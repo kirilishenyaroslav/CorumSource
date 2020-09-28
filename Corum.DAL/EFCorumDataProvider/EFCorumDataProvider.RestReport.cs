@@ -700,6 +700,9 @@ namespace Corum.DAL
                     BacodeProduct = item.BacodeProduct,
                     StorageCode = string.IsNullOrEmpty(item.StorageCode)? string.Empty: item.StorageCode,
                     Comments = string.IsNullOrEmpty(item.Comments)? string.Empty: item.Comments,
+                    BalanceKeeper = item.BalanceKeeper,
+                    Weight = item.Weight,
+                    TotalWeight = item.TotalWeight,
                     Count = item.Count
                 };
 
@@ -719,7 +722,7 @@ namespace Corum.DAL
                                    Id = d.IdBucketDocument,
                                    Date = d.DocDate,
                                    Number = d.DocNumber,
-                                   CreatedBy = u.UserName
+                                   CreatedBy = u.DisplayName
                                };
 
             return query.OrderByDescending(o => o.Id).AsQueryable();
@@ -735,7 +738,7 @@ namespace Corum.DAL
                             Id = d.IdBucketDocument,
                             Date = d.DocDate,
                             Number = d.DocNumber,
-                            CreatedBy = u.UserName
+                            CreatedBy = u.DisplayName
                         };
 
             var items = from r in db.BucketDocumentRows
@@ -751,7 +754,10 @@ namespace Corum.DAL
                             BacodeProduct = r.BacodeProduct,
                             StorageCode = r.StorageCode,
                             Comments = r.Comments,
-                            Count = r.Count
+                            Count = r.Count,
+                            BalanceKeeper = r.BalanceKeeper,
+                            Weight = r.Weight??0,
+                            TotalWeight = r.TotalWeight??0
                         };
 
             var doc = query.FirstOrDefault();

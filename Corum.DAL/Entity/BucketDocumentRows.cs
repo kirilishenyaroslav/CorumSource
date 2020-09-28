@@ -26,5 +26,8 @@ namespace Corum.DAL.Entity
         public string StorageCode { get; set; }
         public string Comments { get; set; }
         public int Count { get; set; }
+        public string BalanceKeeper { get; set; }
+        public Nullable<decimal> Weight { get; set; }
+        public Nullable<decimal> TotalWeight { get; set; }
     }
 }

@@ -3309,8 +3309,19 @@ namespace Corum.ReportsUI
 
             Header.Headers.Add(new HeaderItemInfo()
             {
-                columnName = "Артикул",
+                columnName = "Баланс",
                 columnOrder = 5,
+                columnField = "BalanceKeeper",
+                columnWidth = 25,
+                ColumnBlockStart = false,
+                ColumnBlockEnd = false,
+                ColumnType = 3
+            });
+
+            Header.Headers.Add(new HeaderItemInfo()
+            {
+                columnName = "Артикул",
+                columnOrder = 6,
                 columnField = "Shifr",
                 columnWidth = 25,
                 ColumnBlockStart = false,
@@ -3321,7 +3332,7 @@ namespace Corum.ReportsUI
             Header.Headers.Add(new HeaderItemInfo()
             {
                 columnName = "Артикул МДМ",
-                columnOrder = 6,
+                columnOrder = 7,
                 columnField = "Shifr_MDM",
                 columnWidth = 25,
                 ColumnBlockStart = false,
@@ -3332,7 +3343,7 @@ namespace Corum.ReportsUI
             Header.Headers.Add(new HeaderItemInfo()
             {
                 columnName = "Штрих код номенклатуры",
-                columnOrder = 7,
+                columnOrder = 8,
                 columnField = "BacodeProduct",
                 columnWidth = 25,
                 ColumnBlockStart = false,
@@ -3343,7 +3354,7 @@ namespace Corum.ReportsUI
             Header.Headers.Add(new HeaderItemInfo()
             {
                 columnName = "Штрих код партии",
-                columnOrder = 8,
+                columnOrder = 9,
                 columnField = "BacodeConsignment",
                 columnWidth = 25,
                 ColumnBlockStart = false,
@@ -3354,7 +3365,7 @@ namespace Corum.ReportsUI
             Header.Headers.Add(new HeaderItemInfo()
             {
                 columnName = "Кол-во",
-                columnOrder = 9,
+                columnOrder = 10,
                 columnField = "Count",
                 columnWidth = 10,
                 ColumnBlockStart = false,
@@ -3364,8 +3375,30 @@ namespace Corum.ReportsUI
 
             Header.Headers.Add(new HeaderItemInfo()
             {
+                columnName = "Вес 1 ед./кг.",
+                columnOrder = 11,
+                columnField = "Weight",
+                columnWidth = 10,
+                ColumnBlockStart = false,
+                ColumnBlockEnd = false,
+                ColumnType = 3
+            });
+
+            Header.Headers.Add(new HeaderItemInfo()
+            {
+                columnName = "Вес итого кг.",
+                columnOrder = 12,
+                columnField = "TotalWeight",
+                columnWidth = 10,
+                ColumnBlockStart = false,
+                ColumnBlockEnd = false,
+                ColumnType = 0
+            });
+
+            Header.Headers.Add(new HeaderItemInfo()
+            {
                 columnName = "Коментарии",
-                columnOrder = 10,
+                columnOrder = 13,
                 columnField = "Comments",
                 columnWidth = 50,
                 ColumnBlockStart = false,
@@ -3391,8 +3424,9 @@ namespace Corum.ReportsUI
             //************************** итоговые цифры   ******************************************************************/
 
             var Footer = new RestFooterInfo();
-            Footer.Footers.Add(8, "ВСЕГО:");
-            Footer.Footers.Add(9, document.Items.Sum(s=>s.Count));
+            Footer.Footers.Add(9, "ВСЕГО:");
+            Footer.Footers.Add(10, document.Items.Sum(s => s.Count));
+            Footer.Footers.Add(12, document.Items.Sum(s => s.TotalWeight));
 
             var Param = new RestParamsInfo();
             Param.Language = Request.UserLanguages[0];

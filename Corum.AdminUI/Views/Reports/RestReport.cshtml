@@ -217,9 +217,9 @@
             }
         });
 
-        function ShowItemBeforeAddToBusket(InnerPartyKey, Storage, Product, Shifr, Shifr_MDM, BacodeConsignment, BacodeProduct)
+        function ShowItemBeforeAddToBusket(InnerPartyKey, Storage, Product, Shifr, Shifr_MDM, BacodeConsignment, BacodeProduct, BalanceKeeper, Weight)
         {
-            ShowDialogItemSettings(InnerPartyKey, Storage, Product, Shifr, Shifr_MDM, BacodeConsignment, BacodeProduct);
+            ShowDialogItemSettings(InnerPartyKey, Storage, Product, Shifr, Shifr_MDM, BacodeConsignment, BacodeProduct, BalanceKeeper, Weight);
         }
 
         function ShowSettings()
@@ -275,8 +275,9 @@
             return;
         }
 
-        function ShowDialogItemSettings(InnerPartyKey, Storage, Product, Shifr, Shifr_MDM, BacodeConsignment, BacodeProduct)
+        function ShowDialogItemSettings(InnerPartyKey, Storage, Product, Shifr, Shifr_MDM, BacodeConsignment, BacodeProduct, BalanceKeeper,  Weight)
         {
+            debugger;
             $('#additemtobasket')
                 .dialog({
                     dialogClass: "jq-dialog-window-custom  modal_dialog",
@@ -292,7 +293,7 @@
                     },
                     open: function (event, ui) {
 
-                        $("#Comments").val("");
+                        $("#Comments").innerHTML="";
                         $("#StorageCode").val("");
                         $("#Count").val("1");
                         $("#innerPartyKey").html(InnerPartyKey);
@@ -302,6 +303,9 @@
                         $("#Shifr_MDM").html(Shifr_MDM);
                         $("#BacodeConsignment").html(BacodeConsignment);
                         $("#BacodeProduct").html(BacodeProduct);
+                        $("#BalanceKeeper").html(BalanceKeeper);
+                        $("#Weight").html(Weight);
+                        
 
                     },
                     close: function (event, ui) {
@@ -352,10 +356,14 @@
                                         newBuckekItem.Shifr_MDM = Shifr_MDM;
                                         newBuckekItem.BacodeConsignment = BacodeConsignment;
                                         newBuckekItem.BacodeProduct = BacodeProduct;
+                                        newBuckekItem.BalanceKeeper =BalanceKeeper;
+                                        newBuckekItem.Weight = Weight;
                                         newBuckekItem.Count = $("#Count").val();
                                         newBuckekItem.Comments = $("#comments").val();
                                         newBuckekItem.StorageCode = $("#StorageCode").val();
-
+                                        let w = parseFloat(newBuckekItem.Weight.replace(',','.'));
+                                        let c = parseFloat(newBuckekItem.Count.replace(',', '.'));
+                                        newBuckekItem.TotalWeight = w * c;
                                         bucketValues.push(newBuckekItem);
                                     }
 
@@ -392,6 +400,12 @@
                             bucketValues = [];
                         }
 
+                        bucketValues.forEach(element => {
+                            let w = parseFloat(element.Weight.replace(',', '.'));
+                            let c = parseFloat(element.Count.replace(',', '.'));
+                            element.TotalWeight = w * c;
+                        });
+
                         var sourceBusketItems =
                         {
                             localData: bucketValues,
@@ -406,7 +420,10 @@
                                 { name: 'BacodeProduct' },
                                 { name: 'Count' },
                                 { name: 'Comments' },
-                                { name: 'StorageCode' }
+                                { name: 'StorageCode' },
+                                { name: 'BalanceKeeper' },
+                                { name: 'Weight' },
+                                { name: 'TotalWeight' },
                             ],
                             id: 'InnerPartyKey'
                         };
@@ -438,7 +455,6 @@
 
                                         var editClick = function (event) {
 
-                                            debugger;
                                             var target = $(event.target);
                                             // get button's value.
                                             var value = target.val();
@@ -458,6 +474,12 @@
                                             if (bucketValues === null || bucketValues === undefined) {
                                                 bucketValues = [];
                                             }
+
+                                            bucketValues.forEach(element => {
+                                                let w = parseFloat(element.Weight.replace(',', '.'));
+                                                let c = parseFloat(element.Count.replace(',', '.'));
+                                                element.TotalWeight = w * c;
+                                            });
 
                                             var filtered = bucketValues.filter(function (el) { return el.InnerPartyKey != rowKey; });
 
@@ -539,6 +561,38 @@
                                         }
                                     },
                                     {
+                                        text: 'ВЕС 1 ЕД./КГ.', editable: false, datafield: 'Weight', width: 100, type: 'float', cellsFormat: 'F2', cellsalign: 'right',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'><strong>" + text + "</strong></div>";
+                                        },
+                                        cellsrenderer: function (row, column, value) {
+                                            return "<div style='margin:4px;'>" + value + "</div>";
+                                        },
+                                    },
+                                    {
+                                        text: 'СУММ.ВЕС', editable: false, datafield: 'TotalWeight', width: 100, type: 'float', cellsFormat: 'F2', cellsalign: 'right',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'><strong>" + text + "</strong></div>";
+                                        },
+                                        cellsrenderer: function (row, column, value) {
+                                            return "<div style='margin:4px;'><strong>" + value + "</strong></div>";
+                                        },
+                                        aggregates: ['sum'],
+                                        aggregatesRenderer: function (aggregates, column, element) {
+                                            let renderString = "<div style='margin: 4px; float: right;  height: 100%;'>";
+                                            let renderedValue = 0;
+                                            if (aggregates === null || aggregates.sum === undefined || aggregates === undefined || aggregates.sum === undefined) {
+                                                renderedValue = 0;
+                                            }
+                                            else {
+                                                renderedValue = aggregates.sum;
+                                            }
+
+                                            renderString += "<strong>Всего, кг:<br><span style='color:green;'>" + renderedValue + "</span></strong></div>";
+                                            return renderString;
+                                        }
+                                    },
+                                    {
                                         text: 'АРТИКУЛ МДМ', editable: false, datafield: 'Shifr_MDM', width: 150, columnType: 'string', type: 'string',
                                         renderer: function (text, align, height) {
                                             return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
@@ -552,6 +606,12 @@
                                     },
                                     {
                                         text: 'Ш.К. ТОВАРА', editable: false, datafield: 'BacodeProduct', width: 150, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'БАЛАНС', editable: false, datafield: 'BalanceKeeper', width: 150, columnType: 'string', type: 'string',
                                         renderer: function (text, align, height) {
                                             return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
                                         }
@@ -585,7 +645,11 @@
 
                             bucketValues.find((element) => {
                                 if (element.InnerPartyKey === rowKey) {
-                                    element.Count = value.toFixed();
+                                    element.Count = value.toFixed(2);
+                                    let w = parseFloat(element.Weight.replace(',', '.'));
+                                    let c = parseFloat(element.Count.replace(',', '.'));
+                                    element.TotalWeight = w * c;
+
                                     return true;
                                 }
                             });
@@ -597,6 +661,7 @@
                         $("#jqxgridUC").jqxDataTable('hideColumn', 'Shifr_MDM');
                         $("#jqxgridUC").jqxDataTable('hideColumn', 'BacodeConsignment');
                         $("#jqxgridUC").jqxDataTable('hideColumn', 'BacodeProduct');
+                        $("#jqxgridUC").jqxDataTable('hideColumn', 'BalanceKeeper');
                         $("#jqxgridUC").jqxDataTable('endUpdate');
 
                         $("#shortForm").on('change', function (event)
@@ -607,11 +672,13 @@
                                 $("#jqxgridUC").jqxDataTable('showColumn', 'Shifr_MDM');
                                 $("#jqxgridUC").jqxDataTable('showColumn', 'BacodeConsignment');
                                 $("#jqxgridUC").jqxDataTable('showColumn', 'BacodeProduct');
+                                $("#jqxgridUC").jqxDataTable('showColumn', 'BalanceKeeper');
                             }
                             else {
                                 $("#jqxgridUC").jqxDataTable('hideColumn', 'Shifr_MDM');
                                 $("#jqxgridUC").jqxDataTable('hideColumn', 'BacodeConsignment');
                                 $("#jqxgridUC").jqxDataTable('hideColumn', 'BacodeProduct');
+                                $("#jqxgridUC").jqxDataTable('hideColumn', 'BalanceKeeper');
                             }
 
                             $("#jqxgridUC").jqxDataTable('endUpdate');

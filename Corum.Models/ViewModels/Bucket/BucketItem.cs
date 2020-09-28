@@ -13,6 +13,9 @@ namespace Corum.Models.ViewModels.Bucket
         public string BacodeProduct { get; set; }
         public string StorageCode { get; set; }
         public string Comments { get; set; }
+        public string BalanceKeeper { get; set; }
+        public decimal Weight { get; set; }
+        public decimal TotalWeight { get; set; }
         public int Count { get; set; }
     }
 }

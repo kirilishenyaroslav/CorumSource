@@ -115,6 +115,13 @@ namespace Corum.DAL
             return true;
         }
 
+        public int GetDefaultSnapshotId()
+        {
+            var snapshot = db.LogisticSnapshots.FirstOrDefault(s=>s.isDefaultForReports == 1);
+            if (snapshot != null) return snapshot.id_spanshot;
+            return 0;
+        }
+
         public bool MakeSnapshotAsDefault(int Id)
         {
             db.SetSnapshotAsDefaultForReports(Id);

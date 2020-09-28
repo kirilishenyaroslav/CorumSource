@@ -85,6 +85,9 @@
           <Property Name="StorageCode" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="Comments" Type="nvarchar(max)" Nullable="false" />
           <Property Name="Count" Type="int" Nullable="false" />
+          <Property Name="BalanceKeeper" Type="nvarchar" MaxLength="255" />
+          <Property Name="Weight" Type="decimal" Precision="8" Scale="2" />
+          <Property Name="TotalWeight" Type="decimal" Precision="19" Scale="2" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="BucketDocuments">
           <Key>
@@ -8566,6 +8569,9 @@
           <Property Name="StorageCode" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="Comments" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Count" Type="Int32" Nullable="false" />
+          <Property Name="BalanceKeeper" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Weight" Type="Decimal" Precision="8" Scale="2" />
+          <Property Name="TotalWeight" Type="Decimal" Precision="19" Scale="2" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="BucketDocuments">
           <Key>
@@ -10590,6 +10596,9 @@
           <EntitySetMapping Name="BucketDocumentRows">
             <EntityTypeMapping TypeName="CorumModel.BucketDocumentRows">
               <MappingFragment StoreEntitySet="BucketDocumentRows">
+                <ScalarProperty Name="TotalWeight" ColumnName="TotalWeight" />
+                <ScalarProperty Name="Weight" ColumnName="Weight" />
+                <ScalarProperty Name="BalanceKeeper" ColumnName="BalanceKeeper" />
                 <ScalarProperty Name="Count" ColumnName="Count" />
                 <ScalarProperty Name="Comments" ColumnName="Comments" />
                 <ScalarProperty Name="StorageCode" ColumnName="StorageCode" />

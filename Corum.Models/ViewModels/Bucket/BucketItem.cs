@@ -3,6 +3,7 @@ namespace Corum.Models.ViewModels.Bucket
 {
     public class BucketItem
     {
+        public long Id { get; set; }
         public int OrderNum { get; set; }
         public string InnerPartyKey { get; set; }
         public string Storage { get; set; }

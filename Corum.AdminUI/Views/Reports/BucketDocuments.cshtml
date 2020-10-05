@@ -70,10 +70,10 @@
                                                           <span class="tooltip-message">Просмотреть документ</span>
                                                           <span class="glyphicon glyphicon-eye-open"></span>
                                                     </a>
-                                                    @*<a class="tarash-i delete_link tooltips" href="@Url.Action("RemoveBucketDocuments", "Reports", new { Id = o.Id })" onclick="var var1='@o.Id'; return confirm('Вы действительно хотите удалить документ '+var1+' ?');">
+                                                    <a class="tarash-i delete_link tooltips" href="@Url.Action("RemoveBucketDocument", "Reports", new { Id = o.Id })" onclick="var var1='@o.Id'; return confirm('Вы действительно хотите удалить документ № '+var1+' ?');">
                                                           <span class="tooltip-message">Удалить документ</span>
                                                           <span class="glyphicon glyphicon-trash"></span>
-                                                    </a>*@
+                                                    </a>
                                                     </div>);
 
                                               }).WithPaging((int)Model.RequestParams.PageSize))

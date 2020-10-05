@@ -60,12 +60,13 @@
     @Html.Partial("_restReportAddItemToBasket")
     @Html.Partial("_restReportBasketContent")
     @Html.Partial("_restReportBasket")
+    @Html.Partial("_restAddItemToBasketByBarcode")
 
     <div class="row">
         <div class="col-lg-12 main">
 
             <div class="row">
-                @{ 
+                @{
                     var monthStart = new DateTime(Model.SnapshotInfo.ActualDateBeg.Value.Year, Model.SnapshotInfo.ActualDateBeg.Value.Month, 1);
                 }
                 <div style="margin-bottom: 15px; text-align:center;" class="col-md-12">
@@ -227,6 +228,188 @@
             ShowDialogColumnSettings();
         }
 
+        function ShowNewItemByBarcode() {
+            $('#barcodeValue').val('');
+            AddBusketItemByBarCode();
+        }
+
+        function AddBusketItemByBarCode() {
+            $('#barcodeValue').val('');
+
+            $('#itemByBarcode')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 450,
+                    resizable: false,
+                    title: "Добавление в корзину по коду",
+                    modal: true,
+                    open: function (event, ui) {
+
+                    },
+                    close: function (event, ui) {
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                        [
+                            {
+                                text: "Отмена",
+                                "class": 'cancel-btn btn btn-outline',
+                                click: function () {
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Найти",
+                                "class": 'btn btn-primary',
+                                click: function () {
+                                    let streamMode = document.getElementById('streamMode').checked;
+                                    let searchBy = 0;
+                                    const radios = document.getElementsByName('searchBy');
+
+                                    for (var i = 0, length = radios.length; i < length; i++) {
+                                        if (radios[i].checked) {
+                                            searchBy = radios[i].value;
+                                            break;
+                                        }
+                                    }
+
+                                    $.ajax({
+                                        type: "GET",
+                                        url: '/Reports/GetRestItemsByBarcode?barcode=' + $('#barcodeValue').val() + '&searchBy=' + searchBy,
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (response) {
+                                            if (response.length > 0) {
+
+                                                ShowDialogItemSettings(response[0].InnerPartyKey,
+                                                    response[0].Storage,
+                                                    response[0].Product,
+                                                    response[0].Shifr,
+                                                    response[0].Shifr_MDM,
+                                                    response[0].BacodeConsignment,
+                                                    response[0].BacodeProduct,
+                                                    response[0].BalanceKeeper,
+                                                    response[0].Weight.toFixed(2));
+                                            }
+                                            else {
+                                                alert('Номенклатура с введенным кодом не найдена!');
+                                                if (streamMode) {
+                                                    AddBusketItemByBarCode();
+                                                }
+                                            }
+                                        },
+                                        failure: function (response) {
+                                            alert('При поиске возникла ошибка!');
+                                        },
+                                        error: function (response) {
+                                            alert('При поиске возникла ошибка!');
+                                        }
+                                    });
+
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Найти и добавить",
+                                "class": 'btn btn-primary',
+                                click: function () {
+                                    let streamMode = document.getElementById('streamMode').checked;
+                                    let searchBy = 0;
+                                    const radios = document.getElementsByName('searchBy');
+
+                                    for (var i = 0, length = radios.length; i < length; i++) {
+                                        if (radios[i].checked) {
+                                            searchBy = radios[i].value;
+                                            break;
+                                        }
+                                    }
+
+                                    $.ajax({
+                                        type: "GET",
+                                        url: '/Reports/GetRestItemsByBarcode?barcode=' + $('#barcodeValue').val() + '&searchBy=' + searchBy,
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (response) {
+                                            if (response.length > 0) {
+
+                                                let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+
+                                                if (bucketValues === null || bucketValues === undefined) {
+                                                    bucketValues = [];
+                                                }
+
+                                                var theSameProduct = bucketValues.find((element) => {
+                                                    if (element.InnerPartyKey === response[0].InnerPartyKey) {
+                                                        let w = parseFloat(element.Weight);
+                                                        let c = parseFloat(element.Count);
+                                                        element.Count = c + 1;
+                                                        c = parseFloat(element.Count);
+                                                        element.TotalWeight = w * c;
+                                                        return true;
+                                                    }
+                                                });
+
+                                                if (theSameProduct === null || theSameProduct === undefined) {
+                                                    let newBuckekItem = new Object();
+                                                    let count = 1.0;
+                                                    newBuckekItem.InnerPartyKey = response[0].InnerPartyKey;
+                                                    newBuckekItem.Storage = response[0].Storage;
+                                                    newBuckekItem.Product = response[0].Product;
+                                                    newBuckekItem.Shifr = response[0].Shifr;
+                                                    newBuckekItem.Shifr_MDM = response[0].Shifr_MDM;
+                                                    newBuckekItem.BacodeConsignment = response[0].BacodeConsignment;
+                                                    newBuckekItem.BacodeProduct = response[0].BacodeProduct;
+                                                    newBuckekItem.BalanceKeeper = response[0].BalanceKeeper;
+                                                    newBuckekItem.Weight = response[0].Weight.toFixed(2);
+                                                    newBuckekItem.Count = count.toFixed(2);
+                                                    newBuckekItem.Comments = '';
+                                                    newBuckekItem.StorageCode = '';
+                                                    newBuckekItem.TotalWeight = response[0].Weight.toFixed(2);
+                                                    bucketValues.push(newBuckekItem);
+                                                }
+
+                                                sessionStorage.setItem('bucketValues', JSON.stringify(bucketValues));
+                                                $('.basketCount').html(bucketValues.length);
+
+
+                                                alert(response.length + ' позиция номенклаnуры была добавлено в корзину!');
+                                                if (streamMode) {
+                                                    AddBusketItemByBarCode();
+                                                }
+                                            }
+                                            else {
+                                                alert('Номенклатура с введенным кодом не найдена!');
+                                                if (streamMode) {
+                                                    AddBusketItemByBarCode();
+                                                }
+                                            }
+                                        },
+                                        failure: function (response) {
+                                            alert('При поиске возникла ошибка!');
+                                        },
+                                        error: function (response) {
+                                            alert('При поиске возникла ошибка!');
+                                        }
+                                    });
+
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                });
+
+            $('#itemByBarcode').dialog('open');
+
+            return;
+        }
+
         function ShowDialogColumnSettings() {
 
             $('#restsettings')
@@ -277,7 +460,6 @@
 
         function ShowDialogItemSettings(InnerPartyKey, Storage, Product, Shifr, Shifr_MDM, BacodeConsignment, BacodeProduct, BalanceKeeper,  Weight)
         {
-            debugger;
             $('#additemtobasket')
                 .dialog({
                     dialogClass: "jq-dialog-window-custom  modal_dialog",
@@ -305,7 +487,7 @@
                         $("#BacodeProduct").html(BacodeProduct);
                         $("#BalanceKeeper").html(BalanceKeeper);
                         $("#Weight").html(Weight);
-                        
+
 
                     },
                     close: function (event, ui) {
@@ -340,7 +522,19 @@
                                     var theSameProduct = bucketValues.find((element) =>
                                     {
                                         if (element.InnerPartyKey === InnerPartyKey) {
-                                            element.Count = element.Count + 1;
+
+                                            let w = element.Weight;
+                                            if (typeof element.Weight === 'string' || element.Weight instanceof String) {
+                                                w = parseFloat(element.Weight.replace(',', '.'));
+                                            }
+                                            let c = element.Count;
+                                            if (typeof element.Count === 'string' || element.Count instanceof String) {
+                                                c = parseFloat(element.Count.replace(',', '.'));
+                                            }
+
+                                            element.Count = c + 1;
+                                            element.TotalWeight = w * (c + 1);
+
                                             return true;
                                         }
                                     });
@@ -401,8 +595,15 @@
                         }
 
                         bucketValues.forEach(element => {
-                            let w = parseFloat(element.Weight.replace(',', '.'));
-                            let c = parseFloat(element.Count.replace(',', '.'));
+
+                            let w = element.Weight;
+                            if (typeof element.Weight === 'string' || element.Weight instanceof String) {
+                                w = parseFloat(element.Weight.replace(',', '.'));
+                            }
+                            let c = element.Count;
+                            if (typeof element.Count === 'string' || element.Count instanceof String) {
+                                c = parseFloat(element.Count.replace(',', '.'));
+                            }
                             element.TotalWeight = w * c;
                         });
 
@@ -476,8 +677,14 @@
                                             }
 
                                             bucketValues.forEach(element => {
-                                                let w = parseFloat(element.Weight.replace(',', '.'));
-                                                let c = parseFloat(element.Count.replace(',', '.'));
+                                                let w = element.Weight;
+                                                if (typeof element.Weight === 'string' || element.Weight instanceof String) {
+                                                    w = parseFloat(element.Weight.replace(',', '.'));
+                                                }
+                                                let c = element.Count;
+                                                if (typeof element.Count === 'string' || element.Count instanceof String) {
+                                                    c = parseFloat(element.Count.replace(',', '.'));
+                                                }
                                                 element.TotalWeight = w * c;
                                             });
 
@@ -645,9 +852,16 @@
 
                             bucketValues.find((element) => {
                                 if (element.InnerPartyKey === rowKey) {
-                                    element.Count = value.toFixed(2);
-                                    let w = parseFloat(element.Weight.replace(',', '.'));
-                                    let c = parseFloat(element.Count.replace(',', '.'));
+
+                                    element.Count = value;
+                                    let w = element.Weight;
+                                    if (typeof element.Weight === 'string' || element.Weight instanceof String) {
+                                        w = parseFloat(element.Weight.replace(',', '.'));
+                                    }
+                                    let c = element.Count;
+                                    if (typeof element.Count === 'string' || element.Count instanceof String) {
+                                        c = parseFloat(element.Count.replace(',', '.'));
+                                    }
                                     element.TotalWeight = w * c;
 
                                     return true;
@@ -723,6 +937,13 @@
                                         bucketValues = [];
                                     }
 
+                                    bucketValues.forEach(element => {
+                                        element.Count = parseInt(element.Count);
+                                        element.Weight = element.Weight.toString().replace('.',',');
+                                        element.TotalWeight = element.TotalWeight.toString().replace('.', ',');
+                                    });
+
+
                                     $.ajax({
                                         type: "POST",
                                         url: '@Url.Action("SaveBucketDocument", "Reports")',
@@ -740,8 +961,7 @@
                                         }
                                     });
 
-                                    sessionStorage.setItem('bucketValues', JSON.stringify([]));
-                                    $('.basketCount').html(0);
+                                    ClearBusket();
 
                                     $(this).dialog("close");
                                 }
@@ -756,6 +976,11 @@
 
         function ShowBusket() {
             ShowBusketDialog();
+        }
+
+        function ClearBusket() {
+            sessionStorage.setItem('bucketValues', JSON.stringify([]));
+            $('.basketCount').html(0);
         }
 
         $(document).ready(function () {

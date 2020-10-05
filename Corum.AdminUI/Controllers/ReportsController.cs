@@ -185,22 +185,35 @@ namespace CorumAdminUI.Controllers
             return View(model);
         }
 
-        [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
-        public ActionResult BucketDocuments(NavigationInfo navInfo)
-        {
-            var model = new BucketDocsDocsNavigationResult<BucketDocument>(navInfo, userId)
-            {
-                DisplayValues = context.GetBucketDocuments()
-            };
 
-            return View(model);
+
+        [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
+        public JsonResult GetRestItemsByBarcode(string barcode, int searchBy)
+        {
+            if (string.IsNullOrEmpty(barcode))
+            {
+                return new JsonpResult
+                {
+                    Data = Enumerable.Empty<RestViewModel>(),
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                };
+            }
+            else
+            {
+                var item = context.GetItemsByBarcode(barcode.Trim(), searchBy);
+
+                return new JsonpResult
+                {
+                    Data = item == null ? Enumerable.Empty<RestViewModel>(): Enumerable.Repeat(item, 1),
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                };
+            }
         }
 
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult ViewBucketDocument(long Id)
         {
             var doc = context.GetBucketDocument(Id);
-
             if (doc.Items != null)
             {
                 var items = doc.Items.ToList();
@@ -212,8 +225,26 @@ namespace CorumAdminUI.Controllers
 
                 doc.Items = items.AsQueryable();
             }
-
             return View(doc);
+        }
+
+
+        [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
+        public ActionResult RemoveBucketDocument(long Id)
+        {
+            context.RemoveDocument(Id);
+            return RedirectToAction("BucketDocuments");
+        }
+
+        [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
+        public ActionResult BucketDocuments(NavigationInfo navInfo)
+        {
+            var model = new BucketDocsDocsNavigationResult<BucketDocument>(navInfo, userId)
+            {
+                DisplayValues = context.GetBucketDocuments()
+            };
+
+            return View(model);
         }
 
 

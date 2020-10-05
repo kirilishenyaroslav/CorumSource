@@ -1263,6 +1263,7 @@
     <Content Include="Views\Reports\_restReportAddItemToBasket.cshtml" />
     <Content Include="Views\Reports\BucketDocuments.cshtml" />
     <Content Include="Views\Reports\ViewBucketDocument.cshtml" />
+    <Content Include="Views\Reports\_restAddItemToBasketByBarcode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

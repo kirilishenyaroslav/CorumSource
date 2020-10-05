@@ -43,5 +43,7 @@ namespace Corum.Models
         long SaveBucketDocument(IEnumerable<BucketItem> items, string userId);
         IQueryable<BucketDocument> GetBucketDocuments();
         BucketDocument GetBucketDocument(long Id);
+        bool RemoveDocument(long Id);
+        RestViewModel GetItemsByBarcode(string barcode, int searchBy);
     }
 }

@@ -1,0 +1,168 @@
+﻿@model Corum.Models.OrderNavigationResult<Corum.Models.ViewModels.OrderConcurs.OrderCompetitiveListViewModel>
+@using GridMvc.Html
+@{
+    ViewBag.Title = "ConcursHistory";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .select2-container {
+        width: 80%;
+    }
+</style>
+
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+
+}
+@Html.Hidden("OrderId", Model.OrderId)
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 main">
+
+            <h4><b>История конкурентных листов за период</b></h4>
+
+@using (Html.BeginForm("ConcursHistory", "OrderConcurs", FormMethod.Get))
+{
+    <div class="col-lg-12 main" style="margin-top: 0px!important;padding: 0px!important;">        
+        <div class="form-group row"  style="margin-bottom: 0px;">
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FilterOrderDateBeg, htmlAttributes: new { @class = "control-label" })
+                    <div class="input-group">
+                        @Html.EditorFor(model => model.FilterOrderDateBeg, new { htmlAttributes = new { @class = "form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderDateBegRaw" } })
+                        <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="FilterOrderDateBegRaw" data-linked-input="FilterOrderDateBeg"></span>
+                        @Html.HiddenFor(model => model.FilterOrderDateBeg)
+                        @Html.HiddenFor(model => model.FilterOrderDateBegRaw)
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.FilterOrderDateEnd, htmlAttributes: new { @class = "control-label" })
+                    <div class="input-group">
+                        @Html.EditorFor(model => model.FilterOrderDateEnd, new { htmlAttributes = new { @class = "form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderDateEndRaw" } })
+                        <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="FilterOrderDateEndRaw" data-linked-input="FilterOrderDateEnd"></span>
+                        @Html.HiddenFor(model => model.FilterOrderDateEnd)
+                        @Html.HiddenFor(model => model.FilterOrderDateEndRaw)
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-1" style="margin-top: 30px;">
+                <input type="submit" value="Применить" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+        @Html.HiddenFor(model => model.OrderId)
+        @Html.HiddenFor(model => model.ShowAll)
+        @Html.HiddenFor(model => model.Id)
+        
+        }
+
+        @if (@Model.DisplayValues.Select(x => x.NameSpecification).Distinct().Count() == 1)
+        {
+            <br>
+            <h5> @Model.DisplayValues.FirstOrDefault().NameSpecification</h5>
+        }
+        
+        <div class="table-header clearfix">
+
+            <div style="font-size: 13px;">
+                @(Html.Grid(Model.DisplayValues)
+                          .Columns(columns =>
+                          {
+                          columns.Add(model => model.CarCostWithMoneyCost)
+                             .Titled("Стоимость одного<br>автомобиля грн.<br>с учетом стоимости<br>денег<br>").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.AcceptPrice)
+                              .Titled("Акцептованная<br>цена").Filterable(true).Sortable(true).Sanitized(false).Encoded(false)
+                              .RenderValueAs(o =>
+                            @<div>
+                                @o.AcceptPrice
+
+                            </div>);
+
+                          columns.Add(model => model.AcceptDaysDelay)
+                              .Titled("Отсрочка").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.ExpeditorName)
+                              .Titled("Перевозчик").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.FromDate)
+                              .Titled("Дата подачи/<br>выгрузки").Filterable(true).Sortable(true).Encoded(false)
+                              .Sanitized(false)
+                             .RenderValueAs(o =>
+                            @<div>
+                                @o.FromDate / @o.ToDate
+                            </div>);
+
+                          columns.Add(model => model.Route)
+                             .Titled("Маршрут").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.TotalDistanceLenght)
+                             .Titled("Расстояние, км.").Filterable(true).Sortable(true);
+
+                          if (@Model.DisplayValues.Select(x => x.NameSpecification).Distinct().Count() != 1)
+                          {
+                              columns.Add(model => model.NameSpecification)
+                                  .Titled("Наименование услуги").Filterable(true).Sortable(true);
+                          }
+
+
+
+                          columns.Add()
+                 .Titled("Действия")
+                 .SetWidth(95)
+                 .Encoded(false)
+                 .Sanitized(false)
+                 .Css("centered_column colored-cell new_columns_block_end")
+                 .RenderValueAs(o =>
+                @<div class="edit-delete-copy-links">
+                     
+                    <a class="tarash-i tooltips" href="@Url.Action("OrderCompetitiveList", "OrderConcurs", new { OrderId = o.HistoryOrderId })">
+                        <span class="tooltip-message">Конкурсный лист</span>
+                        <span class="glyphicon glyphicon-list-alt"></span>
+                    </a>
+                     
+                    <a class="tarash-i tooltips" href="@Url.Action("UpdateOrder", "Orders", new { Id = o.HistoryOrderId })">
+                        <span class="tooltip-message">Заявка</span>
+                        <span class="glyphicon glyphicon-file"></span>
+                    </a>
+
+                </div>);
+
+                          }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())
+            </div>
+        </div>
+
+        @TPagging("ConcursHistory", "OrderConcurs", @Model.RequestParams, this)
+
+    </div>
+    </div>
+</div>
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            InitializeDateTimePickers();
+            InitFilterDropDowns();
+        });
+    </script>
+}

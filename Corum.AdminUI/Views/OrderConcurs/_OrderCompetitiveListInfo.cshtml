@@ -1,0 +1,79 @@
+﻿@model Corum.Models.ViewModels.OrderConcurs.CompetitiveListViewModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4">
+            <ul class="list-group">
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.Id</span>Номер заявки
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.OrderDate</span>Дата создания
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.PayerName</span>Плательщик/Заказчик
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge" style="white-space: normal!important;">@Model.TruckDescription</span>Наименование груза
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.Weight</span>Вес
+                </li>
+
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <ul class="list-group">
+                <li class="list-group-item" style ="padding: 2px 2px;">
+                    <span class="badge">@Model.Dimenssion</span>Габариты
+                </li>
+                <li class="list-group-item" style ="padding: 2px 2px;">
+                    <span class="badge">@Model.BoxingDescription</span>Упаковка
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.FromDate / @Model.ToDate</span>Дата подачи / выгрузки
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">                
+                    <span class="badge" style="white-space: normal!important;">@Model.Route</span>Маршрут
+                </li>
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <ul class="list-group">
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.TotalDistanceLenght</span>Расстояние, км.
+                </li>
+
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.TimeRoute</span>Время нахождения на маршруте
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.TimeSpecialVehicles</span>Времени работы спецтранспорта
+                </li>
+
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.CarNumber</span>Требуемое кол-во автомобилей
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">
+                        @if (Model.PriorityType == 0)
+                        {
+                            <span>Плановая</span>
+                        }
+                        else
+                        {
+                            <span>Срочная</span>
+                        }
+                    </span>Тип заявки (плановая/срочная)
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge"></span>Особые условия (негабарит, трал,без тента, прочее)
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+ 
+
+

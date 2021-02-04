@@ -1,0 +1,24 @@
+
+
+UPDATE [dbo].[MenuStructure]
+   SET [menuName] = '????? ?????  (????????)'
+      ,[menuId] = 27
+      ,[parentId] = 16
+ WHERE Id = 27
+GO
+
+
+INSERT INTO [dbo].[MenuStructure]
+           ([menuName]
+           ,[menuId]
+           ,[parentId])
+     VALUES
+           ('????? ????? (????????)'
+           ,28
+           ,16)
+GO
+
+
+
+
+

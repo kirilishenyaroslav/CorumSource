@@ -1,0 +1,717 @@
+﻿@model Corum.Models.OrderNavigationResult<Corum.Models.ViewModels.OrderConcurs.OrderCompetitiveListViewModel>
+
+
+@using System.Linq
+@using GridMvc.Html
+@{ ViewBag.Title = "Работа с конкурентным листом";
+    Layout = "~/Views/Shared/_Layout.cshtml"; }
+
+<style type="text/css">
+    #jqxgridAddConcurs .jqx-grid-cell-pinned, #jqxgridAddConcurs .jqx-grid-column-header {
+        background-color: #f7b662;
+        font-size: 10px;
+    }
+</style>
+
+<style>
+    .select2-container {
+        width: 80%;
+    }
+</style>
+
+@Html.Partial("_PartialModul")
+
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{ var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');"); }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                                          (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                                            new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+    </div>
+
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 main">
+            <h2 style="margin-top: 0px !important;">Конкурентный лист (@Model.currentStatus.StepShortCode)</h2> <br>
+
+            @Html.Partial("_OrderCompetitiveListInfo", Model.CompetitiveListInfo)
+
+            <hr>
+
+            <div class="table-header clearfix">
+
+                <div class="col-md-9">
+                    @Html.ActionLink("В заявку", "UpdateOrder", "Orders", new { Id = Model.CompetitiveListInfo.Id }, new { @class = "btn btn-success", @style = "margin-bottom:10px" })
+                    @Html.ActionLink("Реестр заявок", "Orders", "Orders", null, new { @class = "btn btn-success", @style = "margin-bottom:10px" })
+                    @Html.ActionLink("В excel", "ConcursAsExcel", "ExportToExcel", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })&nbsp;
+
+                    @if (Model.currentStatus.StepId < 4)
+                    {
+        <a style="margin-bottom: 10px;" class="delete_link btn btn-primary" onclick="AddConcurs(@Model.CompetitiveListInfo.Id)">
+            <span class="tooltip-message">Выбор услуг</span>
+        </a>}
+                    @Html.ActionLink("Ставки дисконт-я", "ConcursDiscountRate", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })
+                    <a style="margin-bottom: 10px;" class="btn btn-success" onclick="SendNotification(@Model.Id)">Тендер</a>
+
+                    @if (Model.DisplayValues.Count() > 0)
+                    {
+        @Html.Partial("_SetListStatusButton")
+                        @Html.ActionLink("Тайм-лайн", "GetListTimeline", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })}
+                </div>
+                @Html.Partial("_OrderCompetitiveTarifInfo")
+
+
+
+                <div id="detailValuesGrid" class="table-header clearfix col-md-12" style="font-size: 11px;">
+
+                    <table class="table table-striped table-bordered no-footer grid-table" style="height: 100%;">
+                        <thead>
+                            <tr>
+                                <th rowspan="2" class="grid-header centered_column new_columns_block_start" style="white-space: nowrap;">
+                                    <span style="color: transparent">________</span>
+                                    Наименование услуги
+                                    <span style="color: transparent">________</span>
+                                </th>
+                                <th rowspan="2" class="grid-header centered_column">
+                                    Перевозчик/<br>Экспедитор
+                                </th>
+                                <th rowspan="2" class="grid-header centered_column">
+                                    Грузо-<br>подъемность<br>автомобиля, тонн
+                                </th>
+                                <th rowspan="2" class="grid-header centered_column">
+                                    Предложено<br>транс-ных<br>единиц, шт.
+                                </th>
+                                <th rowspan="2" class="grid-header centered_column">
+                                    Акцептовано<br>транс-ных<br>единиц, шт.
+                                </th>
+                                <th rowspan="2" class="grid-header centered_column">
+                                    НДС
+                                </th>
+                                <th rowspan="2" class="grid-header centered_column">
+                                    Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно договору)
+                                </th>
+
+                                @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
+                                {
+                    <th rowspan="2" class="grid-header centered_column">
+                        <a class="tarash-i update_link tooltips" href="#">
+                            <span class="tooltip-message">
+                                Стоимость одного автомобиля, грн. без  НДС (согласно КП-1)<br>
+                                <strong>региональные:</strong> 1 тур рассылка первому ранжированному перевозчику или <br>
+                                <strong>экспорт, спецтр-т</strong> – 1 этап редукцион<br>
+                            </span>
+                            Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-1)
+                        </a>
+                    </th>
+ }
+                else
+                {
+    <th rowspan="2" class="grid-header centered_column" style="display: none;">
+        <a class="tarash-i update_link tooltips" href="#">
+            <span class="tooltip-message">
+                Стоимость одного автомобиля, грн. без  НДС (согласно КП-1)<br>
+                <strong>региональные:</strong> 1 тур рассылка первому ранжированному перевозчику или <br>
+                <strong>экспорт, спецтр-т</strong> – 1 этап редукцион<br>
+            </span>
+            Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-1)
+        </a>
+    </th>
+}
+                                @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
+                                {
+                    <th rowspan="2" class="grid-header centered_column">
+                        <a class="tarash-i update_link tooltips" href="#">
+                            <span class="tooltip-message">
+                                Стоимость одного автомобиля, грн. без  НДС (согласно КП-2)<br>
+                                <strong>региональные:</strong> 2 тур рассылка на всех перевозчиков) или <br>
+                                <strong>экспорт, спецтр-т</strong> – 2 этап редукцион
+                            </span>
+                            Стоимость одного автомобиля, грн.<br>без НДС (согласно КП-2)
+                        </a>
+                    </th>
+ }
+                else
+                {
+    <th rowspan="2" class="grid-header centered_column" style="display: none;">
+        <a class="tarash-i update_link tooltips" href="#">
+            <span class="tooltip-message">
+                Стоимость одного автомобиля, грн. без  НДС (согласно КП-2)<br>
+                <strong>региональные:</strong> 2 тур рассылка на всех перевозчиков) или <br>
+                <strong>экспорт, спецтр-т</strong> – 2 этап редукцион
+            </span>
+            Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-2)
+        </a>
+    </th>
+}
+
+
+                                <th rowspan="2" class="grid-header centered_column">
+                                    Отсрочка платежей<br>(договорная/КП1/КП2)
+                                </th>
+                                <th colspan="5" class="grid-header centered_column">
+                                    Приведение стоимости
+                                </th>
+                                <th rowspan="2" class="grid-header centered_column">
+                                    Примечание
+                                </th>
+                                <th rowspan="2" class="grid-header centered_column">
+
+                                    <a class="tarash-i update_link tooltips" href="#">
+                                        <span class="tooltip-message">
+                                            Расчет:<br> 16 колонка / Расстояние, км
+                                        </span>
+                                        Средняя цена<br>за грн./км.
+                                    </a>
+
+
+                                </th>
+                                <th rowspan="2" class="grid-header centered_column">
+                                </th>
+
+                                <th rowspan="2" class="grid-header centered_column new_columns_block_end">
+                                    Действия
+                                    <span style="color: transparent">_________________</span>
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="grid-header centered_column">
+
+                                    <a class="tarash-i update_link tooltips" href="#">
+                                        <span class="tooltip-message">
+                                            Расчет:<br>(7(8,9) колонка - 13 колонка)*Ставка дисконтирования*10 колонка/365
+                                        </span>
+                                        эффект от отсрочки
+                                    </a>
+
+                                </th>
+                                <th class="grid-header centered_column">
+                                    предоплата дней
+                                </th>
+                                <th class="grid-header centered_column">
+                                    сумма предоплаты
+                                </th>
+                                <th class="grid-header centered_column">
+
+                                    <a class="tarash-i update_link tooltips" href="#">
+                                        <span class="tooltip-message">
+                                            Расчет:<br>-13 колонка*Ставка дисконтирования*12 колонка/365
+                                        </span>
+                                        эффект от предоплаты
+                                    </a>
+                                </th>
+                                <th class="grid-header centered_column">
+
+                                    <a class="tarash-i update_link tooltips" href="#">
+                                        <span class="tooltip-message">
+                                            Стоимость одного<br>автомобиля грн.<br>с учетом стоимости<br>денег<br>
+                                            (Базис приведения-<br>оплата по факту <br>перевозки без отсрочкой<br>платежа)<br>
+                                            Расчет: 7(8,9) колонка - 11 колонка - 14 колонка
+                                        </span>
+                                        Стоимость одного<br>автомобиля грн.<br>с учетом стоимости<br>денег
+                                    </a>
+                                </th>
+                            </tr>
+                            <tr style="padding: 0px!important;">
+                                <th class="grid-header centered_column new_columns_block_start">
+                                    1
+                                </th>
+                                <th class="grid-header centered_column">
+                                    2
+                                </th>
+                                <th class="grid-header centered_column">
+                                    3
+                                </th>
+                                <th class="grid-header centered_column">
+                                    4
+                                </th>
+                                <th class="grid-header centered_column">
+                                    5
+                                </th>
+                                <th class="grid-header centered_column">
+                                    6
+                                </th>
+                                <th class="grid-header centered_column">
+                                    7
+                                </th>
+
+                                @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
+                                {
+                    <th class="grid-header centered_column">
+                        8
+                    </th>
+ }
+                else
+                {
+    <th class="grid-header centered_column" style="display:none;">
+        8
+    </th>
+}
+
+                                @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
+                                {
+                    <th class="grid-header centered_column">
+                        9
+                    </th>
+ }
+                else
+                {
+    <th class="grid-header centered_column" style="display:none;">
+        9
+    </th>
+}
+
+                                <th class="grid-header centered_column">
+                                    10
+                                </th>
+                                <th class="grid-header centered_column">
+                                    11
+                                </th>
+                                <th class="grid-header centered_column">
+                                    12
+                                </th>
+                                <th class="grid-header centered_column">
+                                    13
+                                </th>
+                                <th class="grid-header centered_column">
+                                    14
+                                </th>
+                                <!--  <th class="grid-header centered_column">
+                                    14
+                                </th>-->
+                                <th class="grid-header centered_column">
+                                    16
+                                </th>
+                                <th class="grid-header centered_column">
+                                    17
+                                </th>
+                                <th class="grid-header centered_column">
+                                    18
+                                </th>
+                                <th class="grid-header centered_column">
+                                    19
+                                </th>
+                                <th class="grid-header centered_column new_columns_block_end ">
+                                    20
+                                </th>
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var item in Model.DisplayValues)
+                            {
+
+                                string style = @item.IsSelectedId ? "font-weight: bold" : "";
+                                string stylecolor = @item.GenId == 1 ? "color: blue" : @item.GenId == 2 ? "color: black" : @item.GenId == 3 ? "color: black" : @item.GenId == 5 ? "color: green" : "";
+                                string backgroundColor = @item.IsZeroTarif ? "background : red" : "";
+                                style = style + "; " + stylecolor + "; " + backgroundColor;
+                <tr style="@style">
+                    <td class="grid-cell rigth_column new_columns_block_start" style="width:20%">@item.NameSpecification</td>
+                    <td class="grid-cell rigth_column">@item.ExpeditorName</td>
+                    <td class="grid-cell rigth_column"> @item.CarryCapacity </td>
+                    <td class="grid-cell rigth_column"> @item.CarsOffered </td>
+                    <td class="grid-cell rigth_column"> @item.CarsAccepted </td>
+                    <td class="grid-cell rigth_column"> @item.NDS </td>
+                    <td class="grid-cell rigth_column">
+                        <a class="tarash-i update_link tooltips" href="#">
+                            <span class="tooltip200down-message">@item.NameCarCostDog</span>
+                            @item.CarCostDog
+                        </a>
+                    </td>
+                    @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
+                    {
+    <td class="grid-cell rigth_column"> @item.CarCost7 </td>
+ }
+else
+{
+<td class="grid-cell rigth_column" style="display:none;"> @item.CarCost7 </td>
+}
+
+                    @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
+                    {
+    <td class="grid-cell rigth_column"> @item.CarCost </td>
+ }
+else
+{
+<td class="grid-cell rigth_column" style="display:none;"> @item.CarCost </td>
+}
+                    <td class="grid-cell rigth_column"> @item.DaysDelaySteps </td>
+                    <td class="grid-cell rigth_column"> @item.DelayEffect </td>
+
+                    <td class="grid-cell rigth_column"> @item.Prepayment</td>
+                    <td class="grid-cell rigth_column"> @item.Prepayment2</td>
+                    <td class="grid-cell rigth_column"> @item.PrepaymentEffect</td>
+
+                    <!--<td class="grid-cell rigth_column"> @*@item.PrepaymentEffect2*@</td>-->
+
+                    <td class="grid-cell rigth_column"> @item.CarCostWithMoneyCost </td>
+                    <td class="grid-cell rigth_column">
+                        <a class="tarash-i update_link tooltips" href="#">
+                            <span class="tooltip200down-message">@item.Comments</span>
+                            @item.Comments_Cut
+                        </a>
+                    </td>
+                    <td class="grid-cell rigth_column"> @item.AverageCost </td>
+
+                    <td class="grid-cell rigth_column">
+                        @*@Html.CheckBox(@item.Id.ToString(), @item.IsSelectedId, new { disabled = "disabled", @readonly = "readonly" })*@
+
+
+                        <a class="tarash-i update_link tooltips" href="#">
+                            <span class="tooltip200down-message">@item.NameSpecification</span>
+                            @item.SelectedItem
+                        </a>
+                    </td>
+
+                    <td class="grid-cell rigth_column new_columns_block_end">
+                        @if (Model.currentStatus.StepId < 4)
+                        {
+        <a class="tarash-i update_link tooltips" href="@Url.Action("UpdateConcurs", "OrderConcurs", new {Id = @item.Id, OrderId = @item.OrderId})">
+            <span class="tooltip-message">
+                Изменить запись
+            </span>
+            <span class="glyphicon glyphicon-pencil"></span>
+        </a>
+
+                            <a class="tarash-i tooltips" href="@Url.Action("CloneConcurs", "OrderConcurs", new  {Id = @item.Id, OrderId = @item.OrderId})">
+                                <span class="tooltip-message">Клонировать запись</span>
+                                <span class="glyphicon glyphicon-plus-sign"></span>
+                            </a>
+
+                                                <a onclick="window.open('@Url.Action("ConcursHistory", "OrderConcurs", new {Id = @item.Id, ShowAll = false, OrderId = @item.OrderId})', '_blank', 'location=false, scrollbars=yes,status=yes');"
+                                                   class="tarash-i tooltips">
+                                                    <span class="tooltip-message">История конкурентных листов</span>
+                                                    <span class="glyphicon glyphicon-th-list"></span>
+                                                </a>
+                                                                    <a class="tarash-i tooltips" href="@Url.Action("DeleteConcurs", "OrderConcurs", new { Id = @item.Id, OrderId = @item.OrderId })" onclick="return confirm('Хотите удалить запись?');">
+                                                                        <span class="tooltip-message">Удалить запись</span>
+                                                                        <span class="glyphicon glyphicon-trash"></span>
+                                                                    </a>}
+                    </td>
+                </tr>
+}
+                        </tbody>
+                    </table>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    @Html.Partial("_OrderCompetitive")
+</div>
+
+
+@section scripts
+{
+    <script>
+
+        function AddConcurs(orderId) {
+
+            $('#addconcursdialog')
+                .dialog(
+                {
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 1100,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Выбор услуг",
+                    modal: true,
+                    open: function(event, ui) {
+
+                    },
+
+                    close: function(event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function(event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function(event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function() {
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Выбрать",
+                            "class": 'btn btn-primary',
+                            click: function() {
+
+                                var getselectedrowindexes = $('#jqxgridAddConcurs').jqxGrid('getselectedrowindexes');
+
+
+                                if (getselectedrowindexes.length > 0) {
+
+                                    getselectedrowindexes.forEach(function(item, i, getselectedrowindexes) {
+
+                                        //var selectedRowData = $('#jqxgridAddConcurs').jqxGrid('getrowdata', getselectedrowindexes[0]);
+                                        var selectedRowData = $('#jqxgridAddConcurs').jqxGrid('getrowdata', getselectedrowindexes[i]);
+
+                                        var _Id = selectedRowData.Id;
+                                        var _ExpeditorName = selectedRowData.ExpeditorName;
+                                        var _NameGroupeSpecification = selectedRowData.NameGroupeSpecification;
+                                        var _NameSpecification = selectedRowData.NameSpecification;
+                                        var _DaysDelay = selectedRowData.DaysDelay;
+                                        var _FreightName = selectedRowData.FreightName;
+                                        var _CarryCapacity = selectedRowData.CarryCapacity;
+                                        var _NameIntervalType = selectedRowData.NameIntervalType;
+                                        var _MovingTypeName = selectedRowData.MovingTypeName;
+                                        var _UsedRateId = selectedRowData.UsedRateId;
+                                        var _OrderId = @Model.CompetitiveListInfo.Id;
+
+                                        var filter = new Object();
+                                        filter.Id = _Id;
+                                        filter.ExpeditorName = _ExpeditorName;
+                                        filter.NameGroupeSpecification = _NameGroupeSpecification;
+                                        filter.NameSpecification = _NameSpecification;
+                                        filter.DaysDelay = _DaysDelay;
+                                        filter.FreightName = _FreightName;
+                                        filter.CarryCapacity = _CarryCapacity;
+                                        filter.NameIntervalType = _NameIntervalType;
+                                        filter.MovingTypeName = _MovingTypeName;
+                                        filter.UsedRateId = _UsedRateId;
+                                        filter.OrderId = _OrderId;
+                                        var json = JSON.stringify(filter);
+
+
+                                        $.ajax({
+                                            type: 'POST',
+                                            url: '@Url.Action("AddSpecificationsInfo", "OrderConcurs")',
+                                            data: json,
+                                            async: false,
+                                            contentType: 'application/json; charset=utf-8',
+                                            success: function(msg) {
+                                                //if (msg == 'True') {
+                                                window.location.reload(true);
+                                                //};
+                                            }
+                                        });
+
+
+                                    });
+
+
+                                }
+                                $(this).dialog("close");
+
+                            }
+                        }
+                    ]
+                });
+
+            $('#addconcursdialog').dialog('open');
+
+            return;
+        }
+
+
+
+
+        function GetSpecification(Id) {
+
+            var _FilterTripTypeId = null;
+            var _FilterSpecificationTypeId = null;
+            var _FilterVehicleTypeId = null;
+            var _FilterPayerId = null;
+
+            var UseTripTypeFilter = $('#CompetitiveListInfo_UseTripTypeFilter').prop("checked");
+            if (UseTripTypeFilter) {
+                _FilterTripTypeId = $('#FilterTripTypeId').val();
+            }
+
+            var UseSpecificationTypeFilter = $('#CompetitiveListInfo_UseSpecificationTypeFilter').prop("checked");
+            if (UseSpecificationTypeFilter) {
+                _FilterSpecificationTypeId = $('#FilterSpecificationTypeId').val();
+            }
+
+            var UseVehicleTypeFilter = $('#CompetitiveListInfo_UseVehicleTypeFilter').prop("checked");
+            if (UseVehicleTypeFilter) {
+                _FilterVehicleTypeId = $('#FilterVehicleTypeId').val();
+            }
+
+            var UsePayerFilter = $('#CompetitiveListInfo_UsePayerFilter').prop("checked");
+            if (UsePayerFilter) {
+                _FilterPayerId = $('#FilterPayerId').val();
+            }
+
+            var UseRouteFilter = $('#CompetitiveListInfo_UseRouteFilter').prop("checked");
+            //if (Id == 1) {
+                var source =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'GenId', type: 'number' },
+                        { name: 'ExpeditorName', type: 'string' },
+                        { name: 'NameGroupeSpecification', type: 'string' },
+                        { name: 'DaysDelay', type: 'number' },
+                        { name: 'NameSpecification', type: 'string' },
+                        //{ name: 'FreightName', type: 'string' },
+                        { name: 'CarryCapacity', type: 'number' },
+                        { name: 'NameIntervalType', type: 'string' },
+                        { name: 'UsedRateName', type: 'string' },
+                        { name: 'Id', type: 'number' },
+                        { name: 'UsedRateId', type: 'number' },
+                        { name: 'RouteName', type: 'string' }
+                    ],
+                    url: '@Url.Action("GetSpecifications", "OrderConcurs")?OrderId= ' + @Model.CompetitiveListInfo.Id + '&UseTripTypeFilter= ' + UseTripTypeFilter + '&FilterTripTypeId= ' + _FilterTripTypeId + '&UseSpecificationTypeFilter= ' + UseSpecificationTypeFilter + '&FilterSpecificationTypeId= ' + _FilterSpecificationTypeId + '&UseVehicleTypeFilter= ' + UseVehicleTypeFilter + '&FilterVehicleTypeId= ' + _FilterVehicleTypeId + '&UsePayerFilter= ' + UsePayerFilter + '&FilterPayerId= ' + _FilterPayerId + '&UseRouteFilter= ' + UseRouteFilter + '&AlgorithmId= ' + Id,
+                    @*            new {OrderId = Model.CompetitiveListInfo.Id, FilterTripTypeId = _FilterTripTypeId})',*@
+                    pagenum: 0,
+                    pagesize: 5,
+                    pager: function(pagenum, pagesize, oldpagenum) {
+
+                    }
+                };
+
+            var dataAdapter = new $.jqx.dataAdapter(source,
+                {
+                    formatData: function(data) {
+                        $.extend(data, {
+                            featureClass: "P",
+                            style: "full",
+                            maxRows: 50,
+                            username: "jqwidgets"
+                        });
+                        return data;
+                    }
+                }
+            );
+
+            var getLocalization = function() {
+                var localizationobj = {};
+                localizationobj.pagergotopagestring = "Перейти к стр.:";
+                localizationobj.pagershowrowsstring = "Показать строки:";
+                localizationobj.pagerrangestring = " из ";
+                localizationobj.emptydatastring = "Нет данных для отображения";
+                return localizationobj;
+            }
+
+            var CityFrom = '@Model.CompetitiveListInfo.CityFrom';
+            var CityTo = '@Model.CompetitiveListInfo.CityTo';
+
+
+            var columns = [
+                { text: 'Экспедитор', datafield: 'ExpeditorName', align: 'center', width: 140 },
+                { text: 'Спецификация', datafield: 'NameGroupeSpecification', align: 'center', width: 145 },
+                { text: 'Отсрочка<br>в днях', datafield: 'DaysDelay', align: 'center', width: 60 },
+                { text: 'Услуга', datafield: 'NameSpecification', align: 'center', width: 230 },
+                { text: 'Грузо-<br>подъем-<br>ность', datafield: 'CarryCapacity', align: 'center', width: 55 },
+                { text: 'Тип<br>интервала<br>маршрута', datafield: 'NameIntervalType', align: 'center', width: 70 },
+                { text: 'Тариф', datafield: 'UsedRateName', align: 'center', width: 100 },
+                { text: 'Название<br>маршрута', datafield: 'RouteName', align: 'center', width: 220 }
+            ];
+
+
+            $("#jqxgridAddConcurs").jqxGrid(
+            {
+                width: 1050,
+                source: dataAdapter,
+                showfilterrow: true,
+                filterable: true,
+                selectionmode: 'checkbox',
+                sortable: true,
+                pageable: true,
+                pageSize: 5,
+                columnsresize: true,
+                autoheight: true,
+                autorowheight: true,
+                columnsheight: '55px',
+                localization: getLocalization(),
+                columns: columns
+
+            });
+            return;
+
+        }
+
+        $(document).ready(function() {
+            InitFilterMultipleDropDowns();
+            GetSpecification(1);
+
+
+        });
+
+
+        // Модульное окно при нажатии на кнопку "Тендер"
+        function SendNotification(orderId) {
+            $("#ReceiverId").attr("data-source-url", '@Url.Action("GetReceivers", "Orders")' + '?Id=' + orderId);
+
+            $('#partialModul')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Запрос на тендер",
+                    modal: true,
+                    open: function(event, ui) {
+                        InitFilterDropDowns();
+                    },
+                    close: function(event, ui) {
+                        $(this).dialog('destroy');
+                    },
+                    create: function(event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function(event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function() {
+
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Отправить",
+                            "class": 'btn btn-primary',
+                            click: function() {
+
+                                var ReceiverId = $('#ReceiverId').val();
+                                var MessageText = $('#MessageText').val();
+
+                                $.post('@Url.Action("SendNotification", "Orders")',
+                                    {
+                                        ReceiverId: ReceiverId,
+                                        OrderId: orderId,
+                                        MessageText: MessageText
+                                    },
+                                    function(data) {
+                                        alert('Уведомление отправлено');
+                                    });
+
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+
+            $('#partialModul').dialog('open');
+
+            return;
+        }
+
+
+    </script>
+}

@@ -1,0 +1,93 @@
+﻿@model Corum.Models.ContractNavigationResult<Corum.Models.ViewModels.Cars.ContractsViewModel>
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Договора транспортно-экспедиторских услуг";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var addParam = "";
+            if (@Model.isMainMenu)
+            {
+                addParam = "?IsForwarder=" + @Model.isForwarder.ToString().ToLower() + "&IsMainMenu=" + @Model.isMainMenu.ToString().ToLower();
+            }
+            else
+            {
+                addParam = "?IsForwarder=" + @Model.isForwarder.ToString().ToLower() + "&IsMainMenu=" + @Model.isMainMenu.ToString().ToLower() + "&carOwnerId=" + @Model.carOwnerInfo.Id;
+            }
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), addParam, "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 main">
+           @if (!Model.isMainMenu)
+           {
+            if (Model.isForwarder)
+            {
+              <h4 class="centered_column">Договора транспортно-экспедиторских услуг для экспедитора @Model.carOwnerInfo.CarrierName </h4>
+            }
+            else
+            {
+              <h4 class="centered_column">Договора транспортно-экспедиторских услуг для перевозчика @Model.carOwnerInfo.CarrierName </h4>
+            }
+           }
+           else
+           {
+            <h4 class="centered_column">Договора транспортно-экспедиторских услуг</h4>
+           }
+            <div class="table-header clearfix">
+                <div class="row main">
+                    
+                    @if (!Model.isMainMenu)
+                    {
+                        @Html.ActionLink("К реестру экспедиторов/перевозчиков", "CarOwners", "Cars", null, new { @class = "btn btn-success", @style = "margin-right:10px" })
+                        <a class="btn btn-primary" href="/Cars/NewContract?carOwnerId=@Model.carOwnerInfo.Id&isForwarder=@Model.isForwarder.ToString().ToLower()">Новый договор +</a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-primary" href="/Cars/NewContract?carOwnerId=null&isForwarder=@Model.isForwarder.ToString().ToLower()">Новый договор +</a>
+                    }
+                </div>
+                @if (Model.isChrome)
+                  { @Html.Partial("_ContractsChrome");
+                }
+                else
+                {@Html.Partial("_ContractsNotChrome");
+                }</div>
+
+            @TPagging("Contracts", "Cars", @Model.RequestParams, this)
+
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+
+
+        $(document).ready(function () {
+            InitializeDateTimePickers();
+            InitFilterDropDowns();
+        });
+
+    </script>
+}
+
+
+

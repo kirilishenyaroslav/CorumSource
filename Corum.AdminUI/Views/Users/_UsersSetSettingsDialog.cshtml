@@ -1,0 +1,31 @@
+﻿@model Corum.Models.NavigationResult<Corum.Models.ViewModels.UserViewModel>
+
+<style>
+    .select2-container {
+        width: 80%;
+    }
+</style>
+
+<div id="cloneuserdialog" class="row" style="display: none; margin: auto;">
+    <div class="form-group row">
+        <label class="col-md-3" style="font-weight: normal !important;">
+            Пользователь-источник прав
+        </label>
+        <div class="col-md-9">
+            @Html.TextBox("Receiver", "",
+                     htmlAttributes: new
+                     {
+                         id = "ReceiverId",
+                         @class = "filter_dropdown",
+                         @name = "ReceiverId",
+                         data_source_url = Url.Action("GetUsers", "Users"),
+                         data_droplist_placeholder = "Выберите шаблонного пользователя",
+                         data_selected_text = ""
+                     })
+      </div>
+    </div>
+
+</div>
+
+
+

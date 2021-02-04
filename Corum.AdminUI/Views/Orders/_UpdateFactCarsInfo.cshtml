@@ -1,0 +1,38 @@
+﻿@model Corum.Models.ViewModels.OrderConcurs.CompetitiveListViewModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="badge">@Model.Id</span>Номер заявки
+                </li>
+                <li class="list-group-item">
+                    <span class="badge">@Model.OrderDate</span>Дата создания
+                </li>
+                <li class="list-group-item">
+                    <span class="badge">@Model.PayerName</span>Плательщик/Заказчик
+                </li>              
+                
+
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <ul class="list-group">
+                <li class="list-group-item">
+                    <span class="badge">@Model.OrderTypename</span>Тип заявки
+                </li>
+                <li class="list-group-item">
+                    <span class="badge">@Model.FromDate / @Model.ToDate</span>Дата подачи / выгрузки
+                </li>
+                <li class="list-group-item">
+                    <span class="badge" style="white-space: normal !important;">@Model.Route</span>Маршрут
+                </li>
+            </ul>
+        </div>     
+    </div>
+</div>
+
+ 
+
+

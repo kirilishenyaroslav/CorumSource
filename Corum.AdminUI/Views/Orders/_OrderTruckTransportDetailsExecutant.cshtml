@@ -1,0 +1,53 @@
+﻿@using Corum.Models.ViewModels.Orders;
+
+@model Corum.Models.ViewModels.Orders.OrdersTruckTransportViewModel
+
+@Html.Partial("_OrdersUsedCarInfo")
+@Html.Partial("_OrdersUsedCarInfoAdditional")
+@Html.Partial("_OrdersDirUsedCarInfo")
+
+@if (@Model.Id > 0)
+{
+    @Html.Label("Автомобили для выполнения заявки", htmlAttributes: new { @class = "control-label" })
+    <div class="row">
+
+        <div class="col-md-2">
+            <div class="row" style="margin-top:15px; text-align:right;">
+                @if (Model.AllowExecuterData)
+                {
+                    <input type="button" value="Добавить" class="btn btn-default" style="margin: 5px 5px 5px 5px; width:150px;" onclick="ShowUsedCarDialog(@Model.Id, false, true)" /><br>
+                    <input type="button" value="Доп. информация" id="UsedCarAddInfoButton" class="btn disabled" style="margin: 5px 5px 5px 5px; width:150px;" onclick="ShowUsedCarAddDialog(@Model.Id)" /><br>
+                    <input type="button" value="Из справочника" class="btn btn-default" style="margin: 5px 5px 5px 5px;width:150px;" onclick="ShowDirectoryUsedCarDialog(@Model.Id, true)" /><br>
+                    <input type="button" value="Изменить" id="UsedCarEditButton" class="btn disabled" style="margin: 5px 5px 5px 5px;width:150px;" onclick="ShowUsedCarDialog(@Model.Id, true, true)" /><br>
+                    <input type="button" value="Удалить" id="UsedCarDeleButton" class="btn disabled" style="margin: 5px 5px 5px 5px;width:150px;" onclick="DropUsedCar()" /><br>
+                }
+            </div>
+        </div>
+        <div class="col-md-9">
+          @*  <a href="~/Views/Orders/_OrderTruckTransportDetailsExecutant.cshtml"></a>*@
+            <div class="form-group" style="margin-left: 5px;">
+                @if (Model.AllowExecuterData)
+                {
+                    <div id="UsedCars" class="row">
+                        <div id="jqxWidgetUC">
+                            <div id="jqxgridUC">
+
+                            </div>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <div id="UsedCars" class="row" style="display: none;">
+                        <div id="jqxWidgetUC">
+                            <div id="jqxgridUC">
+
+                            </div>
+                        </div>
+                    </div>
+                }
+
+            </div>
+        </div>
+    </div>
+}

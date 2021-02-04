@@ -1,0 +1,186 @@
+﻿
+@model Corum.Models.ViewModels.Orders.OrderUsedCarViewModel
+@{
+    ViewBag.Title = "Обновить даты и время фактического использования автомобиля";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("UpdateFactCars", "Orders", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <h4 class="centered_column">Детальная информация о датах и времени фактического использования автомобиля</h4>
+        
+        @Html.Partial("_UpdateFactCarsInfo", Model.OrderListInfo)
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+
+        <div class="col-md-3">
+            <div class="form-group" style="margin-left: 5px;">
+                @Html.LabelFor(model => model.FactShipperDate, htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => model.FactShipperDate, new { htmlAttributes = new { @class = "form-control datepicker  client-info", autocomplete = "off", data_raw_element = "FactShipperDateRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="FactShipperDateRaw" data-linked-input="FactShipperDate"></span>
+
+                </div>
+                @Html.HiddenFor(model => model.FactShipperDateRaw)
+                @Html.ValidationMessageFor(model => model.FactShipperDate, "", new { @class = "text-danger" })
+            </div>
+            </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.FactShipperTime, htmlAttributes: new {@class = "control-label"})
+                <div class="input-group">
+                    @Html.EditorFor(model => model.FactShipperTime, new {htmlAttributes = new {@class = "form-control timepicker client-info timechange", autocomplete = "off", data_raw_element = "FactShipperTimeRaw", @readonly = "readonly"}})
+                    <span class="input-group-addon glyphicon glyphicon-time timepicker" data-raw-element="FactShipperTimeRaw" data-linked-input="FactShipperTime"></span>
+                </div>
+                @Html.HiddenFor(model => model.FactShipperTimeRaw)
+                @Html.ValidationMessageFor(model => model.FactShipperTime, "", new {@class = "text-danger"})
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.PlanShipperDate, htmlAttributes: new {@class = "control-label"})
+                <div class="input-group">
+                    @Html.EditorFor(model => model.PlanShipperDate, new { htmlAttributes = new { @class = "form-control datepicker  client-info", autocomplete = "off", data_raw_element = "PlanShipperDateRaw", @readonly = "readonly", @disabled = "disabled" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="PlanShipperDateRaw" data-linked-input="PlanShipperDate"></span>
+                </div>               
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.PlanShipperTime, htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => model.PlanShipperTime, new { htmlAttributes = new { @class = "form-control timepicker client-info timechange", autocomplete = "off", data_raw_element = "PlanShipperTimeRaw", @readonly = "readonly", @disabled = "disabled" } })
+                    <span class="input-group-addon glyphicon glyphicon-time timepicker" data-raw-element="PlanShipperTimeRaw" data-linked-input="PlanShipperTime"></span>
+                </div>            
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group" style="margin-left: 5px;">
+                @Html.LabelFor(model => model.FactConsigneeDate, htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => model.FactConsigneeDate, new { htmlAttributes = new { @class = "form-control datepicker  client-info", autocomplete = "off", data_raw_element = "FactConsigneeDateRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="FactConsigneeDateRaw" data-linked-input="FactConsigneeDate"></span>
+                </div>
+                @Html.HiddenFor(model => model.FactConsigneeDateRaw)
+                @Html.ValidationMessageFor(model => model.FactConsigneeDate, "", new { @class = "text-danger" })
+            </div>
+            </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.FactConsigneeTime, htmlAttributes: new {@class = "control-label"})
+                <div class="input-group">
+                    @Html.EditorFor(model => model.FactConsigneeTime, new {htmlAttributes = new {@class = "form-control timepicker client-info timechange", autocomplete = "off", data_raw_element = "FactConsigneeTimeRaw", @readonly = "readonly"}})
+                    <span class="input-group-addon glyphicon glyphicon-time timepicker" data-raw-element="FactConsigneeTimeRaw" data-linked-input="FactConsigneeTime"></span>
+                </div>
+                @Html.HiddenFor(model => model.FactConsigneeTimeRaw)
+                @Html.ValidationMessageFor(model => model.FactConsigneeTime, "", new {@class = "text-danger"})
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.PlanConsigneeDate, htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => model.PlanConsigneeDate, new { htmlAttributes = new { @class = "form-control datepicker  client-info", autocomplete = "off", data_raw_element = "PlanConsigneeDateRaw", @readonly = "readonly", @disabled = "disabled" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="PlanConsigneeDateRaw" data-linked-input="PlanConsigneeDate"></span>
+                </div>
+            </div>
+        </div>
+
+          <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.PlanConsigneeTime, htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => model.PlanConsigneeTime, new { htmlAttributes = new { @class = "form-control datepicker  client-info", autocomplete = "off", data_raw_element = "PlanConsigneeTimeRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="PlanConsigneeTimeRaw" data-linked-input="PlanConsigneeTime"></span>
+
+                </div>
+                @Html.HiddenFor(model => model.PlanConsigneeTimeRaw)
+                @Html.ValidationMessageFor(model => model.PlanConsigneeTime, "", new { @class = "text-danger" })
+            </div>
+            </div>
+
+        <div class="col-md-3">
+            <div class="form-group" style="margin-left: 5px;">
+                @Html.LabelFor(model => model.RealFactShipperDate, htmlAttributes: new {@class = "control-label"})
+                <div class="input-group">
+                    @Html.EditorFor(model => model.RealFactShipperDate, new {htmlAttributes = new {@class = "form-control datepicker  client-info", autocomplete = "off", data_raw_element = "RealFactShipperDateRaw", @readonly = "readonly"}})
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="RealFactShipperDateRaw" data-linked-input="RealFactShipperDate"></span>
+                </div>
+                @Html.HiddenFor(model => model.RealFactShipperDateRaw)
+                @Html.ValidationMessageFor(model => model.RealFactShipperDate, "", new {@class = "text-danger"})
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.RealFactShipperTime, htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => model.RealFactShipperTime, new { htmlAttributes = new { @class = "form-control timepicker client-info timechange", autocomplete = "off", data_raw_element = "RealFactShipperTimeRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-time timepicker" data-raw-element="RealFactShipperTimeRaw" data-linked-input="RealFactShipperTime"></span>
+                </div>
+                @Html.HiddenFor(model => model.RealFactShipperTimeRaw)
+                @Html.ValidationMessageFor(model => model.RealFactShipperTime, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.RealFactConsigneeDate, htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => model.RealFactConsigneeDate, new { htmlAttributes = new { @class = "form-control datepicker  client-info", autocomplete = "off", data_raw_element = "RealFactConsigneeDateRaw", @readonly = "readonly" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="RealFactConsigneeDateRaw" data-linked-input="RealFactConsigneeDate"></span>
+
+                </div>
+                @Html.HiddenFor(model => model.RealFactConsigneeDateRaw)
+                @Html.ValidationMessageFor(model => model.RealFactConsigneeDate, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.RealFactConsigneeTime, htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => model.RealFactConsigneeTime, new {htmlAttributes = new {@class = "form-control timepicker client-info timechange", autocomplete = "off", data_raw_element = "RealFactConsigneeTimeRaw", @readonly = "readonly", @disabled = "disabled"}})
+                    <span class="input-group-addon glyphicon glyphicon-time timepicker" data-raw-element="RealFactConsigneeTimeRaw" data-linked-input="RealFactConsigneeTime"></span>
+                </div>
+                @Html.HiddenFor(model => model.RealFactConsigneeTimeRaw)
+                @Html.ValidationMessageFor(model => model.RealFactConsigneeTime, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+                <div class="col-md-offset-2 col-md-10">
+                    <input type="submit" value="Применить" class="btn btn-default" />
+                </div>
+            </div>
+
+        </div>
+}
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+
+            InitializeDateTimePickers();
+            InitFilterDropDowns();          
+            InitTimeRaw();
+        });
+
+
+    </script>
+}

@@ -1,0 +1,73 @@
+﻿@model Corum.Models.ViewModels.Orders.OrderObserverViewModel
+@{
+    ViewBag.Title = "Новый наблюдатель";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("NewObserver", "Orders", FormMethod.Post,
+                                               new { enctype = "multipart/form-data" }))
+{
+    <div class="form-horizontal">
+
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.OrderId)
+
+        <h4>Новый наблюдатель</h4>
+        <hr />
+
+        <fieldset>
+            
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.observerId, htmlAttributes: new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    <div class="form-control-container full-width-select">
+                        @Html.DropDownListFor(model => model.observerId,
+                                          new SelectList(Model.AvailiableObserver.Select(x => new { Value = x.userId, Text = string.Concat(x.displayName, " (",x.userEmail,")") }), "Value", "Text", Model.observerId),
+                                          new { @class = "form-control input" })
+                        @Html.ValidationMessageFor(model => model.observerId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+
+            
+
+            <hr>
+            <div class="form-group">
+                <div class="col-md-offset-2 col-md-10 ">
+                    <div class="row">
+                        @Html.ActionLink("Реестр наблюдателей", "OrderObservers", "Orders", new { OrderId= Model.OrderId }, new { @class = "btn btn-success" })
+                        <input type="submit" value="Добавить" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+
+        </fieldset>
+    </div>
+}
+
+
+@section scripts
+{
+            <script>
+                function handleBrowseClick(fileinputname) {
+                    var fileinput = document.getElementById(fileinputname);
+                    fileinput.click();
+                    return;
+                }
+
+                function handlechange(fileinputname, textinputname) {
+                    debugger;
+                    var fileinput = document.getElementById(fileinputname);
+                    var textinput = document.getElementById(textinputname);
+
+                    textinput.value = fileinput.value;
+                    return;
+                }
+            </script>
+}
+
+

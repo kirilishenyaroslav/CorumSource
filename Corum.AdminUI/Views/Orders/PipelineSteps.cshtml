@@ -1,0 +1,251 @@
+﻿@model Corum.Models.PipelinesNavigationResult<Corum.Models.ViewModels.Orders.OrderPipelineStepViewModel>
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Допустимые переходы для статусов заявок";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+ 
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 main">
+            <div class="form-group row">
+                <div class="col-md-6">
+                     <h4>Допустимые переходы для статусов заявок типа:</h4>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-control-container full-width-select">
+                        @using (Html.BeginForm("PipelineSteps", "Orders", FormMethod.Get))
+                        {
+                             @Html.DropDownListFor(model => model.OrderTypeId,
+                                                   new SelectList(Model.AvailiableTypes.Select(x => new { Value = x.Id, Text = x.TypeName }), "Value", "Text", Model.OrderTypeId),
+                                                   new { @class = "form-control input", onchange = @"form.submit();" })
+                             @Html.ValidationMessageFor(model => model.OrderTypeId, "", new { @class = "text-danger" })
+                        }
+                    </div>
+                </div>
+            </div>
+            <hr>
+
+            <div class="table-header clearfix">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.ActionLink("Новый шаг", "NewPipelineStep", "Orders", new { OrderTypeId = Model.OrderTypeId }, new { @class = "btn btn-primary", @style = "margin-bottom:10px; margin-left:15px;" })
+                    </div>
+                    <ul class="nav nav-tabs nav-list" role="tablist">
+                        <li role="presentation" class="active">
+                            <a class="tab-page active" id="aPage3" href="#Page3" role="tab" data-toggle="tab">Табличное представление</a>
+                        </li>
+                        <li role="presentation">
+                            <a class="tab-page" id="aPage5" href="#Page5" role="tab" data-toggle="tab">Представление в виде графа</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content tab-cont-all">
+                    <div role="tabpanel" class="active filter-tab-pane tab-pane row" id="Page3">
+                        <div style="font-size: 13px;">
+                            @(Html.Grid(Model.DisplayValues)
+                  .Columns(columns =>
+                  {
+                      columns.Add(model => model.Id)
+                        .Titled("Код шага").Filterable(true).Sortable(true);
+
+                      columns.Add(model => model.FromStatusName)
+                        .Titled("Начальный <br> статус").Filterable(true).Sortable(true);
+
+                      columns.Add(model => model.ToStatusName)
+                        .Titled("Конечный <br> статус").Filterable(true).Sortable(true);
+
+                      columns.Add(model => model.AccessRoleName)
+                        .Titled("Группа <br> пользователей").Filterable(true).Sortable(true);
+
+
+                      columns.Add(model => model.StartDateForClientLayer).Filterable(true).Sortable(true)
+                         .Encoded(false)
+                         .Sanitized(false)
+                         .Css("centered_column")
+                         .Titled("Дата <br> перевода <br> является <br> датой утверждения <br> заявки клиентом")
+                         .RenderValueAs(o =>
+                        @<div>
+                            @Html.CheckBox(o.Id.ToString(), @o.StartDateForClientLayer, new { disabled = "disabled", @readonly = "readonly" })
+                        </div>);
+
+                      columns.Add(model => model.StartDateForExecuterLayer).Filterable(true).Sortable(true)
+                         .Encoded(false)
+                         .Sanitized(false)
+                         .Css("centered_column")
+                         .Titled("Дата <br> перевода <br> является <br> датой начала <br> исполнения")
+                         .RenderValueAs(o =>
+                        @<div>
+                            @Html.CheckBox(o.Id.ToString(), @o.StartDateForExecuterLayer, new { disabled = "disabled", @readonly = "readonly" })
+                        </div>);
+
+                      columns.Add(model => model.FinishStatusForBP).Filterable(true).Sortable(true)
+                         .Encoded(false)
+                         .Sanitized(false)
+                         .Css("centered_column")
+                         .Titled("Финальный <br> шаг <br> процесса")
+                         .RenderValueAs(o =>
+                        @<div>
+                            @Html.CheckBox(o.Id.ToString(), @o.FinishStatusForBP, new { disabled = "disabled", @readonly = "readonly" })
+                        </div>);
+
+                      columns.Add()
+                         .Encoded(false)
+                         .Sanitized(false)
+                         .Css("centered_column")
+                         .RenderValueAs(o =>
+                        @<div class="edit-delete-copy-links">
+
+                            <a class="tarash-i update_link tooltips" href="@Url.Action("UpdatePipelineStep", "Orders", new { Id = o.Id })">
+                                <span class="tooltip-message">Изменить настройки шаг</span>
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+
+                            <a class="tarash-i update_link tooltips" href="@Url.Action("DeletePipelineStep", "Orders", new { Id = o.Id })">
+                                <span class="tooltip-message">Удалить допустимый шаг</span>
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        </div>);
+
+                  }).Filterable())
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="filter-tab-pane tab-pane" id="Page5">
+                            <div id="PipelineStepsNetwork">
+                                <div id="loadingBar">
+                                    <div class="outerBorder">
+                                        <div id="textBarDrawGraph">0%</div>
+                                        <div id="border">
+                                            <div id="bar"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                       
+                    </div>
+                </div>
+          </div>
+
+            
+
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        
+        $( "#aPage5" ).click(function() {
+            $(document).ready(function ()
+            {
+                var PipelineSteps=@Html.Raw(Json.Encode(Model.DisplayValues));
+                nodes = [];
+                edges = [];
+ 
+                var foundRepeat = function(id){
+                    var found = nodes.some(function (el) {
+                        return el.id === id;
+                    });
+                    return found;
+                }
+
+                for(var i=0; i<PipelineSteps.length; i++){
+                    if(!foundRepeat(PipelineSteps[i].FromStatus)){
+                        nodes.push({
+                            id: PipelineSteps[i].FromStatus,
+                            label:PipelineSteps[i].FromStatusName,
+                            color:PipelineSteps[i].FromStatusColor
+                        });
+                    }   
+                    if(!foundRepeat(PipelineSteps[i].ToStatus)){
+                        nodes.push({
+                            id: PipelineSteps[i].ToStatus,
+                            label:PipelineSteps[i].ToStatusName,
+                            color:PipelineSteps[i].ToStatusColor
+                        });
+                    }        
+                }
+
+                for(var i=0; i<PipelineSteps.length; i++){  
+                    edges.push({
+                        from: PipelineSteps[i].FromStatus,
+                        to:PipelineSteps[i].ToStatus
+                    });         
+                }
+
+                // create a network
+                var container = document.getElementById('PipelineStepsNetwork');
+                var loadingBar = document.getElementById('loadingBar');
+                loadingBar.style.display = 'block';
+                var textBarDrawGraph = document.getElementById('textBarDrawGraph');
+                var bar = document.getElementById('bar');
+                var data = {
+                    nodes: nodes,
+                    edges: edges
+                };
+                var options = {
+                    nodes: {
+                        font: {
+                            color: '#ffffff',
+                            size: 14
+                        },
+                        physics: false},
+                    edges: {
+                        color: '#000',
+                        width: 2
+                    },
+                    autoResize: true,
+                    height: '100%',
+                    width: '100%',
+                    layout:{
+                        randomSeed:34
+                    },
+                    physics: {
+                        forceAtlas2Based: {
+                            gravitationalConstant: -26,
+                            centralGravity: 0.005,
+                            springLength: 230,
+                            springConstant: 0.18
+                        },
+                        maxVelocity: 146,
+                        solver: 'forceAtlas2Based',
+                        timestep: 0.35,
+                        stabilization: {
+                            enabled:true,
+                            iterations:200,
+                            updateInterval:5
+                        }
+                    }
+                };
+        
+                var network = new vis.Network(container, data, options);
+           
+                network.setOptions(options);
+              
+                window.onresize = function() {
+                    network.fit();}
+
+                network.on("stabilizationProgress", function(params) {
+                    var maxWidth = 496;
+                    var minWidth = 20;
+                    var widthFactor = params.iterations/params.total;
+                    var width = Math.max(minWidth,maxWidth * widthFactor);
+
+                    bar.style.width = width + 'px';
+                    textBarDrawGraph.innerHTML = Math.round(widthFactor*100) + '%';
+                    console.log(textBarDrawGraph.innerHTML);
+                });
+                network.once("stabilizationIterationsDone", function() {
+                    textBarDrawGraph.innerHTML = '100%';
+                    bar.style.width = '496px';
+                    loadingBar.style.opacity = 0;
+                    // really clean the dom element
+                    setTimeout(function () {/*loadingBar.style.display = 'none';*/}, 5000);
+                });
+            
+            });
+        });
+    </script>
+}

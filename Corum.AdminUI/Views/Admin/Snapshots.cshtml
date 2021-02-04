@@ -1,0 +1,120 @@
+﻿@model Corum.Models.NavigationResult<Corum.Models.ViewModels.SnapshotInfoViewModel>
+
+
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 main">
+            <h4>Доступные для использования информационные снимки</h4>
+            
+            <div class="table-header clearfix">
+
+                <div style="font-size: 13px;">
+
+                @(Html.Grid(Model.DisplayValues)
+                  .Columns(columns =>
+                  {
+                      columns.Add(model => model.DateOfImport)
+                       .Titled("Дата загрузки <br> снимка").Filterable(true).Sortable(true).Format("{0:dd.MM.yyyy}").Css("centered_column").SortInitialDirection(GridSortDirection.Ascending);
+
+                      columns.Add(model => model.ActualDateBeg)
+                        .Titled("Дата начала <br> периода").Filterable(true).Sortable(true).Format("{0:dd.MM.yyyy}").Css("centered_column");
+
+                      columns.Add(model => model.ActualDateEnd)
+                        .Titled("Дата окончания <br> периода").Filterable(true).Sortable(true).Format("{0:dd.MM.yyyy}").Css("centered_column");
+
+                      columns.Add(model => model.IsRestsWereImported).Filterable(true).Sortable(true).Format("{0:dd/MM/yyyy}")
+                         .Encoded(false)
+                         .Sanitized(false)
+                         .Css("centered_column")
+                         .Titled("Остатки")
+                         .RenderValueAs(o =>
+                        @<div>
+                             @Html.CheckBox(o.Id.ToString(), @o.IsRestsWereImported, new { disabled = "disabled", @readonly = "readonly" })
+                        </div>);
+
+                      columns.Add(model => model.IsDocsWereImported).Filterable(true).Sortable(true)
+                         .Encoded(false)
+                         .Sanitized(false)
+                         .Css("centered_column")
+                         .Titled("Документы")
+                         .RenderValueAs(o =>
+                        @<div>
+                            @Html.CheckBox(o.Id.ToString(), @o.IsDocsWereImported, new { disabled = "disabled", @readonly = "readonly" })
+                        </div>);
+
+                      columns.Add(model => model.DefaultForReports).Filterable(true).Sortable(true)
+                         .Encoded(false)
+                         .Sanitized(false)
+                         .Css("centered_column")
+                         .Titled("Источник данных <br> для отчетов")
+                         .RenderValueAs(o =>
+                        @<div>
+                            @Html.CheckBox(o.Id.ToString(), @o.DefaultForReports, new { disabled = "disabled", @readonly = "readonly" })
+                        </div>);
+
+                      columns.Add()
+                       .Encoded(false)
+                       .Sanitized(false)
+                       .Css("centered_column")
+                       .RenderValueAs(o =>
+                    @<div class="edit-delete-copy-links_snaps">
+
+                        <a class="tarash-i update_link tooltips" href="@Url.Action("DefaultSnapshot", "Admin", new { snapshotId = o.Id})" onclick="return confirm('Хотите пометить снимок как источник?');">
+                            <span class="tooltip-message">Пометить как источник данных для отчетов</span>
+                            <span class="glyphicon glyphicon-check"></span>
+                        </a>
+
+                         <a class="tarash-i update_link tooltips" href="@Url.Action("ArchiveSnapshot", "Admin", new { snapshotId = o.Id})" onclick="return confirm('Хотите пометить снимок как архивный?');">
+                             <span class="tooltip-message">Пометить как архивный</span>
+                             <span class="glyphicon glyphicon-share"></span>
+                         </a>
+
+                        <a class="tarash-i update_link tooltips" href="@Url.Action("DeleteSnapshot", "Admin", new {snapshotId = o.Id})" onclick="return confirm('Хотите удалить снимок данных?');">
+                            <span class="tooltip-message">Удалить снимок данных</span>
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+
+                         @*<a class="tarash-i update_link tooltips" href="#">
+                        <span class="tooltip-message">Настройки снимка данных</span>
+                        <span class="glyphicon glyphicon-cog"></span>
+                        </a>*@
+
+                         <a class="tarash-i update_link tooltips" href="@Url.Action("ViewLogSnapshot", "Admin", new { snapshotId = o.Id })">
+                             <span class="tooltip-message">Лог снимка данных</span>
+                             <span class="glyphicon glyphicon-eye-open"></span>
+                         </a>
+                    </div>);
+
+                  }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

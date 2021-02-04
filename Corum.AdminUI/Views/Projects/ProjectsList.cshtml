@@ -1,0 +1,141 @@
+﻿@model Corum.Models.ProjectNavigationResult<Corum.Models.ViewModels.Orders.OrderProjectViewModel>
+
+@using GridMvc.Filtering
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+
+            //  var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "?grid_init=1", "');");
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+
+}
+
+@Html.Hidden("Code_", Model.Code)
+@Html.Hidden("Description_", Model.Description, new { id = "Description_" })
+@Html.Hidden("Comments_", Model.Comments, new { id = "Comments_" })
+@Html.Hidden("ProjectTypeName_", Model.ProjectTypeName, new { id = "ProjectTypeName_" })
+@Html.Hidden("ProjectCFOName_", Model.ProjectCFOName, new { id = "ProjectCFOName_" })
+@Html.Hidden("ProjectOrderer_", Model.ProjectOrderer, new { id = "ProjectOrderer_" })
+@Html.Hidden("ConstructionDesc_", Model.ConstructionDesc, new { id = "ConstructionDesc_" })
+@Html.Hidden("PlanCount_", Model.PlanCount, new { id = "PlanCount_" })
+@Html.Hidden("isActive_", Model.isActive, new { id = "isActive_" })
+@Html.Hidden("ManufacturingEnterprise_", Model.ManufacturingEnterprise, new { id = "ManufacturingEnterprise_" })
+@Html.Hidden("NumOrder_", Model.NumOrder, new { id = "NumOrder_" })
+@Html.Hidden("DateOpenOrder_", Model.DateOpenOrder, new { id = "DateOpenOrder_" })
+@Html.Hidden("PlanPeriodForMP_", Model.PlanPeriodForMP, new { id = "PlanPeriodForMP_" })
+@Html.Hidden("PlanPeriodForComponents_", Model.PlanPeriodForComponents, new { id = "PlanPeriodForComponents_" })
+@Html.Hidden("PlanPeriodForSGI_", Model.PlanPeriodForSGI, new { id = "PlanPeriodForSGI_" })
+@Html.Hidden("PlanPeriodForTransportation_", Model.PlanPeriodForTransportation, new { id = "PlanPeriodForTransportation_" })
+@Html.Hidden("PlanDeliveryToConsignee_", Model.PlanDeliveryToConsignee, new { id = "PlanDeliveryToConsignee_" })
+@Html.Hidden("DeliveryBasic_", Model.DeliveryBasic, new { id = "DeliveryBasic_" })
+@Html.Hidden("ShipperName_", Model.ShipperName, new { id = "ShipperName_" })
+@Html.Hidden("ConsigneeName_", Model.ConsigneeName, new { id = "ConsigneeName_" })
+@Html.Hidden("CanShowManufacture_", Model.CanShowManufacture, new { id = "CanShowManufacture_" })
+
+<div class="container-fluid">
+    @Html.Partial("_ProjectsColumnsDialog");
+    <div class="row">
+        
+        <div class="col-md-12 main">
+            <h4 class="centered_column">Проекты</h4>
+            <div class="table-header clearfix">
+                <div class="row main">
+                    <input type="button" value="Конфигурация" class="btn btn-default" onclick="ShowSettings()" />&nbsp;&nbsp;
+                   
+                        @Html.ActionLink("Новый+", "NewProject", "Projects", null, new { @class = "btn btn-info" })
+                   
+                </div>
+
+                    @Html.Partial("_ProjectDetailsColumns")
+
+                </div>
+
+            @TPagging("ProjectsList", "Projects", @Model.RequestParams, this)
+        
+        </div>
+          
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        function ShowSettings() {
+            ShowDialogColumnSettings();
+        }
+
+        function ShowDialogColumnSettings() {
+
+            $('#columnsettings')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,
+                    resizable: false,
+                    title: "Конфигурация столбцов реестра проектов",
+                    modal: true,
+                    open: function (event, ui) {
+                        InitFilterDropDowns();
+                    },
+                    close: function (event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function () {
+
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Ок",
+                            "class": 'btn btn-primary',
+                            click: function () {
+                                $("#settingsForm").submit();
+                            }
+                        }
+                    ]
+                });
+
+            $('#columnsettings').dialog('open');
+
+            return;
+        }
+
+
+    </script>
+}
+
+
+

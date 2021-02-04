@@ -1,0 +1,241 @@
+﻿@model Corum.Models.OrganizationNavigationResult<Corum.Models.ViewModels.Customers.OrganizationViewModel>
+@using GridMvc.Html
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+
+}
+
+<div class="container-fluid">
+    @Html.Hidden("returnUrl", this.Request.Url)
+    <div class="row">
+        <div class="col-md-12">
+            <h4 class="centered_column" style="margin-top: 25px;">Организации</h4>
+            <div class="table-header clearfix">
+                <div>
+                    @Html.ActionLink("Новый+", "NewOrganization", "Customers", null, new { @class = "btn btn-primary", @style = "margin-bottom:10px" })
+                </div>
+                <div style="font-size: 12px;">
+                    @(Html.Grid(Model.DisplayValues).Named("GridCustomers")
+                 .Columns(columns =>
+                 {
+                 columns.Add(model => model.Id, true);
+
+                 columns.Add(model => model.Name)
+                  .Titled("Название<br>организации")
+                  .Filterable(true)
+                  .Sortable(true)
+                  .Css("table_no_wrap")
+                  .SetWidth("30%");
+
+                 columns.Add(model => model.Country)
+                   .Titled("Страна")
+                   .Filterable(true)
+                   .Sortable(true)
+                   .Css("table_no_wrap")
+                   .SetWidth("20%");
+
+                 columns.Add(model => model.City)
+                   .Titled("Город/<br>адрес").Filterable(true).Sortable(true).Css("table_no_wrap")
+                   .Encoded(false)
+                   .Sanitized(false)
+                   .SetWidth("35%")
+                   .RenderValueAs(o =>
+                @<div>
+                    <span>@o.City<br>@o.Address</span>
+                </div>);
+
+                 columns.Add(model => model.IsTruck).Filterable(true).Sortable(true)
+                              .Encoded(false)
+                              .Sanitized(false)
+                              .Css("centered_column")
+                              .Titled("Грузовыe<br>перевозки")
+                              .SetWidth("5%")
+                              .RenderValueAs(o =>
+                            @<div>
+                                @Html.CheckBox(o.Id.ToString(), @o.IsTruck, new { disabled = "disabled", @readonly = "readonly" })
+                            </div>);
+
+                 columns.Add(model => model.IsSystemOrg).Filterable(true).Sortable(true)
+                        .Encoded(false)
+                        .Sanitized(false)
+                        .Css("centered_column")
+                        .Titled("Системная<br>фирма")
+                        .SetWidth("5%")
+                        .RenderValueAs(o =>
+                        @<div>
+                            @Html.CheckBox(o.Id.ToString(), @o.IsSystemOrg, new { disabled = "disabled", @readonly = "readonly" })
+                        </div>);
+
+
+                 columns.Add()
+                .Encoded(false)
+                .Sanitized(false)
+                .Css("centered_column")
+                .SetWidth("5%")
+                .RenderValueAs(o =>
+                @<div class="edit-delete-copy-links">
+                    <a class="tarash-i update_link tooltips" href="@Url.Action("UpdateOrganization", "Customers", new { orgId = o.Id })">
+                        <span class="tooltip-message">Изменить организацию</span>
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </a>
+
+                    @if (@o.CanBeDelete)
+                    {
+                        <a class="tarash-i delete_link tooltips" href="@Url.Action("DeleteOrganization", "Customers", new { orgId = o.Id })" onclick="return confirm('Вы действительно хотите удалить организацию?');">
+                            <span class="tooltip-message">Удалить организацию</span>
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="disable-glyphicon tooltips tarash-i" href="#">
+                            <span class="tooltip-message">Организация не может быть удалена</span>
+                            <span class="glyphicon glyphicon-trash"></span>
+                        </a>
+                    }
+
+                    <a class="tarash-i update_link tooltips" href="@Url.Action("Routes", "Customers", new { orgId = o.Id })">
+                        <span class="tooltip-message">Маршруты</span>
+                        <span class="glyphicon glyphicon-th-list"></span>
+                    </a>
+                </div>);
+                 }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())
+
+
+                </div>
+
+            </div>
+
+            @TPagging("Organizations", "Customers", @Model.RequestParams, this)
+
+        </div>
+       @* <div class="col-md-6" id="Routes" style="z-index: 2; left: 50%; top: 50px; position: fixed; overflow-y: auto; height: 100%">
+        <h4 class="centered_column" style="margin-top: 25px;">Маршруты</h4>
+    </div>*@
+    </div>
+   
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function () {
+           /* var orgId = localStorage.getItem("orgId");
+
+            var gridCell = document.querySelectorAll('[data-name=Id]');
+            var gridRow = document.querySelectorAll('.grid-row');
+
+            for (var i = 0; i < gridCell.length; i++) {
+                if (orgId != null) {
+                    if (gridCell[i].innerHTML == orgId) {
+                        gridRow[i].classList.add("grid-row-selected");
+                        onCustomerSelected(orgId);
+                    }
+                }
+            }
+
+            $(function () {
+                pageGrids.GridCustomers.onRowSelect(function (e) {
+                    orgId = e.row.Id;
+                    localStorage.setItem("orgId", orgId);
+                    onCustomerSelected(orgId);
+                });
+            });*/
+            InitializeOrganizations();
+        /*
+            function onCustomerSelected(OrgId) {
+                $("#Routes").html("Идет загрузка...");
+                $.ajax({
+                    type: 'GET',
+                    url: "Routes?orgId=" + OrgId,
+                    contentType: 'application/html; charset=utf-8',
+                    dataType: 'html',
+                    success: function (result) {
+                        $("#Routes").html(result);
+                        $("#NewRoute").click(function () {
+                            $("#Routes").empty();
+                            $.ajax({
+                                type: 'GET',
+                                url: "NewRoute?orgId=" + OrgId + "&returnUrl=" + returnUrl.value,
+                                contentType: 'application/html; charset=utf-8',
+                                dataType: 'html',
+                                success: function (result) {
+                                    $("#Routes").html(result);
+                                    $("#ShowOrg").on("click", function () {
+                                        var initFields = function (obj) {
+                                            $('#OrgToName').val(obj._Name);
+                                            $('#OrgToId').val(obj._Id);
+                                        };
+
+                                        ShowOrganizationDlg(initFields);
+                                    });
+                                }
+                            });
+                        });
+
+                        $("button#UpdateRoute").each(function (i) {
+                            $(this).on("click", function () {
+                                var routeId = $(this).val();
+                                $("#Routes").html("Идет загрузка...");
+                                $.ajax({
+                                    type: 'GET',
+                                    url: "UpdateRoute?routeId=" + routeId + "&returnUrl=" + returnUrl.value,
+                                    contentType: 'application/html; charset=utf-8',
+                                    dataType: 'html',
+                                    success: function (result) {
+                                        $("#Routes").html(result);
+
+                                        $("#ShowOrg").on("click", function () {
+                                            var initFields = function (obj) {
+                                                $('#OrgToName').val(obj._Name);
+                                                $('#OrgToId').val(obj._Id);
+                                            };
+
+                                            ShowOrganizationDlg(initFields);
+                                        });
+
+                                    }
+                                });
+                            });
+                        });
+                    }
+                });
+            };
+*/
+        });
+    </script>
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

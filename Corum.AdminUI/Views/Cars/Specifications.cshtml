@@ -1,0 +1,197 @@
+﻿
+@model Corum.Models.ContractSpecNavigationResult<Corum.Models.ViewModels.Cars.ContractSpecificationsViewModel>
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Услуги по договору";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 main">
+                <h4 class="centered_column">Реестр предоставляемых услуг</h4>
+            <div class="table-header clearfix">
+                <div class="row main">
+                    @Html.ActionLink("К реестру спецификаций", "GroupesSpecifications", "Cars", new { contractId = @Model.groupeSpecInfo.ContractId, IsMainMenu = @Model.isMainMenu }, new { @class = "btn btn-success", @style = "margin-right:10px" })
+                    <a class="btn btn-primary" href="/Cars/NewSpecification?groupeSpecId=@Model.groupeSpecInfo.Id&isMainMenu=@Model.isMainMenu.ToString().ToLower()">Новая услуга +</a>
+
+                </div>
+
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <span class="badge">@Model.contractInfo.ContractNumber</span>Номер договора
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge">@Model.contractInfo.BalanceKeeperName</span>Плательщик
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge">@Model.groupeSpecInfo.NameGroupeSpecification</span>Спецификация
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <span class="badge">@Model.contractInfo.DateBeg - @Model.contractInfo.DateEnd </span>Период действия договора
+                            </li>
+                            @if (@Model.contractInfo.IsForwarder)
+                            {
+                                <li class="list-group-item">
+                                    <span class="badge">@Model.contractInfo.CarOwnersName</span>Экспедитор
+                                </li>
+                            }
+                            else
+                            {
+                                <li class="list-group-item">
+                                    <span class="badge">@Model.contractInfo.ExpeditorName</span>Экспедитор
+                                </li>
+                            }
+                            <li class="list-group-item">
+                                <span class="badge">@Model.groupeSpecInfo.DateBeg - @Model.groupeSpecInfo.DateEnd</span>Период действия спецификации
+                            </li>
+                        </ul>
+
+                    </div>
+                </div>
+
+                <div style="font-size: 13px;">
+                    @(Html.Grid(Model.DisplayValues)
+                          .Columns(columns =>
+                          {
+                          columns.Add(model => model.CountRows)
+                     .Titled("№<br>п/п").SetWidth("3%").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.NameSpecification)
+                      .Titled("Название <br> услуги").SetWidth("30%").Filterable(true).Sortable(true);
+
+
+                          columns.Add(model => model.TypeSpecName).Encoded(false)
+                      .Titled("Тип <br> услуги").SetWidth("20%").Filterable(true).Sortable(true).Sanitized(false)
+                           .RenderValueAs(o =>
+
+                               @<div class="form-group" >
+                     @{
+                         string stylecolor = @o.GenId == 1 ? "blue" : @o.GenId == 2 ? "black" : @o.GenId == 5 ? "green" : "";
+                         string styletext = @o.GenId == 1 ? "фрахт/фиксированный" : @o.GenId == 2 ? "тариф/не фиксированный" : @o.GenId == 5 ? "Договорная цена" : "";
+                        <div style="width: 15px; height: 15px; background: @stylecolor; float: left;">                           
+                        </div>
+
+                         if (o.GenId == 1)
+                         {
+                            <div style="margin-left: 18px;">@o.RouteName</div>
+                            }
+                            }
+
+                        </div>);
+
+    columns.Add(model => model.CarryCapacityVal)
+    .Titled("Грузо-<br>подъемность<br>автомобиля").SetWidth("5%").Filterable(true).Sortable(true);
+
+                          @*columns.Add(model => model.IntervalTypeName)
+                              .Titled("Тип <br> интервала <br> маршрута").SetWidth("5%").Filterable(true).Sortable(true);*@
+
+                          columns.Add(model => model.RouteLength)
+                             .Titled("Длина<br>маршрута").SetWidth("7%").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.RateKm)
+                          .Titled("Тариф<br>грн/км").SetWidth("4%").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.RateHour)
+                          .Titled("Тариф<br>грн/ч").SetWidth("4%").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.RateMachineHour)
+                          .Titled("Тариф<br>маш/час").SetWidth("4%").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.RateTotalFreight)
+                          .Titled("Тариф<br>за фрахт").SetWidth("4%").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.IsTruck).Filterable(true).Sortable(true)
+                            .Encoded(false)
+                            .Sanitized(false)
+                            .Css("centered_column")
+                            .Titled("Грузовыe<br>перевозки")
+                            .SetWidth("4%")
+                            .RenderValueAs(o =>
+                        @<div>
+                            @Html.CheckBox(o.Id.ToString(), @o.IsTruck, new { disabled = "disabled", @readonly = "readonly" })
+                        </div>);
+
+                              columns.Add(model => model.IsPriceNegotiated).Filterable(true).Sortable(true)
+                          .Encoded(false)
+                          .Sanitized(false)
+                          .Css("centered_column")
+                          .Titled("Договорная<br>цена")
+                          .SetWidth("4%")
+                          .RenderValueAs(o =>
+                        @<div>
+                            @Html.CheckBox(o.Id.ToString(), @o.IsPriceNegotiated, new { disabled = "disabled", @readonly = "readonly" })
+                        </div>);
+
+                          columns.Add()
+                         .Titled("Действия")
+                         .Encoded(false)
+                         .Sanitized(false)
+                         .SetWidth("10%")
+                         .Css("centered_column")
+                         .RenderValueAs(o =>
+                        @<div class="edit-delete-copy-links">
+                            <a class="tarash-i update_link tooltips" href="@Url.Action("UpdateSpecification", "Cars", new {specId = o.Id, IsMainMenu = @Model.isMainMenu })">
+                                <span class="tooltip-message">Изменить услугу</span>
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+
+                            <a class="tarash-i tooltips" href="@Url.Action("DeleteSpecification", "Cars", new {specId = o.Id, GroupeSpecId = o.GroupeSpecId, IsMainMenu = @Model.isMainMenu})" onclick="return confirm('Хотите удалить услугу?');">
+                                <span class="tooltip-message">Удалить услугу</span>
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+
+                             <a class="tarash-i tooltips" href="@Url.Action("CloneSpecification", "Cars", new {specId = o.Id, IsMainMenu = @Model.isMainMenu })">
+                                 <span class="tooltip-message">Клонировать услугу</span>
+                                 <span class="glyphicon glyphicon-plus-sign"></span>
+                             </a>
+
+                        </div>);
+
+
+                          }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())
+                </div>
+            </div>
+
+            @TPagging("Specifications", "Cars", @Model.RequestParams, this)
+
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+
+
+        $(document).ready(function () {
+            InitializeDateTimePickers();
+            InitFilterDropDowns();
+        });
+
+    </script>
+}

@@ -1,0 +1,450 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{253C3CF1-79C8-4E0E-A39B-468635D92BB9}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Corum.DAL</RootNamespace>
+    <AssemblyName>Corum.DAL</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Stage|AnyCPU'">
+    <OutputPath>bin\Stage\</OutputPath>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="GoogleMaps.LocationServices, Version=0.1.6329.16944, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\GoogleMaps.LocationServices.1.2.0.1\lib\net40\GoogleMaps.LocationServices.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EFCorumDataProvider\EFCorumDataProvider.Customers.cs" />
+    <Compile Include="EFCorumDataProvider\EFCorumDataProvider.Dashboard.cs" />
+    <Compile Include="EFCorumDataProvider\EFCorumDataProvider.Cars.cs" />
+    <Compile Include="EFCorumDataProvider\EFCorumDataProvider.OrderConcurs.cs" />
+    <Compile Include="EFCorumDataProvider\EFCorumDataProvider.RestReport.cs" />
+    <Compile Include="EFCorumDataProvider\EFCorumDataProvider.Roles.cs" />
+    <Compile Include="EFCorumDataProvider\EFCorumDataProvider.Orders.cs" />
+    <Compile Include="EFCorumDataProvider\EFCorumDataProvider.Users.cs" />
+    <Compile Include="EFCorumDataProvider\EFCorumDataProvider.Settings.cs" />
+    <Compile Include="EFCorumDataProvider\EFBaseCorumDataProvider.cs" />
+    <Compile Include="Entity\AdditionalRoutePoints.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\AspNetRoles.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\AspNetUsers.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\BalanceKeepers.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\CarCarryCapacity.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\CarOwners.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\Cars.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\CarsFuelType.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\Centers.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\ConcursDiscountRate.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\ContractGroupesSpecifications.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\Contracts.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\ContractSpecifications.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\Corum.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Corum.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\Corum.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\Corum.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Corum.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\Countries.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\DocsSnapshot.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\ELMAH_Error.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\FAQAnswers.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\FAQGroupes.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetBaseReport_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetBriefDataBySnapshot_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetCarCapacityFilter_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetCarDriverInfoFilter_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetCarModelInfoFilter_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetCarRegNumFilter_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetCarrierInfoFilter_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetCommentsFilter_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetConcursHistory_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetContractInfoFilter_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetDateSnapshot_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetDocsDataByInnerPartyKey_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetDocsDataBySnapshot_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetDocsSummaryByInnerKey_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetDriverCardInfoFilter_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetDriverContactInfoFilter_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetFactCars_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetFinalReport_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetInnerOrderNumFilter_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetOrderExecuters_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetOrderProjects_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetOrdersBKReport_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetOrdersPipelineV2_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetOrdersPipelineV3_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetOrdersReport_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetRestDataByInnerPartyKey_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetRestDataBySnapshot_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetRestInfoByRestMultiKey_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetSpecifications_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetStatusReport_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetSummaryDataBySnapshot_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetTruckReportDetails_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\GetTruckReport_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\ImportConfig.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\LogImportErrors.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\LoginHistory.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\LogisticSnapshots.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\MenuStructure.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderAttachments.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderBaseProjects.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderBaseSpecification.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderClients.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderCompetitiveList.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderConcursListsSteps.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderConcursSteps.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderDogs.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderFilters.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderFilterSettings.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderFilterSettings2.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderLoadingTypes.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderNotifications.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderNotificationTypes.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderObservers.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderPipelineSteps.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrdersBase.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrdersDocTypes.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrdersPassengerTransport.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderStatuses.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderStatusHistory.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderTruckTransport.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderTruckTypes.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderTypesBase.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderUnloadingTypes.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderUsedCars.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\OrderVehicleTypes.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\Organization.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\Permissions.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\Projects.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\ProjectTypes.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\RestsSnapshot.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\RoleGroups.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\RoleGroupsRole.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\RouteIntervalType.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\RoutePoints.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\RoutePointType.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\Routes.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\RouteTypes.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\SelectColumnConfig_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\SelectColumnType_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\SelectColumnValByDef_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\SelectCommentFieldForReport_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\SelectFieldsOfStuctureForImport_Result.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\SpecificationNames.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\SpecificationTypes.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\UserMessages.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\UserProfile.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\UserSettings.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Helpers\ConvertTypeHelpers.cs" />
+    <Compile Include="Mappings\DbDataMapper.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Corum.Models\Corum.VModels.csproj">
+      <Project>{20e83c6c-365a-4c8a-9a6f-cde667029a17}</Project>
+      <Name>Corum.VModels</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <EntityDeploy Include="Entity\Corum.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Corum.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Entity\Corum.edmx.diagram">
+      <DependentUpon>Corum.edmx</DependentUpon>
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Content Include="Entity\Corum.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Corum.edmx</DependentUpon>
+      <LastGenOutput>Corum.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Entity\Corum.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Corum.edmx</DependentUpon>
+      <LastGenOutput>Corum.cs</LastGenOutput>
+    </Content>
+    <Content Include="GoogleMaps.LocationServices.readme.txt" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

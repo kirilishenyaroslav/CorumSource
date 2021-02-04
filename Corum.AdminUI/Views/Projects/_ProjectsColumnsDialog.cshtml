@@ -1,0 +1,189 @@
+﻿@model Corum.Models.ProjectNavigationResult<Corum.Models.ViewModels.Orders.OrderProjectViewModel>
+
+<style>
+    .select2-container {
+        width: 80%;
+    }
+</style>
+
+
+<div id="columnsettings" class="row" style="display: none;">
+
+    @using (Html.BeginForm("ProjectsList", "Projects", FormMethod.Get, htmlAttributes: new { @id = "settingsForm", style = "margin-left: 35px;" }))
+    {
+        <div class="col-md-6">
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox rest_checkbox">
+                        @Html.EditorFor(model => model.Code)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "rest-summs control-label col-md-11", @style = "margin-top: -7px;" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.Description)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "rest-summs control-label col-md-11"})
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.ProjectTypeName)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.ProjectTypeName, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.ProjectCFOName)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.ProjectCFOName, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.ProjectOrderer)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.ProjectOrderer, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.ConstructionDesc)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.ConstructionDesc, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.PlanCount)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.PlanCount, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.isActive)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.isActive, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.ManufacturingEnterprise)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.ManufacturingEnterprise, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.NumOrder)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.NumOrder, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.DateOpenOrder)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.DateOpenOrder, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+         </div>
+        <div class="col-md-6">
+            
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.PlanPeriodForMP)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.PlanPeriodForMP, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.PlanPeriodForComponents)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.PlanPeriodForComponents, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.PlanPeriodForSGI)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.PlanPeriodForSGI, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.PlanPeriodForTransportation)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.PlanPeriodForTransportation, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.PlanDeliveryToConsignee)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.PlanDeliveryToConsignee, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.DeliveryBasic)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.DeliveryBasic, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.ShipperName)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.ShipperName, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+
+            <div class="form-group">
+                <div class="col-md-1">
+                    <div class="checkbox setting_checkbox">
+                        @Html.EditorFor(model => model.ConsigneeName)
+                    </div>
+                </div>
+                @Html.LabelFor(model => model.ConsigneeName, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+            </div>
+        </div>
+    }
+        </div>
+

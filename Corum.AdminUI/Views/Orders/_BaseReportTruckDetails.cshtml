@@ -1,0 +1,221 @@
+﻿@model Corum.Models.OrdersReportsNavigationResult
+
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+
+<div id="detailValuesGrid" class="table-header clearfix col-md-12" style="font-size: 11px;">
+    @(Html.Grid(Model.BaseReport.DisplayValues)
+                  .Columns(columns =>
+                  {
+
+                  columns.Add().Encoded(false)
+                          .Titled("Номер,<br>дата<br>подачи<br>заявки")
+                          .SetWidth(60)
+                          .Css("new_columns_block_start")
+                          .Sanitized(false)
+                          .Sortable(true)
+                          .Format("{0:dd.MM.yyyy}")
+                          .RenderValueAs(o =>
+                        @<div>
+                             <a class="tarash-i" href="@Url.Action("UpdateOrder", "Orders", new { Id = o.Id })">
+                                 @o.Id.ToString()
+                             </a> 
+                             <br><hr>
+                             @o.OrderDate
+                        </div>);
+
+
+    columns.Add().Encoded(false)
+                         .Titled("Дата<br>плановой<br>подачи<br>авто")
+                         .SetWidth(50)
+                         .Sanitized(false)
+                         .Sortable(true)
+                         .Format("{0:dd.MM.yyyy}")
+                         .RenderValueAs(o =>
+                        @<div>
+                            @o.AcceptDate
+                        </div>);
+
+    columns.Add().Encoded(false)
+     .SetWidth(200)
+     .Titled("ЦФО/<br>Подразделение/<br>Плательщик<br>перевозки")
+     .Sanitized(false)
+     .Filterable(true)
+     .Sortable(true)
+     .RenderValueAs(o =>
+    @<div>
+        @o.ClientCenterName
+        <br><hr>
+        @o.ClientName
+        <br><hr>
+         @o.PayerName
+    </div>);
+
+    columns.Add().Encoded(false)
+            .Titled("Тип<br>груза/<br>Вес<br>груза,т.")
+            .SetWidth(40)
+            .Sanitized(false)
+            .Sortable(true)
+            .RenderValueAs(o =>
+            @<div>
+                 @o.TruckTypeName
+                 <br><hr>
+                 @o.Weight
+            </div>);
+
+    columns.Add().Encoded(false)
+             .Titled("Груз")
+             .SetWidth(200)
+             .Sanitized(false)
+             .Sortable(true)
+             .RenderValueAs(o =>
+            @<div>
+                @o.TruckDescription
+            </div>);
+
+
+    
+
+
+    columns.Add().Encoded(false)
+                         .Titled("Грузо-<br>отправитель<br>(Организация<br>отправитель)")
+                         .Sanitized(false)
+                         .SetWidth(250)
+                         .Filterable(true)
+                         .Sortable(true)
+                         .RenderValueAs(o =>
+                             @<div>   
+                            @o.Shipper
+                            <br><hr>
+                            @o.FromInfo    
+                        </div>);
+
+
+    columns.Add().Encoded(false)
+                     .SetWidth(250)
+                     .Titled("Грузо-<br>получатель<br>(Организация<br>прибытия)")
+                     .Sanitized(false)
+                     .Filterable(true)
+                     .Sortable(true)
+                     .RenderValueAs(o =>
+                    @<div>
+                        @o.Consignee
+                        <br><hr>
+                        @o.ToInfo
+                    </div>);
+
+
+    columns.Add().Encoded(false)
+                  .Titled("Тип<br>авто/кузова")
+                  .SetWidth(40)
+                  .Sanitized(false)
+                  .Sortable(true)
+                  .RenderValueAs(o =>
+                @<div>
+                    @o.VehicleTypeName
+                </div>);
+
+
+    columns.Add(model => model.CurrentOrderStatusName).Encoded(false)
+            .Titled("Признак<br>срочной<br>заявки")
+            .Css("centered_column colored-cell")
+            .SetWidth(40)
+            .Sanitized(false)
+            .Sortable(true)
+            .RenderValueAs(o =>
+            @<div>
+
+                @if (o.PriorityType == 0)
+                            {
+                    <span>Плановая</span>
+                }
+                else
+                {
+                    <span>Срочная</span>
+                }
+
+            </div>);
+
+
+    columns.Add().Encoded(false)
+                  .Titled("Автор<br>заявки")
+                  .SetWidth(60)
+                  .Css("new_columns_block_end")
+                  .Sanitized(false)
+                  .Sortable(true)
+                  .RenderValueAs(o =>
+                @<div>
+                    @o.OrdersAuthor
+                </div>);
+
+
+
+
+    foreach (var finStatus in Model.BaseReport.FinalStatuses)
+    {
+        if (Model.BaseReport.DisplayValues.Count(x => x.CurrentOrderStatusName == finStatus) > 0)
+        {
+
+
+            columns.Add().Encoded(false)
+                .Titled(@finStatus.Replace(" ", "<br>"))
+                .SetWidth(20)
+                .Sanitized(false)
+                .Css("centered_column")
+                .Sortable(true)
+                .RenderValueAs(o =>
+            @<div>
+                @if (finStatus == @o.CurrentOrderStatusName)
+                {
+                    <span style="font-weight:bold;vertical-align:central;" class='pull-right'>1</span>
+
+                }
+
+            </div>);
+        }
+    }
+
+    columns.Add().Encoded(false)
+                                       .Titled("Примечание/<br>Дислокация<br>груза")
+                                       .SetWidth(50)
+                                       .Sanitized(false)
+                                       .Css("new_columns_block_start")
+                                       .Filterable(true)
+                                       .Sortable(true)
+                                       .RenderValueAs(o =>
+                                    @<div>
+                                        @o.ExecuterNotes
+                                    </div>);
+
+    columns.Add().Encoded(false)
+                  .Titled("Признак<br>отказа<br>заказчика")
+                  .SetWidth(40)
+                  .Sanitized(false)
+                  .Sortable(true)
+                  .Css("new_columns_block_end")
+                  .RenderValueAs(o =>
+                @<div>
+                    @o.FinalComment
+                </div>);
+
+
+            columns.Add().Encoded(false)
+                       .Titled("Авто план/<br>факт")
+                       .SetWidth(40)
+                       .Sanitized(false)
+                       .Sortable(true)
+                       .Css("new_columns_block_end")
+                       .RenderValueAs(o =>
+                           @<div>        
+                        <span class='pull-right'>
+                         @o.CarNumber/@o.FactCarNumber
+                        </span>                    
+                </div>);
+
+    })//.WithPaging((int)Model.BaseReport.RequestParams.PageSize)
+)
+</div>
+
+

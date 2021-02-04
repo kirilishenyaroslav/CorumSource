@@ -1,0 +1,76 @@
+﻿@model Corum.Models.ViewModels.OrderConcurs.OrderCompetitiveListViewModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-4">
+            <ul class="list-group">
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.ExpeditorName</span> Перевозчик/Экспедитор
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.CarryCapacity</span>Грузоподъемность автомобиля, тонн
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.CarsOffered</span>Предложено транс-ных единиц, шт.
+                </li>
+
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.CarsAccepted</span>Акцептовано транс-ных единиц, шт.
+                </li>
+
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.NDS</span>НДС
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.CarCostDog</span>Стоимость одного автомобиля, грн. без НДС (согласно договору)
+                </li>
+
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <ul class="list-group">
+
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.CarCost7</span>Стоимость одного автомобиля, грн. без НДС (согласно КП) (к. 7)
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.CarCost</span>Стоимость одного автомобиля, грн. без НДС (согласно КП) (к. 8)
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.DaysDelay</span>Отсрочка платежей, дней
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.DelayEffect</span>Эффект от отсрочки
+                </li>
+
+
+            </ul>
+        </div>
+        <div class="col-md-4">
+            <ul class="list-group">
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.Prepayment</span>Предоплата дней
+                </li>
+
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.PrepaymentEffect</span>Эффект от предоплаты
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.CarCostWithMoneyCost</span>Стоимость одного автомобиля грн. с учетом стоимости денег
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.Comments</span>Примечание
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.AverageCost</span>Средняя цена за грн./км.
+                </li>
+
+
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+

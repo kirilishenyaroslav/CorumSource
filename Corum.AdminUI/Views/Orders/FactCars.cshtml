@@ -1,0 +1,124 @@
+﻿@model Corum.Models.OrderCarsNavigationResult<Corum.Models.ViewModels.Orders.OrderUsedCarViewModel>
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Sorting
+    @{
+        ViewBag.Title = "Фактическое использование автопарка";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+   @helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+   {
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+
+}
+@Html.Partial("_FactCarsFilterSettings")
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12 main">
+                <h4 class="centered_column">Фактическое использование автопарка</h4><br>
+                <div class="table-header clearfix">
+                    <div class="row panel panel-info">
+                        <div class="col-md-8" style="margin-top: 10px;">
+                            <button style="margin-bottom: 10px; margin-left: 10px;" class="btn btn-default" onclick="ShowSettings()">
+                                <span class="glyphicon glyphicon-filter" aria-hidden="true"></span>
+                                Конфигурация
+                            </button>
+                        </div>
+                            <div class="col-md-4" style="font-size: 10px !important; margin-top: 10px;">
+                                @Html.Partial("_FactFilters")
+                            </div>
+                        </div>
+
+                    @Html.Partial("_FactCarsDetails")
+
+                </div>
+
+                @TPagging("FactCars", "Orders", @Model.RequestParams, this)
+
+            </div>
+        </div>
+    </div>
+
+    @section scripts
+{
+        <script>
+            function ShowSettings() {
+                ShowDialogColumnSettings();
+            }
+            function ShowDialogColumnSettings() {
+
+                $('#factcarssettings')
+                    .dialog({
+                        dialogClass: "jq-dialog-window-custom  modal_dialog",
+                        autoOpen: false,
+                        width: 800,
+                        top: 25,
+                        resizable: false,
+                        tags: true,
+                        title: "Конфигурация фактического использования автопарка",
+                        modal: true,
+                        open: function (event, ui) {
+                            InitFilterMultipleDropDowns();
+                        },
+                        close: function (event, ui) {
+
+                            $(this).dialog('destroy');
+                        },
+                        create: function (event, ui) {
+                            $("#disable_all").addClass("disable_all");
+                        },
+                        beforeClose: function (event, ui) {
+                            $("#disable_all").removeClass("disable_all");
+                        },
+                        buttons:
+                        [
+                            {
+                                text: "Отмена",
+                                "class": 'cancel-btn btn btn-outline',
+                                click: function () {
+
+                                    $(this).dialog("close");
+                                    $(this).dialog('destroy');
+                                }
+                            },
+                            {
+                                text: "Ок",
+                                "class": 'btn btn-primary',
+                                click: function () {
+                                    $("#carssettingsForm").submit();
+                                    $(this).dialog("close");
+                                    $(this).dialog('destroy');
+                                }
+                            }
+                        ]
+                    });
+
+                $('#factcarssettings').dialog('open');
+
+                return;
+            }
+
+            $(document).ready(function () {
+                InitializeDateTimePickers();
+                InitFilterDropDowns();
+            });
+
+        </script>
+    }
+
+
+

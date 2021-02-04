@@ -1,0 +1,29 @@
+﻿@model Corum.Models.OrderNavigationResult<Corum.Models.ViewModels.OrderConcurs.OrderCompetitiveListViewModel>
+    
+<div class="col-md-3">        
+                <div class="form-group" style ="font-size: 14px;">
+                    <div>
+                        <div style="width:100%; height:1px; clear:both;"></div>
+                        <div style="width: 15px; height: 15px; background: blue; float: left;"></div> 
+                        <div style="float: left; margin-left:2px;">фрахт</div>
+                       
+                        <div style="width: 15px; height: 15px; background: green; float: left; margin-left: 15px;"></div>
+                        <div style="float: left; margin-left: 2px;">дог. цена</div>
+
+                        <div style="float: left; margin-left: 15px;">
+
+                            <a onclick="window.open('@Url.Action("ConcursHistory", "OrderConcurs", new {Id = 0, ShowAll = true, OrderId = @Model.CompetitiveListInfo.Id})', '_blank', 'location=false,scrollbars=yes,status=yes');"
+                               class="delete_link btn btn-success">
+                                История
+                            </a> 
+                        </div>                        
+
+
+                        <div style="width: 100%; height: 1px; clear: both;"></div>
+                        <div style="width: 15px; height: 15px; background: black; float: left; margin-left: 0px;"></div>
+                        <div style="float: left;margin-left:2px;">тариф</div>
+                                              
+                    </div>                    
+                 </div>
+</div>
+

@@ -1,0 +1,125 @@
+﻿
+@model Corum.Models.ViewModels.Orders.OrderProjectViewModel
+
+@{
+    ViewBag.Title = "UpdateProject";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm())
+{
+
+    <div class="form-horizontal" style="font-size: 13px;">
+        <h4>Детальная информация о проекте</h4>
+    
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        @Html.HiddenFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+        <div class="form-group" style="margin-left: 0px;">          
+
+            @Html.ActionLink("Реестр проектов", "ProjectsList", "Projects",
+                routeValues: new RouteValueDictionary
+                {
+                    {"grid-init", "1"},
+                    {"Code", "true"},
+                    {"Description", "true"},
+                    {"ProjectTypeName", "true"},
+                    {"ProjectCFOName", "true"},
+                    {"ProjectOrderer", "true"},
+                    {"ConstructionDesc", "true"},
+                    {"PlanCount", "true"},
+                    {"ManufacturingEnterprise", "true"},
+                    {"isActive", "true"}
+                },
+                htmlAttributes: new Dictionary<string, object> {{"class", "btn btn-success"}, {"style", "margin-top:0px;"}})
+
+            <input type="submit" value="Применить" class="btn btn-default" />
+
+            @Html.ActionLink("Реестр транспортных заявок", "OrdersProject", "Projects", new { Id = Model.Id }, new { @class = "delete_link btn btn-success" })
+            @Html.ActionLink("Реестр общих заявок", "OrdersBaseProject", "Projects", new { Id = Model.Id }, new { @class = "delete_link btn btn-success" })
+
+            @Html.ActionLink("Реестр остатков", "RestReportProject", "Projects", new { Id = Model.Id, Code = Model.Code }, new { @class = "delete_link btn btn-success" })
+            @Html.ActionLink("Сводная форма", "GroupRestProject", "Projects", new { Id = Model.Id, Code = Model.Code }, new { @class = "delete_link btn btn-success" })
+
+        </div>
+
+        @Html.Partial("_ProjectDetails")
+
+      
+        @Html.Partial("~/Views/Shared/_GetOrganizations.cshtml")
+    </div>
+}
+
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function() {
+            InitializeDateTimePickers();
+            InitFilterDropDowns();
+            InitializeOrganizations();
+
+            var ProjectTypeIdvalue = $(ProjectTypeId).val();
+            if (ProjectTypeIdvalue == '1') {
+                $("#PNumOrder").css('display', 'block');
+                $("#PDateOpenOrder").css('display', 'block');
+                $("#Prow").css('display', 'block');
+                $("#Phr").css('display', 'block');
+                $("#Phr2").css('display', 'block');
+                $("#Prow2").css('display', 'block');
+                $("#Prow3").css('display', 'block');
+            }
+            else {
+                $("#PNumOrder").css('display', 'none');
+                $("#PDateOpenOrder").css('display', 'none');
+                $("#Prow").css('display', 'none');
+                $("#Phr").css('display', 'none');
+                $("#Phr2").css('display', 'none');
+                $("#Prow2").css('display', 'none');
+                $("#Prow3").css('display', 'none');
+            }
+
+            $('#ProjectTypeId').change(function() {
+                debugger;
+                var value = $(this).val();
+                if (value == '1') {
+                    $("#PNumOrder").css('display', 'block');
+                    $("#PDateOpenOrder").css('display', 'block');
+                    $("#Prow").css('display', 'block');
+                    $("#Phr").css('display', 'block');
+                    $("#Phr2").css('display', 'block');
+                    $("#Prow2").css('display', 'block');
+                    $("#Prow3").css('display', 'block');
+                }
+                else {
+                    $("#PNumOrder").css('display', 'none');
+                    $("#PDateOpenOrder").css('display', 'none');
+                    $("#Prow").css('display', 'none');
+                    $("#Phr").css('display', 'none');
+                    $("#Phr2").css('display', 'none');
+                    $("#Prow2").css('display', 'none');
+                    $("#Prow3").css('display', 'none');
+                }
+            });
+        });
+
+        $("#ShowOrgFrom").on("click", function () {
+            var initFields = function (obj) {
+                $('#ShipperName').val(obj._Name);
+                $('#Shipper').val(obj._Id);
+            };
+
+            ShowOrganizationDlg(initFields);
+        });
+
+        $("#ShowOrgTo").on("click", function () {
+            var initFields = function (obj) {
+                $('#ConsigneeName').val(obj._Name);
+                $('#Consignee').val(obj._Id);
+            };
+
+            ShowOrganizationDlg(initFields);
+        });
+    </script>
+}

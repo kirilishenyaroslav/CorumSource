@@ -1,0 +1,116 @@
+﻿@model Corum.Models.ManageMenuAccessViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="panel">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-12">
+                <h4>Структура главного меню</h4>
+                <div class="table-header clearfix">
+                    <div class="TreeWrapper">
+                        <div id="treeGrid">
+                            <span>Идет загрузка данных...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div id="detailGrid">
+                </div>
+            </div>
+        </div>        
+    </div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            var source =
+            {
+                dataType: "json",
+                dataFields: [
+                    { name: 'Id', type: 'string' },
+                    { name: 'menuName', type: 'string' },
+                    { name: 'parentId', type: 'string' },
+                    { name: 'menuId', type: 'string' },
+                    { name: 'isLeaf', type: 'boolean' },
+                    { name: 'menuIdForScript', type: 'string'}
+                ],
+                hierarchy:
+                {
+                    keyDataField: { name: 'Id' },
+                    parentDataField: { name: 'parentId' }
+                },
+                id: 'Id',
+                localData: @Html.Raw(Model.JSONData)
+            };
+
+            var dataAdapter = new $.jqx.dataAdapter(source);
+
+            dataAdapter.dataBind();
+
+            var renderer = function(menuIdForScript) {                
+
+                var custom_cell_dom = '<div class="edit-delete-copy-links">' +
+                    '<a class="tarash-i update_link tooltips" href="MenuRoles?menuId=' + menuIdForScript + '">' +
+                    '   <span class="tooltip-message">Настройка доступа пользователей по ролям</span> ' +
+                    '   <span class="glyphicon glyphicon-user"></span>           ' +
+                    '</a>  ' +
+                    '</div>';
+
+                return custom_cell_dom;
+
+            };
+
+
+            $("#treeGrid").jqxTreeGrid(
+            {
+                width: '100%',
+                source: dataAdapter,
+                columnsResize: true,
+                sortable: true,
+                filterable: true,
+                theme: 'nms',
+                selectionMode: 'singleRow',
+                pageable: false,
+                filterHeight: 50,
+                icons: true,
+                autoShowLoadElement: true,
+                //localization: getNoLocalizationForJQWidgets(),
+                editable: false,
+                altRows: true,
+                ready: function() {
+
+                    var Id = localStorage.getItem("menuId");
+                    var row = $("#treeGrid").jqxTreeGrid('getRow', Id);
+
+                    if (row != null) {                     
+                        FullExpandById('treeGrid', Id);
+                        $("#treeGrid").jqxTreeGrid('selectRow', Id);
+                        // GetDocumentsInfoEx();
+                     }
+
+                    $("#treeGrid").jqxTreeGrid('focus');
+
+                },
+                columns: [
+                    { text: "Идентификатор", dataField: 'Id', width: '25%' },
+                    { text: "Наименование", dataField: 'menuName', width: '40%' },
+                    { text: "Группа пользователей", dataField: 'MenuIdForScript', cellsrenderer: renderer, width: '35%' }
+                ]
+            });
+
+
+            $('#treeGrid').on('rowSelect',
+                function(event) {                    
+                    localStorage.setItem("menuId", args.key);                    
+                });
+        });
+    </script>
+}

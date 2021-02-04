@@ -1,0 +1,262 @@
+﻿@using Corum.Helpers
+@model Corum.Models.OrdersNavigationResult<Corum.Models.ViewModels.Orders.OrderBaseViewModel>
+
+
+<div class="list-group">
+    <input id="FilterSave" type="submit" value="Сохранить" class="btn" style="border-radius: 5px;"/>
+    <input id="FilterLoad" type="submit" value="Загрузить" class="btn" style="border-radius: 5px;"/>
+</div>
+
+@if ((Model.UseStatusFilter)
+                            || (Model.UseOrderCreatorFilter)
+                            || (Model.UseOrderTypeFilter)
+                            || (Model.UseOrderClientFilter)
+                            || (Model.UseOrderPriorityFilter)
+                            || (Model.UseOrderDateFilter)
+                            || (Model.UseOrderExDateFilter)
+                            || (Model.UseOrderEndDateFilter)
+                            || (Model.UseOrderExecuterFilter)
+                            || (Model.UseFinalStatusFilter)
+                            || (Model.UseOrderProjectFilter)
+                            || (Model.UseOrderPayerFilter)
+                            || (Model.UseOrderOrgFromFilter)
+                            || (Model.UseOrderOrgToFilter))
+    {
+    <div class="list-group">
+
+        @if (Model.UseStatusFilter)
+        {
+            string[] idList = Model.FilterStatusName.Split(new char[] { ',' });
+
+            <span class="list-group-item">
+                Активный фильтр по статусу:&nbsp;&nbsp;
+
+                @if (idList.Length > 1)
+                {
+                    <a class="tarash-i update_link tooltips" href="#">
+                        <span class="tooltip-message">@Html.Raw(string.Join("<br>", idList.ToArray()))</span>
+                        <span style="font-weight: bold">Множество значений</span>
+                    </a>
+                }
+                else
+                {
+                    <span style="font-weight: bold">@Model.FilterStatusName</span>
+                }
+            </span>
+
+        }
+        @if (Model.UseOrderCreatorFilter)
+        {
+            string[] idList = Model.FilterOrderCreatorName.Split(new char[] { ',' });
+
+            <span class="list-group-item">
+                Активный фильтр по инициатору заявки:&nbsp;&nbsp;
+
+                @if (idList.Length > 1)
+                {
+                    <a class="tarash-i update_link tooltips" href="#">
+                        <span class="tooltip-message">@Html.Raw(string.Join("<br>", idList.ToArray()))</span>
+                        <span style="font-weight: bold">Множество значений</span>
+                    </a>
+                }
+                else
+                {
+                    <span style="font-weight: bold">@Model.FilterOrderCreatorName</span>
+                }
+            </span>
+        }
+        @if (Model.UseOrderProjectFilter)
+        {
+            string[] idList = Model.FilterOrderProjectCode.Split(new char[] { ',' });
+
+            <span class="list-group-item">
+                Активный фильтр по проекту:&nbsp;&nbsp;
+
+                @if (idList.Length > 1)
+                {
+                    <a class="tarash-i update_link tooltips" href="#">
+                        <span class="tooltip-message">@Html.Raw(string.Join("<br>", idList.ToArray()))</span>
+                        <span style="font-weight: bold">Множество значений</span>
+                    </a>
+                }
+                else
+                {
+                    <span style="font-weight: bold">@Model.FilterOrderProjectCode</span>
+                }
+            </span>
+        }
+        @if (Model.UseOrderExecuterFilter)
+        {
+            string[] idList = Model.FilterOrderExecuterName.Split(new char[] { ',' });
+            <span class="list-group-item">
+                Активный фильтр по исполнителю заявки:&nbsp;&nbsp;
+
+                @if (idList.Length > 1)
+                {
+                    <a class="tarash-i update_link tooltips" href="#">
+                        <span class="tooltip-message">@Html.Raw(string.Join("<br>", idList.ToArray()))</span>
+                        <span style="font-weight: bold">Множество значений</span>
+                    </a>
+                }
+                else
+                {
+                    <span style="font-weight: bold">@Model.FilterOrderExecuterName</span>
+                }
+            </span>
+        }
+
+        @if (Model.UseOrderTypeFilter)
+        {
+            string[] idList = Model.FilterOrderTypeName.Split(new char[] { ',' });
+            <span class="list-group-item">
+                Активный фильтр по типу заявки:&nbsp;&nbsp;
+
+                @if (idList.Length > 1)
+                {
+                    <a class="tarash-i update_link tooltips" href="#">
+                        <span class="tooltip-message">@Html.Raw(string.Join("<br>", idList.ToArray()))</span>
+                        <span style="font-weight: bold">Множество значений</span>
+                    </a>
+                }
+                else
+                {
+                    <span style="font-weight: bold">@Model.FilterOrderTypeName</span>
+                }
+            </span>
+
+        }
+        @if (Model.UseOrderClientFilter)
+        {
+            string[] idList = Model.FilterOrderClientName.Split(new char[] { ',' });
+            <span class="list-group-item">
+                Активный фильтр по заказчику:&nbsp;&nbsp;
+
+                @if (idList.Length > 1)
+                {
+                    <a class="tarash-i update_link tooltips" href="#">
+                        <span class="tooltip-message">@Html.Raw(string.Join("<br>", idList.ToArray()))</span>
+                        <span style="font-weight: bold">Множество значений</span>
+                    </a>
+                }
+                else
+                {
+                    <span style="font-weight: bold">@Model.FilterOrderClientName</span>
+                }
+                </span>
+
+        }
+
+
+        @if (Model.UseOrderPayerFilter)
+        {
+            string[] idList = Model.FilterOrderPayerName.Split(new char[] { ',' });
+            <span class="list-group-item">
+                Активный фильтр по плательщику:&nbsp;&nbsp;
+
+                @if (idList.Length > 1)
+                {
+                    <a class="tarash-i update_link tooltips" href="#">
+                        <span class="tooltip-message">@Html.Raw(string.Join("<br>", idList.ToArray()))</span>
+                        <span style="font-weight: bold">Множество значений</span>
+                    </a>
+                }
+                else
+                {
+                    <span style="font-weight: bold">@Model.FilterOrderPayerName</span>
+                }
+            </span>
+        }
+
+        @if (Model.UseOrderOrgFromFilter)
+        {
+            string[] idList = Model.FilterOrderOrgFromName.Split(new char[] { ',' });
+            <span class="list-group-item">
+                Активный фильтр по грузоотправителю (организация отправитель):&nbsp;&nbsp;
+
+                @if (idList.Length > 1)
+                {
+                    <a class="tarash-i update_link tooltips" href="#">
+                        <span class="tooltip-message">@Html.Raw(string.Join("<br>", idList.ToArray()))</span>
+                        <span style="font-weight: bold">Множество значений</span>
+                    </a>
+                }
+                else
+                {
+                    <span style="font-weight: bold">@Model.FilterOrderOrgFromName</span>
+                }
+            </span>
+        }
+
+        @if (Model.UseOrderOrgToFilter)
+        {
+            string[] idList = Model.FilterOrderOrgToName.Split(new char[] { ',' });
+            <span class="list-group-item">
+                Активный фильтр по грузополучателю (организация прибытия):&nbsp;&nbsp;
+
+                @if (idList.Length > 1)
+                {
+                    <a class="tarash-i update_link tooltips" href="#">
+                        <span class="tooltip-message">@Html.Raw(string.Join("<br>", idList.ToArray()))</span>
+                        <span style="font-weight: bold">Множество значений</span>
+                    </a>
+                }
+                else
+                {
+                    <span style="font-weight: bold">@Model.FilterOrderOrgToName</span>
+                }
+            </span>
+        }
+    @if (Model.UseOrderDateFilter)
+        {
+            <span class="list-group-item">Активный фильтр по дате черновика:&nbsp;&nbsp;<span style="font-weight: bold">от @Model.FilterOrderDateBeg до @Model.FilterOrderDateEnd</span></span>
+        }
+        @if (Model.UseOrderExDateFilter)
+        {
+            <span class="list-group-item">Активный фильтр по дате отправления:&nbsp;&nbsp;<span style="font-weight: bold">от @Model.FilterOrderExDateBeg до @Model.FilterOrderExDateEnd</span></span>
+        }
+
+        @if (Model.UseOrderEndDateFilter)
+        {
+            <span class="list-group-item">Активный фильтр по дате прибытия:&nbsp;&nbsp;<span style="font-weight: bold">от @Model.FilterOrderEndDateBeg до @Model.FilterOrderEndDateEnd</span></span>
+        }
+
+    @if (Model.UseFinalStatusFilter)
+        {
+            <span class="list-group-item">
+                Активный фильтр по типу статуса:&nbsp;&nbsp;
+                <span style="font-weight: bold">
+                    @if (Model.FilterFinalStatus == false)
+                    {
+                        <span>Не финальный</span>
+                    }
+                    else
+                    {
+                        <span>Финальный</span>
+                    }
+                </span>
+            </span>
+        }
+
+        @if (Model.UseOrderPriorityFilter)
+        {
+            <span class="list-group-item">Активный фильтр по приоритету:&nbsp;&nbsp;
+                <span style="font-weight: bold">
+                    @if (Model.FilterOrderPriority==0)
+                    {
+                        <span>Плановая</span>
+                    }
+                    else
+                    {
+                        <span>Срочная</span>
+                    }
+                </span>
+            </span>
+        }
+    </div>
+}
+else
+{
+    <div class="list-group">
+        <span class="list-group-item">Активный фильтр:&nbsp;&nbsp;<span style="font-weight: bold">Все заявки</span></span>
+    </div>
+}

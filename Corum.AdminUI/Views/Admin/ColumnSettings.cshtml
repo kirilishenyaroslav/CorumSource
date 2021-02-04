@@ -1,0 +1,110 @@
+﻿@model Corum.Models.ViewModels.ColumnsFromExternalFile
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-10 main" style="text-align:center;">
+            <h4>Связывание столбцов с данными из файла "@Model.RealName"</h4>
+            <br>
+           
+            @using (Html.BeginForm("ColumnSettingsCommit",
+                           "Admin",
+                           FormMethod.Post,
+                           new { enctype = "multipart/form-data", id="columnSettingsCommitForm" }))
+            {
+                @Html.HiddenFor(m => m.ServerFileName)                               
+                @Html.HiddenFor(m => m.FileType)
+                var Index = 0;
+                <table class="table table-striped table-bordered no-footer sort-table-header">
+                    <thead>
+                        <tr>
+                           <th style="text-align: center;">№ п/п</th>
+                           <th style="text-align: center;">Описание поля</th>
+                           <th style="text-align: center;">Параметры шаблона импорта</th>
+                           <th style="text-align: center;">Столбцы из файла</th>
+                           <th style="text-align: center;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var innerParamName in Model.InnerSPparamsDict)
+                        {
+                            <tr>
+                                <td class="col-md-1" style="text-align: center; font-weight: normal">@(Index+1)</td>
+                                <td class="col-md-5" style="text-align: left; font-weight: normal">@innerParamName.Value</td>
+                                <td class="col-md-3" style="text-align: right; font-weight: normal">
+                                    @Html.Hidden("configuredPairs[" + Index.ToString() + "].Key", innerParamName.Key)                                    
+                                    @Html.Label("inner_param", innerParamName.Key, new { @readonly = "readonly", @class="templateParams" })
+                                </td>
+                                <td class="col-md-3" style="font-weight: normal; text-align: left;">
+                                    @Html.DropDownList("configuredPairs[" + Index.ToString() + "].Value",
+                                          new SelectList(Model.Headers.Select(x => new { Value = x, Text = x }), "Value", "Text", innerParamName.Key),
+                                          new { id = innerParamName.Key, onchange= "ShowWarnings()" })
+                                </td>
+                                <td>
+                                    <a @Html.Raw("id='warning_"+innerParamName.Key+"'") class="warnings disable-glyphicon tooltips tarash-i" href="#" style="display:none;">
+                                        <span class="tooltip-message">Не найден столбец в файле с таким именем!</span>
+                                        <span class="glyphicon glyphicon-exclamation-sign" style="color:#f7b662"></span>
+                                    </a>
+                                </td>
+                            </tr>
+                            {
+                                Index = Index + 1;
+                            };
+                        }   
+                    </tbody>
+                </table>
+                <div class="form-group row">
+                      <div class="col-md-12 pull-right">
+                             <input type="submit" value="Подтвердить" class="btn btn-primary"  onclick="StartImport()"/>&nbsp;&nbsp;<span id="warningNearButton" style="color:orangered; display:none;">Внимание! Не найдены некоторые столбцы в файле.</span>
+                      </div>
+                </div>
+            }
+
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            ShowWarnings();
+        });
+
+        function StartImport()
+        {
+            debugger;
+            block();
+            $("#columnSettingsCommitForm").submit();
+        }
+
+        function ShowWarnings() {
+            debugger;
+            $(".templateParams").each(function (index) {
+                var paramName = $(this).html();
+                var columnName = $("#" + paramName).val();
+
+                if (paramName === columnName) {
+                    $("#warning_" + paramName).hide();
+                }
+                else {
+                    $("#warning_" + paramName).show();
+                }
+            });
+
+
+            var warnings = $(".warnings:visible");
+
+            if (warnings.length>0){
+                $("#warningNearButton").show();
+            }
+            else {
+                $("#warningNearButton").hide();
+            }
+
+        }
+    </script>
+}

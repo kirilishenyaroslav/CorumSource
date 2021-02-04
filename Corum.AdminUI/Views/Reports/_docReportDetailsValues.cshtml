@@ -1,0 +1,150 @@
+﻿@model Corum.Models.RestsNavigationResult<Corum.Models.ViewModels.DocViewModel>
+@using System.Globalization
+@using GridMvc.Html
+
+@{
+    var numberFormat = new CultureInfo("en-US", false).NumberFormat;
+}
+
+
+@(Html.Grid(Model.DisplayValues)
+                      .Columns(columns =>
+                      {
+
+                      columns.Add(model => model.DocType)
+                          .Css("new_columns_block_start new_columns_block_end")
+                      .Titled("Реквизиты<br>документа").Filterable(true).Sortable(true);
+
+                      //columns.Add(model => model.DocDate)
+                      //.Titled("Дата<br>документа").Filterable(true).Sortable(true);
+
+                      //columns.Add(model => model.DocNum)
+                      //.Titled("Номер<br>документа").Filterable(true).Sortable(true);
+
+                      @*columns.Add(model => model.ISPrihod)
+                      .Css("centered_column")
+                      .Titled("Приходный")
+                      .Encoded(false)
+                      .Sanitized(false)
+                      .RenderValueAs(o =>
+                        @<div>@Html.CheckBox(o.idrow.ToString(), @o.ISPrihod==1, new { disabled = "disabled", @readonly = "readonly" })</div>);*@
+
+
+                      columns.Add(model => model.Product)
+                          .Titled("Товар").Filterable(true).Sortable(true);
+
+                      columns.Add(model => model.Shifr)
+                          .Titled("Артикул<br>(шифр)").Filterable(true).Sortable(true);
+
+                      columns.Add(model => model.Figure)
+                          .Titled("Чертеж").Filterable(true).Sortable(true);
+
+                      columns.Add(model => model.InnerOrderNum)
+                                .Titled("Внутрений<br> заказ ПП").Filterable(true).Sortable(true);
+
+                      @*columns.Add(model => model.Weight)
+                          .Titled("Вес, <br> (1 ед./кг.)")
+                          .Css("rigth_column")
+                          .Filterable(true)
+                          .Sortable(true)
+                          .Encoded(false)
+                          .Sanitized(false)
+                          .RenderValueAs(o =>
+                        @<div>@o.Weight.ToString()</div>);*@
+
+                     
+                      columns.Add(model => model.Quantity)
+                  .Titled("Кол-во")
+                  .Css("rigth_column new_columns_block_start")
+                  .Filterable(true)
+                  .Sortable(true)
+                  .Encoded(false)
+                          .Sanitized(false)
+                          .RenderValueAs(o =>
+                        @<div>@o.Quantity.ToString()</div>);
+
+                      columns.Add()
+                      .Titled("Масса,(кг.)")
+                      .Css("rigth_column")
+                      .Filterable(true)
+                      .Sortable(true)
+                      .Encoded(false)
+                              .Sanitized(false)
+                              .RenderValueAs(o => @<div>@(o.Quantity * o.Weight)</div>);
+
+                      if ((Model.BalancePrice) ||
+                      (Model.PriceForEndConsumer) ||
+                      (Model.PriceForFirstReciver) ||
+                      (Model.PlanFullCost) ||
+                      (Model.PlanChangableCost) ||
+                      (Model.FactFullCosts) ||
+                      (Model.FactChangableCosts))
+                      {
+                          columns.Add()
+                          .Encoded(false)
+                          .Titled("Сумма, <br> (грн. в ценах учета)")
+                          .Sanitized(false)
+                          .Css("right_column new_columns_block_end")
+                          .RenderValueAs(o =>
+                        @<div>
+                            @if (Model.BalancePrice)
+                                {
+                                <span>в БС:</span>
+                                    <span style="font-weight: bold;" class="pull-right"> @o.BP.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.PriceForEndConsumer)
+                                {
+                                <span>в ЦКП:</span>
+                                    <span style="font-weight: bold" class="pull-right"> @o.PE.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.PriceForFirstReciver)
+                                {
+                                <span>в ЦПП:</span>
+                                    <span style="font-weight: bold" class="pull-right"> @o.PF.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.PlanFullCost)
+                                {
+                                <span>в СПП:</span>
+                                    <span style="font-weight: bold" class="pull-right"> @o.PCPC.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.PlanChangableCost)
+                                {
+                                <span>в СППР:</span>
+                                    <span style="font-weight: bold" class="pull-right"> @o.PCPC.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.FactFullCosts)
+                                {
+                                <span>в СФП:</span>
+                                    <span style="font-weight: bold" class="pull-right"> @o.FCP.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.FactChangableCosts)
+                                {
+                                <span>в СФПР:</span>
+                                    <span style="font-weight: bold" class="pull-right"> @o.FCPC.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                        </div>);
+                          }
+
+
+                          columns.Add(model => model.RecieverGroupPlan)
+                          .Titled("Клиент (Тип<br>грузополучателя)")
+                          .Filterable(true)
+                           .Css("new_columns_block_start")
+                          .Sortable(true)
+                           .Encoded(false)
+                          .Sanitized(false)
+                          .RenderValueAs(o =>
+                        @<div>@o.RecieverGroupPlan</div>);
+
+                          columns.Add(model => model.OrderNum)
+                           .Css("new_columns_block_end")
+                               .Titled("Номер<br> заказа").Filterable(true).Sortable(true);
+
+                      }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())

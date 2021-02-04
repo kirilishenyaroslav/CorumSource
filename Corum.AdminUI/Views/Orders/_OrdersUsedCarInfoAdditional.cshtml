@@ -1,0 +1,160 @@
+﻿<div id="usedcarinfoadditionaldialog" class="row" style="display: none; margin:auto;">
+
+    @Html.Hidden("UsedCarId")
+
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Плановый путь
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("PlanDistance", "",
+                     htmlAttributes: new
+                     {
+                         id = "PlanDistance",
+                         @name = "PlanDistance", 
+                         @class = "TotalSum valid"
+                     })
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Плановое время РД
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("PlanTimeWorkDay", "",
+                     htmlAttributes: new
+                     {
+                         id = "PlanTimeWorkDay",
+                         @name = "PlanTimeWorkDay",
+                         @class = "TotalSumWorkDay"
+                     })
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Плановое время ВД
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("PlanTimeHoliday", "",
+                     htmlAttributes: new
+                     {
+                         id = "PlanTimeHoliday",
+                         @name = "PlanTimeHoliday",
+                         @class = "TotalSumHoliday"
+                     })
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Тариф без НДС
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("BaseRate", "",
+                htmlAttributes: new
+                {
+                    id = "BaseRate",
+                    @name = "BaseRate",
+                    @class = "TotalSum"
+                })
+        </div>
+    </div>
+
+    <div class="form-group row" id="divCarCapacity">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Тариф РД без НДС
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("BaseRateWorkDay", "",
+                htmlAttributes: new
+                {
+                    id = "BaseRateWorkDay",
+                    @name = "BaseRateWorkDay",
+                    @class = "TotalSumWorkDay"
+                })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Тариф ВД без НДС
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("BaseRateHoliday", "",
+                     htmlAttributes: new
+                     {
+                         id = "BaseRateHoliday",
+                         @name = "BaseRateHoliday",
+                         @class = "TotalSumHoliday"
+                     })
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Сумма
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("TotalSum", "",
+                     htmlAttributes: new
+                     {
+                         id = "TotalSum",
+                         @name = "TotalSum",
+                         @class = "TotalSumNds"
+                     })
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Сумма РД
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("TotalSumWorkDay", "",
+                     htmlAttributes: new
+                     {
+                         id = "TotalSumWorkDay",
+                         @name = "TotalSumWorkDay",
+                         @class = "TotalSumNds"
+                     })
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Сумма ВД
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("TotalSumHoliday", "",
+                     htmlAttributes: new
+                     {
+                         id = "TotalSumHoliday",
+                         @name = "TotalSumHoliday",
+                         @class = "TotalSumNds"
+                     })
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Сумма с НДС
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("TotalSumNds", "",
+                     htmlAttributes: new
+                     {
+                         id = "TotalSumNds",
+                         @name = "TotalSumNds"
+                     })
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Отсрочка платежа
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("DelayDays", "",
+                     htmlAttributes: new
+                     {
+                         id = "DelayDays",
+                         @name = "DelayDays"
+                     })
+        </div>
+    </div>
+</div>
+

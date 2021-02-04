@@ -1,0 +1,126 @@
+﻿@model Corum.Models.UserMessagesNavigationResult<Corum.Models.ViewModels.Admin.UserMessagesViewModel>
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Допустимые переходы для статусов заявок";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+<div class="container-fluid">
+    @Html.HiddenFor(m => m.IsMsgIn)
+    <div class="row">
+        <div class="col-lg-12 main">
+            <div class="form-group row">
+                <div class="col-md-6">
+                    <h4>Сообщения</h4>
+                </div>
+            </div>
+            <hr>
+
+            @helper CustomRenderingOfColumn(Corum.Models.ViewModels.Admin.UserMessagesViewModel msg)
+            {
+              if (!msg.IsOpened)
+              {
+               <span>@msg.DateTimeCreate</span>;
+               <span class="msg-new-hint">Новое </span>;
+              }
+              else
+              {
+                <span>@msg.DateTimeCreate</span>;
+              }
+            }
+            <div class="table-header clearfix">
+                <div class="row">
+                    <div class="col-md-12">
+                        @Html.ActionLink("Новое сообщение", "NewMessage", "Users",  new { @class = "btn btn-primary", @style = "margin-bottom:10px; margin-left:15px;" })
+                    </div>
+                    <ul class="nav nav-tabs nav-list" role="tablist" id="myTab" style="margin-left: 25px">
+                        <li role="presentation" class="active">
+                            <a class="tab-page active" id="aPage3" href="#Page3" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-envelope"></span>  Входящие</a>
+                        </li>
+                        <li role="presentation">
+                            <a class="tab-page" id="aPage5" href="#Page5" role="tab" data-toggle="tab"><span class="glyphicon glyphicon-send"></span>  Исходящие</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="tab-content tab-cont-all">
+                    <div role="tabpanel" class="active filter-tab-pane tab-pane row" id="Page3">
+                        <div style="font-size: 13px;">
+                            @(Html.Grid(Model.AvailiableMessagesIn).Named("MessageInGrid")
+                            .Columns(columns =>
+                            {
+                            columns.Add(model => model.Id, true);
+
+                            columns.Add(model => model.DateTimeCreate)
+                             .Titled("Дата время").Filterable(true).Sortable(true).Encoded(false).Sanitized(false)
+                             .SetWidth("30%")
+                             .RenderValueAs(o => CustomRenderingOfColumn(o));
+
+                            columns.Add(model => model.MessageSubject)
+                             .Titled("Тема сообщения").Filterable(true).Sortable(true)
+                             .SetWidth("30%");
+
+                            columns.Add(model => model.NameCreatedFromUser)
+                             .Titled("От").Filterable(true).Sortable(true)
+                             .SetWidth("40%");
+                            }).SetRowCssClasses(item => !item.IsOpened ? "msg-new" : "").Filterable().WithPaging((int)Model.RequestParams.PageSize))
+                        </div>
+                    </div>
+                    <div role="tabpanel" class="filter-tab-pane tab-pane row" id="Page5">
+                        <div style="font-size: 13px;">
+                            @(Html.Grid(Model.AvailiableMessagesOut).Named("MessageOutGrid")
+                            .Columns(columns =>
+                           {
+                           columns.Add(model => model.Id, true);
+                           columns.Add(model => model.DateTimeCreate)
+                            .Titled("Дата время").Filterable(true).Sortable(true)
+                            .SetWidth("30%");
+
+                           columns.Add(model => model.MessageSubject)
+                            .Titled("Тема сообщения").Filterable(true).Sortable(true)
+                            .SetWidth("30%");
+
+                           columns.Add(model => model.NameCreatedToUser)
+                            .Titled("Кому").Filterable(true).Sortable(true)
+                            .SetWidth("40%");
+                           }).Filterable().WithPaging((int)Model.RequestParams.PageSize))
+                        </div>
+
+
+
+                    </div>
+                </div>
+                <div class="col-md-12">
+                    @Html.ActionLink("Новое сообщение", "NewMessage", "Users", new { @class = "btn btn-primary", @style = "margin-bottom:10px; margin-left:15px;" })
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+  <script>
+      $(document).ready(function () {
+          var IsMsgIn = @Html.Raw(Json.Encode(Model.IsMsgIn));
+          if (IsMsgIn) {
+              $('#aPage3').tab('show');
+          } else {
+              $('#aPage5').tab('show');
+          }
+
+      });
+    $(function () {
+        pageGrids.MessageInGrid.onRowSelect(function (e) {
+            var IdMsg = e.row.Id;
+            window.location.href = "/Users/ViewMessage/" + IdMsg + "?MsgIn=true";
+        });
+
+        pageGrids.MessageOutGrid.onRowSelect(function (e) {
+            var IdMsg = e.row.Id;
+            window.location.href = "/Users/ViewMessage/" + IdMsg + "?MsgIn=false";
+        });
+    });
+  </script>
+}

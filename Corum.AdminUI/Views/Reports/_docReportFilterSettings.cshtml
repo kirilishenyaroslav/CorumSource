@@ -1,0 +1,35 @@
+﻿
+    <div class="list-group">
+        @if (Model.IsPrihodDocs==1)
+        {
+            <span class="list-group-item">Активный фильтр по типу документов:&nbsp;&nbsp;<span style="font-weight: bold">Приходные документы</span></span>
+        }
+        else
+        {
+            <span class="list-group-item">Активный фильтр по типу документов:&nbsp;&nbsp;<span style="font-weight: bold">Расходные документы</span></span>
+        }
+        @if (Model.UseStorageFilter)
+        {
+            <span class="list-group-item">Активный фильтр по складу:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterStorageId</span></span>
+        }
+        @if (Model.UseRecieverFactFilter)
+        {
+            <span class="list-group-item">Активный фильтр по грузополучателю(факт):&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterRecieverFactId</span></span>
+        }
+        @if (Model.UseRecieverPlanFilter)
+        {
+            <span class="list-group-item">Активный фильтр по грузополучателю(план):&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterRecieverPlanId</span></span>
+        }
+        @if (Model.UseProducerFilter)
+        {
+            <span class="list-group-item">Активный фильтр по производителю:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterProducerId</span></span>
+        }
+        @if (Model.UseKeeperFilter)
+        {
+            <span class="list-group-item">Активный фильтр по балансодержателю:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterKeeperId</span></span>
+        }
+        @if (Model.UseCenterFilter)
+        {
+            <span class="list-group-item">Активный фильтр по ЦФО:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterCenterId</span></span>
+        }
+    </div>

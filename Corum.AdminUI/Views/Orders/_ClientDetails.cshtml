@@ -1,0 +1,41 @@
+﻿@model Corum.Models.ViewModels.Orders.OrderClientsViewModel
+
+
+<div class="form-group">
+    @Html.LabelFor(model => model.ClientCFOId, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        <div class="form-control-container full-width-select">
+            @Html.DropDownListFor(model => model.ClientCFOId,
+                                          new SelectList(Model.AvailableCFOs.Select(x => new { Value = x.Id, Text = x.CFOName }), "Value", "Text", Model.ClientCFOId),
+                                          new { @class = "form-control input" })
+            @Html.ValidationMessageFor(model => model.ClientCFOId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.ClientName, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.ClientName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+        @Html.ValidationMessageFor(model => model.ClientName, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.AccessRoleId, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        <div class="form-control-container full-width-select">
+            @Html.TextBoxFor(model => model.AccessRoleId,
+                        (object)new
+                        {
+                            id = "AccessRoleId",
+                            @class = "filter_dropdown form-control input",
+                            @name = "AccessRoleId",
+                            data_source_url = Url.Action("GetRoles", "Orders"),
+                            data_droplist_placeholder = "Введите роль пользователей",
+                            data_selected_text = Model.RoleName
+                        })
+            @Html.ValidationMessageFor(model => model.AccessRoleId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>

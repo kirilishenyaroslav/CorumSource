@@ -1,0 +1,66 @@
+﻿@model Corum.Models.ViewModels.Orders.OrderBaseViewModel
+
+<div class="row" style="font-size:13px;">
+    <div class="col-md-9">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ClientId, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">                
+                    @Html.TextBoxFor(model => model.ClientName, new { @class = "form-control input reg-info", @style="width:95%;", @readonly="readonly" })                
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProjectNum, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">                
+                @Html.TextBoxFor(model => model.ProjectNum, new { @class = "form-control input reg-info", @readonly = "readonly" })                
+            </div>
+        </div>
+    </div>
+
+</div>
+<div class="row" style="font-size:13px;">
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.PayerId, htmlAttributes: new { @class = "control-label" })
+
+            <div class="form-control-container full-width-select">                
+                    @Html.TextBoxFor(model => model.PayerName, new { @class = "form-control input reg-info", @readonly = "readonly" })                
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.PriorityType, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">                
+                @if (Model.PriorityType==0)
+                {
+                    <span>Плановая</span>
+                }
+                else
+                {
+                    <span>Срочная</span>
+                }                    
+            </div>
+
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreatorPosition, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">                
+                    @Html.TextBoxFor(model => model.CreatorPosition, new { @class = "form-control input", @readonly = "readonly" })                
+            </div>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <div class="form-group">
+            @Html.LabelFor(model => model.CreatorContact, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select">                
+                    @Html.TextBoxFor(model => model.CreatorContact, new { @class = "form-control input reg-info", @readonly = "readonly" })                
+            </div>
+        </div>
+    </div>
+
+</div>

@@ -1,0 +1,59 @@
+﻿@model Corum.Models.NavigationResult<Corum.Models.ViewModels.Admin.LoginHistoryViewModel>
+@using GridMvc.Html
+@{
+    ViewBag.Title = "История рабочих сессий";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+
+}
+
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 main">
+            <h4>Рабочие сессии</h4>
+            
+            <div class="table-header clearfix">
+
+                <div style="font-size: 13px;">
+                @(Html.Grid(Model.DisplayValues)
+                  .Columns(columns =>
+                  {
+                      columns.Add(model => model.Datetime).SortInitialDirection(GridMvc.Sorting.GridSortDirection.Descending)
+                        .Titled("Время начала").Filterable(true).Sortable(true);
+
+                      columns.Add(model => model.UserName)
+                        .Titled("Пользователь").Filterable(true).Sortable(true);
+
+                      columns.Add(model => model.IP)
+                        .Titled("IP адрес").Filterable(true).Sortable(true);
+
+                      columns.Add(model => model.UserAgent)
+                    .Titled("User agent").Filterable(true).Sortable(true);
+
+                  }).WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())
+                </div>
+            </div>
+
+            @TPagging("LoginHistory", "Admin", @Model.RequestParams, this)
+
+        </div>
+    </div>
+</div>
+

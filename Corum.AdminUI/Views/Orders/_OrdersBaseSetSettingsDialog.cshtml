@@ -1,0 +1,341 @@
+﻿@model Corum.Models.OrdersNavigationResult<Corum.Models.ViewModels.Orders.OrderBaseViewModel>
+
+<style>
+    .select2-container {
+        width: 80%;
+    }
+</style>
+
+
+<div id="orderssettings" class="row" style="display: none;">
+
+    @using (Html.BeginForm("OrdersBase", "Orders", FormMethod.Get, htmlAttributes: new { @id = "settingsForm", style = "margin-left: 35px;" }))
+    {
+        <ul class="nav nav-tabs" role="tablist" style="margin-top: 10px;">
+            <li role="presentation" class="active">
+                <a id="aPage1" href="#Page1" role="tab" data-toggle="tab" style="text-decoration: none; font-size: 12px;">Фильтр заявок</a>
+            </li>                  
+            <li role="presentation">
+                <a id="aPage3" href="#Page3" role="tab" data-toggle="tab" style="text-decoration: none; font-size: 12px;">Настройка столбцов</a>
+            </li>
+        </ul>
+
+        <div class="tab-content" style="margin-top: 25px; margin-left: 25px; font-size: 12px; font-weight: normal;">
+
+            <div role="tabpanel" class="active filter-tab-pane tab-pane row" id="Page1">
+
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseOrderExecuterFilter, new { onclick = "$('#FilterOrderExecuterId').prop('disabled', !this.checked);" })&nbsp;Исполнитель заявки
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FilterOrderExecuterId,
+                            Model.UseOrderExecuterFilter ?
+                            (object)new
+                            {
+                                id = "FilterOrderExecuterId",
+                                @class = "filter_dropdown",
+                                @name = "FilterOrderExecuterId",
+                                data_source_url = Url.Action("GetOrderExecutersBase", "Orders"),
+                                data_droplist_placeholder = "Выберите исполнителя",
+                                data_selected_text = Model.FilterOrderExecuterName
+                            } :
+                            (object)new
+                            {
+                                id = "FilterOrderExecuterId",
+                                @class = "filter_dropdown",
+                                @name = "FilterOrderExecuterId",
+                                data_source_url =  Url.Action("GetOrderExecutersBase", "Orders"),
+                                data_droplist_placeholder = "Выберите исполнителя",
+                                @disabled = "disabled",
+                                data_selected_text = Model.FilterOrderExecuterName
+                            })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseStatusFilter, new { onclick = "$('#FilterStatusId').prop('disabled', !this.checked);" })&nbsp;Статус заявки
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FilterStatusId,
+                            Model.UseStatusFilter ?
+                            (object)new
+                            {
+                                id = "FilterStatusId",
+                                @class = "filter_dropdown",
+                                @name = "FilterStatusId",
+                                data_source_url =  Url.Action("GetStatusesBase", "Orders"),
+                                data_droplist_placeholder = "Введите наименование статуса",
+                                data_selected_text = Model.FilterStatusName
+                            } :
+                            (object)new
+                            {
+                                id = "FilterStatusId",
+                                @class = "filter_dropdown",
+                                @name = "FilterStatusId",
+                                data_source_url =  Url.Action("GetStatusesBase", "Orders"),
+                                data_droplist_placeholder = "Введите наименование статуса",
+                                @disabled = "disabled",
+                                data_selected_text = Model.FilterStatusName
+                            })
+                    </div>
+                </div>
+                
+
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseOrderCreatorFilter, new { onclick = "$('#FilterOrderCreatorId').prop('disabled', !this.checked);" })&nbsp;Инициатор заявки
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FilterOrderCreatorId,
+                            Model.UseOrderCreatorFilter ?
+                            (object)new
+                            {
+                                id = "FilterOrderCreatorId",
+                                @class = "filter_dropdown",
+                                @name = "FilterOrderCreatorId",
+                                data_source_url =  Url.Action("GetOrderCreatorsBase", "Orders"),
+                                data_droplist_placeholder = "Введите имя пользователя",
+                                data_selected_text = Model.FilterOrderCreatorName
+                            } :
+                            (object)new
+                            {
+                                id = "FilterOrderCreatorId",
+                                @class = "filter_dropdown",
+                                @name = "FilterOrderCreatorId",
+                                data_source_url =  Url.Action("GetOrderCreatorsBase", "Orders"),
+                                data_droplist_placeholder = "Введите имя пользователя",
+                                @disabled = "disabled",
+                                data_selected_text = Model.FilterOrderCreatorName
+                            })
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseOrderTypeFilter, new { onclick = "$('#FilterOrderTypeId').prop('disabled', !this.checked);" })&nbsp;Тип заявки
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FilterOrderTypeId,
+                            Model.UseOrderTypeFilter ?
+                            (object)new
+                            {
+                                id = "FilterOrderTypeId",
+                                @class = "filter_dropdown",
+                                @name = "FilterOrderTypeId",
+                                data_source_url =  Url.Action("GetOrderTypesBase", "Orders"),
+                                data_droplist_placeholder = "Введите тип заявки",
+                                data_selected_text = Model.FilterOrderTypeName
+                            } :
+                            (object)new
+                            {
+                                id = "FilterOrderTypeId",
+                                @class = "filter_dropdown",
+                                @name = "FilterOrderTypeId",
+                                data_source_url =  Url.Action("GetOrderTypesBase", "Orders"),
+                                data_droplist_placeholder = "Введите тип заявки",
+                                @disabled = "disabled",
+                                data_selected_text = Model.FilterOrderTypeName
+                            })
+                    </div>
+                </div>
+
+            <div class="form-group row">
+                <label class="col-md-4" style="font-weight: normal !important;">
+                    @Html.CheckBoxFor(model => model.UseOrderClientFilter, new {onclick = "$('#FilterOrderClientId').prop('disabled', !this.checked);"})&nbsp;ЦФО/Подразделение
+                </label>
+                <div class="col-md-8">
+                    @Html.TextBoxFor(model => model.FilterOrderClientId,
+                        Model.UseOrderClientFilter ?
+                            (object) new
+                            {
+                                id = "FilterOrderClientId",
+                                @class = "filter_dropdown",
+                                @name = "FilterOrderClientId",
+                                data_source_url = Url.Action("GetOrderClientsBase", "Orders"),
+                                data_droplist_placeholder = "Введите наименование подразделения",
+                                data_selected_text = Model.FilterOrderClientName
+                            } :
+                            (object) new
+                            {
+                                id = "FilterOrderClientId",
+                                @class = "filter_dropdown",
+                                @name = "FilterOrderClientId",
+                                data_source_url = Url.Action("GetOrderClientsBase", "Orders"),
+                                data_droplist_placeholder = "Введите наименование подразделения",
+                                @disabled = "disabled",
+                                data_selected_text = Model.FilterOrderClientName
+                            })
+                </div>
+            </div>
+
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseOrderProjectFilter, new { onclick = "$('#FilterOrderProjectId').prop('disabled', !this.checked);" })&nbsp;Проект
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBoxFor(model => model.FilterOrderProjectId,
+                            Model.UseOrderProjectFilter ?
+                            (object)new
+                            {
+                                id = "FilterOrderProjectId",
+                                @class = "filter_dropdown",
+                                @name = "FilterOrderProjectId",
+                                data_source_url = Url.Action("GetProjects", "Orders"),
+                                data_droplist_placeholder = "Введите код проекта",
+                                data_selected_text = Model.FilterOrderProjectCode
+                            } :
+                            (object)new
+                            {
+                                id = "FilterOrderProjectId",
+                                @class = "filter_dropdown",
+                                @name = "FilterOrderProjectId",
+                                data_source_url = Url.Action("GetProjects", "Orders"),
+                                data_droplist_placeholder = "Введите код проекта",
+                                @disabled = "disabled",
+                                data_selected_text = Model.FilterOrderProjectCode
+                            })
+                    </div>
+                </div>
+
+            <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseOrderPriorityFilter, new { onclick = "$('.priority-items').prop('disabled', !this.checked);" })&nbsp;Приоритет заявки
+                    </label>
+                    <div class="col-md-8 form-control-container full-width-select">                                                    
+
+                        @if (@Model.UseOrderPriorityFilter)
+                        {
+                            @Html.RadioButton("FilterOrderPriority", 0, (Model.FilterOrderPriority == 0), htmlAttributes: new { @class = "priority-items" }) <span>&nbsp;</span>
+                            @Html.Label("Плановая", htmlAttributes: new { @style = "font-weight: inherit;" })<span>&nbsp;&nbsp;</span>
+                            @Html.RadioButton("FilterOrderPriority", 1, (Model.FilterOrderPriority == 0), htmlAttributes: new { @class = "priority-items" }) <span>&nbsp;</span>
+                            @Html.Label("Срочная", htmlAttributes: new { @style = "font-weight: inherit;", @class = "priority-items" })
+                        }
+                        else
+                        {
+                            @Html.RadioButton("FilterOrderPriority", 0, (Model.FilterOrderPriority == 0), htmlAttributes: new { @disabled = "disabled", @class = "priority-items" }) <span>&nbsp;</span>
+                            @Html.Label("Плановая", htmlAttributes: new { @style = "font-weight: inherit;", @class = "priority-items" })<span>&nbsp;&nbsp;</span>
+                            @Html.RadioButton("FilterOrderPriority", 1, (Model.FilterOrderPriority == 1), htmlAttributes: new { @disabled = "disabled", @class = "priority-items" }) <span>&nbsp;</span>
+                            @Html.Label("Срочная", htmlAttributes: new { @style = "font-weight: inherit;", @class = "priority-items" })
+                        }
+                    </div>
+                </div>
+
+                <div class="form-group row">
+
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseOrderDateFilter, new { onclick = "$('.order-dates').prop('disabled', !this.checked);" })&nbsp;Дата черновика (от/до)
+                    </label>
+
+                    @if (@Model.UseOrderDateFilter)
+                    {
+                        <div class="col-md-3">                           
+                            @Html.EditorFor(model => model.FilterOrderDateBeg, new { htmlAttributes = new { @class = "order-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderDateBegRaw", @style = "height: 2em!important; display:inline;" } })                                                                
+                            @Html.HiddenFor(model => model.FilterOrderDateBegRaw)
+                        </div>                    
+                        <div class="col-md-3">                           
+                            @Html.EditorFor(model => model.FilterOrderDateEnd, new { htmlAttributes = new { @class = "order-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderDateEndRaw", @style = "height: 2em!important;display:inline;" } })
+                            @Html.HiddenFor(model => model.FilterOrderDateEndRaw)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.FilterOrderDateBeg, new { htmlAttributes = new { @disabled="disabled", @class = "order-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderDateBegRaw", @style = "height: 2em!important; display:inline;" } })
+                            @Html.HiddenFor(model => model.FilterOrderDateBegRaw)
+                        </div>
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.FilterOrderDateEnd, new { htmlAttributes = new { @disabled = "disabled", @class = "order-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderDateEndRaw", @style = "height: 2em!important;display:inline;" } })
+                            @Html.HiddenFor(model => model.FilterOrderDateEndRaw)
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group row">
+
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseOrderExDateFilter, new { onclick = "$('.order-ex-dates').prop('disabled', !this.checked);" })&nbsp;Дата выполнения (от/до)
+                    </label>
+
+                    @if (@Model.UseOrderDateFilter)
+                    {
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.FilterOrderExDateBeg, new { htmlAttributes = new { @class = "order-ex-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderExDateBegRaw", @style = "height: 2em!important; display:inline;" } })
+                            @Html.HiddenFor(model => model.FilterOrderExDateBegRaw)
+                        </div>
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.FilterOrderExDateEnd, new { htmlAttributes = new { @class = "order-ex-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderExDateEndRaw", @style = "height: 2em!important;display:inline;" } })
+                            @Html.HiddenFor(model => model.FilterOrderExDateEndRaw)
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.FilterOrderExDateBeg, new { htmlAttributes = new { @disabled = "disabled", @class = "order-ex-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderExDateBegRaw", @style = "height: 2em!important; display:inline;" } })
+                            @Html.HiddenFor(model => model.FilterOrderExDateBegRaw)
+                        </div>
+                        <div class="col-md-3">
+                            @Html.EditorFor(model => model.FilterOrderExDateEnd, new { htmlAttributes = new { @disabled = "disabled", @class = "order-ex-dates form-control datetimepicker client-info", autocomplete = "off", data_raw_element = "FilterOrderExDateEndRaw", @style = "height: 2em!important;display:inline;" } })
+                            @Html.HiddenFor(model => model.FilterOrderExDateEndRaw)
+                        </div>
+                    }
+                </div>
+
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        @Html.CheckBoxFor(model => model.UseFinalStatusFilter, new { onclick = "$('.type-status-items').prop('disabled', !this.checked);" })&nbsp;Тип статуса
+                    </label>
+
+                    <div class="col-md-8 form-control-container full-width-select">
+
+                        @if (@Model.UseFinalStatusFilter)
+                        {
+                            @Html.RadioButton("FilterFinalStatus", false, (Model.FilterFinalStatus == false), htmlAttributes: new { @class = "type-status-items" }) <span>&nbsp;</span>
+                            @Html.Label("Не финальный", htmlAttributes: new { @style = "font-weight: inherit;" })<span>&nbsp;&nbsp;</span>
+                            @Html.RadioButton("FilterFinalStatus", true, (Model.FilterFinalStatus == true), htmlAttributes: new { @class = "type-status-items" }) <span>&nbsp;</span>
+                            @Html.Label("Финальный", htmlAttributes: new { @style = "font-weight: inherit;", @class = "priority-items" })
+                        }
+                        else
+                        {
+                            @Html.RadioButton("FilterFinalStatus", false, (Model.FilterFinalStatus == false), htmlAttributes: new { @disabled = "disabled", @class = "type-status-items" }) <span>&nbsp;</span>
+                            @Html.Label("Не финальный", htmlAttributes: new { @style = "font-weight: inherit;", @class = "priority-items" })<span>&nbsp;&nbsp;</span>
+                            @Html.RadioButton("FilterFinalStatus", true, (Model.FilterFinalStatus == true), htmlAttributes: new { @disabled = "disabled", @class = "type-status-items" }) <span>&nbsp;</span>
+                            @Html.Label("Финальный", htmlAttributes: new { @style = "font-weight: inherit;", @class = "priority-items" })
+                        }
+                    </div>
+                </div>
+
+            </div>
+
+            <div role="tabpanel" class="filter-tab-pane tab-pane row" id="Page3">
+                <div class="form-group">
+                    <div class="col-md-1">
+                        <div class="checkbox rest_checkbox">
+                            @Html.EditorFor(model => model.DriftDate)
+                        </div>
+                    </div>
+                    @Html.LabelFor(model => model.DriftDate, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+                </div>
+                <div class="form-group">
+                    <div class="col-md-1">
+                        <div class="checkbox rest_checkbox">
+                            @Html.EditorFor(model => model.AcceptDate)
+                        </div>
+                    </div>
+                    @Html.LabelFor(model => model.AcceptDate, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+                </div>
+                <div class="form-group">
+                    <div class="col-md-1">
+                        <div class="checkbox rest_checkbox">
+                            @Html.EditorFor(model => model.ExecuteDate)
+                        </div>
+                    </div>
+                    @Html.LabelFor(model => model.ExecuteDate, htmlAttributes: new { @class = "rest-summs control-label col-md-11" })
+                </div>
+            </div>
+
+        </div>
+
+    }
+</div>

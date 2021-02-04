@@ -1,0 +1,151 @@
+﻿@model Corum.Models.ViewModels.Customers.RouteOrgViewModel
+@using GridMvc.Html
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4 class="centered_column" style="margin-top: 25px;">Маршруты @Model.orgInfo.Name</h4>
+
+@Html.HiddenFor(m => m.orgInfo.Id, new { @id = "orgId", @Name = "orgId" })
+
+
+@Html.Partial("_RouteInfo", Model.orgInfo)
+
+
+<div style="font-size: 13px;">
+    <div class="grid-mvc" data-lang="en" data-gridname="" data-selectable="true" data-multiplefilters="true">
+        <div>
+            <div class="row">
+                @* <input id="NewRoute" type="button" value="Новый маршрут" class="btn btn-default" style="margin: 10px;"/>*@
+                @Html.ActionLink("Новый маршрут", "NewRoute", "Customers", new { orgId = @Model.orgInfo.Id, returnUrl = "" }, new { @class = "btn btn-primary", @style = "margin-bottom:10px; margin-left:15px;" })
+                @Html.ActionLink("Реестр организаций", "Organizations", "Customers", null, new { @class = "btn btn-primary", @style = "margin-bottom:10px; margin-left:15px;" })
+            </div>
+
+            <div style="font-size: 12px;">
+                @(Html.Grid(Model.routes)
+                 .Columns(columns =>
+                 {
+                 columns.Add(model => model.Id, true);
+
+                 columns.Add(model => model.ShortName)
+              .Titled("Краткое<br>название")
+              .Filterable(true)
+              .Sortable(true)
+              .Css("table_no_wrap")
+              .SetWidth("25%");
+
+
+                 columns.Add(model => model.OrgFromName)
+              .Titled("Точка<br>отправления")
+              .Filterable(true)
+              .Sortable(true)
+              .Css("table_no_wrap")
+              .SetWidth("25%");
+
+                 columns.Add(model => model.OrgToName)
+                   .Titled("Точка<br>прибытия")
+                   .Filterable(true)
+                   .Sortable(true)
+                   .Css("table_no_wrap")
+                   .SetWidth("25%");
+
+                 columns.Add(model => model.RouteDistance)
+                     .Titled("Длина<br>маршрута")
+                     .Filterable(true)
+                     .Sortable(true)
+                     .Css("table_no_wrap")
+                     .SetWidth("15%");
+
+                 columns.Add(model => model.RouteTime)
+               .Titled("Время/<br>в пути")
+               .Filterable(true)
+               .Sortable(true)
+               .Css("table_no_wrap")
+               .SetWidth("15%");
+
+                 columns.Add()
+                .Encoded(false)
+                .Sanitized(false)
+                .Css("centered_column")
+                .SetWidth("5%")
+                .RenderValueAs(o =>
+                @<div class="edit-delete-copy-links">                     
+                         <a class="tarash-i delete_link tooltips" href="@Url.Action("UpdateRoute", "Customers", new {routeId = o.Id, returnUrl  = "" })">
+                             <span class="tooltip-message">Изменить маршрут</span>
+                             <span class="glyphicon glyphicon-pencil"></span>
+                         </a>
+
+                         <a class="tarash-i delete_link tooltips" href="@Url.Action("DeleteRoute", "Customers", new {Id = o.Id, OrgId = @Model.orgInfo.Id})" onclick="return confirm('Вы действительно хотите удалить маршрут ?');">
+                             <span class="tooltip-message">Удалить маршрут</span>
+                             <span class="glyphicon glyphicon-trash"></span>
+                         </a>
+</div>);
+                 }).Filterable())
+
+            </div>
+    </div>
+        </div>
+</div>
+
+
+    @*
+    <div class="grid-wrap">
+        <table class="table table-header clearfix table-striped table-bordered no-footer sort-table-header">
+
+            <thead>
+                <tr>
+                    <th class="grid-header centered_column">Точка<br>отправления</th>
+                    <th class="grid-header centered_column">Точка<br>прибытия</th>
+                    <th class="grid-header centered_column">Длина<br>маршрута</th>
+                    <th class="grid-header centered_column">Время/<br>в пути</th>
+
+                    <th class="grid-header">Действия</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var routes in Model.routes)
+                {
+                    <tr class="odd gradeX">
+                        <td class="table_no_wrap">
+                            <div style="float: left">
+                                @routes.OrgFromName
+                            </div>
+                        </td>
+                        <td class="table_no_wrap">
+                            <div style="float: left">
+                                @routes.OrgToName
+                            </div>
+                        </td>
+                        <td class="table_no_wrap">
+                            <div style="float: left">
+                                @routes.RouteDistance
+                            </div>
+                        </td>
+                        <td class="table_no_wrap">
+                            <div style="float: left">
+                                @routes.RouteTime
+                            </div>
+                        </td>
+                        <td class="centered_column">
+                            <div class="edit-delete-copy-links" style="width: 10%">                              
+                                <a class="tarash-i delete_link tooltips" href="@Url.Action("UpdateRoute", "Customers", new {routeId = routes.Id, returnUrl  = "" })">
+                                    <span class="tooltip-message">Изменить маршрут</span>
+                                    <span class="glyphicon glyphicon-pencil"></span>
+                                </a>
+
+                                <a class="tarash-i delete_link tooltips" href="@Url.Action("DeleteRoute", "Customers", new {Id = routes.Id, OrgId = @Model.orgInfo.Id })" onclick="return confirm('Вы действительно хотите удалить маршрут ?');">
+                                    <span class="tooltip-message">Удалить маршрут</span>
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
+
+                            </div>
+                        </td>
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+    *@

@@ -1,0 +1,129 @@
+﻿@model Corum.Models.RestsNavigationResult<Corum.Models.ViewModels.RestViewModel>
+@using System.Globalization
+@using GridMvc.Html
+
+@{
+    var numberFormat = new CultureInfo("en-US", false).NumberFormat;
+}
+
+
+@(Html.Grid(Model.DisplayValues)
+                      .Columns(columns =>
+                      {
+
+                      columns.Add(model => model.Storage)
+                        .Css("new_columns_block_start")
+                        .SetWidth(150)
+                        .Titled("Cклад")
+                        .Filterable(true)
+                        .Sortable(true);
+
+                      columns.Add(model => model.Product)
+                        .Titled("Продукт")
+                        .Filterable(true).Sortable(true)
+                        .Encoded(false)
+                        .Sanitized(false)
+                        .RenderValueAs(o =>
+                        @<div>@o.Product</div>);
+
+                      columns.Add(model => model.Shifr)
+                        .Titled("Артикул")
+                        .Filterable(true).Sortable(true)
+                        .Encoded(false)
+                        .Sanitized(false)
+                        .SetWidth(75)
+                        .RenderValueAs(o =>
+                        @<div>@o.Shifr</div>);
+
+                      columns.Add(model => model.Shifr_MDM)
+                        .Titled("Артикул<br>МДМ")
+                        .Filterable(true).Sortable(true)
+                        .Encoded(false)
+                        .Sanitized(false)
+                        .SetWidth(75)
+                        .RenderValueAs(o =>
+                        @<div>@o.Shifr_MDM</div>);
+
+                      columns.Add(model => model.BacodeProduct)
+                        .Titled("Штрихкод<br>номенклатуры")
+                        .Filterable(true).Sortable(true)
+                        .Encoded(false)
+                        .Sanitized(false)
+                        .SetWidth(75)
+                        .RenderValueAs(o =>
+                        @<div>@o.BacodeProduct</div>);
+
+                      columns.Add(model => model.BacodeConsignment)
+                        .Titled("Штрихкод<br>партии")
+                        .Filterable(true).Sortable(true)
+                        .Encoded(false)
+                        .Sanitized(false)
+                        .SetWidth(75)
+                        .RenderValueAs(o =>
+                        @<div>@o.BacodeConsignment</div>);
+
+                      columns.Add(model => model.Figure)
+                        .Titled("Чертеж")
+                        .Filterable(true)
+                        .Sortable(true);
+
+                      columns.Add(model => model.InnerOrderNum)
+                        .Titled("Внутрений<br> заказ ПП")
+                        .Filterable(true)
+                        .Sortable(true);
+
+                      columns.Add(model => model.Weight)
+                        .Titled("Вес, <br> (1 ед./кг.)")
+                        .Css("rigth_column")
+                        .Filterable(true)
+                        .Sortable(true)
+                        .Encoded(false)
+                        .Sanitized(false)
+                        .RenderValueAs(o =>
+                        @<div>@o.Weight.ToString()</div>);
+
+                      columns.Add(model => model.QuantityAfter)
+                        .Titled("Кол-во на <br> конец <br> периода")
+                        .Css("rigth_column new_columns_block_start")
+                        .Filterable(true)
+                        .Sortable(true)
+                        .Encoded(false)
+                        .Sanitized(false)
+                        .RenderValueAs(o =>
+                        @<div>@o.QuantityAfter.ToString()</div>);
+
+
+                      columns.Add(model => model.RecieverGroupPlan)
+                        .Titled("Клиент (Тип<br>грузополучателя)")
+                        .Filterable(true)
+                        .Css("new_columns_block_start")
+                        .Sortable(true)
+                        .Encoded(false)
+                        .Sanitized(false)
+                        .RenderValueAs(o =>
+                        @<div>@o.RecieverGroupPlan</div>);
+
+                          columns.Add(model => model.OrderNum)
+                               .Titled("Номер<br> заказа").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.ReadyForSaleStatus)
+                               .Titled("Готовность к<br>реализации").Filterable(true).Sortable(true);
+
+                          columns.Add(model => model.ReserveStatus)
+                               .Titled("Статус<br>резервирования").Filterable(true).Sortable(true);
+
+                      columns.Add()
+                       .Encoded(false).Css("new_columns_block_end")
+                       .Sanitized(false)
+                       .Css("centered_column")
+                       .RenderValueAs(o =>
+                    @<div>
+                        <a class="tarash-i update_link tooltips" href="@Url.Action("PartyCard", "Reports", new { InnerPartyKey = o.InnerPartyKey, snapshoId = Model.SnapshotInfo.Id })">
+                            <span class="tooltip-message">Просмотр карточки партии</span>
+                            <span class="glyphicon glyphicon-list-alt"></span>
+                        </a>                    
+                    </div>);
+
+
+
+                      }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())

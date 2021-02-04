@@ -1,0 +1,15 @@
+﻿@model  long
+
+@{    
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row centered_column">        
+        <h4>Ваша заявка № @Model.ToString() успешно принята</h4>           
+    </div>
+    <div>
+        @Html.ActionLink("Добавить еще одну заявку", "Entry", "Public", null, new { @class = "btn btn-success", @style = "margin-left:20px;" })
+    </div>
+</div>
+

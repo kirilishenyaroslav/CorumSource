@@ -1,0 +1,87 @@
+﻿@model Corum.Models.NavigationResult<Corum.Models.ViewModels.RoleViewModel>
+@using GridMvc.Html
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+        
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-6 main">
+            <h4>Роли</h4>
+            <div class="table-header clearfix">
+                <div>
+                    @Html.ActionLink("Создать роль", "NewRole", "Admin", null, new { @class = "btn btn-primary", @style = "margin-bottom:10px" })
+                </div>
+
+                <div class="pull-right seash-form-table-header">
+                    <i class="fa fa-search"></i>&nbsp;&nbsp;   @Html.EditorFor(model => model.RequestParams.SearchResult, new { htmlAttributes = new { @class = "input-search", @placeholder = "Поиск...", @id = "role_searchphrase" } })
+                </div>
+
+                <div style="font-size: 13px;">
+                    @(Html.Grid(Model.DisplayValues)
+              .Columns(columns =>
+              {
+              columns.Add(model => model.roleName)
+               .Titled("Название<br>роли").Filterable(true).Sortable(true);
+
+              columns.Add(model => model.roleDescription)
+                   .Titled("Описание<br>роли").Filterable(true).Sortable(true);
+
+              columns.Add()
+               .Encoded(false)
+               .Sanitized(false)
+               .Css("centered_column")
+               .RenderValueAs(o =>@<div class="edit-delete-copy-links">
+                    <a class="tarash-i update_link tooltips" href="@Url.Action("UpdateRole", "Admin", new { roleId = o.roleId })">
+                        <span class="tooltip-message">Изменить роль</span>
+                        <span class="glyphicon glyphicon-pencil"></span>
+                    </a>
+                    @if (o.CanBeDelete)
+                    { 
+                     <a class="tarash-i delete_link tooltips" href="@Url.Action("RemoveRole", "Admin", new { roleId = o.roleId })" onclick="var var1='@o.roleName'; return confirm('Вы действительно хотите удалить роль '+var1+' ?');">
+                         <span class="tooltip-message">Удалить роль</span>
+                         <span class="glyphicon glyphicon-trash"></span>
+                     </a>
+                    }
+                     else
+                     {
+                         <a class="disable-glyphicon tooltips tarash-i" href="#">
+                             <span class="tooltip-message">Роль не может быть удалена</span>
+                             <span class="glyphicon glyphicon-trash"></span>
+                         </a>
+                     }
+                    
+                 </div>);
+
+
+
+                    }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())
+                </div>
+
+            </div>
+
+            @TPagging("Roles", "Admin", @Model.RequestParams, this)
+
+        </div>
+    </div>
+</div>
+

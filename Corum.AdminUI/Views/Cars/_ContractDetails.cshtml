@@ -1,0 +1,178 @@
+﻿@model Corum.Models.ViewModels.Cars.ContractsViewModel
+<div class="col-md-12">
+    <div class="row" style="margin-left:10px;">
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ContractNumber, htmlAttributes: new { @class = "control-label" })
+                <div class="form-control-container full-width-select" style="width: 100%!important;">
+                    @Html.EditorFor(model => model.ContractNumber, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.ContractNumber, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ContractDate, htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => model.ContractDate, new { htmlAttributes = new { @class = "form-control datetimepicker  client-info", @readonly = "true", autocomplete = "off", data_raw_element = "ContractDateRaw" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="ContractDateRaw" data-linked-input="ContractDate"></span>
+                </div>
+                @Html.HiddenFor(model => model.ContractDateRaw)
+                @Html.ValidationMessageFor(model => model.ContractDate, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.DateBeg, htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => model.DateBeg, new { htmlAttributes = new { @class = "form-control datetimepicker  client-info", @readonly = "true", autocomplete = "off", data_raw_element = "DateBegRaw" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="DateBegRaw" data-linked-input="DateBeg"></span>
+                </div>
+                @Html.HiddenFor(model => model.DateBegRaw)
+
+                @Html.ValidationMessageFor(model => model.DateBeg, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.DateEnd, htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => model.DateEnd, new { htmlAttributes = new { @class = "form-control datetimepicker  client-info", @readonly = "true", autocomplete = "off", data_raw_element = "DateEndRaw" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="DateEndRaw" data-linked-input="DateEnd"></span>
+                </div>
+                @Html.HiddenFor(model => model.DateEndRaw)
+
+                @Html.ValidationMessageFor(model => model.DateEnd, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="row" style="margin-left:10px;">
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ReceiveDateReal, htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => model.ReceiveDateReal, new { htmlAttributes = new { @class = "form-control datetimepicker  client-info", @readonly = "true", autocomplete = "off", data_raw_element = "ReceiveDateRealRaw" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="ReceiveDateRealRaw" data-linked-input="ReceiveDateReal"></span>
+                </div>
+                @Html.HiddenFor(model => model.ReceiveDateRealRaw)
+
+                @Html.ValidationMessageFor(model => model.ReceiveDateReal, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.DaysDelay, htmlAttributes: new { @class = "control-label" })
+                <div class="form-control-container full-width-select" style="width: 90%!important;">
+                    @Html.EditorFor(model => model.DaysDelay, new { htmlAttributes = new { @class = "form-control", @style = "width: 90%!important;", autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.DaysDelay, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group" style="margin-left:10px;">
+                @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label" })
+                <div class="form-control-container full-width-select">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                    @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.NDSTax, htmlAttributes: new { @class = "control-label" })
+
+                    <div class="form-control-container full-width-select">
+                        @Html.DropDownListFor(model => model.NDSTax, new List<SelectListItem>
+                    {
+                       new SelectListItem{ Text="0,00" },
+                      new SelectListItem{ Text="20,00"}
+                    }, new { @class = "form-control input", @style = "width: 82%!important;" })
+
+                        @Html.ValidationMessageFor(model => model.NDSTax, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="row" style="margin-left:10px;">
+        <div class="col-md-6">
+            @if (@Model.IsForwarder)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.BalanceKeeperId, htmlAttributes: new { @class = "control-label" })
+                    <div class="form-control-container full-width-select" style="width: 100%!important;">
+                        @Html.TextBoxFor(model => model.BalanceKeeperId,
+                            new
+                            {
+                                id = "PayerId",
+                                @class = "filter_dropdown form-control input",
+                                @name = "PayerId",
+                                @style = "width: 90%!important;",
+                                data_source_url = Url.Action("GetPayers", "Orders"),
+                                data_droplist_placeholder = "Выберите плательщика",
+                                data_selected_text = Model.BalanceKeeperName
+                            })
+                        @Html.ValidationMessageFor(model => model.BalanceKeeperId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+            else
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ExpeditorName, htmlAttributes: new { @class = "control-label" })
+                    <div class="form-control-container full-width-select" style="width: 100%!important;">
+                        @Html.EditorFor(model => model.ExpeditorName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+
+                    </div>
+                </div>
+            }
+        </div>
+        <div class="col-md-6">
+            @if (@Model.IsMainMenu)
+            {
+                <div class="form-group">
+                    @Html.LabelFor(model => model.AvailableCarOwners, htmlAttributes: new { @class = "control-label" })
+                    <div class="form-control-container full-width-select">
+                        @Html.TextBoxFor(model => model.CarOwnersId,
+                        new
+                        {
+                            id = "CarOwnerId",
+                            @class = "filter_dropdown form-control input",
+                            @name = "CarOwnerId",
+                            @style = "width: 90%!important;",
+                            data_source_url = Url.Action("GetExpeditorName", "Orders"),
+                            data_droplist_placeholder = "Выберите экспедитора",
+                            data_selected_text = Model.CarOwnersName
+                        })
+
+                        @Html.ValidationMessageFor(model => model.CarOwnersId, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+
+<div class="col-md-12">
+    <div class="row" style="margin-left:10px;">
+        <div class="col-md-6">
+            <div class="form-group" style="width: 100%!important;">
+                @Html.LabelFor(model => model.ContractRevision, htmlAttributes: new { @class = "control-label" })
+                <div class="form-control-container full-width-select" style="width: 100%!important;">
+                    @Html.TextAreaFor(model => model.ContractRevision, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.ContractRevision, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

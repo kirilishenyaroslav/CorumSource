@@ -1,0 +1,56 @@
+﻿@model Corum.Models.ViewModels.Admin.FAQAnswersViewModel
+@{
+    ViewBag.Title = "Изменить вопрос";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("UpdateFAQAnswer", "Admin", FormMethod.Post))
+{
+    <div class="form-horizontal">
+
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.Id)
+        @Html.HiddenFor(m => m.GroupeId)
+
+        <h4>Изменить частозадаваемый вопрос и ответ для группы &nbsp; "@Model.NameFAQGroup"</h4>
+        @Html.Partial("_partialFAQ")
+        <hr>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10 ">
+                <div class="row">
+                    @Html.ActionLink("Реестр вопросов", "FAQ", "Admin", new { GroupeId = Model.GroupeId }, new { @class = "btn btn-success" })
+                    <input type="submit" value="Изменить" class="btn btn-default" />
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            InitializeDateTimePickers();
+            InitFilterDropDowns();
+
+        });
+
+        tinymce.baseURL = "@Url.Content("~/Scripts/tinymce")";
+
+        tinymce.init({
+            selector: '.htmlEditor',
+            plugins: "image",
+            language: "ru",
+            height: "300"
+        });
+
+    </script>
+}
+
+
+
+
+

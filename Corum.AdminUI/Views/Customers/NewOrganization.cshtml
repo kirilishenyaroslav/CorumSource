@@ -1,0 +1,162 @@
+﻿@model Corum.Models.ViewModels.Customers.OrganizationViewModel
+
+@{
+    ViewBag.Title = "NewOrganization";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key= @Model.GoogleMapApiKey">
+</script>
+
+@using (Html.BeginForm("NewOrganization", "Customers", FormMethod.Post))
+{
+    <div class="form-horizontal">
+         <h4>Добавление новой организации</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+
+        @Html.Partial("_OrganizationDetails")
+        @Html.Partial("_OrganizationMap")
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Создать" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+@section scripts
+{
+    <script>
+        var geocoder;
+        var map;
+        var marker;
+        var orgLat = 0;
+        var orgLng = 0;
+        var addressVal = "";
+        var orgCountry, orgCity, orgAddress;
+        var dataChanged = false;
+
+        function initializeMap() {
+            addressVal = $("#s2id_CountryId").select2('data').text+", "+$('#City').val()+", "+$('#Address').val();
+            $('#map-address').val(addressVal);
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 8,
+                center: new google.maps.LatLng(orgLat, orgLng)
+            });
+            marker = new google.maps.Marker({
+                position: new google.maps.LatLng(orgLat, orgLng),
+                map: map
+            });
+            geocoder = new google.maps.Geocoder();
+            if((orgLng==0)||(orgLat==0)||(dataChanged==true)){
+                geocodeAddress(geocoder, map);
+                dataChanged == false;
+            }
+            document.getElementById('submit').addEventListener('click', function() {
+                geocodeAddress(geocoder, map);
+                dataChanged == false;
+            });
+        }
+
+        function geocodeAddress(geocoder, resultsMap) {
+            var address = document.getElementById('map-address').value;
+            geocoder.geocode({ 'address': address }, function (results, status) {
+                if (status === 'OK') {
+                    resultsMap.setCenter(results[0].geometry.location);
+                    marker.setMap(null);
+                    marker = new google.maps.Marker({
+                        map: resultsMap,
+                        position: results[0].geometry.location
+                    });
+                } else {
+                    alert('Не найдена точка на карте по указанному адресу: ' + status);
+                }
+            });
+        }
+
+        function ShowMap() {
+            $('#mapdialog')
+                .dialog(
+                {
+
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 790,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Карта",
+                    modal: true,
+                    open: function (event, ui) {
+
+                        initializeMap();
+                    },
+
+                    close: function (event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                [
+                {
+                    text: "Отмена",
+                    "class": 'cancel-btn btn btn-outline',
+                    click: function () {
+                        $(this).dialog("close");
+                    }
+                },
+                {
+                    text: "Сохранить координаты",
+                    "class": 'btn btn-primary',
+                    click: function () {
+                        var lat = marker.getPosition().lat();
+                        var lng = marker.getPosition().lng();
+
+                        $('#Latitude').val(lat);
+                        $('#Longitude').val(lng);
+
+                        $(this).dialog("close");
+
+                    }
+                }
+                ]
+                });
+
+            $('#mapdialog').dialog('open');
+
+            return;
+        }
+
+
+        $(document).ready(function () {
+            InitializeDateTimePickers();
+            InitFilterDropDowns();
+            document.querySelector('#CountryId').addEventListener('change', function () {
+            dataChanged = true;
+        });
+
+            document.querySelector('#City').addEventListener('change', function () {
+            dataChanged = true;
+        });
+
+            document.querySelector('#Address').addEventListener('change', function () {
+            dataChanged = true;
+        });
+        });
+
+    </script>
+}
+
+

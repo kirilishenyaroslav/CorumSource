@@ -1,0 +1,2173 @@
+﻿@model Corum.Models.ViewModels.Orders.OrderBaseViewModel
+@{
+    ViewBag.Title = "Изменить заявку";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<style>
+    .select2-container-multi .select2-choices {
+        height: 41px !important;
+    }
+
+        .select2-container-multi .select2-choices .select2-search-choice {
+            height: 33px !important;
+        }
+
+
+    #s2id_OrgId {
+        border: 2px solid #dce4ec;
+    }
+</style>
+
+<script async defer
+        src="https://maps.googleapis.com/maps/api/js?key= @Model.GoogleMapApiKey&sensor=false&libraries=geometry">
+
+</script>
+
+
+
+@Html.Partial("_OrdersSendNotificationDialog")
+@Html.Partial("_ReportDialog")
+@Html.Partial("_OrderMapDetails")
+
+<div class="container-fluid">
+    <div class="row ">
+        <div class="col-lg-12 main panel panel-info" style="margin-top:35px;">
+
+
+            @using (Html.BeginForm("UpdateOrder", "Orders", FormMethod.Post, new { @id = "updateOrderForm" }))
+            {
+                @Html.AntiForgeryToken()
+
+                @Html.HiddenFor(model => model.Id)
+                @Html.HiddenFor(model => model.CurrentOrderStatus)
+                @Html.HiddenFor(model => model.OrderType)
+                @Html.HiddenFor(model => model.UseNotifications)
+                @Html.HiddenFor(model => model.OrderDate)
+                @Html.HiddenFor(model => model.OrderDateRaw)
+                @Html.HiddenFor(model => model.StatusChangeComment)
+                @Html.HiddenFor(model => model.ObserversForNotification)
+
+                @Html.Hidden("ModelType", Model.GetType())
+
+                <div class="form-horizontal">
+
+                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+                    <div class="row">
+                        <div class="form-group" style="margin-left:20px; font-size:12px;">
+
+                            @if (Model.IsTransport)
+                {
+                                @Html.ActionLink("В реестр", "Orders", "Orders", null, new { @class = "btn btn-success col-md-1 col-sm-2 col-xs-4", @style = "margin-left:10px; margin-top:5px;" })
+                            }
+                            else
+                            {
+                                @Html.ActionLink("В реестр", "OrdersBase", "Orders", null, new { @class = "btn btn-success col-md-1 col-sm-2 col-xs-4", @style = "margin-left:10px; margin-top:5px;" })
+                            }
+
+                            @if ((Model.AllowClientData) || (Model.AllowExecuterData))
+                {
+                                <input type="submit" value="Сохранить" class="btn btn-default col-md-1 col-sm-2 col-xs-4" style="margin-left:10px;margin-top:5px;" />
+                            }
+
+                            @if (Model.IsTransport)
+                {
+                                @Html.ActionLink("В excel", "OrderAsExcel", "ExportToExcel", new { id = Model.Id }, new { @class = "delete_link btn btn-success col-md-1 col-sm-2 col-xs-4", @style = "margin-left:10px;margin-top:5px;" })
+                            }
+
+                            @Html.ActionLink("Тайм-лайн", "OrderStatuses", "Orders", new { OrderId = Model.Id }, new { @class = "delete_link btn btn-success col-md-1 col-sm-2 col-xs-4", @style = "margin-left:10px;margin-top:5px;" })
+
+                            <a style="margin-left:10px;margin-top:5px;" class="delete_link btn btn-success col-md-1 col-sm-2 col-xs-4" onclick="SendNotification(@Model.Id)">
+                                <span class="glyphicon glyphicon-send"></span>
+                                <span class="tooltip-message">Уведомление</span>
+
+                            </a>
+
+                            <a class="tarash-i update_link tooltips btn btn-success col-md-1 col-sm-2 col-xs-4" href="@Url.Action("OrderAttachments", "Orders", new { OrderId = Model.Id })" style="margin-left:10px;margin-top:5px;">
+                                <span class="tooltip200down-message">
+                                    @if (Model.observers != null)
+                                    {
+                                        if (@Model.attachments?.Count > 0)
+                                        {
+                                            @Html.Raw(string.Join("<br>", Model.attachments.Select(x => x.DocDescription).ToArray()))
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("Нет вложений")
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("Нет вложений")
+                                    }
+                                </span>
+                                Документы
+                            </a>
+
+                            <a class="tarash-i update_link tooltips btn btn-success col-md-1 col-sm-2 col-xs-4" href="@Url.Action("OrderObservers", "Orders", new {OrderId = Model.Id})" style="margin-left: 10px; margin-top: 5px;">
+                                <span class="tooltip200down-message">
+                                    @if (@Model.observers != null)
+                                    {
+                                        if (@Model.observers.Count > 0)
+                                        {
+                                            @Html.Raw(string.Join("<br>", Model.observers.Select(x => string.Concat(x.observerName)).ToArray()))
+                                        }
+                                        else
+                                        {
+                                            @Html.Raw("Нет обозревателей")
+                                        }
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw("Нет обозревателей")
+                                    }
+                                </span>
+                                Набл-ли
+                            </a>
+                            @if (@Model.AllowData)
+                            {
+                                @Html.ActionLink("Конкур. лист", "OrderCompetitiveList", "OrderConcurs", new { OrderId = Model.Id }, new { @class = "delete_link btn btn-success col-md-1 col-sm-2 col-xs-4", @style = "margin-left:10px;margin-top:5px;" })
+                            }
+
+                            @if (Model.IsTransport)
+                            {
+                                <div>
+                                    <input type="button" value="Карта" id="MapButton" class="btn btn-success col-md-1 col-sm-2 col-xs-4" style="margin: 5px 5px 5px 5px;" onclick="ShowMap()" /><br>
+                                </div>
+                            }
+
+                            @if ((@Model.AllowExecuterData) && (@Model.ProjectsCnt != 0))
+                            {
+                                if (@Model.ProjectsCnt == 1)
+                                {                                
+                                    <div class="dropdown" style="display: inline-block;">
+                                        <button class="btn btn-success col-md-1 col-sm-2 col-xs-4 dropdown-toggle" style="margin: -12px 5px 5px 5px; width: 100px;" type="button" id="dropdownReestr" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <span class="glyphicon" aria-hidden="true"></span>
+                                            Перейти
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownReestr" style="top: 80% !important; font-size: 12px;">                                            
+                                            <li>@Html.ActionLink("Реестр остатков", "RestReportProject", "Projects", new { Id = @Model.MultiProjectId, Code = @Model.ProjectNum }, null)</li>
+                                            <li>@Html.ActionLink("Сводная форма", "GroupRestProject", "Projects", new { Id = @Model.MultiProjectId, Code = @Model.ProjectNum }, null)</li>
+
+                                        </ul>
+                                    </div>
+                                }
+                                if (@Model.ProjectsCnt > 1)
+                                {
+                                    <div class="dropdown" style="display: inline-block;">
+                                        <button class="btn btn-success col-md-1 col-sm-2 col-xs-4 dropdown-toggle" style="margin: -12px 5px 5px 5px; width: 100px;" type="button" id="dropdownReestr" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                            <span class="glyphicon" aria-hidden="true"></span>
+                                            Перейти
+                                            <span class="caret"></span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownReestr" style="top: 80% !important; font-size: 12px;">
+                                            <li><a onclick="RestReport(@Model.Id, 0)" style="cursor: pointer;">
+                                                <span>Реестр остатков</span>
+                                            </a></li>
+                                            <li>
+                                                <a onclick="RestReport(@Model.Id, 1)" style="cursor: pointer;">
+                                                    <span>Сводная форма</span>
+                                                </a>
+                                            </li>                                          
+                                        </ul>
+                                    </div>
+
+
+                                }
+                            }
+
+                        </div>
+                    </div>
+                    <hr />
+                    <div class="row">
+                        <div @Html.Raw(((Model.nextAvialiableStatuses == null) || (Model.nextAvialiableStatuses?.Count() == 0)) ? "class='col-md-12'" : "class='col-md-7'")>
+                            <h2 class="centered_column">Изменить информацию о заявке</h2> <br>
+
+                            <div @Html.Raw(((Model.nextAvialiableStatuses == null) || (Model.nextAvialiableStatuses?.Count() == 0)) ? "class='col-md-12'" : "class='col-md-9'")>
+
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.Id</span>Номер заявки
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.OrderTypename</span>Тип
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.OrderDate</span>Дата создания
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.CurrentOrderStatusName</span>Текущий статус
+                                    </li>
+                                    <li class="list-group-item">
+                                        <span class="badge">@Model.CreatedByUserName</span>Cоздана специалистом
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-3">
+                                @if (Model.nextAvialiableStatuses != null)
+                                {
+                                    foreach (var status in Model.nextAvialiableStatuses)
+                                    {
+                                        <a class="tarash-i update_link tooltips btn btn-info" href="#" onclick="SaveWithStatus(@status.Id, @Model.Id)" style="margin-left:7px;margin-top:10px; margin-bottom:10px; display: inline-block; font-size:12px; min-width:170px;">
+                                            <span class="tooltip200-message">Будет переведена в <br>статус "@Html.Raw(@status.StatusName.ToLower())"</span>
+                                            @if (@status.ActionName.Length > 20)
+                                            {
+                                                @status.ActionName.Substring(0, 20) <span>...</span>
+                                            }
+                                            else
+                                            {
+                                                @status.ActionName
+                                            }
+                                        </a>
+                                    }
+                                }
+                            </div>
+                        </div>
+                        <div @Html.Raw(((Model.nextAvialiableStatuses == null) || (Model.nextAvialiableStatuses?.Count() == 0)) ? "class=''" : "class='col-md-5'")>
+                            @if ((Model.nextAvialiableStatuses != null) || (Model.nextAvialiableStatuses?.Count() != 0))
+                            {
+                                <div id="PipelineStepsNetwork" style="height: 300px !important;">
+
+                                </div>
+                            }
+                        </div>                      
+                    </div>
+
+                    <hr />
+                    @Html.Partial("_OrderDetails")
+                    @Html.Partial("_UpdateOrderNotification")
+
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+
+        function InitRoutes() {
+            var orgFilter;
+            if ((@Model.OrderType === 4) || (@Model.OrderType === 5) || (@Model.OrderType === 7)) {
+                orgFilter = {
+                    NameFrom: $("#Shipper").val(),
+                    NameTo: $("#Consignee").val(),
+                    CountryFrom: $("#ShipperCountryId").attr("data-selected-text"),
+                    CountryTo: $("#ConsigneeCountryId").attr("data-selected-text")
+                }
+            } else {
+                orgFilter = {
+                    NameFrom: $("#OrgFrom").val(),
+                    NameTo: $("#OrgTo").val(),
+                    CountryFrom: $("#CountryFrom").attr("data-selected-text"),
+                    CountryTo: $("#CountryTo").attr("data-selected-text")
+                }
+            };
+
+            if ((@Model.OrderType === 4) || (@Model.OrderType === 5) || (@Model.OrderType === 7)) {
+                var _OrgFromId = $("#ShipperId").val();
+                var _OrgToId = $("#ConsigneeId").val();
+            } else {
+                var _OrgFromId = $("#OrgFromId").val();
+                var _OrgToId = $("#OrgFromId").val();
+
+            }
+
+
+        //  InitializeRoutes(orgFilter);
+        InitializeRoutesOrg(_OrgFromId, _OrgToId);
+    };
+
+
+        var geocoder;
+        var map;
+        var directionsDisplay;
+
+        var points = @Html.Raw(Json.Encode(Model.MapPoints));
+
+        var locations = [];
+        for (var i = 0; i < points.length; i++) {
+            locations.push([points[i].NamePoint, parseFloat(points[i].Latitude, 6).toFixed(6), parseFloat(points[i].Longitude).toFixed(6), points[i].NumberPoint]);
+        }
+
+
+        function initializeMap() {
+            var directionsService = new google.maps.DirectionsService();
+            directionsDisplay = new google.maps.DirectionsRenderer();
+
+            var map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 10,
+                center: new google.maps.LatLng(50.4501, 30.5234),
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            });
+            directionsDisplay.setMap(map);
+            var infowindow = new google.maps.InfoWindow();
+
+            var marker, i;
+            var request = {
+                travelMode: google.maps.TravelMode.DRIVING,
+                optimizeWaypoints: true,
+                unitSystem: google.maps.UnitSystem.METRIC,
+                avoidHighways: false,
+                avoidTolls: false
+            };
+            for (i = 0; i < locations.length; i++) {
+                marker = new google.maps.Marker({
+                    position: new google.maps.LatLng(locations[i][1], locations[i][2]),
+                });
+                google.maps.event.addListener(marker, 'click', (function(marker, i) {
+                    return function() {
+                        infowindow.setContent(locations[i][0]);
+                        infowindow.open(map, marker);
+                    }
+                })(marker, i));
+
+                if (i == 0) request.origin = marker.getPosition();
+                else if (i == locations.length - 1) request.destination = marker.getPosition();
+                else {
+                    if (!request.waypoints) request.waypoints = [];
+                    request.waypoints.push({
+                        location: marker.getPosition(),
+                        stopover: true
+                    });
+                }
+
+            }
+
+
+            var total_distance = 0.0;
+            directionsService.route(request, function(result, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    directionsDisplay.setDirections(result);
+
+                    result.routes[0].legs.forEach(function(item, index) {
+                        if (index < result.routes[0].legs.length) {
+
+                            var dist = item.distance.text.replace(",", ".").replace(/\s/g, '');
+                            total_distance +=
+                                parseFloat(dist.match(/-?(?:\d+(?:\.\d*)?|\.\d+)/)[0]);
+                        }
+                    });
+                    if (@Json.Encode(@Model.IsLatLngAbsent) == false) {
+                        document.getElementById('mapdistance').innerHTML = 'Расстояние: ' + total_distance + ' км';
+                    }
+                } else
+                    document.getElementById('mapdistance').innerHTML = '<span style="color: red;">Не удалось вычислить расстояние!</span>';
+            });
+
+        }
+
+        function ShowMap() {
+            $('#mapdialog')
+                .dialog(
+                {
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 790,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Маршрут следования",
+                    modal: true,
+                    open: function(event, ui) {
+                        if (@Json.Encode(@Model.IsLatLngAbsent) == true) {
+
+                            $("#msgPoints").show();
+                            document.getElementById('mapdistance').innerHTML =
+                                "Расстояние: " + '<span style="color: red;">невозможно посчитать из-за отсутствия координат!</span>';
+                        }
+                        initializeMap();
+                    },
+
+                    close: function(event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function(event, ui) {
+
+                    },
+                    beforeClose: function(event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    }
+                });
+
+            $('#mapdialog').dialog('open');
+
+            return;
+        }
+
+
+        function SelectRouteDialog() {
+            $('#addroutesdialog')
+                .dialog(
+                {
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 1000,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Выбор маршрута",
+                    modal: true,
+                    open: function(event, ui) {
+                    },
+
+                    close: function(event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function(event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function(event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function() {
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Выбрать",
+                            "class": 'btn btn-primary',
+                            click: function() {
+
+                                var getselectedrowindexes = $('#jqxgridRoutes').jqxGrid('getselectedrowindexes');
+
+                                if (getselectedrowindexes.length > 0) {
+                                    getselectedrowindexes.forEach(function(item, i, getselectedrowindexes) {
+
+                                        var selectedRowData = $('#jqxgridRoutes').jqxGrid('getrowdata', getselectedrowindexes[i]);
+
+                                        var _Id = selectedRowData.Id;
+                                        var _OrgFromName = selectedRowData.OrgFromName;
+                                        var _OrgFromCountry = selectedRowData.OrgFromCountry;
+                                        var _OrgFromCity = selectedRowData.OrgFromCity;
+                                        var _OrgFromAddress = selectedRowData.OrgFromAddress;
+                                        var _OrgToName = selectedRowData.OrgToName;
+                                        var _OrgToCountry = selectedRowData.OrgToCountry;
+                                        var _OrgToCity = selectedRowData.OrgToCity;
+                                        var _OrgToAddress = selectedRowData.OrgToAddress;
+                                        var _RouteDistance = selectedRowData.RouteDistance;
+                                        var _RouteTime = selectedRowData.RouteTime;
+
+                                        $('#RouteId').val(_Id);
+                                        $('#RouteInfo').text(_OrgFromCountry + " , " + _OrgFromCity + "/ " + _OrgToCountry + " , " + _OrgToCity + " расстояние " + _RouteDistance + ", время " + _RouteTime);
+                                        $('#TotalDistanceLenght').val(_RouteDistance);
+                                        $('#TimeRoute').val(_RouteTime);
+                                    });
+                                }
+                                $(this).dialog("close");
+
+                            }
+                        }
+                    ]
+                });
+
+            $('#addroutesdialog').dialog('open');
+
+            return;
+        }
+
+        function SelectRoute() {
+            $('#RouteInfo').text("Идет поиск маршрутов..");
+
+            var orgFilter;
+            if ((@Model.OrderType === 4) || (@Model.OrderType === 5) || (@Model.OrderType === 7)) {
+
+                var _OrgFromId = $("#ShipperId").val();
+                var _OrgToId = $("#ConsigneeId").val();
+
+                orgFilter = {
+                    NameFrom: $("#Shipper").val(),
+                    NameTo: $("#Consignee").val(),
+                    CountryFrom: $("#ShipperCountryId").attr("data-selected-text"),
+                    CountryTo: $("#ConsigneeCountryId").attr("data-selected-text")
+                }
+            } else {
+
+                var _OrgFromId = $("#OrgFromId").val();
+                var _OrgToId = $("#OrgToId").val();
+
+                orgFilter = {
+                    NameFrom: $("#OrgFrom").val(),
+                    NameTo: $("#OrgTo").val(),
+                    CountryFrom: $("#CountryFrom").attr("data-selected-text"),
+                    CountryTo: $("#CountryTo").attr("data-selected-text")
+                }
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetRoutesByFilterCount", "Customers")',
+                data: {
+                    OrgFromId: _OrgFromId,
+                    OrgToId: _OrgToId
+                    /*OrgFrom: orgFilter.NameFrom,
+                    OrgTo: orgFilter.NameTo,
+                    CountryFrom: orgFilter.CountryFrom,
+                    CountryTo: orgFilter.CountryTo*/
+                },
+                contentType: 'application/json; charset=utf-8',
+                success: function(result) {
+
+                    var countRoutes = result.length;
+                    if (countRoutes == 1) {
+                        var _Id = result[0].Id;
+                        var _OrgFromName = result[0].OrgFromName;
+                        var _OrgFromCountry = result[0].OrgFromCountry;
+                        var _OrgFromCity = result[0].OrgFromCity;
+                        var _OrgFromAddress = result[0].OrgFromAddress;
+                        var _OrgToName = result[0].OrgToName;
+                        var _OrgToCountry = result[0].OrgToCountry;
+                        var _OrgToCity = result[0].OrgToCity;
+                        var _OrgToAddress = result[0].OrgToAddress;
+                        var _RouteDistance = result[0].RouteDistance;
+                        var _RouteTime = result[0].RouteTime;
+
+                        $('#RouteId').val(_Id);
+                        $('#RouteInfo').text(_OrgFromCountry + " , " + _OrgFromCity + "/ " + _OrgToCountry + " , " + _OrgToCity + " расстояние " + _RouteDistance + ", время " + _RouteTime);
+                        $('#TotalDistanceLenght').val(_RouteDistance);
+                        $('#TimeRoute').val(_RouteTime);
+                    } else {
+                        SelectRouteDialog();
+                    };
+                }
+            });
+        }
+
+
+        function SelectRoute2() {
+            $('#RouteInfo').text("Идет поиск маршрутов..");
+
+            var orgFilter;
+            if ((@Model.OrderType === 4) || (@Model.OrderType === 5) || (@Model.OrderType === 7)) {
+
+                var _OrgFromId = $("#ShipperId").val();
+                var _OrgToId = $("#ConsigneeId").val();
+
+                orgFilter = {
+                    NameFrom: $("#Shipper").val(),
+                    NameTo: $("#Consignee").val(),
+                    CountryFrom: $("#ShipperCountryId").attr("data-selected-text"),
+                    CountryTo: $("#ConsigneeCountryId").attr("data-selected-text")
+                }
+            } else {
+
+                var _OrgFromId = $("#OrgFromId").val();
+                var _OrgToId = $("#OrgToId").val();
+
+                orgFilter = {
+                    NameFrom: $("#OrgFrom").val(),
+                    NameTo: $("#OrgTo").val(),
+                    CountryFrom: $("#CountryFrom").attr("data-selected-text"),
+                    CountryTo: $("#CountryTo").attr("data-selected-text")
+                }
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetRoutesByFilterCount", "Customers")',
+                data: {
+                    OrgFromId: _OrgFromId,
+                    OrgToId: _OrgToId
+                },
+                contentType: 'application/json; charset=utf-8',
+                success: function(result) {
+
+                    var countRoutes = result.length;
+                    if (countRoutes == 1) {
+                        var _Id = result[0].Id;
+                        var _OrgFromName = result[0].OrgFromName;
+                        var _OrgFromCountry = result[0].OrgFromCountry;
+                        var _OrgFromCity = result[0].OrgFromCity;
+                        var _OrgFromAddress = result[0].OrgFromAddress;
+                        var _OrgToName = result[0].OrgToName;
+                        var _OrgToCountry = result[0].OrgToCountry;
+                        var _OrgToCity = result[0].OrgToCity;
+                        var _OrgToAddress = result[0].OrgToAddress;
+                        var _RouteDistance = result[0].RouteDistance;
+                        var _RouteTime = result[0].RouteTime;
+
+                        $('#RouteId').val(_Id);
+                        $('#RouteInfo').text(_OrgFromCountry + " , " + _OrgFromCity + "/ " + _OrgToCountry + " , " + _OrgToCity + " расстояние " + _RouteDistance + ", время " + _RouteTime);
+                        $('#TotalDistanceLenght').val(_RouteDistance);
+                        $('#TimeRoute').val(_RouteTime);
+                    }
+                }
+            });
+        }
+
+        function CleanRoute() {
+            $('#RouteId').val(0);
+            $('#RouteInfo').text("Необходимо привязать маршрут");
+        }
+
+
+        function NewAddRoutePoint(_OrderId, _IsLoading) {
+            if (_IsLoading == true) {
+                var gridName = "#jqxgridPointLoad"
+            } else {
+                var gridName = "#jqxgridPointUnLoad"
+            }
+
+            var getselectedrowindexes = $(gridName).jqxDataTable('getSelection')
+            $('#Organizations')
+                .dialog(
+                {
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 610,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Выбор организации",
+                    modal: true,
+                    open: function(event, ui) {
+
+                    },
+                    close: function(event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function(event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function(event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function() {
+
+                                $(this).dialog("close");
+
+                            }
+                        },
+                        {
+                            text: "Выбрать",
+                            "class": 'btn btn-primary',
+                            click: function() {
+                                var getselectedrowindexes = $('#jqxgridOrganization').jqxGrid('getselectedrowindexes');
+                                if (getselectedrowindexes.length > 0) {
+                                    var selectedRowData = $('#jqxgridOrganization').jqxGrid('getrowdata', getselectedrowindexes[0]);
+
+                                    var obj = {
+                                        _Id: selectedRowData.Id,
+                                        _Name: selectedRowData.Name,
+                                        _Country: selectedRowData.Country,
+                                        _CountryId: selectedRowData.CountryId,
+                                        _City: selectedRowData.City,
+                                        _Address: selectedRowData.Address
+                                    }
+
+                                    $.post('@Url.Action("NewRoutePoint", "Orders")',
+                                        {
+                                            IsLoading: _IsLoading,
+                                            RoutePointId: obj._Id,
+                                            NamePoint: obj._Name,
+                                            CountryPoint: obj._Country,
+                                            CityPoint: obj._City,
+                                            AddressPoint: obj._Address,
+                                            OrderId: _OrderId,
+                                            IsSaved: false,
+                                            ContactPerson: "",
+                                            ContactPersonPhone: "",
+                                            NumberPoint: 1
+                                        },
+                                        function(data) {
+                                            $(gridName).jqxDataTable('updateBoundData');
+                                            unsaved = true;
+                                        });
+                                }
+
+                                $(this).dialog("close");
+
+                            }
+                        }
+                    ]
+                });
+
+            $('#Organizations').dialog('open');
+
+            return;
+        }
+
+        function UpdateAddRoutePoint(_IsLoading) {
+
+            if (_IsLoading == true) {
+                var gridName = "#jqxgridPointLoad"
+            } else {
+                var gridName = "#jqxgridPointUnLoad"
+            }
+
+            var getselectedrowindexes = $(gridName).jqxDataTable('getSelection')
+
+            $("#AddRoutePointId").val(getselectedrowindexes[0].Id);
+
+            $('#routePointsInfoDialog')
+                .dialog(
+                {
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 550,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: _IsLoading ? "Изменить информацию о точке загрузки" : "Изменить информацию о точке выгрузки",
+                    modal: true,
+                    open: function(event, ui) {
+                        $("#ContactPerson").val(getselectedrowindexes[0].ContactPerson);
+                        $("#ContactPersonPhone").val(getselectedrowindexes[0].ContactPersonPhone);
+                        $("#NumberPoint").val(getselectedrowindexes[0].NumberPoint);
+                    },
+                    close: function(event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function(event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function(event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function() {
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Сохранить",
+                            "class": 'btn btn-primary',
+                            click: function() {
+                                var _ContactPerson = $('#ContactPerson').val();
+                                var _ContactPersonPhone = $('#ContactPersonPhone').val();
+                                var _NumberPoint = $('#NumberPoint').val();
+                                $.post('@Url.Action("UpdateRoutePoint", "Orders")',
+                                    {
+                                        Id: $("#AddRoutePointId").val(),
+                                        IsLoading: _IsLoading,
+                                        IsSaved: getselectedrowindexes[0].IsSaved,
+                                        ContactPerson: _ContactPerson,
+                                        ContactPersonPhone: _ContactPersonPhone,
+                                        NumberPoint: _NumberPoint
+                                    },
+                                    function(data) {
+                                        $(gridName).jqxDataTable('updateBoundData');
+                                    });
+
+
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+            $('#routePointsInfoDialog').dialog('open');
+
+
+            return;
+        }
+
+        function DeleteAddRoutePoint(_IsLoading) {
+            if (_IsLoading == true) {
+                var gridName = "#jqxgridPointLoad";
+                var messageDel = "Вы хотите удалить точку загрузки?";
+            } else {
+                var gridName = "#jqxgridPointUnLoad";
+                var messageDel = "Вы хотите удалить точку выгрузки?";
+            }
+
+            var getselectedrowindexes = $(gridName).jqxDataTable('getSelection');
+
+            if (getselectedrowindexes.length > 0) {
+                $("#AddRoutePointId").val(getselectedrowindexes[0].Id);
+
+                bootbox.confirm(messageDel, function(result) {
+                    if (result) {
+                        $.post('@Url.Action("RemoveRoutePoint", "Orders")',
+                            {
+                                Id: $("#AddRoutePointId").val(),
+                                IsLoading: _IsLoading,
+                                IsSaved: getselectedrowindexes[0].IsSaved
+                            },
+                            function(data) {
+                                $(gridName).jqxDataTable('updateBoundData');
+
+                                if (_IsLoading == "true") {
+                                    $("#DeleteRoutePointLoadButton").addClass("disabled");
+                                    $("#DeleteRoutePointLoadButton").removeClass("btn-default");
+                                } else {
+                                    $("#DeleteRoutePointUnLoadButton").addClass("disabled");
+                                    $("#DeleteRoutePointUnLoadButton").removeClass("btn-default");
+                                }
+
+                            });
+                    }
+                });
+
+
+            }
+        }
+
+        function SendNotification(orderId) {
+            $("#ReceiverId").attr("data-source-url", '@Url.Action("GetReceivers", "Orders")' + '?Id=' + orderId);
+
+            $('#sendnotificationdialog')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Параметры уведомления об утверждении заявки",
+                    modal: true,
+                    open: function(event, ui) {
+                        InitFilterDropDowns();
+                    },
+                    close: function(event, ui) {
+                        $(this).dialog('destroy');
+                    },
+                    create: function(event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function(event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function() {
+
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Отправить",
+                            "class": 'btn btn-primary',
+                            click: function() {
+
+                                var ReceiverId = $('#ReceiverId').val();
+                                var MessageText = $('#MessageText').val();
+
+                                $.post('@Url.Action("SendNotification", "Orders")',
+                                    {
+                                        ReceiverId: ReceiverId,
+                                        OrderId: orderId,
+                                        MessageText: MessageText
+                                    },
+                                    function(data) {
+                                        alert('Уведомление отправлено');
+                                    });
+
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+
+            $('#sendnotificationdialog').dialog('open');
+
+            return;
+        }
+
+
+        function SaveWithStatus(newStatusId, OrderId) {
+            $('#CurrentOrderStatus').val(newStatusId);
+
+
+            $('#ordernotificationdialog')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Уведомления",
+                    modal: true,
+                    open: function(event, ui) {
+                        InitFilterDropDowns();
+                    },
+                    close: function(event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function(event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function(event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function() {
+
+                                $(this).dialog("close");
+                                $(this).dialog('destroy');
+                            }
+                        },
+                        {
+                            text: "Ок",
+                            "class": 'btn btn-primary',
+                            click: function(result) {
+
+                                $('#ObserversForNotification').val(
+                                    $(".observersforupdate").map(function() {
+                                        if ($(this).prop("checked"))
+                                            return $(this).val();
+                                    }).get());
+
+
+                                $('#StatusChangeComment').val($('#StatusChangeCommentRaw').val());
+
+                                $("#updateOrderForm").submit();
+                            }
+                        }
+                    ]
+                });
+
+            $('#ordernotificationdialog').dialog('open');
+            return;
+        }
+
+        function ShowUsedCarDialog(_OrderId, IsEditing, _IsTruck) {
+
+            var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
+
+            if ((getselectedrowindexes.length == 0) && (IsEditing == true)) {
+
+                return false;
+            }
+
+            $('#usedcarinfodialog')
+                .dialog(
+                {
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 800,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: IsEditing ? "Изменить информацию об автомобиле" : "Новый автомобиль для заявки",
+                    modal: true,
+                    open: function(event, ui) {
+                        var PayerInfo = $('#PayerId').attr("data-selected-text");
+                        var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
+                        $("#PayerInfo").val(PayerInfo);
+                        if ((getselectedrowindexes.length > 0) && (IsEditing == true)) {
+                            $("#UsedCarId").val(getselectedrowindexes[0].Id);
+
+                            $('#ContractExpBkInfo').val(getselectedrowindexes[0].ContractExpBkId);
+                            $("#ContractExpBkInfo").attr("data-selected-text", getselectedrowindexes[0].ContractExpBkInfo);
+
+                            $('#ExpeditorId').val(getselectedrowindexes[0].ExpeditorId);
+                            $("#ExpeditorId").attr("data-selected-text", getselectedrowindexes[0].ExpeditorName);
+
+                            InitFilterDropDowns();
+
+                            var ExpeditorId = $('#ExpeditorId').val();
+                            var PayerId = $('#PayerId').val();
+
+                            $("#ContractExpBkInfo")
+                                .each(function() {
+                                    InitCascade1DropDown(this,
+                                        $(this).attr('data-source-url'),
+                                        ExpeditorId,
+                                        PayerId,
+                                        $(this).attr('data-droplist-placeholder'));
+                                });
+
+                            $('#ContractInfo').val(getselectedrowindexes[0].ContractInfo);
+                            $('#CarOwnerInfo').val(getselectedrowindexes[0].CarOwnerInfo);
+                            $('#CarModelInfo').val(getselectedrowindexes[0].CarModelInfo);
+                            $('#CarRegNum').val(getselectedrowindexes[0].CarRegNum);
+                            if (_IsTruck == true)
+                                $('#CarCapacity').val(getselectedrowindexes[0].CarCapacity);
+                            $('#CarDriverInfo').val(getselectedrowindexes[0].CarDriverInfo);
+                            $('#DriverContactInfo').val(getselectedrowindexes[0].DriverContactInfo);
+                            $('#CarrierInfo').val(getselectedrowindexes[0].CarrierInfo);
+                            $('#DriverCardInfo').val(getselectedrowindexes[0].DriverCardInfo);
+                            $('#Comments').val(getselectedrowindexes[0].Comments);
+                          //  $('#FactShipperDate').val(getselectedrowindexes[0].FactShipperDate);
+                          //  $('#FactShipperTime').val(getselectedrowindexes[0].FactShipperTime);
+                          //  $('#FactConsigneeDate').val(getselectedrowindexes[0].FactConsigneeDate);
+                         //   $('#FactConsigneeTime').val(getselectedrowindexes[0].FactConsigneeTime);
+
+                        } else {
+                            $('#ContractInfo').val('');
+                            $("#ContractExpBkInfo").select2("val", "");
+                            $('#ExpeditorId').select2("val", "");
+                            $('#CarOwnerInfo').val('');
+                            $('#CarModelInfo').val('');
+                            $('#CarRegNum').val('');
+                            if (_IsTruck == true)
+                                $('#CarCapacity').val('');
+                            $('#CarDriverInfo').val('');
+                            $('#DriverContactInfo').val('');
+                            $('#CarrierInfo').val('');
+                            $('#DriverCardInfo').val('');
+                            $('#Comments').val('');
+
+                            //var currDateNew = DateTime.Now.ToString("dd.MM.yyyy");
+                         //   $('#FactShipperDate').val('');
+                         //   $('#FactShipperTime').val('00:00:00');
+                         //   $('#FactConsigneeDate').val('');
+                          //  $('#FactConsigneeTime').val('00:00:00');
+
+                            $("#divContractExpBkInfo").hide();
+
+                        }
+                        $("#ExpeditorId").change(function() {
+                            var ExpeditorId = $('#ExpeditorId').val();
+                            var PayerId = $('#PayerId').val();
+                            $("#ContractExpBkInfo").select2("val", "");
+
+                            $("#ContractExpBkInfo")
+                                .each(function() {
+                                    InitCascade1DropDown(this,
+                                        $(this).attr('data-source-url'),
+                                        ExpeditorId,
+                                        PayerId,
+                                        $(this).attr('data-droplist-placeholder'));
+                                });
+
+                            $("#divContractExpBkInfo").show();
+                            return false;
+                        });
+
+                        if (_IsTruck == true)
+                            $('#divCarCapacity').show();
+                        else
+                            $('#divCarCapacity').hide();
+
+                    },
+                    close: function(event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function(event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function(event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function() {
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: IsEditing ? "Сохранить" : "Добавить",
+                            "class": 'btn btn-primary',
+                            click: function() {
+
+                                if (($('#ContractExpBkInfo').val() == '')
+                                        || ($('#ExpeditorId').val() == '')
+                                        || ($('#CarOwnerInfo').val() == '')
+                                ) {
+                                    alert("Не заполненены все необходимые данные!")
+                                } else {
+                                    var _ContractInfo = $('#ContractInfo').val();
+                                    var _ContractExpBkId = $('#ContractExpBkInfo').val();
+                                    var _ExpeditorId = $('#ExpeditorId').val();
+                                    var _CarOwnerInfo = $('#CarOwnerInfo').val();
+                                    var _CarModelInfo = $('#CarModelInfo').val();
+                                    var _CarRegNum = $('#CarRegNum').val();
+                                    var _CarCapacity = null;
+                                    if (_IsTruck == true)
+                                        _CarCapacity = $('#CarCapacity').val();
+                                    var _CarDriverInfo = $('#CarDriverInfo').val();
+                                    var _DriverContactInfo = $('#DriverContactInfo').val();
+                                    var _CarrierInfo = $('#CarrierInfo').val();
+                                    var _DriverCardInfo = $('#DriverCardInfo').val();
+                                    var _Comments = $('#Comments').val();
+
+                                  //  var _FactShipperDate = $('#FactShipperDate').val();
+                                  //  var _FactShipperTime = $('#FactShipperTime').val();
+                                  //  var _FactConsigneeDate = $('#FactConsigneeDate').val();
+                                   // var _FactConsigneeTime = $('#FactConsigneeTime').val();
+
+                                    var _Summ = 0;
+
+
+                                    if (IsEditing) {
+
+                                        var _CarId = $("#UsedCarId").val();
+
+
+                                        $.post('@Url.Action("UpdateUsedCar", "Orders")',
+                                        {
+                                            Id: _CarId,
+                                            OrderId: _OrderId,
+                                            ContractInfo: _ContractInfo,
+                                            ContractExpBkId: _ContractExpBkId,
+                                            ExpeditorId: _ExpeditorId,
+                                            CarOwnerInfo: _CarOwnerInfo,
+                                            CarModelInfo: _CarModelInfo,
+                                            CarRegNum: _CarRegNum,
+                                            CarCapacity: _CarCapacity,
+                                            CarDriverInfo: _CarDriverInfo,
+                                            DriverContactInfo: _DriverContactInfo,
+                                            CarrierInfo: _CarrierInfo,
+                                            DriverCardInfo: _DriverCardInfo,
+                                            Comments: _Comments,
+                                           // FactShipperDate: _FactShipperDate,
+                                          //  FactShipperTime: _FactShipperTime,
+                                          //  FactConsigneeDate: _FactConsigneeDate,
+                                          //  FactConsigneeTime: _FactConsigneeTime,
+                                                Summ: _Summ
+                                            },
+                                            function(data) {
+                                                $("#jqxgridUC").jqxDataTable('updateBoundData');
+                                            });
+                                    } else {
+                                        $.post('@Url.Action("NewUsedCar", "Orders")',
+                                            {
+                                                OrderId: _OrderId,
+                                                ContractInfo: _ContractInfo,
+                                                ContractExpBkId: _ContractExpBkId,
+                                                ExpeditorId: _ExpeditorId,
+                                                CarOwnerInfo: _CarOwnerInfo,
+                                                CarModelInfo: _CarModelInfo,
+                                                CarRegNum: _CarRegNum,
+                                                CarCapacity: _CarCapacity,
+                                                CarDriverInfo: _CarDriverInfo,
+                                                DriverContactInfo: _DriverContactInfo,
+                                                CarrierInfo: _CarrierInfo,
+                                                DriverCardInfo: _DriverCardInfo,
+                                                Comments: _Comments,
+                                             //   FactShipperDate: _FactShipperDate,
+                                             //   FactShipperTime: _FactShipperTime,
+                                             //   FactConsigneeDate: _FactConsigneeDate,
+                                            //    FactConsigneeTime: _FactConsigneeTime,
+                                                Summ: _Summ
+                                            },
+                                            function(data) {
+                                                $("#jqxgridUC").jqxDataTable('updateBoundData');
+                                            });
+                                    }
+
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }
+                    ]
+                });
+
+            $('#usedcarinfodialog').dialog('open');
+
+            return;
+        }
+
+        function FitFields() {
+            var CommentStr = document.querySelector("#Comments").value;
+            var CommentArray = CommentStr.split("#");
+            for (i = 0; i < CommentArray.length; i++) {
+                var strStart = CommentArray[i].substring(0, 2);
+                var strLength = CommentArray[i].length;
+                var strMain = CommentArray[i].substring(2, strLength - 2)
+                switch (strStart) {
+                case "П=":
+                    $('#CarrierInfo').val(strMain);
+                    break;
+                case "М=":
+                    $('#CarModelInfo').val(strMain);
+                    break;
+                case "Н=":
+                    $('#CarRegNum').val(strMain);
+                    break;
+                case "Г=":
+                    $('#CarCapacity').val(strMain);
+                    break;
+                case "Ф=":
+                    $('#CarDriverInfo').val(strMain);
+                    break;
+                case "Д=":
+                    $('#DriverCardInfo').val(strMain);
+                    break;
+                case "Х=":
+                    $('#DriverContactInfo').val(strMain);
+                    break;
+                }
+            }
+        };
+
+        var TimeFromMinToHours = function(minutesIn) {
+            if (minutesIn == null) {
+                minutesIn = 0;
+            }
+            if (minutesIn >= 60) {
+                var hours = Math.floor(minutesIn / 60);
+                var minutes = minutesIn - hours * 60;
+                if (minutes < 9) {
+                    minutes = '0' + minutes;
+                }
+                var timeDuration = hours + ':' + minutes;
+            } else {
+                if (minutesIn < 9) {
+                    minutesIn = '0' + minutesIn;
+                }
+                var timeDuration = '00:' + minutesIn;
+            }
+            return timeDuration;
+        };
+
+        var TimeFromHoursToMinutes = function(timeDurationStr) {
+            var res = timeDurationStr.split(":");
+            var hours = parseInt(res[0]);
+            var minutes = parseInt(res[1]);
+            var minutesDuration = hours * 60 + minutes;
+            return minutesDuration;
+        }
+
+        function ConvertFloatStr(valueIn) {
+            var valueOut = parseFloat(valueIn).toFixed(2);;
+            valueOut = valueOut.toString();
+            valueOut = valueOut.replace(".", ",");
+            return valueOut;
+        }
+
+        function calculTotalSum(PlanDistanceIn, BaseRateIn) {
+            PlanDistanceIn = PlanDistanceIn.replace(",", ".");
+            BaseRateIn = BaseRateIn.replace(",", ".");
+
+            var TotalSumOut = PlanDistanceIn * BaseRateIn;
+            TotalSumOut = ConvertFloatStr(TotalSumOut);
+
+            return TotalSumOut;
+        };
+
+        function calculTotalSumDay(PlanTimeDayIn, BaseRateDayIn) {
+            PlanTimeDayIn = PlanTimeDayIn.replace(",", ".");
+            BaseRateDayIn = BaseRateDayIn.replace(",", ".");
+
+            var hoursFraction = TimeFromHoursToMinutes(PlanTimeDayIn) / 60;
+            var TotalSumDayOut = hoursFraction * BaseRateDayIn;
+            TotalSumDayOut = ConvertFloatStr(TotalSumDayOut);
+
+            return TotalSumDayOut;
+        };
+
+        function calculTotalSumNds(TotalSumIn, TotalSumWorkDayIn, TotalSumHolidayIn) {
+            TotalSumIn = TotalSumIn.replace(",", ".");
+            TotalSumWorkDayIn = TotalSumWorkDayIn.replace(",", ".");
+            TotalSumHolidayIn = TotalSumHolidayIn.replace(",", ".");
+
+            var TotalSumNdsOut = (parseFloat(TotalSumIn) + parseFloat(TotalSumWorkDayIn) + parseFloat(TotalSumHolidayIn)) * 1.2;
+            TotalSumNdsOut = ConvertFloatStr(TotalSumNdsOut);
+
+            return TotalSumNdsOut;
+        };
+
+        function ShowUsedCarAddDialog(_OrderId) {
+            var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
+
+            if ((getselectedrowindexes.length == 0)) {
+
+                return false;
+            }
+
+            $('#usedcarinfoadditionaldialog')
+                .dialog(
+                {
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Дополнительная информация о автомобиле",
+                    modal: true,
+                    open: function(event, ui) {
+
+                        var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
+
+                        if (getselectedrowindexes.length > 0) {
+                            $("#UsedCarId").val(getselectedrowindexes[0].Id);
+                            var UsedCarId = $("#UsedCarId").val();
+
+                            $.ajax({
+                                type: 'GET',
+                                url: '@Url.Action("GetUsedCarInfo", "Orders")',
+                                data: {
+                                    Id: UsedCarId
+                                },
+                                contentType: 'application/json; charset=utf-8',
+                                success: function(CarInfoAdd) {
+
+                                    if (CarInfoAdd.PlanDistance == 0) {
+                                        $('#PlanDistance').val('0,00');
+                                    } else {
+                                        $('#PlanDistance').val(CarInfoAdd.PlanDistance);
+                                    }
+
+                                    var PlanTimeWorkDay = TimeFromMinToHours(CarInfoAdd.PlanTimeWorkDay);
+                                    var PlanTimeHoliday = TimeFromMinToHours(CarInfoAdd.PlanTimeHoliday);
+                                    $('#PlanTimeWorkDay').val(PlanTimeWorkDay);
+                                    $('#PlanTimeHoliday').val(PlanTimeHoliday);
+
+                                    if (CarInfoAdd.BaseRate == 0) {
+                                        $('#BaseRate').val('0,00');
+                                    } else {
+                                        $('#BaseRate').val(CarInfoAdd.BaseRate);
+                                    }
+                                    if (CarInfoAdd.BaseRateWorkDay == 0) {
+                                        $('#BaseRateWorkDay').val('0,00');
+                                    } else {
+                                        $('#BaseRateWorkDay').val(CarInfoAdd.BaseRateWorkDay);
+                                    }
+                                    if (CarInfoAdd.BaseRateHoliday == 0) {
+                                        $('#BaseRateHoliday').val('0,00');
+                                    } else {
+                                        $('#BaseRateHoliday').val(CarInfoAdd.BaseRateHoliday);
+                                    }
+
+                                    $('#DelayDays').val(CarInfoAdd.DelayDays);
+
+                                    var _PlanDistance = $('#PlanDistance');
+                                    var _PlanTimeWorkDay = $('#PlanTimeWorkDay');
+                                    var _PlanTimeHoliday = $('#PlanTimeHoliday');
+                                    var _BaseRate = $('#BaseRate');
+                                    var _BaseRateWorkDay = $('#BaseRateWorkDay');
+                                    var _BaseRateHoliday = $('#BaseRateHoliday');
+                                    var _TotalSum = $('#TotalSum');
+                                    var _TotalSumWorkDay = $('#TotalSumWorkDay');
+                                    var _TotalSumHoliday = $('#TotalSumHoliday');
+                                    var _TotalSumNds;
+
+                                    var TotalSumCalc = calculTotalSum(_PlanDistance.val(), _BaseRate.val());
+                                    $("#TotalSum").val(TotalSumCalc);
+
+                                    var TotalSumWorkDayCalc = calculTotalSumDay(_PlanTimeWorkDay.val(), _BaseRateWorkDay.val());
+                                    $("#TotalSumWorkDay").val(TotalSumWorkDayCalc);
+
+                                    var TotalSumHolidayCalc = calculTotalSumDay(_PlanTimeHoliday.val(), _BaseRateHoliday.val());
+                                    $("#TotalSumHoliday").val(TotalSumHolidayCalc);
+
+                                    var TotalSumNdsCalc = calculTotalSumNds(TotalSumCalc, TotalSumWorkDayCalc, TotalSumHolidayCalc);
+                                    $("#TotalSumNds").val(TotalSumNdsCalc);
+
+                                    $(".TotalSum").change(function() {
+                                        TotalSumCalc = calculTotalSum(_PlanDistance.val(), _BaseRate.val());
+                                        $("#TotalSum").val(TotalSumCalc);
+                                        _TotalSumNds = calculTotalSumNds(TotalSumCalc, _TotalSumWorkDay.val(), _TotalSumHoliday.val());
+                                        $("#TotalSumNds").val(_TotalSumNds);
+                                    });
+
+                                    $(".TotalSumWorkDay").change(function() {
+                                        TotalSumWorkDayCalc = calculTotalSumDay(_PlanTimeWorkDay.val(), _BaseRateWorkDay.val());
+                                        $("#TotalSumWorkDay").val(TotalSumWorkDayCalc);
+                                        _TotalSumNds = calculTotalSumNds(_TotalSum.val(), TotalSumWorkDayCalc, _TotalSumHoliday.val());
+                                        $("#TotalSumNds").val(_TotalSumNds);
+                                    });
+
+                                    $(".TotalSumHoliday").change(function() {
+                                        TotalSumHolidayCalc = calculTotalSumDay(_PlanTimeHoliday.val(), _BaseRateHoliday.val());
+                                        $("#TotalSumHoliday").val(TotalSumHolidayCalc);
+                                        _TotalSumNds = calculTotalSumNds(_TotalSum.val(), _TotalSumWorkDay.val(), TotalSumHolidayCalc);
+                                        $("#TotalSumNds").val(_TotalSumNds);
+                                    });
+
+
+                                }
+                            });
+
+                        } else {
+
+
+                        }
+
+
+                    },
+                    close: function(event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function(event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function(event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function() {
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Сохранить",
+                            "class": 'btn btn-primary',
+                            click: function() {
+                                var _PlanDistance = $('#PlanDistance').val();
+                                var _PlanTimeWorkDay = $('#PlanTimeWorkDay').val();
+                                var _PlanTimeHoliday = $('#PlanTimeHoliday').val();
+                                var _BaseRate = $('#BaseRate').val();
+                                var _BaseRateWorkDay = $('#BaseRateWorkDay').val();
+                                var _BaseRateHoliday = $('#BaseRateHoliday').val();
+                                var _DelayDays = $('#DelayDays').val();
+                                var _CarId = $("#UsedCarId").val();
+
+                                _PlanTimeWorkDay = TimeFromHoursToMinutes(_PlanTimeWorkDay);
+                                _PlanTimeHoliday = TimeFromHoursToMinutes(_PlanTimeHoliday);
+                                $.post('@Url.Action("UpdateUsedCarAddInfo", "Orders")',
+                                {
+                                    Id: _CarId,
+                                    OrderId: _OrderId,
+                                    PlanDistance: _PlanDistance,
+                                    PlanTimeWorkDay: _PlanTimeWorkDay,
+                                    PlanTimeHoliday: _PlanTimeHoliday,
+                                    BaseRate: _BaseRate,
+                                    BaseRateWorkDay: _BaseRateWorkDay,
+                                    BaseRateHoliday: _BaseRateHoliday,
+                                    DelayDays: _DelayDays
+                                });
+
+                                $(this).dialog("close");
+                            }
+                        }
+                    ]
+                });
+
+            $('#usedcarinfoadditionaldialog').dialog('open');
+
+            return;
+        }
+
+        function ShowDirectoryUsedCarDialog(_OrderId, _IsTruck) {
+
+            var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
+
+            $('#useddircarinfodialog')
+                .dialog(
+                {
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Новый автомобиль для заявки",
+                    modal: true,
+                    open: function(event, ui) {
+                        var PayerInfo = $('#PayerId').attr("data-selected-text");
+                        $("#DirPayerInfo").val(PayerInfo);
+                        var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
+
+                        $("#DirExpeditorName").select2("val", "");
+                        $("#DirContractInfo").select2("val", "");
+
+                        $("#DirCarrierInfo").select2("val", "");
+                        $("#DirCarInfo").select2("val", "");
+
+                        $('#DirDriverContactInfo').val('');
+
+                        $('#DirCarCapacity').val('');
+                        $('#DirComments').val('');
+
+                      //  var currDate = DateTime.Now.ToString("dd.MM.yyyy");
+                      //  $('#DirFactShipperDate').val('');
+                      //  $('#DirFactShipperTime').val('00:00:00');
+                      //  $('#DirFactConsigneeDate').val('');
+                      //  $('#DirFactConsigneeTime').val('00:00:00');
+
+                        $("#divDirContractInfo").hide();
+                        $("#divDirContractExpBkInfo").hide();
+                        $("#divDirCarrierInfo").hide();
+                        $("#divDirCarInfo").hide();
+
+                        if (_IsTruck == true)
+                            $('#divDirCarCapacity').show();
+                        else
+                            $('#divDirCarCapacity').hide();
+
+                        $("#DirExpeditorName").change(function() {
+                            var dirExpeditorNameId = $('#DirExpeditorName').val();
+                            var PayerId = $('#PayerId').val();
+
+                            $("#DirCarInfo").select2("val", "");
+                            $("#DirContractInfo").select2("val", "");
+                            $("#DirCarrierInfo").select2("val", "");
+
+                            //инициализируем Контракты Экспедитор, плательщик
+
+                            $("#DirContractExpBkInfo").select2("val", "");
+
+                            $("#DirContractExpBkInfo")
+                                .each(function() {
+                                    InitCascade1DropDown(this,
+                                        $(this).attr('data-source-url'),
+                                        dirExpeditorNameId,
+                                        PayerId,
+                                        $(this).attr('data-droplist-placeholder'));
+                                });
+
+                            $("#divDirContractExpBkInfo").show();
+
+                            $("#DirCarrierInfo").select2("val", "");
+                            //инициализируем Перевозчиков
+                            $("#DirCarrierInfo")
+                                .each(function() {
+                                    InitCascadeDropDown(this,
+                                        $(this).attr('data-source-url'),
+                                        dirExpeditorNameId,
+                                        $(this).attr('data-droplist-placeholder'));
+                                });
+
+                            $("#divDirCarrierInfo").show();
+
+                            return false;
+                        });
+
+                        $("#DirCarrierInfo").change(function() {
+                            var dirExpeditorNameId = $('#DirExpeditorName').val();
+                            var dirCarrierInfoId = $('#DirCarrierInfo').val();
+                            $("#DirCarInfo").select2("val", "");
+                            $("#DirContractInfo").select2("val", "");
+
+                            $("#DirContractInfo")
+                                .each(function() {
+                                    InitCascade1DropDown(this,
+                                        $(this).attr('data-source-url'),
+                                        dirExpeditorNameId,
+                                        dirCarrierInfoId,
+                                        $(this).attr('data-droplist-placeholder'));
+                                });
+
+                            //инициализируем Авто
+                            $("#DirCarInfo")
+                                .each(function() {
+                                    InitCascadeDropDown(this,
+                                        $(this).attr('data-source-url'),
+                                        dirCarrierInfoId,
+                                        $(this).attr('data-droplist-placeholder'));
+                                });
+
+                            $("#divDirContractInfo").show();
+                            $("#divDirCarInfo").show();
+                            return false;
+                        });
+                        $("#DirCarInfo").change(function() {
+                            var CarId = $("#DirCarInfo").val();
+                            $.ajax({
+                                type: 'GET',
+                                url: '@Url.Action("getCarInfoById", "Cars")',
+                                data: { Id: CarId },
+                                contentType: 'application/json; charset=utf-8',
+                                success: function(CarInfo) {
+                                    $("#DirDriverContactInfo").val(CarInfo.Driver);
+                                }
+                            });
+                        });
+                    },
+                    close: function(event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function(event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function(event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function() {
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Добавить",
+                            "class": 'btn btn-primary',
+                            click: function() {
+
+                                if (($('#DirExpeditorName').val() == '')
+                                    || ($('#DirContractInfo').val() == '')
+                                    || ($('#DirCarrierInfo').val() == '')
+                                    || ($('#DirCarInfo').val() == '')
+                                    || ($('#DirDriverContactInfo').val() == '')) {
+                                    alert("Не заполненены все необходимые данные!")
+                                } else {
+
+                                    var _DirExpeditorId = $('#DirExpeditorName').val();
+                                    var _DirContractId = $('#DirContractInfo').val();
+                                    var _DirContractExpBkId = $('#DirContractExpBkInfo').val();
+                                    var _DirCarrierId = $('#DirCarrierInfo').val();
+                                    var _DirCarInfo = $('#DirCarInfo').val();
+                                    var _DirDriverContactInfo = $('#DirDriverContactInfo').val();
+
+                                    var _DirCarCapacity = null;
+                                    if (_IsTruck == true)
+                                        _DirCarCapacity = $('#DirCarCapacity').val();
+
+                                    var _DirComments = $('#DirComments').val();
+
+                                 //   var _DirFactShipperDate = $('#DirFactShipperDate').val();
+                                 //   var _DirFactShipperTime = $('#DirFactShipperTime').val();
+                                 //   var _DirFactConsigneeDate = $('#DirFactConsigneeDate').val();
+                                 //   var _DirFactConsigneeTime = $('#DirFactConsigneeTime').val();
+
+                                    var _DirSumm = 0;
+
+                                    $.post('@Url.Action("NewDirUsedCar", "Orders")',
+                                        {
+                                            OrderId: _OrderId,
+                                            ContractId: _DirContractId,
+                                            ContractExpBkId: _DirContractExpBkId,
+                                            ExpeditorId: _DirExpeditorId,
+                                            CarrierId: _DirCarrierId,
+                                            CarId: _DirCarInfo,
+
+                                            DriverContactInfo: _DirDriverContactInfo,
+                                            CarCapacity: _DirCarCapacity,
+                                            Comments: _DirComments,
+                                         //   FactShipperDate: _DirFactShipperDate,
+                                         //   FactShipperTime: _DirFactShipperTime,
+                                         //   FactConsigneeDate: _DirFactConsigneeDate,
+                                         //   FactConsigneeTime: _DirFactConsigneeTime,
+                                            Summ: _DirSumm
+                                        },
+                                        function(data) {
+                                            $("#jqxgridUC").jqxDataTable('updateBoundData');
+                                        });
+
+
+                                    $(this).dialog("close");
+                                }
+                            }
+                        }
+                    ]
+                });
+
+            $('#useddircarinfodialog').dialog('open');
+
+            return;
+        }
+
+
+        function DropUsedCar() {
+            var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
+
+            if (getselectedrowindexes.length > 0) {
+                $("#UsedCarId").val(getselectedrowindexes[0].Id);
+
+                bootbox.confirm("Вы хотите удалить автомобиль из заявки?", function(result) {
+
+                    if (result) {
+                        $.post('@Url.Action("RemoveUsedCar", "Orders")',
+                            {
+                                Id: $("#UsedCarId").val()
+                            },
+                            function(data) {
+                                $("#jqxgridUC").jqxDataTable('updateBoundData');
+
+                                $("#UsedCarEditButton").addClass("disabled");
+                                $("#UsedCarDeleButton").addClass("disabled");
+                                $("#UsedCarEditButton").removeClass("btn-default");
+                                $("#UsedCarDeleButton").removeClass("btn-default");
+                                $("#UsedCarAddInfoButton").addClass("disabled");
+                                $("#UsedCarAddInfoButton").removeClass("btn-default");
+                            });
+                    }
+                });
+            }
+        }
+
+
+        $("#ShowOrgFrom").on("click", function() {
+            var initFields = function(obj) {
+                $('#CountryFrom').val(obj._CountryId);
+                $('#CountryFrom').attr('data-selected-text', obj._Country);
+                $('#CountryFrom').val(obj._CountryId).trigger('change');
+                $('#CityFrom').val(obj._City);
+                $('#AdressFrom').val(obj._Address);
+                $('#OrgFrom').val(obj._Name);
+                $('#OrgFromId').val(obj._Id);
+
+                $('#ShipperCountryId').val(obj._CountryId);
+                $('#ShipperCountryId').attr('data-selected-text', obj._Country);
+                $('#ShipperCountryId').val(obj._CountryId).trigger('change');
+                $('#ShipperCity').val(obj._City);
+                $('#ShipperAdress').val(obj._Address);
+                $('#Shipper').val(obj._Name);
+                $('#ShipperId').val(obj._Id);
+                $('td#countryFromName').text(obj._Country);
+                $('td#cityAdressFrom').text(obj._City + ", " + obj._Address);
+                $('td#nameFrom').text(obj._Name);
+
+                CleanRoute();
+                SelectRoute2();
+            };
+
+            ShowOrganizationDlg(initFields);
+        });
+        $("#ShowOrgTo").on("click", function() {
+            var initFields = function(obj) {
+                $('#CountryTo').val(obj._CountryId);
+                $('#CountryTo').attr('data-selected-text', obj._Country);
+                $('#CountryTo').val(obj._CountryId).trigger('change');
+                $('#CityTo').val(obj._City);
+                $('#AdressTo').val(obj._Address);
+                $('#OrgTo').val(obj._Name);
+                $('#OrgToId').val(obj._Id);
+
+                $('#ConsigneeCountryId').val(obj._CountryId);
+                $('#ConsigneeCountryId').attr('data-selected-text', obj._Country);
+                $('#ConsigneeCountryId').val(obj._CountryId).trigger('change');
+                $('#ConsigneeCity').val(obj._City);
+                $('#ConsigneeAdress').val(obj._Address);
+                $('#ConsigneeId').val(obj._Id);
+                $('#Consignee').val(obj._Name);
+
+                $('td#countryToName').text(obj._Country);
+                $('td#cityAdressTo').text(obj._City + ", " + obj._Address);
+                $('td#nameTo').text(obj._Name);
+            };
+
+            ShowOrganizationDlg(initFields);
+            CleanRoute();
+            SelectRoute2();
+        });
+
+        function DrawGraph() {
+            var nextPipelineSteps = @Html.Raw(Json.Encode(Model.nextAvialiableStatuses));
+            var previousPipelineSteps = @Html.Raw(Json.Encode(Model.previousStatuses));
+            var CurrentStatusId = @Html.Raw(Json.Encode(Model.CurrentOrderStatus));
+
+            nodes = [];
+            edges = [];
+
+
+            nodes.push({
+                id: (-1) * CurrentStatusId,
+                label: @Html.Raw(Json.Encode(Model.CurrentOrderStatusName)),
+                color: '#eb2f6a'
+            });
+
+            for (var i = 0; i < nextPipelineSteps.length; i++) {
+                nodes.push({
+                    id: nextPipelineSteps[i].Id,
+                    label: nextPipelineSteps[i].StatusName,
+                    color: '#3498db'
+                });
+                edges.push({
+                    from: (-1) * CurrentStatusId,
+                    to: nextPipelineSteps[i].Id
+                });
+            }
+
+            for (var i = 0; i < previousPipelineSteps.length; i++) {
+                nodes.push({
+                    id: (-1) * previousPipelineSteps[i].Id,
+                    label: previousPipelineSteps[i].StatusName,
+                    color: '#c3c3c3'
+                });
+                edges.push({
+                    from: (-1) * CurrentStatusId,
+                    to: (-1) * previousPipelineSteps[i].Id
+                });
+            }
+
+            // create a network
+            var container = document.getElementById('PipelineStepsNetwork');
+
+            var data = {
+                nodes: nodes,
+                edges: edges
+            };
+            var options = {
+                nodes: {
+                    font: {
+                        color: '#ffffff',
+                        size: 14
+                    },
+                    physics: false
+                },
+                edges: {
+                    color: '#000',
+                    width: 2
+                },
+                autoResize: true,
+                height: '100%',
+                width: '100%'
+            };
+
+            var network = new vis.Network(container, data, options);
+
+            network.on('click', function(properties) {
+                if (properties.nodes > 0) {
+                    SaveWithStatus(properties.nodes, @Html.Raw(Json.Encode(Model.Id)));
+                }
+
+            });
+            network.setOptions(options);
+
+            window.onresize = function() {
+                network.fit();
+            }
+        };
+
+
+        function RestReport(orderId, reestrId) {
+
+            $('#reportdialog')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Параметры перехода",
+                    modal: true,
+                    open: function (event, ui) {
+                        InitFilterDropDowns();
+                    },
+                    close: function (event, ui) {
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                   [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        },
+                    {
+                        text: "Перейти",
+                        "class": 'btn btn-primary',
+                        click: function () {
+                            var orderProjectId = $('#OrderProjectId').val();
+                            if (reestrId == 0)
+                            window.location.href = '/Reports/RestReport?UseOrderProjectFilter=True&FilterOrderProjectId=' + encodeURIComponent(orderProjectId);
+                            else
+                                window.location.href = '/Reports/GroupRestReport?UseOrderProjectFilter=True&FilterOrderProjectId=' + encodeURIComponent(orderProjectId);
+
+                                $(this).dialog("close");
+                        }
+                    }
+                   ]
+                });
+
+            $('#reportdialog').dialog('open');
+
+            return;
+        }
+
+        $(document).ready(function() {
+            if ((@Html.Raw(Json.Encode(Model.nextAvialiableStatuses)) != null) && (@Html.Raw(Json.Encode(Model.nextAvialiableStatuses?.Count())) != 0)) {
+                DrawGraph();
+            }
+
+            var unsaved = false;
+
+            InitializeDateTimePickers();
+            InitFilterDropDowns();
+            InitFilterElementMultipleDropDowns('#MultiProjectId');
+            InitTimeRaw();
+            var needReturn = document.querySelector('#NeedReturn');
+            if (needReturn != null) {
+                calculTime(needReturn.value);
+            }
+
+            $('#TripType').change(function() {
+                var value = $(this).val();
+
+                if ((value == '0') || (value == '3')) {
+
+                    $("#CountryFrom").prop('disabled', true);
+                    $("#CountryTo").prop('disabled', true);
+                    $("#ShipperCountryId").prop('disabled', true);
+                    $("#ConsigneeCountryId").prop('disabled', true);
+
+                    $("#CityTo").prop("readonly", true);
+                    $("#CityTo").val($("#CityFrom").val());
+
+                    $("#ConsigneeCity").prop("readonly", true);
+                    $("#ConsigneeCity").val($("#ShipperCity").val());
+
+                }
+                if (value == '1') {
+
+                    $("#CountryFrom").prop('disabled', true);
+                    $("#CountryTo").prop('disabled', true);
+                    $("#ShipperCountryId").prop('disabled', true);
+                    $("#ConsigneeCountryId").prop('disabled', true);
+
+                    $("#CityTo").prop("readonly", false);
+                    $("#ConsigneeCity").prop("readonly", false);
+
+                }
+
+                if (value == '2') {
+
+                    $("#CountryFrom").prop('disabled', false);
+                    $("#CountryTo").prop('disabled', false);
+                    $("#ShipperCountryId").prop('disabled', false);
+                    $("#ConsigneeCountryId").prop('disabled', false);
+
+                    $("#CityTo").prop("readonly", false);
+                    $("#ConsigneeCity").prop("readonly", false);
+                }
+            });
+
+            $('#CityFrom').change(function() {
+
+                var value = $(':radio[name=TripType]').val();
+
+                if (value == '0') {
+                    $("#CityTo").val($("#CityFrom").val());
+                }
+
+            });
+
+            $('#ShipperCity').change(function() {
+
+                var value = $(':radio[name=TripType]').val();
+
+                if (value == '0') {
+                    $("#ConsigneeCity").val($("#ShipperCity").val());
+                }
+
+            });
+
+            InitializeOrganizations();
+            InitRoutes();
+
+
+            var sourceUC =
+            {
+                datatype: "json",
+                datafields: [
+                    { name: 'Id' },
+                    { name: 'OrderId' },
+                    { name: 'ContractInfo' },
+                    { name: 'ContractExpBkInfo' },
+                    { name: 'ContractExpBkId' },
+                    { name: 'ExpeditorId' },
+                    { name: 'ExpeditorName' },
+                    { name: 'CarOwnerInfo' },
+                    { name: 'CarModelInfo' },
+                    { name: 'CarRegNum' },
+                    { name: 'CarCapacity' },
+                    { name: 'CarDriverInfo' },
+                    { name: 'DriverContactInfo' },
+                    { name: 'CarrierInfo' },
+                    { name: 'CarId' },
+                    { name: 'DriverCardInfo' },
+                    { name: 'Comments' },
+                    { name: 'FactShipperDateTime' },
+                    { name: 'FactConsigneeDateTime' }
+
+                ],
+                url: '@Url.Action("GetUsedCars", "Orders", new {OrderId = Model.Id})',
+                id: 'Id'
+            };
+
+            var dataAdapterUCars = new $.jqx.dataAdapter(sourceUC);
+
+            $("#jqxgridUC").jqxDataTable(
+            {
+                width: 1000,
+                source: dataAdapterUCars,
+                theme: 'arctic',
+                columnsheight: 80,
+                pageSize: 10,
+                sortable: false,
+                filterable: false,
+                pageable: true,
+                columns: [
+                    { text: 'Экспедитор', datafield: 'ExpeditorName', width: 120 },
+                    { text: 'Договор<br/>Эксп/<br/>Плательщик', datafield: 'ContractExpBkInfo', width: 100 },
+                    { text: 'Перевозчик', datafield: 'CarrierInfo', width: 100 },
+                    { text: 'Договор<br/>Эксп/<br/>Перевозчик', datafield: 'ContractInfo', width: 100 },
+                    { text: 'Марка<br/>авто', datafield: 'CarModelInfo', width: 75 },
+                    { text: 'Номер<br/>авто', datafield: 'CarRegNum', width: 75 },
+                    { text: 'Грузо<br/>подъем<br/>ность', datafield: 'CarCapacity', width: 60 },
+                    { text: 'Ф.И.О.<br/>водителя', datafield: 'CarDriverInfo', width: 100 },
+                    { text: 'Права', datafield: 'DriverCardInfo', width: 60 },
+                    { text: 'Контакт<br/>водителя', datafield: 'DriverContactInfo', width: 80 },
+                    { text: 'Коммен<br/>тарий', datafield: 'Comments', width: 80 },
+                    { text: 'Факт.<br/>отправл.<br/>(дата и время)', datafield: 'FactShipperDateTime', width: 130 },
+                    { text: 'Факт.<br/>прибытие<br/>(дата и время)', datafield: 'FactConsigneeDateTime', width: 130 }
+                ]
+            });
+
+
+            if ((@Model.OrderType === 4) || (@Model.OrderType === 5) || (@Model.OrderType === 7)) {
+                var sourcePointLoad =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'Id' },
+                        { name: 'OrderId' },
+                        { name: 'NamePoint' },
+                        { name: 'CountryPoint' },
+                        { name: 'CityPoint' },
+                        { name: 'AddressPoint' },
+                        { name: 'CityAddress' },
+                        { name: 'IsSaved' },
+                        { name: 'ContactPerson' },
+                        { name: 'ContactPersonPhone' },
+                        { name: 'Contacts' },
+                        { name: 'NumberPoint' }
+                    ],
+                    url: '@Url.Action("GetLoadPoints", "Orders")' + '?OrderId=' + @Html.Raw(Model.Id) + '&IsLoading=true',
+                    id: 'Id'
+                };
+
+                var dataAdapterPointLoad = new $.jqx.dataAdapter(sourcePointLoad);
+
+                $("#jqxgridPointLoad").jqxDataTable(
+                {
+                    width: 590,
+                    source: dataAdapterPointLoad,
+                    theme: 'arctic',
+                    sortable: false,
+                    filterable: false,
+                    columns: [
+                        { text: 'Название', datafield: 'NamePoint', width: 180 },
+                        { text: 'Страна', datafield: 'CountryPoint', width: 100 },
+                        { text: 'Город/Адрес', datafield: 'CityAddress', width: 165 },
+                        { text: 'Контакты', datafield: 'Contacts', width: 120 },
+                        { text: '№', datafield: 'NumberPoint', width: 25 }
+                    ]
+                });
+
+
+                var IsAdditionalRoutePoints = $("input[name=IsAdditionalRoutePoints]:checked").val();
+                if (IsAdditionalRoutePoints == "true") {
+                    $(".AddPointLoad").show();
+                } else {
+                    $(".AddPointLoad").hide();
+                }
+
+                $('input[name=IsAdditionalRoutePoints]').click(function() {
+                    var isAdditionalRoutePoints = $('input[name=IsAdditionalRoutePoints]:checked').val();
+
+                    if (isAdditionalRoutePoints == "true") {
+                        $(".AddPointLoad").show();
+                    } else {
+
+                        $(".AddPointLoad").hide();
+                    }
+                });
+                var sourcePointUnLoad =
+                {
+                    datatype: "json",
+                    datafields: [
+                        { name: 'Id' },
+                        { name: 'OrderId' },
+                        { name: 'NamePoint' },
+                        { name: 'CountryPoint' },
+                        { name: 'CityPoint' },
+                        { name: 'AddressPoint' },
+                        { name: 'CityAddress' },
+                        { name: 'IsSaved' },
+                        { name: 'ContactPerson' },
+                        { name: 'ContactPersonPhone' },
+                        { name: 'Contacts' },
+                        { name: 'NumberPoint' }
+                    ],
+                    url: '@Url.Action("GetLoadPoints", "Orders")' + '?OrderId=' + @Html.Raw(Model.Id) + '&IsLoading=false',
+                    id: 'Id'
+                };
+
+                var dataAdapterPointUnLoad = new $.jqx.dataAdapter(sourcePointUnLoad);
+
+                $("#jqxgridPointUnLoad").jqxDataTable(
+                {
+                    width: 590,
+                    source: dataAdapterPointUnLoad,
+                    theme: 'arctic',
+                    sortable: false,
+                    filterable: false,
+                    columns: [
+                        { text: 'Название', datafield: 'NamePoint', width: 180 },
+                        { text: 'Страна', datafield: 'CountryPoint', width: 100 },
+                        { text: 'Город/Адрес', datafield: 'CityAddress', width: 165 },
+                        { text: 'Контакты', datafield: 'Contacts', width: 120 },
+                        { text: '№', datafield: 'NumberPoint', width: 25 }
+                    ]
+                });
+
+                $('#jqxgridPointLoad').on('rowClick',
+                    function(event) {
+                        $("#UpdateRoutePointLoadButton").removeClass("disabled");
+                        $("#UpdateRoutePointLoadButton").addClass("btn-default");
+                        $("#DeleteRoutePointLoadButton").removeClass("disabled");
+                        $("#DeleteRoutePointLoadButton").addClass("btn-default");
+                    });
+
+                $('#jqxgridPointUnLoad').on('rowClick',
+                    function(event) {
+                        $("#UpdateRoutePointUnLoadButton").removeClass("disabled");
+                        $("#UpdateRoutePointUnLoadButton").addClass("btn-default");
+                        $("#DeleteRoutePointUnLoadButton").removeClass("disabled");
+                        $("#DeleteRoutePointUnLoadButton").addClass("btn-default");
+                    });
+            }
+
+            $('#jqxgridUC').on('rowClick',
+                function(event) {
+                    $("#UsedCarEditButton").removeClass("disabled");
+                    $("#UsedCarDeleButton").removeClass("disabled");
+                    $("#UsedCarEditButton").addClass("btn-default");
+                    $("#UsedCarDeleButton").addClass("btn-default");
+                    $("#UsedCarAddInfoButton").removeClass("disabled");
+                    $("#UsedCarAddInfoButton").addClass("btn-default");
+                });
+
+            if ((@Model.OrderType === 4) || (@Model.OrderType === 5) || (@Model.OrderType === 7))
+                $("#jqxgridUC").jqxDataTable('showColumn', 'CarCapacity');
+            else
+                $("#jqxgridUC").jqxDataTable('hideColumn', 'CarCapacity');
+
+            var RoutePointsCount = @Html.Raw(Json.Encode(@Model.RoutePointsInfo.Count));
+
+
+            var RowSpanCount = 2 + RoutePointsCount;
+            $("#RouteInfo").attr("rowspan", RowSpanCount);
+
+        });
+
+
+    </script>
+}

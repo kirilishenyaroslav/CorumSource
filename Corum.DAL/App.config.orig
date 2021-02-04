@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+  <connectionStrings>
+    <add name="DefaultConnection" connectionString="Persist Security Info=False;User ID=sa;Password=Sql4ngu8s4;Initial Catalog=BarnIVann;Data Source=192.168.0.3\SQLEX2008R2;" providerName="System.Data.SqlClient" />
+<<<<<<< local
+    <add name="Entities" connectionString="metadata=res://*/Entity.Corum.csdl|res://*/Entity.Corum.ssdl|res://*/Entity.Corum.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=JAROSLAV-PC\SQL2012;initial catalog=Corum;integrated security=True;persist security info=False;multipleactiveresultsets=True;application name=EntityFramework&quot;" providerName="System.Data.EntityClient" />
+=======
+    <add name="Entities" connectionString="metadata=res://*/Entity.Corum.csdl|res://*/Entity.Corum.ssdl|res://*/Entity.Corum.msl;provider=System.Data.SqlClient;provider connection string=&quot;data source=WIN-DMUJFHPRT3K;initial catalog=Corum;integrated security=True;persist security info=False;multipleactiveresultsets=True;application name=EntityFramework&quot;" providerName="System.Data.EntityClient" />
+>>>>>>> other
+  </connectionStrings>
+  <configSections>
+    <section name="entityFramework" type="System.Data.Entity.Internal.ConfigFile.EntityFrameworkSection, EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" requirePermission="false" />
+  </configSections>
+  <entityFramework>
+    <defaultConnectionFactory type="System.Data.Entity.Infrastructure.LocalDbConnectionFactory, EntityFramework">
+      <parameters>
+        <parameter value="mssqllocaldb" />
+      </parameters>
+    </defaultConnectionFactory>
+    <providers>
+      <provider invariantName="System.Data.SqlClient" type="System.Data.Entity.SqlServer.SqlProviderServices, EntityFramework.SqlServer" />
+    </providers>
+  </entityFramework>
+  <runtime>
+    <assemblyBinding xmlns="urn:schemas-microsoft-com:asm.v1">
+      <dependentAssembly>
+        <assemblyIdentity name="System.Web.Mvc" publicKeyToken="31bf3856ad364e35" culture="neutral" />
+        <bindingRedirect oldVersion="0.0.0.0-5.2.3.0" newVersion="5.2.3.0" />
+      </dependentAssembly>
+    </assemblyBinding>
+  </runtime>
+</configuration>

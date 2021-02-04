@@ -1,0 +1,26 @@
+﻿@model Corum.Models.ViewModels.Cars.RouteIntervalTypesViewModel
+@{
+    ViewBag.Title = "UpdateRouteIntervalType";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("UpdateRouteIntervalType", "Cars", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+    <div class="form-horizontal">
+        <h4>Детальная информация о типе интервалов маршрутов</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+
+        @Html.Partial("_RouteIntervalTypeDetails")
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Применить" class="btn btn-default" />
+            </div>
+        </div>
+
+    </div>
+}

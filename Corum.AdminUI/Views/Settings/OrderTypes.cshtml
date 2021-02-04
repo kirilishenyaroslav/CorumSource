@@ -1,0 +1,120 @@
+﻿@model Corum.Models.NavigationResult<Corum.Models.ViewModels.Orders.OrderTypeViewModel>
+@using GridMvc.Html
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 main">
+            <h4 class="centered_column">Типы заявок</h4>
+            <div class="table-header clearfix">
+                @if (!string.IsNullOrEmpty(Request.Params["superadmin"]))
+                {
+                <div>
+                    @Html.ActionLink("Новый+", "NewOrderType", "Settings", null, new { @class = "btn btn-primary", @style = "margin-bottom:10px" })
+                </div>
+                }
+                <div style="font-size: 12px;">
+                    @(Html.Grid(Model.DisplayValues)
+              .Columns(columns =>
+              {
+
+              columns.Add(model => model.ShortName)
+                   .Titled("Сокращенное<br>название<br>типа<br>заявки")
+                   .Filterable(true)
+                   .Sortable(true);
+
+              columns.Add(model => model.TypeName)
+               .Titled("Название<br>типа<br>заявки")
+               .Filterable(true)
+               .Sortable(true);
+
+              columns.Add(model => model.UserRoleIdForClientDataName)
+                    .Titled("Роль<br>пользователей<br>для доступа к <br>клиентским<br>данным заявки").Filterable(true).Sortable(true);
+
+              columns.Add(model => model.UserRoleIdForExecuterDataName)
+                    .Titled("Роль<br>пользователей <br>для доступа к <br>данным<br>исполнителя заявки").Filterable(true).Sortable(true);
+             
+              columns.Add(model => model.IsActive).Filterable(true).Sortable(true)
+                     .Encoded(false)
+                     .Sanitized(false)
+                     .Css("centered_column")
+                     .Titled("Доступен<br>для<br>выбора")
+                     .RenderValueAs(o =>
+                        @<div>
+                            @Html.CheckBox(o.Id.ToString(), @o.IsActive, new { disabled = "disabled", @readonly = "readonly" })
+                        </div>);
+
+              columns.Add(model => model.DefaultExecuterName)
+                    .Titled("Исполнитель<br>по умолчанию").Filterable(true).Sortable(true);
+
+              columns.Add(model => model.UserIdForAnonymousFormName)
+                    .Titled("Пользователь<br>для не<br>персонифицированной<br>формы").Filterable(true).Sortable(true);
+
+                  columns.Add(model => model.UserRoleNameTypeAccess)
+                      .Titled("Группа<br>для<br>доступа<br>к типу").Filterable(true).Sortable(true);
+
+              columns.Add(model => model.UserRoleIdForCompetitiveListName)
+                                  .Titled("Роль<br>пользователей<br>для доступа к<br>конкурентным<br>листам").Filterable(true).Sortable(true);
+
+              columns.Add()
+           .Encoded(false)
+           .Sanitized(false)
+           .Css("centered_column")
+           .RenderValueAs(o =>@<div class="edit-delete-copy-links">
+                   <a class="tarash-i update_link tooltips" href="@Url.Action("UpdateOrderType", "Settings", new { Id = o.Id })">
+                      <span class="tooltip-message">Изменить тип заявки</span>
+                      <span class="glyphicon glyphicon-pencil"></span>
+                   </a>
+
+                  @if (o.CanBeDelete)
+                  {
+                    <a class="tarash-i delete_link tooltips" href="@Url.Action("RemoveOrderType", "Settings", new { Id = o.Id })" onclick="var var1='@o.TypeName'; return confirm('Вы действительно хотите удалить тип заявки - '+var1+' ?');">
+                        <span class="tooltip-message">Удалить тип заявки</span>
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                  }
+                  else
+                  {
+                    <a class="disable-glyphicon tooltips tarash-i" href="#">
+                        <span class="tooltip-message">Тип заявки не может быть удален</span>
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                  }               
+
+                  </div>);
+                  }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())
+
+
+                </div>
+
+            </div>
+
+            @TPagging("OrderTypes", "Settings", @Model.RequestParams, this)
+        
+        </div>
+    </div>
+</div>
+
+
+

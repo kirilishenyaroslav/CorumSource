@@ -2,17 +2,17 @@
 
     <div class="form-group row">
         <label class="col-md-4" style="font-weight: normal !important;">
-            Получатель
+            Услуга для тендера
         </label>
         <div class="col-md-8">
-            @Html.TextBox("Receiver", "",
+      @Html.TextBox("Receiver", "",
                           htmlAttributes: new
                           {
                               id = "ReceiverId",
                               @class = "filter_dropdown",
                               @name = "ReceiverId",
                               data_source_url = Url.Action("GetReceivers", "Orders"),
-                              data_droplist_placeholder = "Выберите получателя уведомления",
+                              data_droplist_placeholder = "Список услуг",
                               data_selected_text = ""
                           })
         </div>
@@ -20,15 +20,10 @@
 
     <div class="form-group row">
         <label class="col-md-4" style="font-weight: normal !important;">
-            Текст сообщения получателю
+            Количество автомобилей
         </label>
-        <div class="col-md-8">
-            @Html.TextArea("MessageText", "",
-                          htmlAttributes: new
-                          {
-                              id = "MessageText",
-                              @name = "MessageText"
-                          })
+        <div class="col-md-8" >
+            <input type="number" min="1" value="1" />
         </div>
     </div>
 </div>

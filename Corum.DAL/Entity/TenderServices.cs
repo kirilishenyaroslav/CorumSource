@@ -15,27 +15,12 @@ namespace Corum.DAL.Entity
 using System;
     using System.Collections.Generic;
     
-public partial class OrderLoadingTypes
+public partial class TenderServices
 {
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-    public OrderLoadingTypes()
-    {
-
-        this.OrderTruckTransport = new HashSet<OrderTruckTransport>();
-
-    }
-
 
     public int Id { get; set; }
 
-    public string LoadingTypeName { get; set; }
-
-
-
-    [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-
-    public virtual ICollection<OrderTruckTransport> OrderTruckTransport { get; set; }
+    public string Title { get; set; }
 
 }
 

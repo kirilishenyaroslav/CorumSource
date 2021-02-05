@@ -963,6 +963,13 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SpecificationType" Type="nvarchar" MaxLength="256" />
         </EntityType>
+        <EntityType Name="TenderServices">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
         <EntityType Name="UserMessages">
           <Key>
             <PropertyRef Name="Id" />
@@ -997,7 +1004,7 @@
           <Property Name="PageSize" Type="int" Nullable="false" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
-        <Association Name="FK__OrdersBas__Proje__7B7B4DDC">
+        <Association Name="FK__OrdersBas__Proje__1446FBA6">
           <End Role="Projects" Type="Self.Projects" Multiplicity="0..1" />
           <End Role="OrdersBase" Type="Self.OrdersBase" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1009,7 +1016,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__420DC656">
+        <Association Name="FK__Projects__Projec__5AD97420">
           <End Role="Centers" Type="Self.Centers" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1021,7 +1028,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__4301EA8F">
+        <Association Name="FK__Projects__Projec__5BCD9859">
           <End Role="ProjectTypes" Type="Self.ProjectTypes" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -3004,6 +3011,7 @@
           <Parameter Name="FilterKeeperId" Type="varchar" Mode="In" />
           <Parameter Name="FilterProducerId" Type="varchar" Mode="In" />
           <Parameter Name="FilterOrderProjectId" Type="varchar" Mode="In" />
+          <Parameter Name="FilterProductBarcodeId" Type="nvarchar(max)" Mode="In" />
           <Parameter Name="UseStorageFilter" Type="int" Mode="In" />
           <Parameter Name="UseCenterFilter" Type="int" Mode="In" />
           <Parameter Name="UseRecieverPlanFilter" Type="int" Mode="In" />
@@ -3011,6 +3019,7 @@
           <Parameter Name="UseKeeperFilter" Type="int" Mode="In" />
           <Parameter Name="UseProducerFilter" Type="int" Mode="In" />
           <Parameter Name="UseOrderProjectFilter" Type="int" Mode="In" />
+          <Parameter Name="UseProductBarcodeFilter" Type="int" Mode="In" />
         </Function>
         <Function Name="GetRestInfoByRestMultiKey" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="true" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
           <Parameter Name="snapShotId" Type="int" Mode="In" />
@@ -3022,6 +3031,7 @@
           <Parameter Name="Shifr_MDM" Type="varchar" Mode="In" />
           <Parameter Name="BacodeProduct" Type="varchar" Mode="In" />
           <Parameter Name="BacodeConsignment" Type="varchar" Mode="In" />
+          <Parameter Name="BacodesAll" Type="varchar(max)" Mode="In" />
           <ReturnType>
             <CollectionType>
               <RowType>
@@ -3338,18 +3348,19 @@
           <EntitySet Name="RouteTypes" EntityType="Self.RouteTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpecificationNames" EntityType="Self.SpecificationNames" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpecificationTypes" EntityType="Self.SpecificationTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TenderServices" EntityType="Self.TenderServices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserMessages" EntityType="Self.UserMessages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserSettings" EntityType="Self.UserSettings" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__OrdersBas__Proje__7B7B4DDC" Association="Self.FK__OrdersBas__Proje__7B7B4DDC">
+          <AssociationSet Name="FK__OrdersBas__Proje__1446FBA6" Association="Self.FK__OrdersBas__Proje__1446FBA6">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="OrdersBase" EntitySet="OrdersBase" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__420DC656" Association="Self.FK__Projects__Projec__420DC656">
+          <AssociationSet Name="FK__Projects__Projec__5AD97420" Association="Self.FK__Projects__Projec__5AD97420">
             <End Role="Centers" EntitySet="Centers" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__4301EA8F" Association="Self.FK__Projects__Projec__4301EA8F">
+          <AssociationSet Name="FK__Projects__Projec__5BCD9859" Association="Self.FK__Projects__Projec__5BCD9859">
             <End Role="ProjectTypes" EntitySet="ProjectTypes" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
@@ -4995,6 +5006,7 @@
             <Parameter Name="FilterKeeperId" Mode="In" Type="String" />
             <Parameter Name="FilterProducerId" Mode="In" Type="String" />
             <Parameter Name="FilterOrderProjectId" Mode="In" Type="String" />
+            <Parameter Name="FilterProductBarcodeId" Mode="In" Type="String" />
             <Parameter Name="UseStorageFilter" Mode="In" Type="Int32" />
             <Parameter Name="UseCenterFilter" Mode="In" Type="Int32" />
             <Parameter Name="UseRecieverPlanFilter" Mode="In" Type="Int32" />
@@ -5002,6 +5014,7 @@
             <Parameter Name="UseKeeperFilter" Mode="In" Type="Int32" />
             <Parameter Name="UseProducerFilter" Mode="In" Type="Int32" />
             <Parameter Name="UseOrderProjectFilter" Mode="In" Type="Int32" />
+            <Parameter Name="UseProductBarcodeFilter" Mode="In" Type="Int32" />
           </FunctionImport>
           <FunctionImport Name="GetRestInfoByRestMultiKey" IsComposable="true" ReturnType="Collection(CorumModel.GetRestInfoByRestMultiKey_Result)">
             <Parameter Name="snapShotId" Mode="In" Type="Int32" />
@@ -5013,7 +5026,9 @@
             <Parameter Name="Shifr_MDM" Mode="In" Type="String" />
             <Parameter Name="BacodeProduct" Mode="In" Type="String" />
             <Parameter Name="BacodeConsignment" Mode="In" Type="String" />
+            <Parameter Name="BacodesAll" Mode="In" Type="String" />
           </FunctionImport>
+          <EntitySet Name="TenderServices" EntityType="CorumModel.TenderServices" />
           </EntityContainer>
         <ComplexType Name="SelectFieldsOfStuctureForImport_Result">
           <Property Type="String" Name="ColumnName" Nullable="true" />
@@ -8490,6 +8505,13 @@
           <Property Type="String" Name="BalanceCurrency" Nullable="true" MaxLength="50" />
           <Property Type="Decimal" Name="CurrencyIndexToUAH" Nullable="true" Precision="18" Scale="2" />
         </ComplexType>
+        <EntityType Name="TenderServices">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10489,6 +10511,14 @@
               </ComplexTypeMapping>
             </ResultMapping>
           </FunctionImportMapping>
+          <EntitySetMapping Name="TenderServices">
+            <EntityTypeMapping TypeName="CorumModel.TenderServices">
+              <MappingFragment StoreEntitySet="TenderServices">
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

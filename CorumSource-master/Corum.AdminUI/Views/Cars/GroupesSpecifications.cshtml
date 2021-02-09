@@ -1,0 +1,303 @@
+﻿
+@model Corum.Models.GroupesSpecNavigationResult<Corum.Models.ViewModels.Cars.GroupesSpecificationsViewModel>
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Спецификации по договору";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+}
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+
+}
+
+@Html.Partial("_CloneSpecificationDialog")
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 main">
+            <h4 class="centered_column">Реестр спецификаций</h4>
+            <div class="table-header clearfix">
+                <div class="row main">
+                    @Html.ActionLink("К реестру договоров", "Contracts", "Cars", new { carOwnerId = @Model.contractInfo.CarOwnersId, isForwarder = @Model.contractInfo.IsForwarder, IsMainMenu = @Model.isMainMenu }, new { @class = "btn btn-success", @style = "margin-right:10px" })
+                    <a class="btn btn-primary" href="/Cars/NewGroupeSpecification?contractId=@Model.contractInfo.Id&isForwarder=@Model.isMainMenu.ToString().ToLower()&isMainMenu=@Model.isMainMenu.ToString().ToLower()">Новая спецификация +</a>
+
+                </div>
+                <div class="col-md-12">
+                    <div class="col-md-6">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <span class="badge">@Model.contractInfo.ContractNumber</span>Номер договора
+                            </li>
+                            <li class="list-group-item">
+                                <span class="badge">@Model.contractInfo.BalanceKeeperName</span>Плательщик
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <ul class="list-group">
+                            <li class="list-group-item">
+                                <span class="badge">@Model.contractInfo.DateBeg - @Model.contractInfo.DateEnd </span>Период действия договора
+                            </li>
+                            @if (@Model.contractInfo.IsForwarder)
+                            {
+                                <li class="list-group-item">
+                                    <span class="badge">@Model.contractInfo.CarOwnersName</span>Экспедитор
+                                </li>
+                            }
+                            else
+                            {
+                            <li class="list-group-item">
+                                <span class="badge">@Model.contractInfo.ExpeditorName</span>Экспедитор
+                            </li> 
+                            }                           
+                        </ul>
+                    </div>
+                </div>
+                <div style="font-size: 13px;">
+                    @(Html.Grid(Model.DisplayValues)
+                          .Columns(columns =>
+                          {
+                          columns.Add()
+                          .Titled("Название <br> спецификации")
+                          .SetWidth("20%")
+                          .Css("colored-cell")
+                          .Filterable(true)
+                          .Sortable(true)
+                          .Encoded(false)
+                           .Sanitized(false)
+                          .RenderValueAs(o =>
+                        @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+                            @o.NameGroupeSpecification
+                        </div>);
+
+                          columns.Add().Format("{0:dd.MM.yyyy}")
+                          .Titled("Дата начала<br>действия<br>спецификации")
+                          .Filterable(true)
+                          .Sortable(true)
+                          .Encoded(false)
+                          .Sanitized(false)
+                          .Css("colored-cell")
+                          .RenderValueAs(o =>
+                        @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+                            @o.DateBeg
+                        </div>);
+
+                          columns.Add().Format("{0:dd.MM.yyyy}")
+                          .Titled("Дата конца<br>действия<br>спецификации")
+                          .Filterable(true)
+                          .Sortable(true)
+                          .Encoded(false)
+                          .Sanitized(false)
+                          .Css("colored-cell")
+                          .RenderValueAs(o =>
+                        @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+                            @o.DateEnd
+                        </div>);
+
+                          columns.Add()
+                          .Titled("Стоимость<br>топлива<br>(ДТ/бензин)")
+                          .SetWidth("20%")
+                          .Filterable(true)
+                          .Sortable(true)
+                          .Encoded(false)
+                          .Sanitized(false)
+                          .Css("colored-cell")
+                          .RenderValueAs(o =>
+                            @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+                                @o.FuelPrice
+                            </div>);
+
+                          columns.Add()
+                          .Titled("Курс<br>грн/руб")
+                          .SetWidth("20%")
+                          .Filterable(true)
+                          .Sortable(true)
+                          .Encoded(false)
+                          .Sanitized(false)
+                          .Css("colored-cell")
+                          .RenderValueAs(o =>
+                            @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+                                @o.ExchangeRateUahRub
+                            </div>); 
+
+                          columns.Add()
+                          .Filterable(true)
+                          .Sortable(true)
+                          .Encoded(false)
+                          .Sanitized(false)
+                          .Css("centered_column colored-cell")
+                          .Titled("Активный")
+                          .RenderValueAs(o =>
+                            @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+                                @Html.CheckBox(o.Id.ToString(), @o.IsActive, new { disabled = "disabled", @readonly = "readonly" })
+                            </div>);
+
+                          columns.Add()
+                         .Titled("Отсрочка<br>в днях")
+                         .Css("centered_column colored-cell")
+                         .Filterable(true)
+                         .Sortable(true)
+                         .Encoded(false)
+                         .Sanitized(false)
+                         .RenderValueAs(o =>
+                        @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+                            @o.DaysDelay
+                        </div>);
+
+                          columns.Add()
+                          .Titled("Кол-во<br>услуг")
+                          .Css("centered_column colored-cell")
+                          .Filterable(true)
+                          .Sortable(true)
+                          .Encoded(false)
+                          .Sanitized(false)
+                          .RenderValueAs(o =>
+                        @<div @Html.Raw("style='color:#330033!important;background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+                            @o.CountSpecifications
+                        </div>); 
+
+
+
+                        columns.Add()
+                        .Titled("Действия")
+                        .Encoded(false)
+                        .Sanitized(false)
+                        .Css("centered_column colored-cell")
+                        .SetWidth("10%")
+                        .RenderValueAs(o =>
+                        @<div class="edit-delete-copy-links" @Html.Raw("style='color:#330033!important; background:" + @o.BackgroundColor + "!important;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+                            <a class="tarash-i update_link tooltips" href="@Url.Action("UpdateGroupeSpecification", "Cars", new {groupeSpecId = o.Id, IsMainMenu = @Model.isMainMenu })">
+                                <span class="tooltip-message">Изменить спецификацию</span>
+                                <span style="color: #330033!important;"  class="glyphicon glyphicon-pencil"></span>
+                            </a>
+                            @if (@o.CanBeDelete)
+                                                    {
+                                <a class="tarash-i tooltips" href="@Url.Action("DeleteGroupeSpecification", "Cars", new { groupeSpecId = o.Id, contractId = o.ContractId, IsMainMenu = @Model.isMainMenu })" onclick="return confirm('Хотите удалить спецификацию?');">
+                                    <span class="tooltip-message">Удалить спецификацию</span>
+                                    <span style="color: #330033!important;"  class="glyphicon glyphicon-trash"></span>
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="disable-glyphicon tooltips tarash-i" href="#">
+                                    <span class="tooltip-message">Спецификация не может быть удалена</span>
+                                    <span style="color: #330033!important;opacity: 0.3;"  class="glyphicon glyphicon-trash"></span>
+                                </a>
+                            }
+
+                            @* <a class="tarash-i tooltips" href="@Url.Action("CloneGroupeSpecification", "Cars", new {groupeSpecId = o.Id, IsMainMenu = @Model.isMainMenu})">
+        <span class="tooltip-message">Клонировать спецификацию</span>
+        <span style="color: #330033 !important;" class="glyphicon glyphicon-plus-sign"></span>
+    </a>*@
+                    @{
+                        bool m = @Model.isMainMenu;
+                        int IsMainMenu = m ? 1 : 0;
+                    }
+                             <a class="tarash-i tooltips" onclick="CloneSpecification(@o.Id, @IsMainMenu)">                                 
+                                <span class="tooltip-message">Клонировать спецификацию</span>
+                                <span style="color: #330033!important;" class="glyphicon glyphicon-plus-sign"></span>                                 
+                             </a>
+                    
+                            <a class="tarash-i tooltips" href="@Url.Action("Specifications", "Cars", new { groupeSpecId = o.Id, IsMainMenu = @Model.isMainMenu })">
+                                <span class="tooltip-message">Услуги</span>
+                                <span style="color: #330033!important;"  class="glyphicon glyphicon-th-list"></span>
+                            </a>
+                        </div>);
+
+
+                          }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())
+                </div>
+            </div>
+
+            @TPagging("GroupesSpecifications", "Cars", @Model.RequestParams, this)
+
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        function CloneSpecification(groupeSpecId, IsMainMenu) {
+            var isMainMenuValue = (IsMainMenu == 1) ? true : false;
+                      
+                        $('#clonespecificationdialog')
+                            .dialog({
+                                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                                    autoOpen: false,
+                                    width: 600,
+                                    top: 25,
+                                    resizable: false,
+                                    tags: true,
+                                    title: "Параметры клонирования спецификации",
+                                    modal: true,
+                                    open: function (event, ui) {
+                                            InitFilterDropDowns();                                         
+                                        },
+                                close: function (event, ui) {
+                                        $(this).dialog('destroy');
+                                    },
+                                create: function (event, ui) {
+                                        $("#disable_all").addClass("disable_all");
+                                    },
+                                beforeClose: function (event, ui) {
+                                        $("#disable_all").removeClass("disable_all");
+                                    },
+                                buttons:
+                               [
+                                    {
+                                            text: "Отмена",
+                                            "class": 'cancel-btn btn btn-outline',
+                                            click: function () {
+                                                    $(this).dialog("close");
+                                                }
+                                    },
+                                {
+                                        text: "Отправить",
+                                        "class": 'btn btn-primary',
+                                        click: function () {
+                                                var ContractsId = $('#ContractsId').val();
+
+                                                $.post('@Url.Action("CloneGroupeSpecification", "Cars")',
+                                                    {
+                                                            groupeSpecId: groupeSpecId,
+                                                            isMainMenu: isMainMenuValue,
+                                                            ContractsId: ContractsId
+                                                        },
+                                            function (data) {
+                                                     alert('Клонирование спецификации выполнено');
+                                              });
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            ]
+                        });
+
+                    $('#clonespecificationdialog').dialog('open');
+
+                    return;
+                }
+
+
+        $(document).ready(function () {
+            InitializeDateTimePickers();
+            InitFilterDropDowns();
+        });
+
+    </script>
+}

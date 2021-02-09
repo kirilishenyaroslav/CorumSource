@@ -1,0 +1,266 @@
+﻿@model Corum.Models.RestsNavigationResult<Corum.Models.ViewModels.RestViewModel>
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+@{
+    var numberFormat = new CultureInfo("en-US", false).NumberFormat;
+}
+
+@{
+    ViewBag.Title = "Rests";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeRestsReportsChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                    (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                    new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+    </div>
+}
+
+@Html.Hidden("CurrentGroupFieldName_", Model.CurrentGroupFieldName, new { id = "CurrentGroupFieldName_" })
+
+@Html.Hidden("FilterStorageId_", Model.FilterStorageId, new { id = "FilterStorageId_" })
+@Html.Hidden("FilterCenterId_", Model.FilterCenterId, new { id = "FilterCenterId_" })
+@Html.Hidden("FilterRecieverPlanId_", Model.FilterRecieverPlanId, new { id = "FilterRecieverPlanId_" })
+@Html.Hidden("FilterRecieverFactId_", Model.FilterRecieverFactId, new { id = "FilterRecieverFactId_" })
+@Html.Hidden("FilterKeeperId_", Model.FilterKeeperId, new { id = "FilterKeeperId_" })
+@Html.Hidden("FilterProducerId_", Model.FilterProducerId, new { id = "FilterProducerId_" })
+
+@Html.Hidden("UseStorageFilter_", Model.UseStorageFilter, new { id = "UseStorageFilter_" })
+@Html.Hidden("UseCenterFilter_", Model.UseCenterFilter, new { id = "UseCenterFilter_" })
+@Html.Hidden("UseRecieverPlanFilter_", Model.UseRecieverPlanFilter, new { id = "UseRecieverPlanFilter_" })
+@Html.Hidden("UseRecieverFactFilter_", Model.UseRecieverFactFilter, new { id = "UseRecieverFactFilter_" })
+@Html.Hidden("UseKeeperFilter_", Model.UseKeeperFilter, new { id = "UseKeeperFilter_" })
+@Html.Hidden("UseProducerFilter_", Model.UseProducerFilter, new { id = "UseProducerFilter_" })
+
+
+@Html.Hidden("PriceForEndConsumer_", Model.PriceForEndConsumer, new { id = "PriceForEndConsumer_" })
+@Html.Hidden("PriceForFirstReciver_", Model.PriceForFirstReciver, new { id = "PriceForFirstReciver_" })
+@Html.Hidden("PlanFullCost_", Model.PlanFullCost, new { id = "PlanFullCost_" })
+@Html.Hidden("PlanChangableCost_", Model.PlanChangableCost, new { id = "PlanChangableCost_" })
+@Html.Hidden("FactFullCosts_", Model.FactFullCosts, new { id = "FactFullCosts_" })
+@Html.Hidden("FactChangableCosts_", Model.FactChangableCosts, new { id = "FactChangableCosts_" })
+@Html.Hidden("BalancePrice_", Model.BalancePrice, new { id = "BalancePrice_" })
+
+<div class="container-fluid">
+
+    @Html.Partial("_restReportSetSettingsDialog");
+
+    <div class="row">
+        <div class="col-lg-12 main">
+
+            <div class="row">
+                <div style="margin-bottom: 15px; text-align:center;" class="col-md-12">
+                    <span style="margin-bottom: 20px; font-weight: bold;">Реестр остатков за период: @Model.SnapshotInfo.ActualDateBeg.Value.ToString("dd.MM.yyyy") - @Model.SnapshotInfo.ActualDateEnd.Value.ToString("dd.MM.yyyy")</span>
+                </div>
+            </div>
+
+            <div class="row">
+                <div id="showrestsettings" style="margin-bottom: 15px;" class="col-md-8">
+                        <input type="button" value="Конфигурация" class="btn btn-default" onclick="ShowSettings()"/>&nbsp;&nbsp;                     
+                      @Html.ActionLink("Экспорт в excel", "ReestrReportAsExcel", "ExportToExcel", new
+                          {
+                              snapshotId = Model.SnapshotInfo.Id,
+
+                              CurrentGroupFieldName = Model.CurrentGroupFieldName,
+
+                              FilterStorageId = Model.FilterStorageId,
+                              FilterCenterId = Model.FilterCenterId,
+                              FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                              FilterRecieverFactId = Model.FilterRecieverFactId,
+                              FilterKeeperId = Model.FilterKeeperId,
+                              FilterProducerId = Model.FilterProducerId,
+
+                              UseStorageFilter = Model.UseStorageFilter,
+                              UseCenterFilter = Model.UseCenterFilter,
+                              UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                              UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                              UseKeeperFilter = Model.UseKeeperFilter,
+                              UseProducerFilter = Model.UseProducerFilter,
+
+                              PriceForEndConsumer = Model.PriceForEndConsumer,
+                              PriceForFirstReciver = Model.PriceForFirstReciver,
+                              PlanFullCost = Model.PlanFullCost,
+                              PlanChangableCost = Model.PlanChangableCost,
+                              FactFullCosts = Model.FactFullCosts,
+                              FactChangableCosts = Model.FactChangableCosts,
+                              BalancePrice = Model.BalancePrice
+
+                          }, new { @class = "btn btn-success delete_link" })&nbsp;&nbsp;
+
+
+                        @Html.ActionLink("Сводная", "GroupRestReport", "Reports", new
+                        {
+                            snapshotId = Model.SnapshotInfo.Id,
+                            CurrentGroupFieldName = Model.CurrentGroupFieldName,
+
+                            FilterStorageId = Model.FilterStorageId,
+                            FilterCenterId = Model.FilterCenterId,
+                            FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                            FilterRecieverFactId = Model.FilterRecieverFactId,
+                            FilterKeeperId = Model.FilterKeeperId,
+                            FilterProducerId = Model.FilterProducerId,
+
+                            UseStorageFilter = Model.UseStorageFilter,
+                            UseCenterFilter = Model.UseCenterFilter,
+                            UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                            UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                            UseKeeperFilter = Model.UseKeeperFilter,
+                            UseProducerFilter = Model.UseProducerFilter,
+
+                            PriceForEndConsumer = Model.PriceForEndConsumer,
+                            PriceForFirstReciver = Model.PriceForFirstReciver,
+                            PlanFullCost = Model.PlanFullCost,
+                            PlanChangableCost = Model.PlanChangableCost,
+                            FactFullCosts = Model.FactFullCosts,
+                            FactChangableCosts = Model.FactChangableCosts,
+                            BalancePrice = Model.BalancePrice
+                        }, new { @class = "btn btn-info" })
+                </div>
+                <div class="col-md-4" style="font-size: 10px !important;">
+                    @Html.Partial("_restReportFilterSettings")
+                </div>
+            </div>
+
+            <div id="RestReportTableWrapper" class="table-header clearfix row" style="font-size: 10px !important;">
+                @Html.Partial("_restReportDetailsValues")
+                
+            </div>
+
+            @TPagging("RestReport", "Reports", @Model.RequestParams, this)
+
+        </div>
+    </div>
+
+</div>
+
+
+@section scripts
+{
+    <script>
+
+        var offset = $('.navbar').height();
+        $("html:not(.legacy) table").stickyTableHeaders({ fixedOffset: offset });
+
+        $(document).ready(function ()
+        {
+            if ($(".filtered").length == 0) {
+                var table = document.getElementsByTagName("table")[0];
+                var footer = table.createTFoot();
+                var row = footer.insertRow(0);
+
+                var cell = row.insertCell(0);
+                cell.innerHTML = "<strong>ВСЕГО:</strong>";
+                addClass(cell, "right_column main_column new_columns_block_start");
+
+                var EmptyCell = row.insertCell(1);
+                EmptyCell.innerHTML = "";
+                var EmptyCell = row.insertCell(2);
+                EmptyCell.innerHTML = "";
+                var EmptyCell = row.insertCell(3);
+                EmptyCell.innerHTML = "";
+                var EmptyCell = row.insertCell(4);
+                EmptyCell.innerHTML = "";
+                var EmptyCell = row.insertCell(5);
+                EmptyCell.innerHTML = "";
+                var EmptyCell = row.insertCell(6);
+                EmptyCell.innerHTML = "";
+                var EmptyCell = row.insertCell(7);
+                EmptyCell.innerHTML = "";
+                var EmptyCell = row.insertCell(8);
+
+
+                var EmptyCell = row.insertCell(9);
+                addClass(EmptyCell, "right_column new_columns_block_start new_columns_block_end");
+                EmptyCell.innerHTML = "<span class='pull-right'>@Model.DisplayTotalValues.QuantityAfter.ToString("N", numberFormat)</span>";
+
+                var EmptyCell = row.insertCell(10);
+                EmptyCell.innerHTML = "";
+
+                var EmptyCell = row.insertCell(11);
+                EmptyCell.innerHTML = "";
+
+                var EmptyCell = row.insertCell(12);
+                EmptyCell.innerHTML = "";
+
+                var EmptyCell = row.insertCell(13);
+                EmptyCell.innerHTML = "";
+
+
+                var EmptyCell = row.insertCell(14);
+                addClass(EmptyCell, "new_columns_block_end");
+                EmptyCell.innerHTML = "";
+            }
+        });
+
+
+
+
+        function ShowSettings() {
+            ShowDialogColumnSettings();
+        }
+
+        function ShowDialogColumnSettings() {
+
+            $('#restsettings')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,
+                    resizable: false,
+                    title: "Конфигурация реестра остатков",
+                    modal: true,
+                    open: function (event, ui) {
+                        InitFilterDropDowns();
+                    },
+                    close: function (event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function () {
+
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Ок",
+                            "class": 'btn btn-primary',
+                            click: function () {
+                                $("#settingsForm").submit();
+                            }
+                        }
+                    ]
+                });
+
+            $('#restsettings').dialog('open');
+
+            return;
+        }
+
+
+    </script>
+}
+

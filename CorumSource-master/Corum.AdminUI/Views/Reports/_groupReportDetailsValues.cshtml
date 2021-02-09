@@ -1,0 +1,296 @@
+﻿@model Corum.Models.RestsNavigationResult<Corum.Models.ViewModels.GroupItemRestViewModel>
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+@{
+    var numberFormat = new CultureInfo("en-US", false).NumberFormat;
+}
+
+@(Html.Grid(Model.DisplayValues)
+      .Columns(columns =>
+      {
+          columns.Add(model => model.groupItem)
+          .Titled(Model.CurrentGroupFieldNameDescription)
+          .Filterable(true)
+          .Sortable(true)
+          .SortInitialDirection(GridMvc.Sorting.GridSortDirection.Ascending)
+          .Css("structure_info main_column new_columns_block_start")
+          .Encoded(false)
+          .Sanitized(false)
+          .RenderValueAs(o => 
+              @<div>
+                   @o.groupItem
+              </div>); 
+
+          columns.Add(model => model.QuantityBefore)
+          .Titled("Начальное <br> кол-во")
+          .Encoded(false)
+          .Sanitized(false)
+          .Css("rigth_column quantity_column in_rests new_columns_block_start")
+          .RenderValueAs(o => @<div class="pull-right">@o.QuantityBefore.ToString()</div>);
+
+          columns.Add(model => model.WeightBefore)
+          .Titled("Начальная <br> масса, кг.")
+          .Encoded(false)
+          .Sanitized(false)
+           .Css("rigth_column quantity_column in_rests")
+            .RenderValueAs(o => @<div class="pull-right">@o.WeightBefore.ToString("N", numberFormat)</div>);
+
+          columns.Add()
+            .Encoded(false)
+            .Titled("Начальная <br> сумма, <br> (грн. в ценах <br> учета)")
+            .Sanitized(false)
+            .Css("right_column prices_column in_rests")
+            .RenderValueAs(o =>
+            @<div>
+                @if (Model.BalancePrice)
+                {
+                    <span>в БС:</span>
+                    <span style="font-weight: bold;" class="pull-right"> @o.BP_Before.ToString("N", numberFormat)</span>
+                    <br>
+                }
+                @if (Model.PriceForEndConsumer)
+                {
+                    <span>в ЦКП:</span>
+                    <span style="font-weight: bold" class="pull-right"> @o.PE_Before.ToString("N", numberFormat)</span>
+                    <br>
+                }
+                @if (Model.PriceForFirstReciver)
+                {
+                    <span>в ЦПП:</span>
+                    <span style="font-weight: bold" class="pull-right"> @o.PF_Before.ToString("N", numberFormat)</span>
+                    <br>
+                }
+                @if (Model.PlanFullCost)
+                {
+                    <span>в СПП:</span>
+                    <span style="font-weight: bold" class="pull-right"> @o.PCP_Before.ToString("N", numberFormat)</span>
+                    <br>
+                }
+                @if (Model.PlanChangableCost)
+                {
+                    <span>в СППР:</span>
+                    <span style="font-weight: bold" class="pull-right"> @o.PCPC_Before.ToString("N", numberFormat)</span>
+                    <br>
+                }
+                @if (Model.FactFullCosts)
+                {
+                    <span>в СФП:</span>
+                    <span style="font-weight: bold" class="pull-right"> @o.FCP_Before.ToString("N", numberFormat)</span>
+                    <br>
+                }
+                @if (Model.FactChangableCosts)
+                {
+                    <span>в СФПР:</span>
+                    <span style="font-weight: bold" class="pull-right"> @o.FCPC_Before.ToString("N", numberFormat)</span>
+                    <br>
+                }
+            </div>);
+
+if (Model.PrihodColBlock)
+{
+              columns.Add()
+                  .Titled("Приход <br> кол-во")
+                  .Encoded(false)
+                  .Sanitized(false)
+                  .Css("right_column quantity_column prihod new_columns_block_start")
+                  .RenderValueAs(o => @<div class="pull-right">@o.QuantityPrihod.ToString()</div>);
+
+              columns.Add()
+                  .Titled("Приход <br> масса, кг.")
+                  .Encoded(false)
+                  .Sanitized(false)
+                  .Css("right_column quantity_column prihod")
+                  .RenderValueAs(o => @<div class="pull-right">@o.MassPrihod.ToString("N", numberFormat)</div>);
+
+              columns.Add()
+                  .Encoded(false)
+                  .Titled("Приход <br> сумма, <br> (грн. в ценах <br> учета)")
+                  .Sanitized(false)
+                  .Css("right_column prices_column prihod")
+                  .RenderValueAs(o =>
+                      @<div>
+                          @if (Model.BalancePrice)
+                          {
+                            <span>в БС:</span>
+                            <span style="font-weight: bold;" class="pull-right"> @o.BP_Prihod.ToString("N", numberFormat)</span>
+                            <br>
+                          }
+                        @if (Model.PriceForEndConsumer)
+                        {
+                            <span>в ЦКП:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.PE_Prihod.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.PriceForFirstReciver)
+                        {
+                            <span>в ЦПП:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.PF_Prihod.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.PlanFullCost)
+                        {
+                            <span>в СПП:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.PCP_Prihod.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.PlanChangableCost)
+                        {
+                            <span>в СППР:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.PCPC_Prihod.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.FactFullCosts)
+                        {
+                            <span>в СФП:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.FCP_Prihod.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.FactChangableCosts)
+                        {
+                            <span>в СФПР:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.FCPC_Prihod.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                      </div>);
+}
+
+      if (Model.RashodColBlock)
+      {
+          columns.Add()
+              .Titled("Расход <br> кол-во")
+              .Encoded(false)
+              .Sanitized(false)
+              .Css("right_column quantity_column rashod new_columns_block_start")
+              .RenderValueAs(o => @<div class="pull-right">@o.QuantityRashod.ToString()</div>);
+
+              columns.Add()
+                  .Titled("Расход <br> масса, кг.")
+                  .Encoded(false)
+                  .Sanitized(false)
+                  .Css("right_column quantity_column rashod")
+                  .RenderValueAs(o => @<div class="pull-right">@o.MassRashod.ToString("N", numberFormat)</div>);
+
+              columns.Add()
+                  .Encoded(false)
+                  .Titled("Расход <br> сумма, <br> (грн. в ценах <br> учета)")
+                  .Sanitized(false)
+                  .Css("right_column prices_column rashod")
+                  .RenderValueAs(o =>
+                      @<div>
+                          @if (Model.BalancePrice)
+                          {
+                            <span>в БС:</span>
+                            <span style="font-weight: bold;" class="pull-right"> @o.BP_Rashod.ToString("N", numberFormat)</span>
+                            <br>
+                          }
+                        @if (Model.PriceForEndConsumer)
+                        {
+                            <span>в ЦКП:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.PE_Rashod.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.PriceForFirstReciver)
+                        {
+                            <span>в ЦПП:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.PF_Rashod.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.PlanFullCost)
+                        {
+                            <span>в СПП:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.PCP_Rashod.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.PlanChangableCost)
+                        {
+                            <span>в СППР:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.PCPC_Rashod.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.FactFullCosts)
+                        {
+                            <span>в СФП:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.FCP_Rashod.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.FactChangableCosts)
+                        {
+                            <span>в СФПР:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.FCPC_Rashod.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                      </div>);
+
+}
+
+          if (Model.AfterColBlock)
+          {
+              columns.Add()
+                  .Titled("Конечное <br> кол-во")
+                  .Encoded(false)
+                  .Sanitized(false)
+                  .Css("right_column quantity_column new_columns_block_start")
+                  .RenderValueAs(o => @<div class="pull-right">@o.QuantityAfter.ToString()</div>);
+
+              columns.Add()
+                  .Titled("Конечная <br> масса, кг.")
+                  .Encoded(false)
+                  .Sanitized(false)
+                  .Css("right_column quantity_column")
+                  .RenderValueAs(o => @<div class="pull-right">@o.WeightAfter.ToString("N", numberFormat)</div>);
+
+              columns.Add()
+                  .Encoded(false)
+                  .Titled("Конечная <br> сумма, <br> (грн. в ценах <br> учета)")
+                  .Sanitized(false)
+                  .Css("right_column prices_column new_columns_block_end")
+                  .RenderValueAs(o =>
+                      @<div>
+                        @if (Model.BalancePrice)
+                          {
+                            <span>в БС:</span>
+                            <span style="font-weight: bold;" class="pull-right"> @o.BP_After.ToString("N", numberFormat)</span>
+                            <br>
+                          }
+                        @if (Model.PriceForEndConsumer)
+                        {
+                            <span>в ЦКП:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.PE_After.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.PriceForFirstReciver)
+                        {
+                            <span>в ЦПП:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.PF_After.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.PlanFullCost)
+                        {
+                            <span>в СПП:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.PCP_After.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.PlanChangableCost)
+                        {
+                            <span>в СППР:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.PCPC_After.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.FactFullCosts)
+                        {
+                            <span>в СФП:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.FCP_After.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                        @if (Model.FactChangableCosts)
+                        {
+                            <span>в СФПР:</span>
+                            <span style="font-weight: bold" class="pull-right"> @o.FCPC_After.ToString("N", numberFormat)</span>
+                            <br>
+                        }
+                      </div>);
+          }
+      }).WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())
+           

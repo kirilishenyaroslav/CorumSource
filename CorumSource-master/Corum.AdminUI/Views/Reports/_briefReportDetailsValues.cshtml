@@ -1,0 +1,279 @@
+﻿@model Corum.Models.RestsNavigationResult<Corum.Models.ViewModels.BriefViewModel>
+@using System.Globalization
+@using GridMvc.Html
+
+@{
+    var numberFormat = new CultureInfo("en-US", false).NumberFormat;
+}
+
+
+@(Html.Grid(Model.DisplayValues)
+               .Columns(columns =>
+                 {
+
+               columns.Add(model => model.currentDate).Titled("Дата").Css("new_columns_block_start centered_column").Format("{0:dd.MM.yyyy}");
+               columns.Add(model => model.Mass_OnDate).Titled("Остатки ГП,<br> масса (тн)").Css("rigth_column");
+
+               columns.Add()
+                              .Encoded(false)
+                              .Titled("Остатки ГП,<br> в ценах <br>учета<br>")
+                              .Sanitized(false)
+                              .Css("new_columns_block_end rigth_column")
+                              .RenderValueAs(o =>
+                        @<div>
+                            @if (Model.BalancePrice)
+                            {
+                                <span>в БС:</span>
+                                <span style="font-weight: bold;" class="pull-right"> @o.BP_OnDate.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.PriceForEndConsumer)
+                            {
+                                <span>в ЦКП:</span>
+                                <span style="font-weight: bold" class="pull-right"> @o.PE_OnDate.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.PriceForFirstReciver)
+                            {
+                                <span>в ЦПП:</span>
+                                <span style="font-weight: bold" class="pull-right"> @o.PF_OnDate.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.PlanFullCost)
+                            {
+                                <span>в СПП:</span>
+                                <span style="font-weight: bold" class="pull-right"> @o.PCP_OnDate.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.PlanChangableCost)
+                            {
+                                <span>в СППР:</span>
+                                <span style="font-weight: bold" class="pull-right"> @o.PCPC_OnDate.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.FactFullCosts)
+                            {
+                                <span>в СФП:</span>
+                                <span style="font-weight: bold" class="pull-right"> @o.FCP_OnDate.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            @if (Model.FactChangableCosts)
+                            {
+                                <span>в СФПР:</span>
+                                <span style="font-weight: bold" class="pull-right"> @o.FCPC_OnDate.ToString("N", numberFormat)</span>
+                                    <br>
+                            }
+                            </div>);
+
+
+                 columns.Add(model => model.ShipOnDate_Mass).Titled("Отгрузка ГП,<br> масса (тн)").Css("new_columns_block_start rigth_column");
+
+                 columns.Add(model => model.ShipForPeriod_Mass).Titled("Отгрузка ГП<br>с начала<br>периода,<br> масса (тн)").Css("rigth_column");
+
+                 columns.Add().Encoded(false)
+                                       .Titled("Отгрузка ГП <br>в ценах <br>реализации")
+                                       .Sanitized(false)
+                                       .Css("rigth_column")
+                                       .RenderValueAs(o =>
+                                    @<div>
+                                        @if (Model.BalancePrice)
+                                        {
+                                            <span>в БС:</span>
+                                            <span style="font-weight: bold;" class="pull-right"> @o.ShipOnDate_BP.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                        @if (Model.PriceForEndConsumer)
+                                        {
+                                            <span>в ЦКП:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ShipOnDate_PE.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                        @if (Model.PriceForFirstReciver)
+                                        {
+                                            <span>в ЦПП:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ShipOnDate_PF.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                        @if (Model.PlanFullCost)
+                                        {
+                                            <span>в СПП:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ShipOnDate_PCP.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                        @if (Model.PlanChangableCost)
+                                        {
+                                            <span>в СППР:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ShipOnDate_PCPC.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                        @if (Model.FactFullCosts)
+                                        {
+                                            <span>в СФП:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ShipOnDate_FCP.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                        @if (Model.FactChangableCosts)
+                                        {
+                                            <span>в СФПР:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ShipOnDate_FCPC.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                    </div>);
+
+                     columns.Add().Encoded(false)
+                                       .Titled("Отгрузка ГП<br>в ценах <br>реализации<br> с начала<br>периода")
+                                       .Sanitized(false)
+                                       .Css("new_columns_block_end rigth_column")
+                                       .RenderValueAs(o =>
+                                    @<div>
+                                        @if (Model.BalancePrice)
+                                        {
+                                            <span>в БС:</span>
+                                            <span style="font-weight: bold;" class="pull-right"> @o.ShipForPeriod_BP.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                        @if (Model.PriceForEndConsumer)
+                                        {
+                                            <span>в ЦКП:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ShipForPeriod_PE.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                        @if (Model.PriceForFirstReciver)
+                                        {
+                                            <span>в ЦПП:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ShipForPeriod_PF.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                        @if (Model.PlanFullCost)
+                                        {
+                                            <span>в СПП:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ShipForPeriod_PCP.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                        @if (Model.PlanChangableCost)
+                                        {
+                                            <span>в СППР:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ShipForPeriod_PCPC.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                        @if (Model.FactFullCosts)
+                                        {
+                                            <span>в СФП:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ShipForPeriod_FCP.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                        @if (Model.FactChangableCosts)
+                                        {
+                                            <span>в СФПР:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ShipForPeriod_FCPC.ToString("N", numberFormat)</span>
+                                            <br>
+                                        }
+                                    </div>);
+
+
+
+
+                 columns.Add(model => model.ProdOnDate_Mass).Titled("Производство ГП,<br> масса (тн)").Css("new_columns_block_start rigth_column");
+                 columns.Add(model => model.ProdByPeriod_Mass).Titled("Производство ГП<br>с начала<br>периода,<br> масса (тн)").Css("rigth_column");
+
+
+                 columns.Add().Encoded(false)
+                                   .Titled("Производство ГП <br>в ценах <br>реализации")
+                                   .Sanitized(false)
+                                   .Css("rigth_column")
+                                   .RenderValueAs(o =>
+                                @<div>
+                                    @if (Model.BalancePrice)
+                                        {
+                                        <span>в БС:</span>
+                                            <span style="font-weight: bold;" class="pull-right"> @o.ProdOnDate_BP.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                    @if (Model.PriceForEndConsumer)
+                                        {
+                                        <span>в ЦКП:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ProdOnDate_PE.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                    @if (Model.PriceForFirstReciver)
+                                        {
+                                        <span>в ЦПП:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ProdOnDate_PF.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                    @if (Model.PlanFullCost)
+                                        {
+                                        <span>в СПП:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ProdOnDate_PCP.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                    @if (Model.PlanChangableCost)
+                                        {
+                                        <span>в СППР:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ProdOnDate_PCPC.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                    @if (Model.FactFullCosts)
+                                        {
+                                        <span>в СФП:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ProdOnDate_FCP.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                    @if (Model.FactChangableCosts)
+                                        {
+                                        <span>в СФПР:</span>
+                                            <span style="font-weight: bold" class="pull-right"> @o.ProdOnDate_FCPC.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                </div>);
+
+                     columns.Add().Encoded(false)
+                                   .Titled("Производство ГП<br>в ценах <br>реализации<br> с начала<br>периода")
+                                   .Sanitized(false)
+                                   .Css("new_columns_block_end rigth_column")
+                                   .RenderValueAs(o =>
+                                @<div>
+                                    @if (Model.BalancePrice)
+                                    {
+                                        <span>в БС:</span>
+                                        <span style="font-weight: bold;" class="pull-right"> @o.ProdByPeriod_BP.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                    @if (Model.PriceForEndConsumer)
+                                    {
+                                        <span>в ЦКП:</span>
+                                        <span style="font-weight: bold" class="pull-right"> @o.ProdByPeriod_PE.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                    @if (Model.PriceForFirstReciver)
+                                    {
+                                        <span>в ЦПП:</span>
+                                        <span style="font-weight: bold" class="pull-right"> @o.ProdByPeriod_PF.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                    @if (Model.PlanFullCost)
+                                    {
+                                        <span>в СПП:</span>
+                                        <span style="font-weight: bold" class="pull-right"> @o.ProdByPeriod_PCP.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                    @if (Model.PlanChangableCost)
+                                    {
+                                        <span>в СППР:</span>
+                                        <span style="font-weight: bold" class="pull-right"> @o.ProdByPeriod_PCPC.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                    @if (Model.FactFullCosts)
+                                    {
+                                        <span>в СФП:</span>
+                                        <span style="font-weight: bold" class="pull-right"> @o.ProdByPeriod_FCP.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                    @if (Model.FactChangableCosts)
+                                    {
+                                        <span>в СФПР:</span>
+                                        <span style="font-weight: bold" class="pull-right"> @o.ProdByPeriod_FCPC.ToString("N", numberFormat)</span>
+                                            <br>
+                                    }
+                                </div>);
+                 }))

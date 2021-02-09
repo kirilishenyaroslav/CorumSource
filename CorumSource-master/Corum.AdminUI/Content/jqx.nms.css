@@ -1,0 +1,326 @@
+﻿body {
+}
+
+.table-header{
+    /*margin-right:-2px !important;*/
+}
+
+#treeGrid{
+    margin-right:-2px !important;
+    cursor:pointer;
+}
+
+.jqx-grid-table-nms .jqx-grid-cell-nms:first-child{
+    color:#205F82;
+}
+
+/*applied to the TreeGrid widget*/
+.jqx-widget-nms{
+    border-color:#E4E4E4 !important;
+    color:#555 !important;
+    /*font-size:13px !important;*/
+    font-family: 'Open Sans', sans-serif !important;
+}
+
+/*applied to the TreeGrid indent elements. Adds horizontal spacing between the tree levels*/
+.jqx-tree-grid-indent-nms{
+
+}
+
+/*applied to the Tree column cells*/
+.jqx-tree-grid-title-nms{
+    
+}
+
+/*applied to the expand button in the Tree column*/
+.jqx-tree-grid-expand-button-nms{
+
+}
+
+/*applied to the collapse button in the Tree column*/
+.jqx-tree-grid-collapse-button-nms{
+
+}
+
+/*applied to the TreeGrid checkboxes*/
+.jqx-tree-grid-checkbox-nms{
+
+}
+
+/*applied to the Tick element in the TreeGrid checkboxes*/
+.jqx-tree-grid-checkbox-tick-nms{
+
+}
+
+/*applied to the TreeGrid icon container elements*/
+.jqx-tree-grid-icon-nms{
+
+}
+
+/*applied to the TreeGrid icon container elements in RTL mode*/
+.jqx-tree-grid-icon-rtl-nms{
+
+}
+
+/*applied to the TreeGrid icon IMG elements*/
+.jqx-tree-grid-icon-size-nms{
+
+}
+
+/*applied to TreeGrid container element*/
+.jqx-grid-nms{
+
+}
+
+/*applied to the TreeGrid Pager*/
+.jqx-grid-pager-nms{
+    background:#fafafa !important;
+}
+
+/*applied to TreeGrid Columns container element*/
+.jqx-grid-header-nms{
+
+}
+
+/*applied to a TreeGrid column*/
+.jqx-grid-column-header-nms{
+
+}
+
+.jqx-grid-column-header-nms > div > div:first-child{
+    margin-left:8px !important;
+    margin-right:8px !important;
+}
+
+.jqx-grid-column-header-nms span{
+    /*margin-left:5px !important;*/
+    font-weight:600;
+}
+
+/*applied to a TreeGrid column, Toolbar, Statusbar and Groups Header*/
+.jqx-widget-header-nms{
+    border-color:#E4E4E4 !important;
+    background:#fff;
+    border-bottom-width:2px;
+    color:#555 !important;
+    /*font-size:13px !important;*/
+}
+
+/*applied to the TreeGrid's content area*/
+.jqx-widget-content-nms{
+
+}
+
+/*applied to the TreeGrid's content area*/
+.jqx-grid-content-nms{
+   
+}
+
+/*applied to the toolbar*/
+.jqx-grid-toolbar-nms{
+    background:#fff !important;
+}
+
+/*applied to the statusbar*/
+.jqx-grid-statusbar-nms{
+
+}
+
+/*applied to the TreeGrid cells*/
+.jqx-cell-nms{
+    padding:8px !important;
+}
+
+/*applied to the TreeGrid cells*/
+.jqx-grid-cell-nms{
+    border-color:#E4E4E4 !important;
+    /*padding:8px;*/
+}
+
+/*applied to TreeGrid cells in a locked row*/
+.jqx-grid-cell-locked-nms{
+
+}
+
+/*applied to the TreeGrid cells in the sort column*/
+.jqx-grid-cell-sort-nms{
+
+}
+
+/*applied to the TreeGrid cells in the filter column*/
+.jqx-grid-cell-filter-nms{
+
+}
+
+/*alternating cells style. This is applied to the cells in the alternating rows*/
+.jqx-grid-cell-alt-nms{
+
+}
+
+/*applied to the cells in a pinned column*/
+.jqx-grid-cell-pinned-nms{
+
+}
+
+/*applied to a selected cell*/
+.jqx-grid-cell-selected-nms{
+    background:#BEBFE6;
+}
+
+/*applied to a selected cell*/
+.jqx-fill-state-pressed-nms{
+
+}
+
+/*applied to a hovered cell*/
+.jqx-grid-cell-hover-nms{
+    background:#BEBFE6;
+}
+
+/*applied to a hovered cell*/
+.jqx-fill-state-hover-nms{
+    background:#BEBFE6;
+}
+
+/*applied to the column's resize line*/
+.jqx-grid-column-resizeline-nms{
+
+}
+
+/*applied to the column's resize start line*/
+.jqx-grid-column-resizestartline-nms{
+
+}
+
+/*applied to the widget when it is disabled*/
+.jqx-fill-state-disabled-nms{
+
+}
+
+/*applied to the drop line indicators displayed in the grouping header*/
+.jqx-grid-group-drag-line-nms{
+
+}
+
+/*applied to the lines between the group columns*/
+.jqx-grid-group-column-line-nms{
+
+}
+
+/*applied to the content in cells depending on the column's cellsAlign value. Aligns the cell's content to the right*/
+.jqx-right-align-nms{
+
+}
+
+/*applied to the content in cells depending on the column's cellsAlign value. Aligns the cell's content to the left.*/
+.jqx-left-align-nms{
+
+}
+
+/*applied to the content in cells depending on the column's cellsAlign value. Aligns the cell's content to the center*/
+.jqx-center-align-nms{
+
+}
+
+
+   .jqx-tree-grid-icon-nms, .jqx-tree-grid-icon-size-nms {
+            /*width: 32px;
+            height: 32px;*/
+        }
+        .jqx-tree-grid-title-nms, .jqx-tree-grid-collapse-button-nms, .jqx-tree-grid-expand-button-nms {
+            /*height: 30px;
+            line-height: 40px;*/
+        }
+
+/*CUSTOM ADD*/
+
+
+/*jqx-dropdownlist-state-normal-nms*/
+
+.jqx-dropdownlist-state-normal-nms{
+    float:right !important;
+    margin-right:15px !important
+}
+
+/*jqx-input-group-nms*/
+
+.jqx-input-group-nms{
+    float:right !important;
+    height:29px !important;
+    margin-top:11px !important;
+}
+
+/*jqx-fill-state-normal-nms*/
+
+.jqx-fill-state-normal-nms{
+    border:none !important;
+    background: none !important;
+}
+
+.jqx-input-nms{
+    float: right !important;
+    line-height:29px !important;
+    height:29px !important;
+    border:1px solid #d6d6d6 !important;
+    border-radius:0 !important;
+}
+
+/*jqx-icon-search-nms*/
+
+.jqx-icon-search-nms{
+    margin-top:5px !important;
+}
+
+
+
+
+/*#contenttabletreeGrid{
+    overflow:visible !important;
+}
+
+#wrappertreeGrid{
+    overflow:visible !important;
+}
+
+#treeGrid{
+    overflow:visible !important;
+}
+
+#treeGrid div{
+    overflow:visible !important;
+}
+
+.jqx-grid-content-nms{
+    overflow:visible !important;
+}*/
+
+#contenttreeGrid{
+    overflow:visible !important;
+}
+
+.jqx-grid-content-nms{
+    overflow:visible !important;
+}
+
+#treeGrid{
+    overflow:visible !important;
+    border-radius:0;
+}
+
+#treeGrid > div{
+    overflow:visible !important;
+}
+
+
+#wrappertreeGrid{
+    overflow:visible !important;
+}
+
+
+#contenttabletreeGrid{
+     overflow:visible !important;
+}
+
+.jqx-cell-nms:last-child, .jqx-cell-nms:nth-child(2){
+    overflow:visible !important;
+}

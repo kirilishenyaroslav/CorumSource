@@ -1,0 +1,155 @@
+﻿@model Corum.Models.OrderCarsNavigationResult<Corum.Models.ViewModels.Orders.OrderUsedCarViewModel>
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+<div style="font-size: 13px;">
+    @(Html.Grid(Model.DisplayValues)
+                          .Columns(columns =>
+                          {
+
+                          columns.Add(model => model.OrderId)
+                     .Titled("Номер<br>и тип<br>заявки")
+                     .Css("new_columns_block_start")
+                     .Filterable(true)
+                     .Sortable(true)
+                     .Encoded(false)
+                     .Sanitized(false)
+                      .RenderValueAs(o =>
+                          @<div>
+                               <a class="tarash-i" href="@Url.Action("UpdateOrder", "Orders", new { Id = o.OrderId })">
+                                   @o.OrderId.ToString()
+                               </a> <br><hr>
+                        <a class="tarash-i update_link tooltips" href="#">
+                            <span class="tooltip-message">@o.OrderTypename</span>
+                            @o.OrderTypeShortName
+                        </a>
+                    </div>);
+
+                    
+                  
+
+columns.Add(model => model.ExpeditorName)
+.Titled("Экспедитор")
+  .Css("new_columns_block_start")
+.Filterable(true)
+.Sortable(true)
+.Encoded(false)
+.Sanitized(false)
+.RenderValueAs(o =>
+                        @<div>
+                            @o.ExpeditorName
+                        </div>);
+
+    columns.Add(model => model.ContractExpBkInfo)
+          .Titled("Договор<br>Эксп/Пл-щик")          
+          .Filterable(true)
+          .Sortable(true)
+          .Encoded(false)
+          .Sanitized(false)
+          .RenderValueAs(o =>
+        @<div>
+            @o.ContractExpBkInfo
+        </div>);
+
+    columns.Add(model => model.CarrierInfo)
+          .Titled("Перевозчик")          
+          .Filterable(true)
+          .Sortable(true)
+          .Encoded(false)
+          .Sanitized(false)
+          .RenderValueAs(o =>
+        @<div>
+            @o.CarrierInfo
+        </div>);
+
+    columns.Add(model => model.ContractInfo)
+          .Titled("Договор<br>Эксп/Пер-к")          
+          .Filterable(true)
+          .Sortable(true)
+          .Encoded(false)
+          .Sanitized(false)
+          .RenderValueAs(o =>
+        @<div>
+            @o.ContractInfo
+        </div>);
+
+    columns.Add()
+          .Titled("Марка и<br>номер авто/<br>Грузоподъ-<br>емность")
+          .Css("new_columns_block_start")        
+          .Sortable(true)
+          .Encoded(false)
+          .Sanitized(false)
+          .RenderValueAs(o =>
+        @<div>
+            @o.CarModelInfo<br><hr>
+            @o.CarRegNum<br><hr>
+            @o.CarCapacity
+        </div>);
+
+    
+
+    columns.Add()
+          .Titled("Ф.И.О.<br>водителя/<br>Номер и серия<br>прав")                    
+          .Sortable(true)
+          .Encoded(false)
+          .Sanitized(false)
+          .RenderValueAs(o =>
+        @<div>
+            @o.CarDriverInfo<br><hr>
+             @o.DriverCardInfo
+        </div>);
+
+  
+
+    columns.Add(model => model.DriverContactInfo)
+        .Titled("Контакт<br>водителя")        
+        .Filterable(true)
+        .Sortable(true)
+        .Encoded(false)
+        .Sanitized(false)
+        .RenderValueAs(o =>
+        @<div>
+            @o.DriverContactInfo
+        </div>);
+
+    columns.Add(model => model.Comments)
+       .Titled("Коммен-<br>тарий")
+.Css("new_columns_block_end")
+.Filterable(true)
+.Sortable(true)
+.Encoded(false)
+.Sanitized(false)
+.RenderValueAs(o =>
+    @<div>
+        @o.Comments
+    </div>);
+
+    columns.Add(model => model.FactShipperDateTime)
+      .Titled("Дата и время<br>фактического<br>отправления/<br>прибытия")
+.Filterable(true)
+.Sortable(true)
+.Encoded(false)
+.Sanitized(false)
+.RenderValueAs(o =>
+    @<div>
+        @o.FactShipperDateTime
+        <br><hr>
+         @o.FactConsigneeDateTime
+    </div>);
+   
+
+    columns.Add()
+      .Titled("Действия")
+       .Css("new_columns_block_end")
+      .Encoded(false)
+      .Sanitized(false)            
+      .RenderValueAs(o =>
+    @<div class="edit-delete-copy-links">
+        <a class="tarash-i update_link tooltips" href="@Url.Action("UpdateFactCars", "Orders", new {factCarsId = o.Id})">            
+                <span class="tooltip-message">Изменить факт. даты</span>
+                <span style="color: #330033 !important;" class="glyphicon glyphicon-pencil"></span>
+            </a>
+</div>);
+      }).Filterable().WithPaging((int)Model.RequestParams.PageSize).WithMultipleFilters())
+    </div>

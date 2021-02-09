@@ -1,0 +1,151 @@
+﻿@model Corum.Models.ViewModels.UserViewModel
+
+@{
+    ViewBag.Title = "UpdateUser";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm()) 
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-horizontal">
+        
+            <h4>Детальная информация о пользователе</h4>
+            <hr />
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <div class="col-md-offset-5 col-md-10">
+                        <input type="submit" value="Применить" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-5">
+                @if (!@Model.isAdmin)
+                {
+                    <div class="form-group">
+                        <div class="col-md-10 col-md-offset-5">
+                            <div>
+                                @Html.ActionLink("Изменить роли", "Roles", "Users", new { userId = @Model.userId }, new { @class = "btn btn-default"})
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="col-md-6">
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+            @Html.HiddenFor(model => model.returnurl, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.userId, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.isNewPassword, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.userPassword, new { htmlAttributes = new { @class = "form-control" } })
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.displayName, htmlAttributes: new { @class = "control-label col-md-5" })
+                <div class="col-md-7">
+                    @Html.EditorFor(model => model.displayName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.displayName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.userEmail, htmlAttributes: new { @class = "control-label col-md-5" })
+                <div class="col-md-7">
+                    @Html.EditorFor(model => model.userEmail, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.userEmail, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.postName, htmlAttributes: new { @class = "control-label col-md-5" })
+                <div class="col-md-7">
+                    @Html.EditorFor(model => model.postName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.postName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.contactPhone, htmlAttributes: new { @class = "control-label col-md-5" })
+                <div class="col-md-7">
+                    @Html.EditorFor(model => model.contactPhone, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.contactPhone, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="form-group">
+                    @Html.LabelFor(model => model.isAdmin, htmlAttributes: new { @class = "control-label col-md-5" })
+                    <div class="col-md-7">
+                        <div class="checkbox">
+                            @Html.EditorFor(model => model.isAdmin)
+                            @Html.ValidationMessageFor(model => model.isAdmin, "", new { @class = "text-danger" })
+                        </div>
+
+                    </div>
+
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.twoFactorEnabled, htmlAttributes: new {@class = "control-label col-md-5"})
+                <div class="col-md-7">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.twoFactorEnabled)
+                        @Html.ValidationMessageFor(model => model.twoFactorEnabled, "", new {@class = "text-danger"})
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(model => model.Dismissed, htmlAttributes: new { @class = "control-label col-md-5" })
+                <div class="col-md-7">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.Dismissed)
+                        @Html.ValidationMessageFor(model => model.Dismissed, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-5">
+            @if (@Model.isAdmin)
+            {
+                <p>Данный пользователь - администратор и обладает всеми правами</p>
+            }
+            else if (Model.roles.Count() < 1)
+            {
+                <p>Данный пользователь не имеет еще прав</p>
+
+            } else 
+            {
+            @Html.HiddenFor(m => m.userId, new { @id = "userId", @Name = "userId" })
+            <div style="font-size: 13px;">
+                <div class="grid-mvc" data-lang="en" data-gridname="" data-selectable="true" data-multiplefilters="true">
+                    <div class="grid-wrap">
+                        <table class="table table-striped table-bordered no-footer sort-table-header">
+                            <thead>
+                                <tr>
+                                    <th class="grid-header centered_column">Роль</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var role in Model.roles.OrderBy(x=>x.roleName))
+                                {
+                                    <tr class="odd gradeX">
+                                        <td class="">
+                                            <div style="float: left">
+                                                @role.roleName
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            }
+        </div>
+    </div>
+}
+         

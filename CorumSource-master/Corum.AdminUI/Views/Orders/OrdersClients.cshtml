@@ -1,0 +1,92 @@
+﻿@model Corum.Models.NavigationResult<Corum.Models.ViewModels.Orders.OrderClientsViewModel>
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Клиенты";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 main">
+            <h4>Реестр заказчиков</h4> <br>
+            <div class="table-header clearfix">
+
+                <div class="row">
+                   <div>
+                       @Html.ActionLink("Новый заказчик", "NewClient", "Orders", null, new { @class = "btn btn-primary", @style = "margin-bottom:10px; margin-left:15px;" })
+                       @Html.ActionLink("Фильтр", "Filter", "Orders", null, new { @class = "btn btn-success disabled", @style = "margin-bottom:10px" })
+                   </div>
+                </div>
+
+                <div style="font-size: 13px;">
+                @(Html.Grid(Model.DisplayValues)
+                  .Columns(columns =>
+                  {
+                  columns.Add(model => model.Id)
+                   .Titled("Код заказчика").Filterable(true).Sortable(true);
+
+                  columns.Add(model => model.ClientCFOName)
+                    .Titled("ЦФО/<br>Организационная структура").Filterable(true).Sortable(true);
+                  
+                  columns.Add(model => model.ClientName)
+                  .Titled("Функциональное подразделение").Filterable(true).Sortable(true);
+                  
+                  columns.Add(model => model.RoleName)
+                    .Titled("Роль").Filterable(true).Sortable(true);
+
+                  columns.Add()
+                   .Encoded(false)
+                   .Sanitized(false)
+                   .Css("centered_column")
+                   .RenderValueAs(o =>
+                         @<div class="edit-delete-copy-links">
+                            <a class="tarash-i update_link tooltips" href="@Url.Action("UpdateClient", "Orders", new { Id = o.Id })">
+                                <span class="tooltip-message">Изменить информацию о клиенте</span>
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+
+                            @if (@o.CanBeDelete)
+                            {
+                                <a class="tarash-i delete_link tooltips" href="@Url.Action("DeleteClient", "Orders", new { Id = o.Id })" onclick="return confirm('Хотите удалить клиента?');">
+                                    <span class="tooltip-message">Удалить информацию о клиенте</span>
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="disable-glyphicon tooltips tarash-i" href="#">
+                                    <span class="tooltip-message">Клиент не может быть удален</span>
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
+                            }
+        
+                        </div>);
+
+                  }).Filterable().WithPaging((int) Model.RequestParams.PageSize).WithMultipleFilters())
+                </div>
+            </div>
+
+            @TPagging("OrdersClients", "Orders", @Model.RequestParams, this)
+
+        </div>
+    </div>
+</div>
+

@@ -1,0 +1,28 @@
+﻿@model Corum.Models.GroupesSpecNavigationResult<Corum.Models.ViewModels.Cars.GroupesSpecificationsViewModel>
+
+<div id="clonespecificationdialog" class="row" style="display: none; margin:auto;">
+
+  
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Получатель
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("Contracts", "",
+                     htmlAttributes: new
+                     {
+                         id = "ContractsId",
+                         @class = "filter_dropdown",
+                         @name = "ContractsId",
+                         @style = "width: 90%!important;",
+                         data_source_url = Url.Action("GetContracts", "Cars"),
+                         data_droplist_placeholder = "Выберите договор",
+                         data_selected_text = ""//Model.contractInfo.BalanceKeeperName + " " + Model.contractInfo.ContractNumber + " от " + Model.contractInfo.ContractDate + " (с " + Model.contractInfo.DateBeg + " по " + Model.contractInfo.DateEnd + " ) "                      
+                     })           
+        </div>
+    </div>
+    <label class="col-md-12" style="font-weight: normal !important; color: red; padding-left: 0;">
+        Если договор не будет выбран, спецификация будет клонирована в рамках текущего договора
+    </label>
+</div>
+

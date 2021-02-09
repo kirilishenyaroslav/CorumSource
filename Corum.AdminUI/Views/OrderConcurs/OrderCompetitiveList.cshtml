@@ -636,7 +636,7 @@
 
         // Модульное окно при нажатии на кнопку "Тендер"
         function SendNotification(orderId) {
-            $("#ReceiverId").attr("data-source-url", '@Url.Action("GetReceivers", "Orders")' + '?Id=' + orderId);
+            @*$("#ReceiverId").attr("data-source-url", '@Url.Action("GetReceivers", "Orders")' + '?Id=' + orderId);*@
 
             $('#partialModul')
                 .dialog({
@@ -678,11 +678,11 @@
                                 var ReceiverId = $('#ReceiverId').val();
                                 var MessageText = $('#MessageText').val();
 
-                                $.post('@Url.Action("SendNotification", "Orders")',
+                                $.post('@Url.Action("SendNotificationTender", "OrderConcurs")',
                                     {
-                                        ReceiverId: ReceiverId,
-                                        OrderId: orderId,
-                                        MessageText: MessageText
+                                        //ReceiverId: ReceiverId,
+                                        //OrderId: orderId,
+                                        //MessageText: MessageText
                                     },
                                     function(data) {
                                         alert('Уведомление отправлено');

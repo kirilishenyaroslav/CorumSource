@@ -1,0 +1,211 @@
+﻿@model Corum.Models.ViewModels.ManageGroupRolesAccessViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="panel">
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-md-6" id="Groups">
+                <h4>Группы ролей</h4>
+                <div>
+                    @*@Html.ActionLink("Создать группу ролей", "NewGroupRole", "Admin", null, new { @class = "btn btn-primary", @style = "margin-bottom:10px" })*@                    
+                    <a class="btn btn-primary" id="NewGroupRole" href="NewGroupRole" style="margin-bottom:10px">Создать группу ролей</a> 
+                </div>
+
+                <div class="table-header clearfix">
+                    <div class="TreeWrapper">
+                        <div id="treeGrid">
+                            <span>Идет загрузка данных...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6" id="RoleGroups">
+
+            </div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+    $(document).ready(function() {
+
+        var source =
+        {
+            dataType: "json",
+            dataFields: [
+                { name: 'Id', type: 'string' },
+                { name: 'GroupRolesName', type: 'string' },
+                { name: 'parentId', type: 'string' },
+                { name: 'IdForScript', type: 'string' },
+                { name: 'is_Leaf', type: 'string' },
+                { name: 'CanBeDelete', type: 'string' }
+            ],
+            hierarchy:
+            {
+                keyDataField: { name: 'Id' },
+                parentDataField: { name: 'parentId' }
+            },
+            id: 'Id',
+            localData: @Html.Raw(Model.JSONData)
+            };
+
+            var dataAdapter = new $.jqx.dataAdapter(source);
+
+            dataAdapter.dataBind();
+
+            var renderer = function(row, column, value, data) {
+
+                var custom_cell_dom = '<div class="edit-delete-copy-links">' +
+                    '<a class="tarash-i update_link tooltips" href="UpdateGroupRole?roleGroupsId=' + value + '">' +
+                    '<span class="tooltip-message">Изменить группу ролей</span>' +
+                    '<span class="glyphicon glyphicon-pencil"></span>' +
+                    '</a> ';
+
+                if (data.CanBeDelete) {
+                    custom_cell_dom +=                       
+                    '<a class="tarash-i delete_link tooltips" href="RemoveGroupRole?roleGroupsId=' + value + '">' +
+                        '    <span class="tooltip-message">Удалить группу ролей</span>' +
+                        '    <span class="glyphicon glyphicon-trash"></span>' +
+                        '</a>' +
+                        '</div>';                  
+                } else {
+                custom_cell_dom +=
+                    '<a class="disable-glyphicon tooltips tarash-i" href="#">' +
+                    '    <span class="tooltip-message">Роль не может быть удалена</span>' +
+                    '    <span class="glyphicon glyphicon-trash"></span>' +
+                    '</a>' +
+                    '</div>';
+            }
+
+            return custom_cell_dom;
+
+        };
+
+
+        $("#treeGrid").jqxTreeGrid(
+        {
+            width: '100%',
+            source: dataAdapter,
+            columnsResize: true,
+            sortable: true,
+            filterable: true,
+            theme: 'nms',
+            selectionMode: 'singleRow',
+            pageable: false,
+            filterHeight: 50,
+            icons: true,
+
+            autoShowLoadElement: true,
+            //localization: getNoLocalizationForJQWidgets(),
+            editable: false,
+            altRows: true,
+            ready: function() {                           
+                var parentId = localStorage.getItem("parentId");
+                var Id = localStorage.getItem("roleGroupsId");
+
+                var row = $("#treeGrid").jqxTreeGrid('getRow', Id);
+
+                $("#RoleGroups").empty();
+                $("#RoleGroups").append('<h4>Роли</h4>');               
+
+                if (row != null) {
+                    //при изменении - становимся на сам элемент
+                    FullExpandById('treeGrid', Id);
+                    $("#treeGrid").jqxTreeGrid('selectRow', Id);
+                    // GetDocumentsInfoEx();
+
+                    $("#RoleGroups").empty();
+                    $("#RoleGroups").load("RoleGroupRoles?roleGroupsId=" + Id);
+
+                    $("#NewGroupRole").attr('href', 'NewGroupRole?parentId=' + Id);
+                }
+                else
+                {                    
+                    //при удалении - становимся на родительский элемент
+                    FullExpandById('treeGrid', parentId);
+                    $("#treeGrid").jqxTreeGrid('selectRow', parentId);                    
+                    
+                    $("#RoleGroups").empty();
+                    $("#RoleGroups").append('<h4>Роли</h4>');
+
+                    $("#NewGroupRole").attr('href', 'NewGroupRole?parentId=' + parentId);                
+                }                               
+
+            },
+            columns: [
+                { text: "Наименование", dataField: 'GroupRolesName', width: '65%' },
+                { text: "Группа ролей", dataField: 'IdForScript', cellsrenderer: renderer, width: '35%' }
+            ]
+        });
+
+        $('#treeGrid').on('rowExpand',
+            function(event) {  
+                debugger;
+                var args = event.args;
+                // row data.
+                var row = args.row;
+                // row key.
+                var key = args.key;
+                //var rows = $("#treeGrid").jqxTreeGrid('getRow', args.key);
+                //alert("The expanded row is: " + row.GroupRolesName);                
+                var rows = $("#treeGrid").jqxTreeGrid('getRows');
+                for(var i=1;i <= rows.length; i++){
+                    $("#treeGrid").jqxTreeGrid('expandRow',rows[i-1].UNIQUEID);
+                }
+            });
+
+        $('#treeGrid').on('rowSelect',
+            function(event) {                
+                var key = args.key;                
+                var rows = $("#treeGrid").jqxTreeGrid('getRow', args.key);
+                //запоминаем родительский элемент
+                localStorage.setItem("parentId", rows.parentId);
+                
+                if (rows.is_Leaf) {
+                    $("#RoleGroups").empty();
+                    localStorage.setItem("roleGroupsId", key);                                                           
+
+                    $("#RoleGroups").load("RoleGroupRoles?roleGroupsId=" + key);
+                } else {
+                    $("#RoleGroups").empty();
+                    $("#RoleGroups").append('<h4>Роли</h4>');
+                }
+                
+                $("#NewGroupRole").attr('href', 'NewGroupRole?parentId=' + key);
+                              
+
+                //$("#NewRole").attr('href', 'Admin/NewRole?roleGroupsId=' + key);
+                //var isLeaf = rows.
+                //var row = $("#treeGrid").jqxTreeGrid('getRow', args.key);
+                //if (row.leaf == true) {
+                //    $("#NewCategoryLink").addClass('disabled');
+                //    $("#MasterId").val(args.key);
+                //    GetCurrAlternativeInfoEx();
+                //}
+                //else {
+                //    $("#NewCategoryLink").removeClass('disabled');
+                //    $("#MasterId").val(args.key);
+                //    $("#detailGrid").html("");
+                //}
+
+                //$("#NewCategoryLink").attr("href", "#Categories/NewCategory?def_category=" + args.key);
+                //  $("#btngridButton").attr("href", "#Users/Roles?userId=" + args.key);
+
+            });
+ 
+
+        $("#NewRole").click(function() {   
+            $("#RoleGroups").load("NewRole?roleGroupsId=" + key);            
+
+        });
+
+
+    });
+    </script>
+}

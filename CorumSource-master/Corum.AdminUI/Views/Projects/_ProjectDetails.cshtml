@@ -1,0 +1,251 @@
+﻿@model Corum.Models.ViewModels.Orders.OrderProjectViewModel
+
+<style>
+    .select2-container {
+        width: 80%;
+    }
+</style>
+
+
+@Html.HiddenFor(x => x.Id)
+<div class="row" style="margin-left:10px;">
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Code, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.Code, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+            @Html.ValidationMessageFor(model => model.Code, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Description, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.Description, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+            @Html.ValidationMessageFor(model => model.Description, "", new { @class = "text-danger" })
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProjectTypeId, htmlAttributes: new { @class = "control-label" })
+            <div class="form-control-container full-width-select"  style="width: 70%!important;">
+                @Html.DropDownListFor(model => model.ProjectTypeId,
+                                new SelectList(Model.AvailableProjectTypes.Select(x => new { Value = x.Id, Text = x.Name }), "Value", "Text", Model.ProjectTypeId),
+                                new { @class = "form-control input" })
+                @Html.ValidationMessageFor(model => model.ProjectTypeId, "", new { @class = "text-danger" })
+          
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" style="margin-left:10px;">
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProjectCFOId, htmlAttributes: new { @class = "control-label" })
+                <div class="form-control-container full-width-select"  style="width: 70%!important;">
+                    @Html.DropDownListFor(model => model.ProjectCFOId,
+                        new SelectList(Model.AvailableCFOs.Select(x => new { Value = x.Id, Text = x.CFOName }), "Value", "Text", Model.ProjectCFOId),
+                        new { @class = "form-control input" })
+                    @Html.ValidationMessageFor(model => model.ProjectCFOId, "", new { @class = "text-danger" })
+                </div>
+
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ProjectOrderer, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.ProjectOrderer, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+            @Html.ValidationMessageFor(model => model.ProjectOrderer, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ConstructionDesc, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.ConstructionDesc, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+            @Html.ValidationMessageFor(model => model.ConstructionDesc, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+<div class="row" style="margin-left:10px;">
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.PlanCount, htmlAttributes: new { @class = "control-label" })
+                <div class="checkbox"  style="padding-top:0px;">
+                    @Html.EditorFor(model => model.PlanCount, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.PlanCount, "", new { @class = "text-danger" })
+                </div>
+            </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.ManufacturingEnterprise, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.ManufacturingEnterprise, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+            @Html.ValidationMessageFor(model => model.ManufacturingEnterprise, "", new { @class = "text-danger" })
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.isActive, htmlAttributes: new { @class = "control-label  col-md-7"})
+            <div class="col-md-5">
+                <div class="checkbox">
+                    @Html.EditorFor(model => model.isActive)
+                    @Html.ValidationMessageFor(model => model.isActive, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row" style="margin-left:10px;">
+    <div class="col-md-4">
+        <div class="form-group">
+            @Html.LabelFor(model => model.Comments, htmlAttributes: new { @class = "control-label" })
+            @Html.EditorFor(model => model.Comments, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+            @Html.ValidationMessageFor(model => model.Comments, "", new { @class = "text-danger" })
+        </div>
+    </div>
+@*@if (Model.CanShowManufacture)
+    {*@
+    <div class="col-md-4" id="PNumOrder">
+        <div class="form-group">
+            @Html.LabelFor(model => model.NumOrder, htmlAttributes: new {@class = "control-label"})
+            @Html.EditorFor(model => model.NumOrder, new {htmlAttributes = new {@class = "form-control", autocomplete = "off"}})
+            @Html.ValidationMessageFor(model => model.NumOrder, "", new {@class = "text-danger"})
+        </div>
+    </div>
+
+
+    <div class="col-md-4" id="PDateOpenOrder">
+        <div class="form-group">
+            @Html.LabelFor(model => model.DateOpenOrder, htmlAttributes: new {@class = "control-label"})
+
+            <div class="form-control-container full-width-select">
+                <div class="input-group">
+                    @Html.EditorFor(model => model.DateOpenOrder, new {htmlAttributes = new {@class = "form-control datetimepicker  client-info", @readonly = "true", autocomplete = "off", data_raw_element = "DateOpenOrderRaw"}})
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="DateOpenOrderRaw" data-linked-input="DateOpenOrder"></span>
+                </div>
+                @Html.HiddenFor(model => model.DateOpenOrderRaw)
+                @Html.ValidationMessageFor(model => model.DateOpenOrder, "", new {@class = "text-danger"})
+            </div>
+
+        </div>
+    </div>
+@*}*@
+    </div>
+    @*@if (Model.CanShowManufacture)
+    {*@
+    <hr style="border-top: 3px solid black !important;" id ="Phr">
+    <div class="row" id="Prow" style="margin-left:10px;">
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.PlanPeriodForMP, htmlAttributes: new { @class = "control-label" })                
+                    <div class="form-control-container full-width-select">
+                        <div class="input-group">
+                            @Html.EditorFor(model => model.PlanPeriodForMP, new { htmlAttributes = new { @class = "form-control datetimepicker  client-info", @readonly = "true", autocomplete = "off", data_raw_element = "PlanPeriodForMPRaw" } })
+                            <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="PlanPeriodForMPRaw" data-linked-input="PlanPeriodForMP"></span>
+                        </div>
+                        @Html.HiddenFor(model => model.PlanPeriodForMPRaw)
+                        @Html.ValidationMessageFor(model => model.PlanPeriodForMP, "", new { @class = "text-danger" })                    
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group" >
+                @Html.LabelFor(model => model.PlanPeriodForComponents, htmlAttributes: new { @class = "control-label" })                
+                    <div class="form-control-container full-width-select">
+                        <div class="input-group">
+                            @Html.EditorFor(model => model.PlanPeriodForComponents, new { htmlAttributes = new { @class = "form-control datetimepicker  client-info", @readonly = "true", autocomplete = "off", data_raw_element = "PlanPeriodForComponentsRaw" } })
+                            <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="PlanPeriodForComponentsRaw" data-linked-input="PlanPeriodForComponents"></span>
+                        </div>
+                        @Html.HiddenFor(model => model.PlanPeriodForComponentsRaw)
+                        @Html.ValidationMessageFor(model => model.PlanPeriodForComponents, "", new { @class = "text-danger" })                    
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.PlanPeriodForSGI, htmlAttributes: new { @class = "control-label" })                
+                    <div class="form-control-container full-width-select">
+                        <div class="input-group">
+                            @Html.EditorFor(model => model.PlanPeriodForSGI, new { htmlAttributes = new { @class = "form-control datetimepicker  client-info", @readonly = "readonly", autocomplete = "off", data_raw_element = "PlanPeriodForSGIRaw" } })
+                            <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="PlanPeriodForSGIRaw" data-linked-input="PlanPeriodForSGI"></span>
+                        </div>
+                        @Html.HiddenFor(model => model.PlanPeriodForSGIRaw)
+                        @Html.ValidationMessageFor(model => model.PlanPeriodForSGI, "", new { @class = "text-danger" })
+                    </div>
+                </div>            
+        </div>
+    </div>
+    <hr style="border-top: 3px solid black !important;" id="Phr2">
+    <div class="row" id ="Prow2" style="margin-left:10px;">
+        <div class="col-md-4">            
+            <div class="form-group">
+                @Html.LabelFor(model => model.PlanPeriodForTransportation, htmlAttributes: new { @class = "control-label" })                
+                    <div class="form-control-container full-width-select">
+                        <div class="input-group">
+                            @Html.EditorFor(model => model.PlanPeriodForTransportation, new { htmlAttributes = new { @class = "form-control datetimepicker  client-info", @readonly = "true", autocomplete = "off", data_raw_element = "PlanPeriodForTransportationRaw" } })
+                            <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="PlanPeriodForTransportationRaw" data-linked-input="PlanPeriodForTransportation"></span>
+                        </div>
+                        @Html.HiddenFor(model => model.PlanPeriodForTransportationRaw)
+                        @Html.ValidationMessageFor(model => model.PlanPeriodForTransportation, "", new { @class = "text-danger" })
+                    </div>                
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.PlanDeliveryToConsignee, htmlAttributes: new { @class = "control-label" })                
+                    <div class="form-control-container full-width-select">
+                        <div class="input-group">
+                            @Html.EditorFor(model => model.PlanDeliveryToConsignee, new { htmlAttributes = new { @class = "form-control datetimepicker  client-info", @readonly = "true", autocomplete = "off", data_raw_element = "PlanDeliveryToConsigneeRaw" } })
+                            <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="PlanDeliveryToConsigneeRaw" data-linked-input="PlanDeliveryToConsignee"></span>
+                        </div>
+                        @Html.HiddenFor(model => model.PlanDeliveryToConsigneeRaw)
+                        @Html.ValidationMessageFor(model => model.PlanDeliveryToConsignee, "", new { @class = "text-danger" })
+                    </div>
+                </div>            
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.DeliveryBasic, htmlAttributes: new {@class = "control-label"})
+                <div class="form-control-container full-width-select" style="width: 70%!important;">
+                    @Html.DropDownListFor(model => model.DeliveryBasic, new List<SelectListItem>
+                        {
+                            new SelectListItem {Text = "FCA"},
+                            new SelectListItem {Text = "DAP"},
+                            new SelectListItem {Text = "EXW"}
+                        }, new { @class = "form-control input" })
+                    @Html.ValidationMessageFor(model => model.DeliveryBasic, "", new { @class = "text-danger" })
+                </div>
+                </div>            
+        </div>
+    </div>
+    <div class="row" id="Prow3" style="margin-left:10px;">
+        <div class="col-md-4">
+            <div class="form-group">                
+                @Html.LabelFor(model => model.ShipperName, htmlAttributes: new { @class = "control-label" })
+                <div class="form-control-container full-width-select" style="width: 70%!important;">
+                    <div class="input-group" style="width: 90%!important;">
+                        @Html.EditorFor(model => model.ShipperName, new { htmlAttributes = new { @class = "form-control client-info", autocomplete = "off", @style = "background-color: #fff; max-width: 100% !important; width: 100% !important;" } })
+
+                        <span class="input-group-addon glyphicon glyphicon-list" id="ShowOrgFrom"></span>
+                        @Html.Hidden("Shipper", Model.Shipper, new { @id = "Shipper" })
+                    </div>
+                    @Html.ValidationMessageFor(model => model.Shipper, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ConsigneeName, htmlAttributes: new { @class = "control-label" })
+                    <div class="form-control-container full-width-select" style="width: 70%!important;">
+                        <div class="input-group" style="width: 90%!important;">
+                            @Html.EditorFor(model => model.ConsigneeName, new { htmlAttributes = new { @class = "form-control client-info", autocomplete = "off", @style = "background-color: #fff; max-width: 100% !important; width: 100% !important;" } })
+
+                            <span class="input-group-addon glyphicon glyphicon-list" id="ShowOrgTo"></span>
+                            @Html.Hidden("Consignee", Model.Consignee, new { @id = "Consignee" })
+                        </div>
+                        @Html.ValidationMessageFor(model => model.Consignee, "", new { @class = "text-danger" })
+                    </div>
+         
+            </div>
+        </div>
+    </div>
+@*}*@

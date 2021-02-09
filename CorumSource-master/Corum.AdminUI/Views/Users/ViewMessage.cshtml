@@ -1,0 +1,71 @@
+﻿@model Corum.Models.ViewModels.Admin.UserMessagesViewModel
+@{
+    ViewBag.Title = "Просмотр сообщения";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@using (Html.BeginForm("ViewMessage", "Users", FormMethod.Post))
+{
+    <div class="form-horizontal">
+
+        @Html.AntiForgeryToken()
+        @Html.ValidationSummary(true)
+        @Html.HiddenFor(m => m.Id)
+
+        <h4>Просмотр сообщения</h4>
+        <div class="form-group" style="margin-left:25px;">
+            <span class="glyphicon glyphicon-user"></span>    
+            @Html.LabelFor(model => model.MsgViewNameUser, Model.MsgViewLabelUser)<br />
+            @Html.DisplayFor(model => model.MsgViewNameUser)      
+        </div>
+        <div class="form-group" style="margin-left:25px;">
+            <span class="glyphicon glyphicon-calendar"></span>
+            @Html.LabelFor(model => model.DateTimeCreate)<br />
+            @Html.DisplayFor(model => model.DateTimeCreate)
+         </div>
+        <hr>
+         <div class="form-group" style="margin-left:25px;">
+            @Html.LabelFor(model => model.MessageSubject)<br />
+            @Html.DisplayFor(model => model.MessageSubject)
+         </div>
+         <div class="form-group" style="margin-left:25px;">
+             @Html.LabelFor(model => model.MessageText)<br />
+             @Html.DisplayFor(model => model.MessageText)
+          </div>
+         <div class="form-group" style="margin-left:25px;">
+            @Html.LabelFor(model => model.OrderId)<br />
+            @Html.DisplayFor(model => model.OrderId)
+         </div>
+        <div class="form-group" style="margin-left:25px;">
+            <div @Html.Raw((@Model.OrderId != null) ? "" : "style=\"display:none\"")> @Html.ActionLink("Перейти к изменению заявки", "UpdateOrder", "Orders", new {Id = Model.OrderId}, null)</div>
+        </div>
+          <hr>
+            <div class="form-group">
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-5 ">
+                            @Html.ActionLink("Отмена", "UserMessages", "Users", new { IsMsgIn = Model.IsMsgIn }, new { @class = "btn btn-success" })
+                    </div>
+                    <div class="col-md-offset-2 col-md-2 ">
+                            @Html.ActionLink("Ответить", "NewMessage", "Users", new { UserToId = Model.CreatedFromUser, MessageSubject = Model.MessageSubject}, new { @class = "btn btn-primary" })
+                    </div>
+                </div>
+                </div>
+        </div>
+}
+
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            InitializeDateTimePickers();
+            InitFilterDropDowns();
+
+        });
+
+    </script>
+}
+
+
+

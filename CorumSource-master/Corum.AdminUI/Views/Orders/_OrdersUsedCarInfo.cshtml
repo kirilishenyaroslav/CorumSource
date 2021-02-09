@@ -1,0 +1,244 @@
+﻿
+<div id="usedcarinfodialog" class="row" style="display: none; margin:auto;">
+
+    @Html.Hidden("UsedCarId")
+<div class="col-md-6">
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Плательщик
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("PayerInfo", "",
+                htmlAttributes: new
+                {
+                    id = "PayerInfo",
+                    @name = "PayerInfo",
+                    @class = "col-md-11",
+                    @readonly = "true"
+                })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Экспедитор
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("ExpeditorId", "",
+                htmlAttributes: new
+                {
+                    id = "ExpeditorId",
+                    @class = "filter_dropdown",
+                    @name = "ExpeditorId",
+                    data_source_url = Url.Action("GetExpeditorName", "Orders"),
+                    data_droplist_placeholder = "Выберите экспедитора",
+                    data_selected_text = ""
+                })
+        </div>
+    </div>
+
+    <div class="form-group row" id="divContractExpBkInfo">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Договор Эксп/Пл-щик*
+        </label>
+        <div class="col-md-8">
+
+            @Html.TextBox("ContractExpBkInfo", "",
+                htmlAttributes: new
+                {
+                    id = "ContractExpBkInfo",
+                    @class = "filter_dropdown",
+                    @name = "ContractExpBkInfo",
+                    data_source_url = Url.Action("GetContractExpBkInfo", "Orders"),
+                    data_droplist_placeholder = "Выберите договор экспедитор/плательщик",
+                    data_selected_text = ""
+                })
+
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Перевозчик
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("CarrierInfo", "",
+                htmlAttributes: new
+                {
+                    id = "CarrierInfo",
+                    @name = "CarrierInfo"
+                })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Договор Эксп/Пер-к
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("ContractInfo", "",
+                htmlAttributes: new
+                {
+                    id = "ContractInfo",
+                    @name = "ContractInfo"
+                })
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Комментарий
+        </label>
+        <div class="col-md-8">
+            @Html.TextArea("Comments", "",
+                    htmlAttributes: new
+                    {
+                        id = "Comments",
+                        @name = "Comments"
+                    })
+        </div>
+    </div>
+</div>
+    <div class="col-md-6">
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Марка авто
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("CarModelInfo", "",
+                     htmlAttributes: new
+                     {
+                         id = "CarModelInfo",
+                         @name = "CarModelInfo"
+                     })
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Номер авто
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("CarRegNum", "",
+                htmlAttributes: new
+                {
+                    id = "CarRegNum",
+                    @name = "CarRegNum"
+                })
+            </div>
+        </div>
+
+        <div class="form-group row" id="divCarCapacity">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Грузоподъем-ность
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("CarCapacity", "",
+                htmlAttributes: new
+                {
+                    id = "CarCapacity",
+                    @name = "CarCapacity"
+                })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Ф.И.О. водителя
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("CarDriverInfo", "",
+                     htmlAttributes: new
+                     {
+                         id = "CarDriverInfo",
+                         @name = "CarDriverInfo"
+                     })
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Номер и серия прав
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("DriverCardInfo", "",
+                     htmlAttributes: new
+                     {
+                         id = "DriverCardInfo",
+                         @name = "DriverCardInfo"
+                     })
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Контакт водителя
+            </label>
+            <div class="col-md-8">
+                @Html.TextArea("DriverContactInfo", "",
+                     htmlAttributes: new
+                     {
+                         id = "DriverContactInfo",
+                         @name = "DriverContactInfo"
+                     })
+            </div>
+        </div>
+      
+    </div>
+        @*
+                    <div class="form-group row">
+                        <label class="col-md-4" style="font-weight: normal !important;">
+                            Дата фактического отправления
+                        </label>
+                        <div class="col-md-8">
+                            @Html.TextBox("FactShipperDate", "",
+                                htmlAttributes: new
+                                {
+                                    id = "FactShipperDate",
+                                    @name = "FactShipperDate"
+                                })
+                        </div>
+                    </div>
+
+            <div class="form-group row">
+                <label class="col-md-4" style="font-weight: normal !important;">
+                    Время фактического отправления
+                </label>
+                <div class="col-md-8">
+                    @Html.TextBox("FactShipperTime", "",
+                        htmlAttributes: new
+                        {
+                            id = "FactShipperTime",
+                            @name = "FactShipperTime"
+                        })
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-4" style="font-weight: normal !important;">
+                    Дата фактического прибытия
+                </label>
+                <div class="col-md-8">
+                    @Html.TextBox("FactConsigneeDate", "",
+                        htmlAttributes: new
+                        {
+                            id = "FactConsigneeDate",
+                            @name = "FactConsigneeDate"
+                        })
+                </div>
+            </div>
+
+
+                <div class="form-group row">
+                    <label class="col-md-4" style="font-weight: normal !important;">
+                        Время фактического прибытия
+                    </label>
+                    <div class="col-md-8">
+                        @Html.TextBox("FactConsigneeTime", "",
+                                 htmlAttributes: new
+                                 {
+                                     id = "FactConsigneeTime",
+                                     @name = "FactConsigneeTime"
+                                 })
+                    </div>
+                </div>*@
+        <div>
+            <input type="submit" value="Подобрать в поля" class="btn btn-default" onclick="FitFields()" />
+        </div>
+    </div>

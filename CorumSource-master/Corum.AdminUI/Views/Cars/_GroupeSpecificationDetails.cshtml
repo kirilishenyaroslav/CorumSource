@@ -1,0 +1,106 @@
+﻿@model Corum.Models.ViewModels.Cars.GroupesSpecificationsViewModel
+
+
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="form-group" style="margin-left:10px;">
+                @Html.LabelFor(model => model.NameGroupeSpecification, htmlAttributes: new { @class = "control-label" })
+                <div class="form-control-container full-width-select" style="width: 100%!important;">
+                    @Html.TextBoxFor(model => model.NameGroupeSpecification, new { @class = "form-control input client-info", @style = "max-width: 90% !important; width: 90% !important;" })
+
+                    @Html.ValidationMessageFor(model => model.NameGroupeSpecification, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.DateBeg, htmlAttributes: new { @class = "control-label" })
+
+                <div class="input-group">
+                    @Html.EditorFor(model => model.DateBeg, new { htmlAttributes = new { @class = "form-control datetimepicker client-info", @readonly = "true", autocomplete = "off", data_raw_element = "DateBegRaw" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="DateBegRaw" data-linked-input="DateBeg"></span>
+                </div>
+
+                @Html.HiddenFor(model => model.DateBegRaw)
+                @Html.ValidationMessageFor(model => model.DateBeg, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+
+                @Html.LabelFor(model => model.DateEnd, htmlAttributes: new { @class = "control-label" })
+                <div class="input-group">
+                    @Html.EditorFor(model => model.DateEnd, new { htmlAttributes = new { @class = "form-control datetimepicker client-info", @readonly = "true", autocomplete = "off", data_raw_element = "DateEndRaw" } })
+                    <span class="input-group-addon glyphicon glyphicon-calendar datetimepicker" data-raw-element="DateEndRaw" data-linked-input="DateEnd"></span>
+                </div>
+                @Html.HiddenFor(model => model.DateEndRaw)
+                @Html.ValidationMessageFor(model => model.DateEnd, "", new { @class = "text-danger" })
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="form-group" style="margin-left:10px;">
+                @Html.LabelFor(model => model.DaysDelay, htmlAttributes: new { @class = "control-label" })
+                <div class="form-control-container full-width-select">
+                    @Html.TextBoxFor(model => model.DaysDelay, new { @class = "form-control input client-info", autocomplete = "off" })
+                    @Html.ValidationMessageFor(model => model.DaysDelay, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group" style="margin-left:10px;">
+                @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label" })
+                <div class="form-control-container full-width-select">
+                    @Html.CheckBoxFor(model => model.IsActive)
+                    @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.FuelPrice, htmlAttributes: new { @class = "control-label" })
+                <div class="form-control-container full-width-select" style="width: 100%!important;">
+                    @Html.TextBoxFor(model => model.FuelPrice, new { @class = "form-control input client-info", @style = "max-width: 90% !important; width: 90% !important;" })
+
+                    @Html.ValidationMessageFor(model => model.FuelPrice, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group" >
+                @Html.LabelFor(model => model.ExchangeRateUahRub, htmlAttributes: new { @class = "control-label" })
+                <div class="form-control-container full-width-select" style="width: 100%!important;">
+                    @Html.TextBoxFor(model => model.ExchangeRateUahRub, new { @class = "form-control input client-info", @style = "max-width: 90% !important; width: 90% !important;" })
+
+                    @Html.ValidationMessageFor(model => model.ExchangeRateUahRub, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-3">
+    <div class="row" style="margin-left:25px;">
+        <div class="form-group">
+            @Html.LabelFor(model => model.NDSTax, htmlAttributes: new { @class = "control-label" })
+
+            <div class="form-control-container full-width-select">
+                @Html.DropDownListFor(model => model.NDSTax, new List<SelectListItem>
+                    {
+                       new SelectListItem{ Text="0,00" },
+                      new SelectListItem{ Text="20,00"}
+                    }, new { @class = "form-control input" })
+
+                @Html.ValidationMessageFor(model => model.NDSTax, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+    </div>
+</div>

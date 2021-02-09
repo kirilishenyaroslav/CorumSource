@@ -1,0 +1,44 @@
+﻿
+@model Corum.Models.ImportErrorsNavigationResult<Corum.Models.ViewModels.ImportError>
+@using System.Globalization
+@using System.Security.Policy
+@using GridMvc.Html
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12 main">
+
+            <div class="row">
+                <div class="col-md-6">
+                    <h4>Лог снимка данных</h4>
+                </div>                
+            </div>
+
+
+            @Html.Partial("_partialImportError")
+
+
+        </div>
+    </div>
+</div>

@@ -1,0 +1,24 @@
+﻿@model Corum.Models.OrdersNavigationResult<Corum.Models.ViewModels.Orders.OrderBaseViewModel>
+
+
+<div id="loadfilterdialog" class="row" style="display: none; margin:auto;">
+
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Наименование фильтра
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("NameFilter", "",
+                     htmlAttributes: new
+                     {
+                         id = "FilterId",
+                         @class = "filter_dropdown",
+                         @name = "FilterId",
+                         data_source_url = Url.Action("GetFilterSettings", "Orders"),
+                         data_droplist_placeholder = "Выберите настройки фильтра",
+                         data_selected_text = ""
+                     })
+        </div>
+    </div>
+</div>
+

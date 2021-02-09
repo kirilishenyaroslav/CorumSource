@@ -1,0 +1,43 @@
+﻿@using System.Web.Mvc.Html
+@using Corum.Models.ViewModels.Orders;
+@model Corum.Models.ViewModels.Orders.OrderBaseViewModel
+
+
+<div id="ordernotificationdialog" class="row" style="display: none; margin: auto; font-size:12px;">
+    
+    <div class="col-md-6">
+        <label class="control-label">
+                Комментарий по изменению статуса
+        </label>
+        <div class="form-control-container full-width-select">
+            @Html.TextArea("StatusChangeCommentRaw", "",
+                    htmlAttributes: new
+                    {
+                        id = "StatusChangeCommentRaw"
+                    })
+        </div>
+    </div>
+    @if (Model.observers != null)
+    {
+    <div class="col-md-6" style ="padding-top: 2px">
+        <label class="control-label">
+            Уведомить об изменении:
+        </label>
+                
+                    @foreach (var observer in Model.observers.OrderBy(x => x.observerName))
+                    {
+                        <div class="form-group row">
+                            <div class="col-md-8">
+                                <label  style="font-weight: normal !important;">
+                                    @observer.observerName
+                                </label>
+                                </div>
+                                <div class="col-md-2">
+                                    <input type="checkbox" name="handledItems" value="@observer.observerId" class="observersforupdate">
+                                </div>
+                            </div>
+                    }
+                
+    </div>   
+    }     
+</div>

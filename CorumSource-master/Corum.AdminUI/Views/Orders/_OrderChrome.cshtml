@@ -1,0 +1,241 @@
+﻿@model Corum.Models.OrdersNavigationResult<Corum.Models.ViewModels.Orders.OrderBaseViewModel>
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+<div style="font-size: 13px;">
+    @(Html.Grid(Model.DisplayValues)
+                  .Columns(columns =>
+                  {
+
+
+                  columns.Add(model => model.Id).Encoded(false)
+                                       .Titled("Номер<br>и тип<br>заявки")
+                                       .Sanitized(false)
+                                       .Sortable(true)
+                                       .Css("colored-cell new_columns_block_start min-height-cell")
+                                       .RenderValueAs(o =>
+                                    @<div @Html.Raw("style='color:" + @o.FontColor + "!important; background:" + @o.BackgroundColor + "!important;font-size:10px;position: relative;display: inline-block;height: 100%; width: 100%; padding: 5px 5px!important;'")>
+                                        @o.Id<br><hr>
+                                        <a class="tarash-i update_link tooltips" href="#">
+                                            <span class="tooltip-message">@o.OrderTypename</span>
+                                            @o.OrderTypeShortName
+                                        </a>
+                                    </div>);
+
+
+    columns.Add(model => model.CurrentOrderStatusName).Encoded(false)
+                .Titled("Статус")
+                .Css("centered_column colored-cell min-height-cell")
+                .SetWidth(40)
+                .Sanitized(false)
+                .Sortable(true)
+                .RenderValueAs(o =>
+                @<div @Html.Raw("style='color:" + @o.FontColor + "!important; background:" + @o.BackgroundColor + "!important;font-size:11px;position: relative;display:inline-block;height: 100%; width: 100%; padding: 5px 5px!important;'")>
+
+                    <a class="tarash-i update_link tooltips" href="#">
+                        @o.CurrentStatusShortName <br>
+                        <span class="tooltip-message">@o.IconDescription</span>
+                        <img id="selectedIcon" src="~/Content/icons/@(o.IconFile).png" width="24" height="24" alt="@o.IconFile"><br />
+                        @if (o.PriorityType == 0)
+                        {
+                            <span>Плановая</span>
+                        }
+                        else
+                        {
+                            <span style="color:red; font-weight:bold;">Срочная</span>
+                        }
+                    </a>
+                </div>);
+
+
+    columns.Add().Encoded(false)
+                         .Titled("Даты<br>этапов")
+                         .SetWidth(280)
+                         .Css("colored-cell new_columns_block_end min-height-cell")
+                         .Sanitized(false)
+
+                         .Sortable(true)
+                         .RenderValueAs(o =>
+                        @<div @Html.Raw("style='color:" + @o.FontColor + "!important; background:" + @o.BackgroundColor + "!important;font-size:10px;position: relative;display: inline-block;height: 100%; width: 100%; padding: 5px 5px!important;'")>
+                            @if (@Model.DriftDate)
+                            {
+                                <span>черновик:</span>
+                                            <span class="pull-right"> @o.OrderDate</span>
+                                            <br><hr>
+                            }
+                            @if (@Model.AcceptDate)
+                            {
+                                <span>утвердили:</span>
+                                            <span class="pull-right"> @Model.context.GetAcceptDate(o.Id)</span>
+                                            <br><hr>
+                            }
+                            @if (@Model.ExecuteDate)
+                            {
+                                <span>приняли:</span>
+                                            <span class="pull-right"> @Model.context.GetStartExecuteDate(o.Id)</span>
+                            }
+                        </div>);
+
+    columns.Add(model => model.StartExecuteDate).Encoded(false)
+                         .Titled("Отправление<br>(Адрес/<br>организация)")
+                         .Sanitized(false)
+                         .SetWidth(250)
+                         .Css("colored-cell new_columns_block_start min-height-cell")
+
+                         .Sortable(true)
+                         .SortInitialDirection(GridSortDirection.Descending)
+                         .RenderValueAs(o =>
+                        @<div @Html.Raw("style='color:" + @o.FontColor + "!important; background:" + @o.BackgroundColor + "!important;font-size:11px;position: relative;display: inline-block;height: 100%; width: 100%; padding: 5px 5px!important;'")>
+                            @Html.Raw(@Model.context.GetFromInfo(o.Id, o.OrderType))<br><hr>
+                            <span style="font-weight: bold;">@Model.context.GetStartDate(o.Id, o.OrderType).ToString("dd.MM.yyyy HH:mm")</span>
+                        </div>);
+
+    columns.Add().Encoded(false)
+                         .SetWidth(250)
+                         .Titled("Прибытие<br>(Адрес/<br>организация)")
+                         .Sanitized(false)
+
+                          .Css("colored-cell min-height-cell")
+                         .Sortable(true)
+                         .RenderValueAs(o =>
+                        @<div @Html.Raw("style='color:" + @o.FontColor + "!important; background:" + @o.BackgroundColor + "!important;font-size:11px;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+                            @Html.Raw(@Model.context.GetToInfo(o.Id, o.OrderType))<br><hr>
+                            <span style="font-weight: bold;">@Model.context.GetFinishDate(o.Id, o.OrderType).ToString("dd.MM.yyyy HH:mm")</span>
+                        </div>);
+
+    columns.Add().Encoded(false)
+                         .Titled("Список<br>пассажиров/<br>Груз/Кол-во авто<br>(план/факт)")
+                         .SetWidth(150)
+                         .Css("colored-cell min-height-cell")
+                         .Sanitized(false)
+                         .Sortable(true)
+                         .RenderValueAs(o =>
+                        @<div @Html.Raw("style='color:" + @o.FontColor + "!important; background:" + @o.BackgroundColor + "!important;font-size:11px;position: relative;display: inline-block;height: 100%; width: 100%; padding: 5px 5px!important;'")>
+                            @Model.context.GetPassInfo(o.Id, o.OrderType)
+                            <br><hr>
+                            @Model.context.GetAutoCount(o.Id, o.OrderType)
+
+                        </div>);
+
+    columns.Add().Encoded(false)
+                         .Titled("ЦФО/<br>Подразделение/<br>Плательщик/<br>Проект(ы)")
+                         .Sanitized(false)
+                         .Css("colored-cell min-height-cell")
+                         .Sortable(true)
+                         .RenderValueAs(o =>
+                        @<div @Html.Raw("style='color:" + @o.FontColor + "!important; background:" + @o.BackgroundColor + "!important;font-size:11px;position: relative;display: inline-block;height: 100%; width: 100%;padding: 5px 5px!important;'")>
+                            @o.ClientCenterName
+                            <br><hr>
+                            @o.ClientName
+                            <br><hr>
+                            @o.PayerName
+                            <br><hr>
+                            <b>@Model.context.GetProjectsInfo(o.Id, o.OrderType)</b>
+                        </div>);
+
+    columns.Add()
+     .Encoded(false)
+     .Titled("Инициатор/<br>Исполнитель/<br>Заметки")
+     .Sanitized(false)
+     .SetWidth(250)
+     .Sortable(true)
+     .Css("colored-cell new_columns_block_end min-height-cell")
+     .RenderValueAs(o =>
+    @<div @Html.Raw("style='color:" + @o.FontColor + "!important; background:" + @o.BackgroundColor + "!important;font-size:10px;position: relative;display: inline-block;height: 100%;width: 100%; padding: 5px 5px!important;'")>
+        @o.CreatedByUserName
+        <br><hr>
+        @o.OrderExecuterName
+        <br><hr>
+        <b>@o.ExecuterNotes</b>
+    </div>);
+
+    columns.Add()
+     .Titled("Данные и<br>настройки")
+     .SetWidth(80)
+     .Encoded(false)
+     .Sanitized(false)
+     .Css("centered_column colored-cell new_columns_block_start min-height-cell")
+     .RenderValueAs(o =>
+    @<div class="edit-delete-copy-links" @Html.Raw("style='color:" + @o.FontColor + "; background:" + @o.BackgroundColor + ";font-size:11px;position: relative;display: inline-block;height: 100%; padding: 15px 5px!important;'")>
+
+        <a class="tarash-i tooltips" href="@Url.Action("OrderStatuses", "Orders", new { OrderId = o.Id })">
+            <span class="tooltip-message">Тайм-лайн заявки</span>
+            <span class="glyphicon glyphicon-th-list"></span>
+        </a>
+
+        <a class="tarash-i tooltips" href="@Url.Action("OrderAttachments", "Orders", new { OrderId = o.Id })">
+            <span class="tooltip-message">Прикрепленные документы</span>
+            <span class="glyphicon glyphicon-folder-open"></span>
+        </a>
+
+        <a class="tarash-i tooltips" href="@Url.Action("OrderObservers", "Orders", new { OrderId = o.Id })">
+            <span class="tooltip-message">Наблюдатели</span>
+            <span class="glyphicon glyphicon-eye-open"></span>
+        </a>
+
+        <a class="tarash-i tooltips" href="@Url.Action("OrderNotifications", "Orders", new {OrderId = o.Id})">
+            <span class="tooltip-message">Уведомления</span>
+            <span class="glyphicon glyphicon-envelope"></span>
+        </a>
+        @*
+            @if (@o.AllowData)
+            {
+                <a class="tarash-i tooltips" href="@Url.Action("OrderCompetitiveList", "OrderConcurs", new {OrderId = o.Id})">
+                    <span class="tooltip-message">Работа с конкурентным листом</span>
+                    <span class="glyphicon glyphicon-list-alt"></span>
+                </a>
+            }*@
+
+    </div>);
+
+                      columns.Add()
+                       .Titled("Действия")
+                       .SetWidth(95)
+                       .Encoded(false)
+                       .Sanitized(false)
+                       .Css("centered_column colored-cell new_columns_block_end min-height-cell")
+                       .RenderValueAs(o =>
+                    @<div class="edit-delete-copy-links" @Html.Raw("style='color:" + @o.FontColor + "; background:" + @o.BackgroundColor + ";font-size:11px;position: relative;display: inline-block;height: 100%;padding: 15px 5px!important;'")>
+                        <a class="tarash-i update_link tooltips" href="@Url.Action("UpdateOrder", "Orders", new { Id = o.Id })">
+                            <span class="tooltip-message">Изменить заявку</span>
+                            <span class="glyphicon glyphicon-pencil"></span>
+                        </a>
+
+                        @if (@o.CanBeDelete)
+                                {
+                            <a class="tarash-i tooltips" href="@Url.Action("DeleteOrder", "Orders", new { Id = o.Id })" onclick="return confirm('Хотите удалить чернивик заявки?');">
+                                <span class="tooltip-message">Удалить черновик заявки</span>
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        }
+                        else
+                        {
+                            <a class="disable-glyphicon tooltips tarash-i" href="#">
+                                <span class="tooltip-message">Заявка с таким статусом не может быть удалена, только отклонена</span>
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+                        }
+
+                        <a class="tarash-i update_link tooltips delete_link" href="@Url.Action("OrderAsExcel", "ExportToExcel", new { Id = o.Id })">
+                            <span class="tooltip-message">Выгрузить заявку в excel</span>
+                            <span class="glyphicon glyphicon-print"></span>
+                        </a>
+
+                        <a class="tarash-i tooltips" href="@Url.Action("CloneOrder", "Orders", new { Id = o.Id })">
+                            <span class="tooltip-message">Клонировать заявку</span>
+                            <span class="glyphicon glyphicon-plus-sign"></span>
+                        </a>
+
+                        <a class="tarash-i tooltips" onclick="SendNotification(@o.Id)">
+                            <span class="tooltip-message">Отправить уведомление</span>
+                            <span class="glyphicon glyphicon-send"></span>
+                        </a>
+
+                    </div>);
+
+                  }).WithPaging((int)Model.RequestParams.PageSize))
+</div>
+
+
+

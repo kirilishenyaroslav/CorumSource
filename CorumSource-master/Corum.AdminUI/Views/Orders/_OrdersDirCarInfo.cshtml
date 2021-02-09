@@ -1,0 +1,21 @@
+﻿<div class="form-group row" id="divDirCarInfo">
+    <label class="col-md-4" style="font-weight: normal !important;">
+        Авто*
+    </label>
+    <div class="col-md-8">
+        @Html.TextBox("DirCarInfo", "",
+                htmlAttributes: new
+                {
+                    id = "DirCarInfo",
+                    @class = "filter_dropdown",
+                    @name = "DirCarInfo",
+                    data_source_url = Url.Action("GetCarInfo", "Orders"),
+                    data_droplist_placeholder = "Выберите авто",
+                    data_selected_text = ""
+                })
+
+
+    </div>
+</div>
+
+

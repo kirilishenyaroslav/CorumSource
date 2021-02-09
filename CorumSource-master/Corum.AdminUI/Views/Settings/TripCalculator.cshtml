@@ -1,0 +1,28 @@
+﻿@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+    <div class="trip-calc">
+               
+        <a href="https://www.avtodispetcher.ru/distance/" id="avtd-embed-link">AvtoDispetcher</a>
+        <script src="https://www.avtodispetcher.ru/distance/export/frame.js"></script>
+               
+        <script>avtodispetcher_distance_frame.setLanguage("ru");
+                avtodispetcher_distance_frame.setWidth('100%');</script>
+        <script>avtodispetcher_distance_frame.setCurrency('грн');</script>
+        <script>avtodispetcher_distance_frame.setEnableExtraSettings(false);</script>
+        <script>avtodispetcher_distance_frame.setCss('@ViewBag.path');</script>
+        <script>avtodispetcher_distance_frame.setDefaultFuelPrice(@ViewBag.FuelPrice);</script>
+        <script>avtodispetcher_distance_frame.setDefaultFrom('@ViewBag.NameFrom');</script>
+        <script>avtodispetcher_distance_frame.setDefaultTo('@ViewBag.NameTo');</script>
+        
+        
+
+                  
+    </div>
+
+
+
+

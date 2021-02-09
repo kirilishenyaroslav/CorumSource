@@ -1,0 +1,245 @@
+﻿@model Corum.Models.ViewModels.Cars.ContractSpecificationsViewModel
+
+<div class="col-md-12">
+    <div class="row" style="margin-left:10px;">
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.NameId, htmlAttributes: new { @class = "control-label" })          
+                    <div class="form-control-container full-width-select" style="width: 90%!important;">
+                        @Html.TextBoxFor(model => model.NameId,
+                            new
+                            {
+                                id = "NameId",
+                                @class = "filter_dropdown form-control input",
+                                @name = "NameId",
+                                @style = "width: 100%!important;",
+                                data_source_url = Url.Action("GetSpecificationNames", "Cars"),
+                                data_droplist_placeholder = "Выберите наименование",
+                                data_selected_text = Model.NameSpecification
+                            })
+                        @Html.ValidationMessageFor(model => model.NameId, "", new { @class = "text-danger" })
+                    </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.IsTruck, htmlAttributes: new { @class = "control-label col-md-7", @style = "margin-left: -25px;" })
+                <div class="col-md-5">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.IsTruck)
+                        @Html.ValidationMessageFor(model => model.IsTruck, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.TypeSpecId, htmlAttributes: new { @class = "control-label" })
+                @foreach(var typeSpec in Model.SpecTypeInfo)
+                {
+                    <div>
+                        @Html.RadioButtonFor(m =>m.TypeSpecId, typeSpec.Id) <span>&nbsp;</span>
+                        @Html.Label(typeSpec.SpecificationType, htmlAttributes: new { @style = "font-weight: inherit;" })<br>
+                    </div>
+                }
+            </div>
+
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.IsPriceNegotiated, htmlAttributes: new { @class = "control-label col-md-7", @style = "margin-left: -25px;" })
+                <div class="col-md-5">
+                    <div class="checkbox">
+                        @Html.EditorFor(model => model.IsPriceNegotiated)
+                        @Html.ValidationMessageFor(model => model.IsPriceNegotiated, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="row" style="margin-left:10px;">
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.RouteTypeId, htmlAttributes: new { @class = "control-label" })
+
+                <div class="form-control-container full-width-select">
+                    @Html.DropDownListFor(model => model.RouteTypeId,
+                     new SelectList(Model.RouteTypesInfo.Select(x => new { Value = x.Id, Text = x.RouteTypeName }), "Value", "Text", Model.RouteTypeId),
+                     new { @class = "form-control input" })
+                    @Html.ValidationMessageFor(model => model.RouteTypeId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 priceNegotiatedFix">
+            <div class="form-group">
+                @Html.LabelFor(model => model.IntervalTypeId, htmlAttributes: new { @class = "control-label" })
+
+                <div class="form-control-container full-width-select">
+                    @Html.DropDownListFor(model => model.IntervalTypeId,
+                     new SelectList(Model.IntervalTypesInfo.Select(x => new { Value = x.Id, Text = x.IntervalTypeName }), "Value", "Text", Model.IntervalTypeId),
+                     new { @class = "form-control input" })
+                    @Html.ValidationMessageFor(model => model.IntervalTypeId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.TypeVehicleId, htmlAttributes: new { @class = "control-label" })
+                <div class="form-control-container full-width-select">
+                    <div class="form-control-container full-width-select">
+                        @Html.DropDownListFor(model => model.TypeVehicleId,
+                     new SelectList(Model.TypeVehicleInfo.Select(x => new { Value = x.Id, Text = x.VehicleTypeName }), "Value", "Text", Model.TypeVehicleId),
+                     new { @class = "form-control input" })
+                        @Html.ValidationMessageFor(model => model.TypeVehicleId, "", new { @class = "text-danger" })
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                @Html.LabelFor(model => model.CarryCapacityId, htmlAttributes: new { @class = "control-label" })
+                <div class="form-control-container full-width-select">
+                    <div class="form-control-container full-width-select">
+                        @Html.DropDownListFor(model => model.CarryCapacityId,
+                     new SelectList(Model.CarryCapacityInfo.Select(x => new { Value = x.Id, Text = x.CarryCapacity }), "Value", "Text", Model.CarryCapacityId),
+                     new { @class = "form-control input" })
+                        @Html.ValidationMessageFor(model => model.CarryCapacityId, "", new { @class = "text-danger" })
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="col-md-3">
+    <div class="row" style="margin-left:25px;">
+        <div class="form-group">
+            @Html.LabelFor(model => model.NDSTax, htmlAttributes: new { @class = "control-label" })
+
+            <div class="form-control-container full-width-select">
+                @Html.DropDownListFor(model => model.NDSTax, new List<SelectListItem>
+                    {
+                       new SelectListItem{ Text="0,00" },
+                      new SelectListItem{ Text="20,00"}
+                    }, new { @class = "form-control input" })
+
+                @Html.ValidationMessageFor(model => model.NDSTax, "", new { @class = "text-danger" })
+            </div>
+        </div>
+      
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="row" style="margin-left:10px;">
+        <div class="col-md-3 freight">
+            <div class="form-group">
+                @Html.LabelFor(model => model.RouteName, htmlAttributes: new { @class = "control-label" })
+
+                <div class="form-control-container full-width-select">
+                    @Html.TextBoxFor(model => model.RouteName, new { @class = "form-control input client-info  col-md-12", @style = "max-width: 90% !important; width: 90% !important;" })
+
+                    @Html.ValidationMessageFor(model => model.RouteName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 freight">
+            <div class="form-group">
+                @Html.LabelFor(model => model.DeparturePoint, htmlAttributes: new { @class = "control-label" })
+
+                <div class="form-control-container full-width-select">
+                    @Html.TextBoxFor(model => model.DeparturePoint, new { @class = "form-control input client-info  col-md-12", @style = "max-width: 90% !important; width: 90% !important;" })
+
+                    @Html.ValidationMessageFor(model => model.DeparturePoint, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 freight">
+            <div class="form-group">
+                @Html.LabelFor(model => model.ArrivalPoint, htmlAttributes: new { @class = "control-label" })
+
+                <div class="form-control-container full-width-select">
+                    @Html.TextBoxFor(model => model.ArrivalPoint, new { @class = "form-control input client-info", @style = "max-width: 90% !important; width: 90% !important;" })
+
+                    @Html.ValidationMessageFor(model => model.ArrivalPoint, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 freight">
+            <a style="margin-bottom: 10px;" class="btn btn-primary" onclick="SelectRoute()">
+                <span class="tooltip-message">Выбор маршрута</span>
+
+            </a>
+        </div>        
+    </div>
+</div>
+
+<div class="col-md-12">
+    <div class="row" style="margin-left:10px;">
+        <div class="col-md-3 freight priceNegotiatedFreight">
+            <div class="form-group">
+                @Html.LabelFor(model => model.RateTotalFreight, htmlAttributes: new { @class = "control-label" })
+
+                <div class="form-control-container full-width-select">
+                    @Html.TextBoxFor(model => model.RateTotalFreight, new { @class = "form-control input client-info" })
+                    @Html.ValidationMessageFor(model => model.RateTotalFreight, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 freight priceNegotiatedFreight">
+            <div class="form-group">
+                @Html.LabelFor(model => model.RouteLength, htmlAttributes: new { @class = "control-label" })
+
+                <div class="form-control-container full-width-select">
+                    @Html.TextBoxFor(model => model.RouteLength, new { @class = "form-control input client-info" })
+
+                    @Html.ValidationMessageFor(model => model.RouteLength, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-12">
+    <div class="row" style="margin-left:10px;">
+        <div class="col-md-3 fixRoute priceNegotiatedFix">
+            <div class="form-group">
+                @Html.LabelFor(model => model.RateKm, htmlAttributes: new { @class = "control-label" })
+
+                <div class="form-control-container full-width-select">
+                    @Html.TextBoxFor(model => model.RateKm, new { @class = "form-control input client-info" })
+
+                    @Html.ValidationMessageFor(model => model.RateKm, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 fixRoute priceNegotiatedFix">
+            <div class="form-group">
+                @Html.LabelFor(model => model.RateHour, htmlAttributes: new { @class = "control-label" })
+
+                <div class="form-control-container full-width-select">
+                    @Html.TextBoxFor(model => model.RateHour, new { @class = "form-control input client-info" })
+
+                    @Html.ValidationMessageFor(model => model.RateHour, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="col-md-3 fixRoute priceNegotiatedFix">
+            <div class="form-group">
+                @Html.LabelFor(model => model.RateMachineHour, htmlAttributes: new { @class = "control-label" })
+
+                <div class="form-control-container full-width-select">
+                    @Html.TextBoxFor(model => model.RateMachineHour, new { @class = "form-control input client-info" })
+
+                    @Html.ValidationMessageFor(model => model.RateMachineHour, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

@@ -1,0 +1,94 @@
+﻿@model Corum.Models.OrdersReportsNavigationResult
+
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+@if (Model.OrdersReport != null)
+{
+    var productInfoItems = Model.OrdersReport.DisplayValues.SelectMany(x => x.BalanceKeepersName).Distinct(); //.DefaultIfEmpty();
+
+
+    <div class="col-md-1">
+    </div>
+
+    <div id="detailValuesGrid" class="table-header clearfix col-md-10" style="font-size: 11px;">
+
+        <table class="table table-striped table-bordered no-footer grid-table" style="height:100%;">
+            <thead>
+                <tr>
+                    <th class="grid-header centered_column new_columns_block_start">
+                        Выполнение заявок (плановые/срочные)
+                    </th>
+
+                    @if (productInfoItems.Count() > 0)
+                    {
+                        <th class="grid-header centered_column">
+                            Кол-во заявок
+                        </th>
+
+                        string last = productInfoItems.Last();
+
+                        foreach (var product in productInfoItems)
+                        {
+                            if (product.Equals(last))
+                            {
+                                <th class="grid-header centered_column new_columns_block_end">
+                                    @product
+                                </th>
+
+                            }
+                            else
+                            {
+                                <th class="grid-header centered_column">
+                                    @product
+                                </th>
+                            }
+                        }
+                    }
+                    else
+                    {
+                        <th class="grid-header centered_column new_columns_block_end">
+                            Кол-во заявок
+                        </th>}
+                </tr>
+
+            </thead>
+            <tbody>
+                @foreach (var item in Model.OrdersReport.DisplayValues)
+                {
+                    <tr>
+                        <td class="grid-cell new_columns_block_start">@item.CntName</td>
+
+
+                        @if (item.BalanceKeepers.Count() > 0)
+                        {
+                            <td class="grid-cell rigth_column">@item.CntOrders</td>
+
+                            var count = item.BalanceKeepers.Count();
+                            foreach (var product in item.BalanceKeepers)
+                            {
+                                if (--count > 0)
+                                {
+                                    <td class="grid-cell rigth_column">@product</td>
+                                }
+                                else
+                                {
+                                    <td class="grid-cell rigth_column new_columns_block_end">@product</td>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <td class="grid-cell rigth_column new_columns_block_end">@item.CntOrders</td>
+                        }
+
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <div class="col-md-1">
+    </div>
+}

@@ -1,0 +1,527 @@
+﻿@using Corum.Models.ViewModels.Orders;
+
+@model Corum.Models.ViewModels.Orders.OrderBaseViewModel
+
+@Html.Partial("_GetOrganizations")
+@Html.Partial("_SelectRouteGrid")
+
+
+<div class="panel" style="font-size:13px;">
+     <div class="row">
+         <div class="col-md-6">
+             <div class="form-group" style="margin-left:10px;">
+                 @Html.LabelFor(model => model.PayerId, htmlAttributes: new { @class = "control-label", @style = "text-transform: uppercase!important;font-size: 15px!important;" })
+
+                 <div class="form-control-container full-width-select">
+                     @if (Model.AllowClientData)
+                     {
+                         @Html.TextBoxFor(model => model.PayerId,
+                                  new
+                                  {
+                                      id = "PayerId",
+                                      @class = "filter_dropdown form-control input",
+                                      @name = "PayerId",
+                                      data_source_url = Url.Action("GetPayers", "Orders"),
+                                      data_droplist_placeholder = "Выберите плательщика",
+                                      data_selected_text = Model.PayerName
+                                  })
+                     }
+                     else
+                     {
+                         @Html.HiddenFor(model => model.PayerId)
+                         @Html.DisplayFor(model => model.PayerName)
+                     }
+                     @Html.ValidationMessageFor(model => model.PayerId, "", new { @class = "text-danger" })
+                 </div>
+             </div>
+             <div class="form-group" style="margin-left:10px;">
+                 @Html.LabelFor(model => model.MultiProjectId, htmlAttributes: new { @class = "control-label" })
+
+                 <div class="form-control-container full-width-select">
+                     @if (Model.AllowClientData)
+                     {
+                         @Html.TextBoxFor(model => model.MultiProjectId,
+                                  new
+                                  {
+                                      id = "MultiProjectId",
+                                      @class = "filter_dropdown form-control input",
+                                      @name = "MultiProjectId",
+                                      data_source_url = Url.Action("GetProjects", "Orders"),
+                                      data_droplist_placeholder = "Выберите проекты",
+                                      data_selected_text = Model.ProjectNum
+                                  })
+                     }
+                     else
+                     {
+                         @Html.HiddenFor(model => model.MultiProjectId)
+                         @Html.DisplayFor(model => model.ProjectNum)
+                     }
+                     @Html.ValidationMessageFor(model => model.MultiProjectId, "", new { @class = "text-danger" })
+                 </div>
+             </div>
+         </div>
+         
+         <div class="col-md-3">
+             <div class="form-group">
+                 @Html.LabelFor(model => model.CreatorPosition, htmlAttributes: new { @class = "control-label" })
+
+                 <div class="form-control-container full-width-select">
+                     @if (Model.AllowClientData)
+                     {
+                         @Html.TextBoxFor(model => model.CreatorPosition, new { @class = "form-control input" })
+                     }
+                     else
+                     {
+                         @Html.HiddenFor(model => model.CreatorPosition)
+                         @Html.DisplayFor(model => model.CreatorPosition)
+                     }
+                     @Html.ValidationMessageFor(model => model.CreatorPosition, "", new { @class = "text-danger" })
+
+
+                 </div>
+             </div>
+             <div class="form-group">
+                 @Html.LabelFor(model => model.CreatorContact, htmlAttributes: new { @class = "control-label" })
+
+                 <div class="form-control-container full-width-select">
+                     @if (Model.AllowClientData)
+                     {
+                         @Html.TextBoxFor(model => model.CreatorContact, new { @class = "form-control input reg-info" })
+                     }
+                     else
+                     {
+                         @Html.DisplayFor(model => model.CreatorContact)
+                         @Html.HiddenFor(model => model.CreatorContact)
+                     }
+
+                     @Html.ValidationMessageFor(model => model.CreatorContact, "", new { @class = "text-danger" })
+
+                 </div>
+             </div>
+         </div>
+         <div class="col-md-3">
+             <div class="form-group">
+
+                 @Html.LabelFor(model => model.PriorityType, htmlAttributes: new { @class = "control-label" })
+                 <div class="form-control-container full-width-select">
+                     @if (Model.AllowClientData)
+                     {
+                         @Html.RadioButton("PriorityType", 0) <span>&nbsp;</span>
+                         @Html.Label("Плановая заявка", htmlAttributes: new { @style = "font-weight: inherit;" })   <br>
+                         @Html.RadioButton("PriorityType", 1) <span>&nbsp;</span>
+                         @Html.Label("Срочная заявка", htmlAttributes: new { @style = "color:red;" })<br>
+                         @Html.Label("Указать обоснование срочности в поле 'Общее описание заявки'!", htmlAttributes: new { @style = "font-weight: inherit;color:black;" })
+
+                     }
+                     else
+                     {
+                         if (Model.PriorityType == 0)
+                         {
+                             @Html.Label("Плановая заявка", htmlAttributes: new { @style = "font-weight: inherit;" })
+                         }
+                         else
+                         {
+                             @Html.Label("Срочная заявка", htmlAttributes: new { @style = "color:red;" })
+                         }
+
+                         @Html.HiddenFor(model => model.PriorityType)
+                     }
+
+                     @Html.ValidationMessageFor(model => model.OrderDescription, "", new { @class = "text-danger" })
+                 </div>
+
+             </div>
+         </div>
+     </div>
+
+     <div class="row">
+         <div class="col-md-12">
+             <div class="form-group" style="margin-left:10px;">
+                 @Html.LabelFor(model => model.ClientId, htmlAttributes: new { @class = "control-label" })
+
+                 <div class="form-control-container full-width-select">
+                     @if (Model.AllowClientData)
+                     {
+
+                         @Html.TextBoxFor(model => model.ClientId,
+                            new
+                            {
+                                id = "ClientId",
+                                @class = "filter_dropdown form-control input",
+                                @name = "ClientId",
+                                data_source_url = Url.Action("GetClients", "Orders"),
+                                data_droplist_placeholder = "Выберите функциональное поразделение",
+                                data_selected_text = Model.ClientName
+                            })
+                     }
+                     else
+                     {
+                         @Html.HiddenFor(model => model.ClientId)
+                         @Html.DisplayFor(model => model.ClientName)
+                     }
+                     @Html.ValidationMessageFor(model => model.ClientId, "", new { @class = "text-danger" })
+
+
+                 </div>
+             </div>
+         </div>
+
+         @if (Model.IsTransport)
+            {
+             <div class="col-md-3">
+
+             </div>
+         }
+         else
+         {
+             <div class="col-md-3">
+                 <div class="form-group">
+                     @Html.LabelFor(model => model.IsPrivateOrder, htmlAttributes: new { @class = "control-label" })
+
+                     <div class="form-control-container full-width-select">
+                         @if (Model.AllowClientData)
+                         {
+                             @Html.EditorFor(model => model.IsPrivateOrder, new { @class = "form-control input client-info" })
+                         }
+                         else
+                         {
+                             @Html.HiddenFor(model => model.IsPrivateOrder)
+                             @Html.DisplayFor(model => model.IsPrivateOrder)
+                         }
+                         @Html.ValidationMessageFor(model => model.IsPrivateOrder, "", new { @class = "text-danger" })
+                     </div>
+                 </div>
+             </div>
+         }
+     </div>
+
+     <div class="row">
+         <div class="col-md-12">
+             <div class="form-group" style="margin-left:10px;">
+                 @Html.LabelFor(model => model.OrderDescription, htmlAttributes: new { @class = "control-label" })
+
+                 <div class="form-control-container full-width-select">
+                     @if (Model.AllowClientData)
+                     {
+                         @Html.TextAreaFor(model => model.OrderDescription, new { @class = "form-control input client-info" })
+                     }
+                     else
+                     {
+                         @Html.HiddenFor(model => model.OrderDescription)
+                         @Html.DisplayFor(model => model.OrderDescription)
+                     }
+                     @Html.ValidationMessageFor(model => model.OrderDescription, "", new { @class = "text-danger" })
+                 </div>
+
+             </div>
+         </div>
+     </div>
+
+ </div>
+
+
+<ul class="nav nav-tabs nav-list" role="tablist">
+    <li role="presentation" class="active">
+        <a class="tab-page active" id="aPage5" href="#Page5" role="tab" data-toggle="tab">ПАРАМЕТРЫ ЗАЯВКИ (Клиент)</a>
+    </li>
+    <li role="presentation">
+        <a class="tab-page" id="aPage3" href="#Page3" role="tab" data-toggle="tab">ПАРАМЕТРЫ ЗАЯВКИ (Исполнитель)</a>
+    </li>
+</ul>
+
+@Html.HiddenFor(model => model.PublicEntry)
+@Html.HiddenFor(model => model.CreatedByUser)
+
+
+<div class="tab-content tab-cont-all">
+    <div role="tabpanel" class="filter-tab-pane tab-pane row" id="Page3">
+        <div class="row">
+            <div class="col-md-4">
+            <div class="form-group" style="margin-left:5px;">
+                    @Html.LabelFor(model => model.OrderExecuter, htmlAttributes: new { @class = "control-label" })
+
+                    <div class="form-control-container full-width-select">
+                        @if (Model.AllowExecuterData)
+                        {
+                           @* @Html.DropDownListFor(model => model.OrderExecuter,
+                                                            new SelectList(Model.AvaliableExecuters.Select(x => new { Value = x.userId, Text = string.Concat(x.displayName) }), "Value", "Text", Model.OrderExecuter),
+                                                            new { @class = "form-control input reg-info select-input" })*@
+                            @Html.TextBoxFor(model => model.OrderExecuter,
+                            (object)new
+                            {
+                                id = "OrderExecuter",
+                                @class = "filter_dropdown form-control input",
+                                @name = "OrderExecuter",
+                                data_source_url = Url.Action("GetOrderExecuter", "Orders", new { OrderTypeId = Model.OrderType }),
+                                data_droplist_placeholder = "Исполнитель заявки",
+                                data_selected_text = Model.OrderExecuterName
+                            })
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(model => model.OrderExecuter)
+                            @Html.DisplayFor(model => model.OrderExecuterName)
+                        }
+                        @Html.ValidationMessageFor(model => model.OrderExecuter, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.ExecuterNotes, htmlAttributes: new { @class = "control-label" })
+
+                    <div class="form-control-container full-width-select">
+                        @if (Model.AllowExecuterData)
+                        {
+                            @Html.TextAreaFor(model => model.ExecuterNotes, new { @class = "form-control input client-info" })
+                        }
+                        else
+                        {
+                            @Html.HiddenFor(model => model.ExecuterNotes)
+                            @Html.DisplayFor(model => model.ExecuterNotes)
+                        }
+                        @Html.ValidationMessageFor(model => model.ExecuterNotes, "", new { @class = "text-danger" })
+                    </div>
+                </div>
+            </div>
+            @if (Model.IsTransport)
+            {
+                <div class="col-md-5">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.TotalDistanceDescription, htmlAttributes: new { @class = "control-label" })
+
+                        <div class="form-control-container full-width-select">
+                            @if (Model.AllowExecuterData)
+                            {
+                                @Html.TextAreaFor(model => model.TotalDistanceDescription, new { @class = "form-control input client-info", @style = "max-width: 90% !important; width: 90% !important;" })
+                            }
+                            else
+                            {
+                                @Html.HiddenFor(model => model.TotalDistanceDescription)
+                                @Html.DisplayFor(model => model.TotalDistanceDescription)
+                            }
+                            @Html.ValidationMessageFor(model => model.TotalDistanceDescription, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+            }
+
+        </div>
+
+        @if (true)
+        {
+            if (@Model.Id > 0)
+            {
+                <div class="row">
+                    <div class="col-md-7">
+                        @if (Model is OrdersPassTransportViewModel)
+                        {
+                            @Html.Partial("_OrderPassRouteDetails", (OrdersPassTransportViewModel) Model)
+                        }
+
+                        @if (Model is OrdersTruckTransportViewModel)
+                        {
+                            @Html.Partial("_OrderTruckRouteDetails", (OrdersTruckTransportViewModel) Model)
+                        }
+                    </div>
+                    <div class="col-md-5">
+                        <div class="form-group" style="margin-left: 5px;">
+                            @Html.LabelFor(model => model.TotalCost, htmlAttributes: new {@class = "control-label col-md-4"})
+
+                            <div class="form-control-container full-width-select">
+                                @if (Model.AllowExecuterData)
+                                {
+                                    @Html.TextBoxFor(model => model.TotalCost, new {@class = "form-control input client-info"})
+                                }
+                                else
+                                {
+                                    @Html.HiddenFor(model => model.TotalCost)
+                                    @Html.DisplayFor(model => model.TotalCost)
+                                }
+                                @Html.ValidationMessageFor(model => model.TotalCost, "", new {@class = "text-danger"})
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-left: 5px;">
+                            @Html.LabelFor(model => model.TotalDistanceLenght, htmlAttributes: new {@class = "control-label  col-md-4"})
+
+                            <div class="form-control-container full-width-select">
+                                @if (Model.AllowExecuterData)
+                                {
+                                    @Html.TextBoxFor(model => model.TotalDistanceLenght, new {@class = "form-control input client-info"})
+                                }
+                                else
+                                {
+                                    @Html.HiddenFor(model => model.TotalDistanceLenght)
+                                    @Html.DisplayFor(model => model.TotalDistanceLenght)
+                                }
+                                @Html.ValidationMessageFor(model => model.TotalDistanceLenght, "", new {@class = "text-danger"})
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-left: 5px;">
+                            @Html.LabelFor(model => model.TimeRoute, htmlAttributes: new {@class = "control-label  col-md-4"})
+
+                            <div class="form-control-container full-width-select">
+                                @if (Model.AllowExecuterData)
+                                {
+                                    @Html.TextBoxFor(model => model.TimeRoute, new {@class = "form-control input client-info"})
+                                }
+                                else
+                                {
+                                    @Html.HiddenFor(model => model.TimeRoute)
+                                    @Html.DisplayFor(model => model.TimeRoute)
+                                }
+                                @Html.ValidationMessageFor(model => model.TimeRoute, "", new {@class = "text-danger"})
+                            </div>
+                        </div>
+                        <div class="form-group" style="margin-left: 5px;">
+                            @Html.LabelFor(model => model.TimeSpecialVehicles, htmlAttributes: new {@class = "control-label  col-md-4"})
+
+                            <div class="form-control-container full-width-select">
+                                @if (Model.AllowExecuterData)
+                                {
+                                    @Html.TextBoxFor(model => model.TimeSpecialVehicles, new {@class = "form-control input client-info"})
+                                }
+                                else
+                                {
+                                    @Html.HiddenFor(model => model.TimeSpecialVehicles)
+                                    @Html.DisplayFor(model => model.TimeSpecialVehicles)
+                                }
+                                @Html.ValidationMessageFor(model => model.TimeSpecialVehicles, "", new {@class = "text-danger"})
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    @if (true)
+                    {
+                        <div class="col-md-7">
+                            <div class="form-group" style="margin-left:5px; margin-top:10px;">
+                                @Html.LabelFor(model => model.TypeSpecId, htmlAttributes: new { @class = "control-label" })
+                                @foreach (var typeSpec in Model.SpecTypeInfo)
+                                {
+
+                                    @* @Html.RadioButtonFor(m => m.TypeSpecId, typeSpec.Id) <span>&nbsp;</span>*@
+
+                                    <input type="checkbox" name="handledItems" value="@typeSpec.Id" checked="@typeSpec.Assigned" class="unhandled">
+
+                                    @* @Html.CheckBox("TypeSpecId", new {value = typeSpec.Id, @checked = true});*@
+
+                                    @Html.Label(typeSpec.SpecificationType, htmlAttributes: new { @style = "font-weight: inherit;" })
+
+                                }
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-group" style="margin-left: 5px;">
+                            @Html.LabelFor(model => model.TotalCost, htmlAttributes: new { @class = "control-label" })
+
+                            <div class="form-control-container full-width-select">
+                                @if (Model.AllowExecuterData)
+                            {
+                            @Html.TextBoxFor(model => model.TotalCost, new { @class = "form-control input client-info" })
+                            }
+                            else
+                            {
+                            @Html.HiddenFor(model => model.TotalCost)
+                            @Html.DisplayFor(model => model.TotalCost)
+                            }
+                                @Html.ValidationMessageFor(model => model.TotalCost, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.TotalDistanceLenght, htmlAttributes: new { @class = "control-label" })
+
+                            <div class="form-control-container full-width-select">
+                                @if (Model.AllowExecuterData)
+                            {
+                            @Html.TextBoxFor(model => model.TotalDistanceLenght, new { @class = "form-control input client-info" })
+                            }
+                            else
+                            {
+                            @Html.HiddenFor(model => model.TotalDistanceLenght)
+                            @Html.DisplayFor(model => model.TotalDistanceLenght)
+                            }
+                                @Html.ValidationMessageFor(model => model.TotalDistanceLenght, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group" style="margin-left: 5px;">
+                            @Html.LabelFor(model => model.TimeRoute, htmlAttributes: new { @class = "control-label" })
+
+                            <div class="form-control-container full-width-select">
+                                @if (Model.AllowExecuterData)
+                            {
+                            @Html.TextBoxFor(model => model.TimeRoute, new { @class = "form-control input client-info" })
+                            }
+                            else
+                            {
+                            @Html.HiddenFor(model => model.TimeRoute)
+                            @Html.DisplayFor(model => model.TimeRoute)
+                            }
+                                @Html.ValidationMessageFor(model => model.TimeRoute, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.TimeSpecialVehicles, htmlAttributes: new { @class = "control-label" })
+
+                            <div class="form-control-container full-width-select">
+                                @if (Model.AllowExecuterData)
+                                {
+                                @Html.TextBoxFor(model => model.TimeSpecialVehicles, new { @class = "form-control input client-info" })
+                                }
+                                else
+                                {
+                                @Html.HiddenFor(model => model.TimeSpecialVehicles)
+                                @Html.DisplayFor(model => model.TimeSpecialVehicles)
+                                }
+                                @Html.ValidationMessageFor(model => model.TimeSpecialVehicles, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            }            
+
+         }
+                <hr>
+                @if (Model is OrdersPassTransportViewModel)
+                {
+                    @Html.Partial("_OrderPassTransportDetailsExecutant", (OrdersPassTransportViewModel) Model)
+                }
+                @if (Model is OrdersTruckTransportViewModel)
+                {
+                    @Html.Partial("_OrderTruckTransportDetailsExecutant", (OrdersTruckTransportViewModel) Model)
+                }
+            </div>
+
+    <div role="tabpanel" class="active filter-tab-pane tab-pane row" id="Page5">
+
+       
+
+        <hr style="border-top: 3px solid black!important;">
+
+        @if (Model is OrdersPassTransportViewModel)
+        {
+            @Html.Partial("_OrderPassTransportDetailsClient", (OrdersPassTransportViewModel)Model)
+        }
+
+        @if (Model is OrdersTruckTransportViewModel)
+        {
+            @Html.Partial("_OrderTruckTransportDetailsClient", (OrdersTruckTransportViewModel)Model)
+        }
+    </div>
+
+
+</div>
+

@@ -1,0 +1,626 @@
+﻿@model Corum.Models.ViewModels.Orders.OrderBaseViewModel
+@{
+    ViewBag.Title = "Регистрация заявки";
+    Layout = Model.PublicEntry? "~/Views/Shared/_LayoutAdmin.cshtml" : "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<style>
+    .select2-container-multi .select2-choices {
+        height: 41px !important;
+    }
+
+        .select2-container-multi .select2-choices .select2-search-choice {
+            height: 33px !important;
+        }    
+     #jqxgridPointLoad .jqx-grid-column-header {
+        background-color: #f7b662;
+    }
+    
+    #s2id_OrgId{
+        border:  2px solid #dce4ec;
+    }
+</style>
+
+@using (Html.BeginForm("NewOrder", "Orders", FormMethod.Post))
+{
+    @Html.AntiForgeryToken()
+
+
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.CurrentOrderStatus)
+    @Html.HiddenFor(model => model.OrderType)
+    @Html.HiddenFor(model => model.UseNotifications)
+    @Html.HiddenFor(model => model.OrderDate)
+    @Html.HiddenFor(model => model.OrderDateRaw)
+
+    @Html.Hidden("RoutePointId")
+    @Html.Hidden("NamePoint")
+    @Html.Hidden("CountryPoint")
+    @Html.Hidden("CityPoint")
+    @Html.Hidden("AddressPoint")
+    @Html.Hidden("ModelType", Model.GetType())
+
+    <div class="form-horizontal">
+
+        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+        <div class="row">
+            <div class="col-md-12">
+                 <h3>Регистрация новой заявки "@Model.OrderTypename" от @Model.OrderDate</h3>
+            </div>
+        </div>
+        <hr />
+        <div class="row">
+            <div class="form-group" style="margin-left:20px; font-size:12px;">
+
+               @if (!@Model.PublicEntry)
+               {
+                   if (@Model.IsTransport){
+                       @Html.ActionLink("Отмена", "Orders", "Orders", null, new { @class = "btn btn-success", @style = "margin-left:20px;" })
+                   }
+                   else
+                   {
+                       @Html.ActionLink("Отмена", "OrdersBase", "Orders", null, new { @class = "btn btn-success", @style = "margin-left:20px;" })
+                   }
+               }
+               else{
+                    @Html.ActionLink("Отмена", "Entry", "Public", null, new { @class = "btn btn-success", @style = "margin-left:20px;" })
+               }
+
+               @if ((Model.AllowClientData) || (Model.AllowExecuterData)){
+                    <input type="submit" value="@Model.CurrentStatusActionName" class="btn btn-info" />
+               }
+            </div>
+        </div>
+        <hr />
+        
+        @Html.Partial("_OrderDetails", Model)
+
+        
+    </div>
+}
+
+@section scripts
+{
+    <script>
+        $("#ShowOrgFrom").on("click", function () {
+            console.log("1");
+            var initFields = function (obj) {
+                $('#CountryFrom').val(obj._CountryId);
+                $('#CountryFrom').attr('data-selected-text', obj._Country);
+                $('#CountryFrom').val(obj._CountryId).trigger('change');
+                $('#CityFrom').val(obj._City);
+                $('#AdressFrom').val(obj._Address);
+                $('#OrgFrom').val(obj._Name);
+                $('#OrgFromId').val(obj._Id);
+
+                $('#ShipperCountryId').val(obj._CountryId);
+                $('#ShipperCountryId').attr('data-selected-text', obj._Country);
+                $('#ShipperCountryId').val(obj._CountryId).trigger('change');
+                $('#ShipperCity').val(obj._City);
+                $('#ShipperAdress').val(obj._Address);
+                $('#Shipper').val(obj._Name);   
+                $('#ShipperId').val(obj._Id);
+            };
+
+            ShowOrganizationDlg(initFields);
+        });
+        $("#ShowOrgTo").on("click", function () {
+            var initFields = function (obj) {
+                $('#CountryTo').val(obj._CountryId);
+                $('#CountryTo').attr('data-selected-text', obj._Country);
+                $('#CountryTo').val(obj._CountryId).trigger('change');
+                $('#CityTo').val(obj._City);
+                $('#AdressTo').val(obj._Address);
+                $('#OrgTo').val(obj._Name);
+                $('#OrgToId').val(obj._Id);
+
+                $('#ConsigneeCountryId').val(obj._CountryId);
+                $('#ConsigneeCountryId').attr('data-selected-text', obj._Country);
+                $('#ConsigneeCountryId').val(obj._CountryId).trigger('change');
+                $('#ConsigneeCity').val(obj._City);
+                $('#ConsigneeAdress').val(obj._Address);
+                $('#Consignee').val(obj._Name);
+                $('#ConsigneeId').val(obj._Id);
+            };
+
+            ShowOrganizationDlg(initFields);
+        });
+
+        function SelectRoute() {
+            $('#addroutesdialog')
+                .dialog(
+                {
+
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 1000,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Выбор маршрута",
+                    modal: true,
+                    open: function (event, ui) {
+                    },
+
+                    close: function (event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function () {
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Выбрать",
+                            "class": 'btn btn-primary',
+                            click: function () {
+
+                                var getselectedrowindexes = $('#jqxgridRoutes').jqxGrid('getselectedrowindexes');
+
+                                if (getselectedrowindexes.length > 0) {
+                                    getselectedrowindexes.forEach(function (item, i, getselectedrowindexes) {
+
+                                        var selectedRowData = $('#jqxgridRoutes').jqxGrid('getrowdata', getselectedrowindexes[i]);
+
+                                        var _Id = selectedRowData.Id;
+                                        var _OrgFromName = selectedRowData.OrgFromName;
+                                        var _OrgFromCountry = selectedRowData.OrgFromCountry;
+                                        var _OrgFromCity = selectedRowData.OrgFromCity;
+                                        var _OrgFromAddress = selectedRowData.OrgFromAddress;
+                                        var _OrgToName = selectedRowData.OrgToName;
+                                        var _OrgToCountry = selectedRowData.OrgToCountry;
+                                        var _OrgToCity = selectedRowData.OrgToCity;
+                                        var _OrgToAddress = selectedRowData.OrgToAddress;
+                                        var _RouteDistance = selectedRowData.RouteDistance;
+                                        var _RouteTime = selectedRowData.RouteTime;
+
+                                        $('#RouteId').val(_Id);
+                                        $('#RouteInfo').text("расстояние "+_RouteDistance+", время "+_RouteTime);
+                                    });
+
+
+                                }
+                                $(this).dialog("close");
+
+                            }
+                        }
+                    ]
+                });
+
+            $('#addroutesdialog').dialog('open');
+
+            return;
+        }       
+
+        function NewAddRoutePoint(_OrderId, _IsLoading) {
+                        if (_IsLoading == true) {
+                                var gridName = "#jqxgridPointLoad"
+                            } else {
+                            var gridName = "#jqxgridPointUnLoad"
+                        }
+        
+                    var getselectedrowindexes = $(gridName).jqxDataTable('getSelection');
+        
+                    $('#Organizations')
+                        .dialog(
+                        {
+                                dialogClass: "jq-dialog-window-custom  modal_dialog",
+                                autoOpen: false,
+                                width: 610,
+                                top: 25,
+                                resizable: false,
+                                tags: true,
+                                title: "Выбор организации",
+                                modal: true,
+                                open: function (event, ui) {
+            
+                                },
+                            close: function (event, ui) {
+            
+                                    $(this).dialog('destroy');
+                                },
+                            create: function (event, ui) {
+                                    $("#disable_all").addClass("disable_all");
+                                },
+                            beforeClose: function (event, ui) {
+                                    $("#disable_all").removeClass("disable_all");
+                                },
+                            buttons:
+                            [
+                                {
+                                        text: "Отмена",
+                                        "class": 'cancel-btn btn btn-outline',
+                                        click: function () {
+            
+                                            $(this).dialog("close");
+            
+                                        }
+                                },
+                        {
+                                text: "Выбрать",
+                                "class": 'btn btn-primary',
+                                click: function () {
+                                    var getselectedrowindexes = $('#jqxgridOrganization').jqxGrid('getselectedrowindexes');
+                                    if (getselectedrowindexes.length > 0) {
+                                            var selectedRowData = $('#jqxgridOrganization').jqxGrid('getrowdata', getselectedrowindexes[0]);
+                
+                                            var obj ={
+                                                    _Id : selectedRowData.Id,
+                                                    _Name : selectedRowData.Name,
+                                                    _Country: selectedRowData.Country,
+                                                    _CountryId: selectedRowData.CountryId,
+                                                    _City : selectedRowData.City,
+                                                    _Address: selectedRowData.Address
+                                                }
+            
+                                        $.post('@Url.Action("NewRoutePoint", "Orders")',
+                                                {
+                                                        RoutePointId: obj._Id,
+                                                        NamePoint: obj._Name,
+                                                        CountryPoint: obj._Country,
+                                                        CityPoint: obj._City,
+                                                        AddressPoint: obj._Address,
+                                                        IsLoading: _IsLoading
+                                                    },
+                                            function (data) {
+                                                    $(gridName).jqxDataTable('updateBoundData');
+                                                });
+        
+                                }
+        
+                                $(this).dialog("close");
+        
+                            }
+                        }
+                            ]
+                        });
+        
+                    $('#Organizations').dialog('open');
+        
+                    return;
+                }
+        
+                function UpdateAddRoutePoint(_IsLoading) {
+            
+                        if(_IsLoading==true) {
+                                var gridName = "#jqxgridPointLoad"
+                            } else {
+                            var gridName = "#jqxgridPointUnLoad"
+                        }
+        
+                    var getselectedrowindexes = $(gridName).jqxDataTable('getSelection')
+               
+                    $("#AddRoutePointId").val(getselectedrowindexes[0].Id);
+        
+                    $('#routePointsInfoDialog')
+                        .dialog(
+                        {
+                                dialogClass: "jq-dialog-window-custom  modal_dialog",
+                                autoOpen: false,
+                                width: 550,
+                                top: 25,
+                                resizable: false,
+                                tags: true,
+                                title: _IsLoading ? "Добавить информацию о точке загрузки" : "Добавить информацию о точке выгрузки",
+                                modal: true,
+                                open: function (event, ui) {
+                                    $("#ContactPerson").val(getselectedrowindexes[0].ContactPerson);
+                                    $("#ContactPersonPhone").val(getselectedrowindexes[0].ContactPersonPhone);
+                                },
+                            close: function (event, ui) {
+            
+                                    $(this).dialog('destroy');
+                                },
+                            create: function (event, ui) {
+                                    $("#disable_all").addClass("disable_all");
+                                },
+                            beforeClose: function (event, ui) {
+                                    $("#disable_all").removeClass("disable_all");
+                                },
+                            buttons:
+                            [
+                                {
+                                        text: "Отмена",
+                                        "class": 'cancel-btn btn btn-outline',
+                                        click: function () {
+                                            $(this).dialog("close");
+                                        }
+                                },
+                                {
+                                        text:  "Сохранить",
+                                        "class": 'btn btn-primary',
+                                        click: function () {
+                                            var _ContactPerson = $('#ContactPerson').val();
+                                            var _ContactPersonPhone = $('#ContactPersonPhone').val();
+                                            $.post('@Url.Action("UpdateRoutePoint", "Orders")',
+                                              {
+                                                      Id: $("#AddRoutePointId").val(),
+                                                      IsLoading: _IsLoading,
+                                                      IsSaved: getselectedrowindexes[0].IsSaved,
+                                                      ContactPerson: _ContactPerson,
+                                                      ContactPersonPhone: _ContactPersonPhone
+                                                  },
+                                          function (data) {
+                                                  $(gridName).jqxDataTable('updateBoundData');
+                                              });
+                                    
+        
+                                        $(this).dialog("close");
+                                    }
+                                }
+                            ]
+                        });
+                    $('#routePointsInfoDialog').dialog('open');
+                 
+                 
+        
+                    return;
+                }
+        
+                 function DeleteAddRoutePoint(_IsLoading) {
+                                    if(_IsLoading==true) {
+                                            var gridName = "#jqxgridPointLoad";
+                                            var messageDel = "Вы хотите удалить точку загрузки?";
+                                        } else {
+                                        var gridName = "#jqxgridPointUnLoad";
+                                        var messageDel = "Вы хотите удалить точку выгрузки?";
+                                    }
+        
+                                var getselectedrowindexes = $(gridName).jqxDataTable('getSelection');
+        
+                                if (getselectedrowindexes.length > 0) {
+                                        $("#AddRoutePointId").val(getselectedrowindexes[0].Id);
+            
+                                        bootbox.confirm(messageDel, function (result) {
+                
+                                                if (result) {
+                                                        $.post('@Url.Action("RemoveRoutePointTemp", "Orders")',
+                                                        {
+                                                                Id: $("#AddRoutePointId").val(),
+                                                                IsLoading: _IsLoading
+                                                            },
+                                                            function (data) {
+                                                                    $(gridName).jqxDataTable('updateBoundData');
+                            
+                                                                    if(_IsLoading=="true") {
+                                                                            $("#DeleteRoutePointLoadButton").addClass("disabled");
+                                                                            $("#DeleteRoutePointLoadButton").removeClass("btn-default");
+                                                                        } else {
+                                                                        $("#DeleteRoutePointUnLoadButton").addClass("disabled");
+                                                                        $("#DeleteRoutePointUnLoadButton").removeClass("btn-default");
+                                                                    }
+                        
+                                                            });
+                                            }
+                                    });
+        
+        
+                                }
+                 }
+
+        var IsAdditionalRoutePoints = $("input[name=IsAdditionalRoutePoints]:checked").val();
+        if (IsAdditionalRoutePoints == "true") {
+            $(".AddPointLoad").show();
+        } else {
+            $(".AddPointLoad").hide();
+        }
+
+        $('input[name=IsAdditionalRoutePoints]').click(function () {
+            var isAdditionalRoutePoints = $('input[name=IsAdditionalRoutePoints]:checked').val();
+    
+            if (isAdditionalRoutePoints == "true") {
+                $(".AddPointLoad").show();
+            } else {
+    
+                $(".AddPointLoad").hide();
+            }
+        });
+
+        $(document).ready(function ()
+        {
+            InitializeDateTimePickers();
+            InitFilterDropDowns();
+            InitFilterElementMultipleDropDowns('#MultiProjectId');
+            InitTimeRaw();
+            InitializeOrganizations();
+
+            $('#TripType').change(function () {
+
+                var value = $(this).val();
+
+                if ((value == '0') || (value == '3')) {
+
+                    $("#CountryFrom").prop('disabled', true);
+                    $("#CountryTo").prop('disabled', true);
+                    $("#ShipperCountryId").prop('disabled', true);
+                    $("#ConsigneeCountryId").prop('disabled', true);
+
+
+
+                    $("#CityTo").prop("readonly", true);
+                    $("#CityTo").val($("#CityFrom").val());
+
+                    $("#ConsigneeCity").prop("readonly", true);
+                    $("#ConsigneeCity").val($("#ShipperCity").val());
+
+                }
+                if (value == '1') {
+
+                    $("#CountryFrom").prop('disabled', true);
+                    $("#CountryTo").prop('disabled', true);
+                    $("#ShipperCountryId").prop('disabled', true);
+                    $("#ConsigneeCountryId").prop('disabled', true);
+
+                    $("#CityTo").prop("readonly", false);
+                    $("#ConsigneeCity").prop("readonly", false);
+
+                }
+
+                if (value == '2') {
+
+                    $("#CountryFrom").prop('disabled', false);
+                    $("#CountryTo").prop('disabled', false);
+                    $("#ShipperCountryId").prop('disabled', false);
+                    $("#ConsigneeCountryId").prop('disabled', false);
+
+                    $("#CityTo").prop("readonly", false);
+                    $("#ConsigneeCity").prop("readonly", false);
+                }
+            });
+
+            $('#CityFrom').change(function () {
+
+                var value = $('#TripType').val();
+
+                if ((value == '0') || (value == '3')) {
+                    $("#CityTo").val($("#CityFrom").val());
+                }
+
+            });
+
+            $('#ShipperCity').change(function () {
+
+                var value = $('#TripType').val();
+
+                if ((value == '0') || (value == '3')) {
+                    $("#ConsigneeCity").val($("#ShipperCity").val());
+                }
+
+            });
+            
+            if ((@Model.OrderType === 4) || (@Model.OrderType === 5) || (@Model.OrderType === 7)){              
+                var orgFilter = {
+                    NameFrom: "",
+                    NameTo:"",
+                    CountryFrom: "",
+                    CountryTo: ""
+                }
+                InitializeRoutes(orgFilter);               
+            }
+
+
+            if ((@Model.OrderType === 4) || (@Model.OrderType === 5) || (@Model.OrderType === 7)){
+                                var sourcePointLoad =
+                                           {
+                                                   datatype: "json",
+                                                   datafields: [
+                                                        { name: 'Id' },
+                                                     { name: 'OrderId' },
+                                                     { name: 'NamePoint' },
+                                                     { name: 'CountryPoint' },
+                                                     { name: 'CityPoint' },
+                                                     { name: 'AddressPoint' },
+                                                     { name: 'CityAddress' },
+                                                     { name: 'IsSaved' },
+                                                     { name: 'ContactPerson' },
+                                                     { name: 'ContactPersonPhone' },
+                                                     { name: 'Contacts' }
+                    
+                                                   ],
+                                                   url: '@Url.Action("GetLoadPointsTemp", "Orders")' + '?IsLoading=true',
+                                                   id: 'Id'
+                                               };
+            
+                            var dataAdapterPointLoad = new $.jqx.dataAdapter(sourcePointLoad);
+            
+                            $("#jqxgridPointLoad").jqxDataTable(
+                            {
+                                    width: 590,
+                                    source: dataAdapterPointLoad,
+                                    theme: 'arctic',
+                                    sortable: false,
+                                    filterable: false,
+                                    columns: [
+                                          { text: 'Название', datafield: 'NamePoint', width: 200 },
+                                          { text: 'Страна', datafield: 'CountryPoint', width: 100 },
+                                          { text: 'Город/Адрес', datafield: 'CityAddress', width: 170 },
+                                          { text: 'Контакты', datafield: 'Contacts', width: 120 }
+                
+                                    ]
+                                });
+        
+                        var sourcePointUnLoad =
+                                  {
+                                          datatype: "json",
+                                          datafields: [
+                                             { name: 'Id' },
+                                             { name: 'OrderId' },
+                                             { name: 'NamePoint' },
+                                             { name: 'CountryPoint' },
+                                             { name: 'CityPoint' },
+                                             { name: 'AddressPoint' },
+                                             { name: 'CityAddress' },
+                                             { name: 'IsSaved' },
+                                             { name: 'ContactPerson' },
+                                             { name: 'ContactPersonPhone' },
+                                             { name: 'Contacts' }
+            
+                                          ],
+                                          url: '@Url.Action("GetLoadPointsTemp", "Orders")' + '?IsLoading=false',
+                                          id: 'Id'
+                                      };
+        
+                        var dataAdapterPointUnLoad = new $.jqx.dataAdapter(sourcePointUnLoad);
+        
+                        $("#jqxgridPointUnLoad").jqxDataTable(
+                        {
+                                width: 590,
+                                source: dataAdapterPointUnLoad,
+                                theme: 'arctic',
+                                sortable: false,
+                                filterable: false,
+                                columns: [
+                                      { text: 'Название', datafield: 'NamePoint', width: 200 },
+                                      { text: 'Страна', datafield: 'CountryPoint', width: 100 },
+                                      { text: 'Город/Адрес', datafield: 'CityAddress', width: 170 },
+                                      { text: 'Контакты', datafield: 'Contacts', width: 120 }
+            
+                                ]
+                            });
+                        
+                        var orgFilter = {
+                                NameFrom: "",
+                                NameTo:"",
+                                CountryFrom: "",
+                                CountryTo: ""
+                            }
+                            InitializeRoutes(orgFilter);
+        
+                        $('#jqxgridPointLoad').on('rowClick',
+                                    function (event) {
+                                            $("#UpdateRoutePointLoadButton").removeClass("disabled");
+                                            $("#UpdateRoutePointLoadButton").addClass("btn-default");
+                                            $("#DeleteRoutePointLoadButton").removeClass("disabled");
+                                            $("#DeleteRoutePointLoadButton").addClass("btn-default");
+                                        });
+        
+                        $('#jqxgridPointUnLoad').on('rowClick',
+                        function (event) {
+                                $("#UpdateRoutePointUnLoadButton").removeClass("disabled");
+                                $("#UpdateRoutePointUnLoadButton").addClass("btn-default");
+                                $("#DeleteRoutePointUnLoadButton").removeClass("disabled");
+                                $("#DeleteRoutePointUnLoadButton").addClass("btn-default");
+                            });
+                    }
+                
+                    
+        var needReturn = document.querySelector('#NeedReturn');
+        if (needReturn != null) {
+            calculTime(needReturn.value);
+        }
+        });
+
+    </script>
+}

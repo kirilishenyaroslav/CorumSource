@@ -1,0 +1,166 @@
+﻿<div id="useddircarinfodialog" class="row" style="display: none; margin:auto;">
+
+    @Html.Hidden("UsedCarId")
+
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Плательщик
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("DirPayerInfo", "",
+                     htmlAttributes: new
+                     {
+                         id = "DirPayerInfo",
+                         @name = "DirPayerInfo",
+                         @class = "col-md-12",
+                         @readonly = "true"
+                     })
+        </div>
+    </div>
+    
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Экспедитор*
+        </label>
+        <div class="col-md-8">
+
+            @Html.TextBox("DirExpeditorName", "",
+            htmlAttributes: new
+            {
+                id = "DirExpeditorName",
+                @class = "filter_dropdown",
+                @name = "DirExpeditorName",
+                data_source_url = Url.Action("GetExpeditorName", "Orders"),
+                data_droplist_placeholder = "",
+                data_selected_text = ""
+            })
+        </div>
+    </div>
+
+    <div class="form-group row" id="divDirContractExpBkInfo">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Договор Эксп/Пл-щик*
+        </label>
+        <div class="col-md-8">
+
+            @Html.TextBox("DirContractExpBkInfo", "",
+                      htmlAttributes: new
+                      {
+                          id = "DirContractExpBkInfo",
+                          @class = "filter_dropdown",
+                          @name = "DirContractExpBkInfo",
+                          data_source_url = Url.Action("GetContractExpBkInfo", "Orders"),
+                          data_droplist_placeholder = "Выберите договор экспедитор/плательщик",
+                          data_selected_text = ""
+                      })
+
+        </div>
+    </div>
+
+    
+    @Html.Partial("_OrdersDirCarrierInfo")
+    @Html.Partial("_OrdersDirContractInfo")
+    @Html.Partial("_OrdersDirCarInfo")
+
+
+    <div class="form-group row" id="divDirCarCapacity">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Грузоподъемность
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("DirCarCapacity", "",
+                htmlAttributes: new
+                {
+                    id = "DirCarCapacity",
+                    @name = "DirCarCapacity"
+                })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Контакт водителя*
+        </label>
+        <div class="col-md-8">
+            @Html.TextArea("DirDriverContactInfo", "",
+                     htmlAttributes: new
+                     {
+                         id = "DirDriverContactInfo",
+                         @name = "DirDriverContactInfo"
+                     })
+        </div>
+    </div>
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Комментарий
+        </label>
+        <div class="col-md-8">
+            @Html.TextArea("DirComments", "",
+                htmlAttributes: new
+                {
+                    id = "DirComments",
+                    @name = "DirComments"
+                })
+        </div>
+    </div>
+
+   @* <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Дата фактического отправления
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("DirFactShipperDate", "",
+                    htmlAttributes: new
+                    {
+                        id = "DirFactShipperDate",
+                        @name = "DirFactShipperDate"
+                    })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Время фактического отправления
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("DirFactShipperTime", "",
+            htmlAttributes: new
+            {
+                id = "DirFactShipperTime",
+                @name = "DirFactShipperTime"
+            })
+        </div>
+    </div>
+
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Дата фактического прибытия
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("DirFactConsigneeDate", "",
+            htmlAttributes: new
+            {
+                id = "DirFactConsigneeDate",
+                @name = "DirFactConsigneeDate"
+            })
+        </div>
+    </div>
+
+
+    <div class="form-group row">
+        <label class="col-md-4" style="font-weight: normal !important;">
+            Время фактического прибытия
+        </label>
+        <div class="col-md-8">
+            @Html.TextBox("DirFactConsigneeTime", "",
+                     htmlAttributes: new
+                     {
+                         id = "DirFactConsigneeTime",
+                         @name = "DirFactConsigneeTime"
+                     })
+        </div>
+    </div>
+*@   
+
+    </div>
+

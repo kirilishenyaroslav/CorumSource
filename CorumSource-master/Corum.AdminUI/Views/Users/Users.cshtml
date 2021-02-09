@@ -1,0 +1,215 @@
+﻿@model Corum.Models.NavigationResult<Corum.Models.ViewModels.UserViewModel>
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+
+}
+
+@Html.Partial("_UsersSetSettingsDialog")
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 main">
+            <h4>Пользователи</h4>
+            <div class="table-header clearfix">
+
+                <div>
+                    @Html.ActionLink("Новый+", "NewUser", "Users", null, new { @class = "btn btn-primary", @style = "margin-bottom:10px" })
+                </div>
+
+                <div class="pull-right seash-form-table-header">
+                    <i class="fa fa-search"></i>&nbsp;&nbsp;   @Html.EditorFor(model => model.RequestParams.SearchResult, new { htmlAttributes = new { @class = "input-search", @placeholder = "Поиск...", @id = "user_searchphrase" } })
+                </div>
+
+                <div style="font-size: 13px;">
+                    @(Html.Grid(Model.DisplayValues)
+                  .Columns(columns =>
+                  {
+                  columns.Add(model => model.displayName)
+                   .Titled("Имя пользователя").Filterable(true).Sortable(true);
+
+                  columns.Add(model => model.userEmail)
+                    .Titled("Логин/E-mail").Filterable(true).Sortable(true);
+
+                  columns.Add(model => model.postName)
+                   .Titled("Должность").Filterable(true).Sortable(true);
+
+                  columns.Add(model => model.contactPhone)
+                   .Titled("Контактный телефон").Filterable(true).Sortable(true);
+
+                  columns.Add(model => model.isAdmin).Filterable(true).Sortable(true)
+                 .Encoded(false)
+                 .Sanitized(false)
+                 .Css("centered_column")
+                 .Titled("Администратор")
+                 .RenderValueAs(o =>
+                            @<div>
+                                @Html.CheckBox(o.userId, @o.isAdmin, new { disabled = "disabled", @readonly = "readonly" })
+                            </div>);
+
+                      columns.Add(model => model.twoFactorEnabled).Filterable(true).Sortable(true)
+                         .Encoded(false)
+                         .Sanitized(false)
+                         .Css("centered_column")
+                         .Titled("Двухфазная аутентификация")
+                         .RenderValueAs(o =>
+                        @<div>
+                            @Html.CheckBox(o.userId, @o.twoFactorEnabled, new { disabled = "disabled", @readonly = "readonly" })
+                        </div>);
+
+
+
+                      columns.Add()
+                       .Encoded(false)
+                       .Sanitized(false)
+                       .Css("centered_column")
+                       .RenderValueAs(o =>
+                        @<div class="edit-delete-copy-links">
+                            <a class="tarash-i update_link tooltips" href="@Url.Action("UpdateUser", "Users", new { userId = o.userId })">
+                                <span class="tooltip-message">Изменить пользователя</span>
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </a>
+
+                            @if (@o.CanBeDelete)
+                            {
+                                <a class="tarash-i delete_link tooltips" href="@Url.Action("RemoveUser", "Users", new { userId = o.userId })" onclick="return confirm('Хотите удалить пользователя?');">
+                                    <span class="tooltip-message">Удалить пользователя</span>
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="disable-glyphicon tooltips tarash-i" href="#">
+                                    <span class="tooltip-message">Пользователь не может быть удален</span>
+                                    <span class="glyphicon glyphicon-trash"></span>
+                                </a>
+                            }
+
+                            @if (@o.isAdmin)
+                            {
+                                <a class="disable-glyphicon tooltips tarash-i" href="#">
+                                    <span class="tooltip-message">Администратор обладает всеми ролями в системе</span>
+                                    <span class="glyphicon glyphicon-user"></span>
+                                </a>
+                            }
+                            else
+
+                            {
+                                <a class="tarash-i delete_link tooltips" href="@Url.Action("Roles", "Users", new { userId = o.userId })">
+                                    <span class="tooltip-message">Управление ролями пользователя</span>
+                                    <span class="glyphicon glyphicon-user"></span>
+                                </a>
+                            }
+
+                             <a class="tarash-i delete_link tooltips" href="@Url.Action("EmulateUser", "Users", new { userId = o.userId })">
+                                 <span class="tooltip-message">Эмуляция пользователя</span>
+                                 <span class="glyphicon glyphicon-eye-open"></span>
+                             </a>
+
+                        
+                            <a class="tarash-i tooltips" onclick="CloneUser('@o.userId')">
+                                         <span class="tooltip-message">Клонировать роли пользователя</span>
+                                <span class="glyphicon glyphicon-transfer"></span>
+                                    </a>
+</div>);
+
+                  }).Filterable().WithPaging((int) Model.RequestParams.PageSize).WithMultipleFilters())
+                </div>
+            </div>
+
+            @TPagging("Users", "Users", @Model.RequestParams, this)
+
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        var offset = $('.navbar').height();
+        $("html:not(.legacy) table").stickyTableHeaders({ fixedOffset: offset });
+
+        function CloneUser(userId) {
+
+            $('#cloneuserdialog')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,
+                    top: 25,
+                    resizable: false,
+                    tags: true,
+                    title: "Клонирование ролей пользователя",
+                    modal: true,
+                    open: function (event, ui) {
+                        InitFilterDropDowns();
+                    },
+                    close: function (event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function () {
+
+                                $(this).dialog("close");
+
+                            }
+                        },
+                       {
+                           text: "Отправить",
+                           "class": 'btn btn-primary',
+                           click: function () {
+
+                               var ReceiverId = $('#ReceiverId').val();
+
+                               $.post('@Url.Action("CloneUser", "Users")',
+                                   {
+                                       ReceiverId: ReceiverId,
+                                       UserId: userId
+                                   },
+                                   function (data) {
+                                       alert('Роли клонированы');
+                                   });
+
+                               $(this).dialog("close");
+                           }
+                       }
+                    ]
+                });
+
+            $('#cloneuserdialog').dialog('open');
+
+            return;
+        }
+
+    </script>
+}

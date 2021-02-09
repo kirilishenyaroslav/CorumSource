@@ -1,0 +1,72 @@
+﻿@model Corum.Models.ViewModels.Cars.CarOwnersAccessViewModel
+
+@{
+    ViewBag.Title = "NewCarOwner";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("NewCarOwner", "Cars", FormMethod.Post))
+{
+    <div class="form-horizontal">
+        <h4>Добавление нового перевозчика</h4>
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        @Html.HiddenFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.CarrierName, htmlAttributes: new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.CarrierName, new {htmlAttributes = new {@class = "form-control", autocomplete = "off"}})
+                @Html.ValidationMessageFor(model => model.CarrierName, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Address, htmlAttributes: new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Address, new {htmlAttributes = new {@class = "form-control", autocomplete = "off"}})
+                @Html.ValidationMessageFor(model => model.Address, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Phone, htmlAttributes: new {@class = "control-label col-md-2"})
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Phone, new {htmlAttributes = new {@class = "form-control", autocomplete = "off"}})
+                @Html.ValidationMessageFor(model => model.Phone, "", new {@class = "text-danger"})
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.ContactPerson, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.ContactPerson, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                @Html.ValidationMessageFor(model => model.ContactPerson, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.parentId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="form-control-container full-width-select">
+                    @Html.DropDownListFor(model => model.parentId,
+                        new SelectList(Model.AvailableCarOwners.Select(x => new { Value = x.Id, Text = x.CarrierName }), "Value", "Text", Model.parentId),
+                        new { @class = "form-control input" })
+                    @Html.ValidationMessageFor(model => model.parentId, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.IsForwarder, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <div class="form-control-container full-width-select">
+                    @Html.CheckBoxFor(m => m.IsForwarder)
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Создать" class="btn btn-default" />
+            </div>
+        </div>
+    </div>
+}
+
+

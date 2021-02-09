@@ -1,0 +1,151 @@
+﻿@model Corum.Models.ViewModels.Orders.OrderTypeViewModel
+
+
+@Html.HiddenFor(x=>x.IsTransportType)
+
+<div class="form-group">
+    @Html.LabelFor(model => model.TypeName, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.TypeName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+        @Html.ValidationMessageFor(model => model.TypeName, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.ShortName, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.ShortName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+        @Html.ValidationMessageFor(model => model.ShortName, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.UserRoleIdForClientData, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        <div class="form-control-container full-width-select">
+            @Html.TextBoxFor(model => model.UserRoleIdForClientData,
+                            (object)new
+                            {
+                                id = "UserRoleIdForClientData",
+                                @class = "filter_dropdown form-control input",
+                                @name = "UserRoleIdForClientData",
+                                data_source_url = Url.Action("GetRoles", "Orders"),
+                                data_droplist_placeholder = "Роль пользователей для доступа к клиентским данным заявки",                                
+                                data_selected_text = Model.UserRoleIdForClientDataName
+                            })
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.UserRoleIdForExecuterData, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        <div class="form-control-container full-width-select">
+            @Html.TextBoxFor(model => model.UserRoleIdForExecuterData,
+                            (object)new
+                            {
+                                id = "UserRoleIdForExecuterData",
+                                @class = "filter_dropdown form-control input",
+                                @name = "UserRoleIdForExecuterData",
+                                data_source_url = Url.Action("GetRoles", "Orders"),
+                                data_droplist_placeholder = "Роль пользователей для доступа к данным исполнителя",
+                                data_selected_text = Model.UserRoleIdForExecuterDataName
+                            })
+        </div>
+    </div>
+</div>
+
+
+<div class="form-group">
+    @Html.LabelFor(model => model.IsActive, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        <div class="form-control-container full-width-select">
+            @Html.EditorFor(model => model.IsActive,
+                                          new { @class = "form-control input" })
+            @Html.ValidationMessageFor(model => model.IsActive, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.DefaultExecuterId, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        <div class="form-control-container full-width-select">
+            @* @Html.DropDownListFor(model => model.DefaultExecuterId,
+                                          new SelectList(Model.AvaliableUsers.Select(x => new { Value = x.userId, Text = x.displayName }), "Value", "Text", Model.DefaultExecuterId),
+                                          new { @class = "form-control input" })*@
+            @Html.TextBoxFor(model => model.DefaultExecuterId,
+                            new
+                            {
+                                id = "DefaultExecuterId",
+                                @class = "filter_dropdown form-control input",
+                                @name = "DefaultExecuterId",
+                                data_source_url = Url.Action("GetUsers", "Users"),
+                                data_droplist_placeholder = "Выберите пользователя",
+                                data_selected_text = Model.DefaultExecuterName
+                            })
+            @Html.ValidationMessageFor(model => model.DefaultExecuterId, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.UserIdForAnonymousForm, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        <div class="form-control-container full-width-select">
+            @* @Html.DropDownListFor(model => model.UserIdForAnonymousForm,
+                                          new SelectList(Model.AvaliableUsers.Select(x => new { Value = x.userId, Text = x.displayName }), "Value", "Text", Model.UserIdForAnonymousForm),
+                                          new { @class = "form-control input" })*@
+            @Html.TextBoxFor(model => model.UserIdForAnonymousForm,
+                            new
+                            {
+                                id = "UserIdForAnonymousForm",
+                                @class = "filter_dropdown form-control input",
+                                @name = "UserIdForAnonymousForm",
+                                data_source_url = Url.Action("GetUsers", "Users"),
+                                data_droplist_placeholder = "Выберите пользователя",
+                                data_selected_text = Model.UserIdForAnonymousFormName
+                            })
+            @Html.ValidationMessageFor(model => model.UserIdForAnonymousForm, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.UserRoleIdForTypeAccess, htmlAttributes: new {@class = "control-label col-md-2"})
+    <div class="col-md-10">
+        <div class="form-control-container full-width-select">
+            @Html.TextBoxFor(model => model.UserRoleIdForTypeAccess,
+                (object) new
+                {
+                    id = "UserRoleIdForTypeAccess",
+                    @class = "filter_dropdown form-control input",
+                    @name = "UserRoleIdForTypeAccess",
+                    data_source_url = Url.Action("GetRoles", "Orders"),
+                    data_droplist_placeholder = "Роль пользователей для доступа к типу",
+                    data_selected_text = Model.UserRoleNameTypeAccess
+                })
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.UserRoleIdForCompetitiveList, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        <div class="form-control-container full-width-select">
+            @Html.TextBoxFor(model => model.UserRoleIdForCompetitiveList,
+                            (object)new
+                            {
+                                id = "UserRoleIdForCompetitiveList",
+                                @class = "filter_dropdown form-control input",
+                                @name = "UserRoleIdForCompetitiveList",
+                                data_source_url = Url.Action("GetRoles", "Orders"),
+                                data_droplist_placeholder = "Роль пользователей для доступа к конкурентным листам",
+                                data_selected_text = Model.UserRoleIdForCompetitiveList
+                            })
+        </div>
+    </div>
+</div>
+
+
+

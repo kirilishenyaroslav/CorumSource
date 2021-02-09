@@ -1,0 +1,205 @@
+﻿@model Corum.Models.ViewModels.Cars.ManageCarOwnersAccessViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="panel">
+    <div class="panel-body">        
+            <div class="row" style="font-size: 13px;">
+                <div class="col-md-5" id="Groups">
+                    <h4>Экспедиторы и перевозчики</h4>
+                    <div>
+                        <a class="btn btn-primary" id="NewCarOwner" href="NewCarOwner" style="margin-bottom: 10px">Добавить</a>                        
+                    </div>
+
+                    <div class="table-header clearfix">
+                        <div class="TreeWrapper">
+                            <div id="treeGrid">
+                                <span>Идет загрузка данных...</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-7" id="Cars">
+
+                </div>
+            </div>
+        </div>
+</div>
+
+@section scripts
+{
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            var source =
+            {
+                dataType: "json",
+                dataFields: [
+                    { name: 'Id', type: 'string' },
+                    { name: 'CarrierName', type: 'string' },
+                    { name: 'Address', type: 'string' },
+                    { name: 'Phone', type: 'string' },
+                    { name: 'ContactPerson', type: 'string' },
+                    { name: 'parentId', type: 'string' },
+                    { name: 'IdForScript', type: 'string' },
+                    { name: 'is_Leaf', type: 'string' },
+                    { name: 'CanBeDelete', type: 'string' },
+                    { name: 'IsForwarder', type: 'string' }
+                ],
+                hierarchy:
+                {
+                    keyDataField: { name: 'Id' },
+                    parentDataField: { name: 'parentId' }
+                },
+                id: 'Id',
+                localData: @Html.Raw(Model.JSONData)
+                };
+
+            var dataAdapter = new $.jqx.dataAdapter(source);
+
+            dataAdapter.dataBind();
+
+            var NameRenderer = function(row, column, value, data) {
+                var custom_cell_dom = '';
+                if (data.IsForwarder)
+                    custom_cell_dom = '<span style="color: blue">' + value + '</span>';
+                else
+                    custom_cell_dom = '<span style="color: black">' + value + '</span>';
+                return custom_cell_dom;
+            };
+
+            var renderer = function(row, column, value, data) {
+               
+                var custom_cell_dom = '<div class="edit-delete-copy-links">' +
+                    '<a class="tarash-i update_link tooltips" href="UpdateCarOwner?carOwnerId=' + value + '">' +
+                    '<span class="tooltip-message">Изменить</span>' +
+                    '<span class="glyphicon glyphicon-pencil"></span>' +
+                    '</a> ';
+
+                if (data.CanBeDelete) {
+                    custom_cell_dom +=
+                        '<a class="tarash-i delete_link tooltips" href="RemoveCarOwner?carOwnerId=' + value + '">' +
+                        '    <span class="tooltip-message">Удалить</span>' +
+                        '    <span class="glyphicon glyphicon-trash"></span>' +
+                        '</a> ';
+                } else {
+                    custom_cell_dom +=
+                        '<a class="disable-glyphicon tooltips tarash-i" href="#">' +
+                        '    <span class="tooltip-message">Перевозчик/экспедитор не может быть удален</span>' +
+                        '    <span class="glyphicon glyphicon-trash"></span>' +
+                        '</a> ';
+                }
+
+                if (data.IsForwarder) {              
+                    custom_cell_dom +=
+                        '<a class="tarash-i update_link tooltips" href="Contracts?carOwnerId=' + value + '&IsForwarder=' +data.IsForwarder+ '&IsMainMenu=false'+ '">' +
+                        '<span class="tooltip-message">Договора Экспедитор/Плательщик</span>' +
+                        '<span class="glyphicon glyphicon-th-list"></span>' +
+                        '</a>' +
+                        '</div>';
+                } else {
+                    custom_cell_dom +=
+                        '<a class="tarash-i update_link tooltips" href="Contracts?carOwnerId=' + value + '&IsForwarder=' +data.IsForwarder+ '&IsMainMenu=false'+ '">' +
+                        '<span class="tooltip-message">Договора Экспедитор/Перевозчик</span>' +
+                        '<span class="glyphicon glyphicon-th-list"></span>' +
+                        '</a>' +
+                        '</div>';
+                }
+                return custom_cell_dom;
+
+            };
+
+
+            $("#treeGrid").jqxTreeGrid(
+            {
+                width: '100%',
+                source: dataAdapter,
+                columnsResize: true,
+                sortable: true,
+                filterable: true,
+                theme: 'nms',
+                selectionMode: 'singleRow',
+                pageable: false,
+                filterHeight: 50,
+                icons: true,
+                autoShowLoadElement: true,
+                //localization: getNoLocalizationForJQWidgets(),
+                editable: false,
+                altRows: true,
+                ready: function() {
+                    
+                    var parentId = localStorage.getItem("parentId");
+                    var Id = localStorage.getItem("carOwnerId");
+                   
+                    debugger;
+                    var row = $("#treeGrid").jqxTreeGrid('getRow', Id);
+
+                    $("#Cars").empty();
+                    $("#Cars").append('<h4>Автомобили</h4>');
+
+                    if (row != null) {
+                        //при изменении - становимся на сам элемент
+                        FullExpandById('treeGrid', Id);
+                        $("#treeGrid").jqxTreeGrid('selectRow', Id);
+
+                        $("#Cars").empty();
+                        $("#Cars").load("Cars?carOwnerId=" + Id);
+
+                        $("#NewCarOwner").attr('href', 'NewCarOwner?parentId=' + Id);
+                    }
+                    else
+                    {                    
+                        //при удалении - становимся на родительский элемент
+                        FullExpandById('treeGrid', parentId);
+                        $("#treeGrid").jqxTreeGrid('selectRow', parentId);                    
+                    
+                        $("#Cars").empty();
+                        $("#Cars").append('<h4>Автомобили</h4>');
+
+                        $("#NewCarOwner").attr('href', 'NewGroupRole?parentId=' + parentId);                
+                    }
+
+
+                    $("#treeGrid").jqxTreeGrid('focus');
+
+                },
+                columns: [
+                    { text: "Перевозчик/экспедитор", dataField: 'CarrierName', cellsrenderer: NameRenderer, width: '80%' },
+                    { text: "", dataField: 'IdForScript', cellsrenderer: renderer, width: '20%' }
+                ]
+            });
+
+
+            $('#treeGrid').on('rowSelect',
+                function(event) {
+                    var key = args.key;
+                    var rows = $("#treeGrid").jqxTreeGrid('getRow', args.key);
+                    //запоминаем родительский элемент
+                    localStorage.setItem("parentId", rows.parentId);
+
+                    // if (rows.is_Leaf == true)
+                    if (rows.is_Leaf) {
+                        $("#Cars").empty();
+                        localStorage.setItem("carOwnerId", key);
+                        $("#Cars").load("Cars?carOwnerId=" + key);
+                    } else {
+                        $("#Cars").empty();
+                        $("#Cars").append('<h4>Автомобили</h4>');
+                    }
+
+                    $("#NewCarOwner").attr('href', 'NewCarOwner?parentId=' + key);
+
+                });
+
+
+            $("#NewCar").click(function() {
+                $("#Cars").load("NewCar?carOwnerId=" + key);
+
+            });
+
+        });
+    </script>
+}

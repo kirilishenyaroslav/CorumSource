@@ -1,0 +1,351 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="Address" xml:space="preserve">
+    <value>Adresse</value>
+  </data>
+  <data name="AdminComment" xml:space="preserve">
+    <value>Intern kommentar</value>
+  </data>
+  <data name="AdressRequired" xml:space="preserve">
+    <value>Adresse er påkrevet</value>
+  </data>
+  <data name="Alternative1" xml:space="preserve">
+    <value>Alternativ 1</value>
+  </data>
+  <data name="Alternative1Required" xml:space="preserve">
+    <value>Alternativ 1 er påkrevet</value>
+  </data>
+  <data name="Alternative2" xml:space="preserve">
+    <value>Alternativ 2</value>
+  </data>
+  <data name="Amount" xml:space="preserve">
+    <value>Beløp</value>
+  </data>
+  <data name="Aria" xml:space="preserve">
+    <value>Poststed</value>
+  </data>
+  <data name="AriaRequired" xml:space="preserve">
+    <value>Poststed er påkrevet</value>
+  </data>
+  <data name="Birthdate" xml:space="preserve">
+    <value>Fødselsdato</value>
+  </data>
+  <data name="BithdayIsRequired" xml:space="preserve">
+    <value>Fødselsdato er påkrevet</value>
+  </data>
+  <data name="Cellphone" xml:space="preserve">
+    <value>Mobil</value>
+  </data>
+  <data name="Cellphone1ownerName" xml:space="preserve">
+    <value>Mobil 1 eiers navn</value>
+  </data>
+  <data name="Cellphone1Required" xml:space="preserve">
+    <value>Mobil1 er påkrevet</value>
+  </data>
+  <data name="Cellphone2ownerName" xml:space="preserve">
+    <value>Mobil 2 eiers navn</value>
+  </data>
+  <data name="Cellphone2Required" xml:space="preserve">
+    <value>Mobil2 er påkrevet</value>
+  </data>
+  <data name="ChildName" xml:space="preserve">
+    <value>Fornavn/Etternavn</value>
+  </data>
+  <data name="CopyChildren" xml:space="preserve">
+    <value>Kopier kursdeltakere</value>
+  </data>
+  <data name="CourseInstructorRequired" xml:space="preserve">
+    <value>Instruktør er påkrevet</value>
+  </data>
+  <data name="CourseInstructors" xml:space="preserve">
+    <value>Instruktør</value>
+  </data>
+  <data name="CourseLocationRequired" xml:space="preserve">
+    <value>Kurssted er påkrevet</value>
+  </data>
+  <data name="CourseLocations" xml:space="preserve">
+    <value>Kurssted</value>
+  </data>
+  <data name="CoursePeriods" xml:space="preserve">
+    <value>Kursperiode</value>
+  </data>
+  <data name="CourseTypeNameRequiredErrorMessage" xml:space="preserve">
+    <value>Navn er påkrevet</value>
+  </data>
+  <data name="CourseTypeRequired" xml:space="preserve">
+    <value>Kurstype er påkrevet</value>
+  </data>
+  <data name="CourseTypes" xml:space="preserve">
+    <value>Kurstype</value>
+  </data>
+  <data name="CourseWeekdayRequired" xml:space="preserve">
+    <value>Ukedag er påkrevet</value>
+  </data>
+  <data name="CustomerAddress" xml:space="preserve">
+    <value>Adresse</value>
+  </data>
+  <data name="CustomerName" xml:space="preserve">
+    <value>Fornavn/Etternavn</value>
+  </data>
+  <data name="CustomerZip" xml:space="preserve">
+    <value>Postnr</value>
+  </data>
+  <data name="Email" xml:space="preserve">
+    <value>E-post</value>
+  </data>
+  <data name="EmailMessageBody" xml:space="preserve">
+    <value>Melding</value>
+  </data>
+  <data name="EmailSubject" xml:space="preserve">
+    <value>Emne</value>
+  </data>
+  <data name="FromDate" xml:space="preserve">
+    <value>Fra dato</value>
+  </data>
+  <data name="FromDateRequired" xml:space="preserve">
+    <value>Fra dato er påkrevet</value>
+  </data>
+  <data name="IsActive" xml:space="preserve">
+    <value>Aktiv</value>
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value>Navn</value>
+  </data>
+  <data name="Name10LengthConstraint" xml:space="preserve">
+    <value>Verdi kan ikke overstige 10 tegn</value>
+  </data>
+  <data name="Name20LengthConstraint" xml:space="preserve">
+    <value>Verdi kan ikke overstige 20 tegn</value>
+  </data>
+  <data name="Name255LengthConstraint" xml:space="preserve">
+    <value>Verdi kan ikke overstige 255 tegn</value>
+  </data>
+  <data name="Name50LengthConstraint" xml:space="preserve">
+    <value>Verdi kan ikke overstige 50 tegn</value>
+  </data>
+  <data name="NameIsRequired" xml:space="preserve">
+    <value>Verdi er påkrevet</value>
+  </data>
+  <data name="NeedPriceNonZeroValue" xml:space="preserve">
+    <value>Prisen er ikke-null verdi</value>
+  </data>
+  <data name="OtherActiveCourseAlternative" xml:space="preserve">
+    <value>Alternativ fra admin</value>
+  </data>
+  <data name="PaidAmount" xml:space="preserve">
+    <value>Betalt</value>
+  </data>
+  <data name="Price" xml:space="preserve">
+    <value>Pris</value>
+  </data>
+  <data name="PriceRequired" xml:space="preserve">
+    <value>Pris er påkrevet</value>
+  </data>
+  <data name="SelectedAlternativeByAdmin" xml:space="preserve">
+    <value>Kurs</value>
+  </data>
+  <data name="SelectedByAdmin" xml:space="preserve">
+    <value>Valgt av admin</value>
+  </data>
+  <data name="SendSMSToCustomer" xml:space="preserve">
+    <value>Send sms til kunden</value>
+  </data>
+  <data name="SmsText" xml:space="preserve">
+    <value>sms meldingstekst</value>
+  </data>
+  <data name="Start" xml:space="preserve">
+    <value>Start</value>
+  </data>
+  <data name="StartRequired" xml:space="preserve">
+    <value>Start er påkrevet</value>
+  </data>
+  <data name="Stop" xml:space="preserve">
+    <value>Stopp</value>
+  </data>
+  <data name="StopRequired" xml:space="preserve">
+    <value>Stopp er påkrevet</value>
+  </data>
+  <data name="Telephone1" xml:space="preserve">
+    <value>Mobil 1</value>
+  </data>
+  <data name="Telephone2" xml:space="preserve">
+    <value>Mobil 2</value>
+  </data>
+  <data name="Text160LengthConstraint" xml:space="preserve">
+    <value>Tekst verdi kan ikke overstige 160 tegn.</value>
+  </data>
+  <data name="TextIsRequered" xml:space="preserve">
+    <value>Tekst er påkrevet</value>
+  </data>
+  <data name="ToDate" xml:space="preserve">
+    <value>Til dato</value>
+  </data>
+  <data name="ToDateRequired" xml:space="preserve">
+    <value>Til dato er påkrevet</value>
+  </data>
+  <data name="ValueMustBeInt" xml:space="preserve">
+    <value>Verdien må være sifret</value>
+  </data>
+  <data name="Weekday" xml:space="preserve">
+    <value>Ukedag</value>
+  </data>
+  <data name="Weekdays" xml:space="preserve">
+    <value>Ukedager</value>
+  </data>
+  <data name="WrongEmail" xml:space="preserve">
+    <value>E-post er ikke gyldig</value>
+  </data>
+  <data name="WrongPeriod" xml:space="preserve">
+    <value>Feil periode</value>
+  </data>
+  <data name="WrongTime" xml:space="preserve">
+    <value>Feil tid</value>
+  </data>
+  <data name="Zip" xml:space="preserve">
+    <value>Postnr</value>
+  </data>
+  <data name="ZipRequired" xml:space="preserve">
+    <value>Postnr er påkrevet</value>
+  </data>
+  <data name="DifferentAlternatives" xml:space="preserve">
+    <value>Du må velge to forskjellige alternativ</value>
+  </data>
+  <data name="CourseName" xml:space="preserve">
+    <value>Kursnavn</value>
+  </data>
+  <data name="ErrorMessage" xml:space="preserve">
+    <value>Feilmelding</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Tid</value>
+  </data>
+  <data name="MaxSeatsCount" xml:space="preserve">
+    <value>Maksimale antallet seter</value>
+  </data>
+  <data name="MaxSeatsCountRequired" xml:space="preserve">
+    <value>Seter er ikke-null verdi</value>
+  </data>
+  <data name="ReadyForInvoiced" xml:space="preserve">
+    <value>Klar for faktura</value>
+  </data>
+  <data name="EmailRequired" xml:space="preserve">
+    <value>E-post er påkrevet</value>
+  </data>
+</root>

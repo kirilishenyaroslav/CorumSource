@@ -1,0 +1,109 @@
+﻿@model Corum.Models.OrdersReportsNavigationResult
+
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+<div class="col-md-1">
+</div>
+
+<div id="detailValuesGrid" class="table-header clearfix col-md-10" style="font-size: 11px;">
+    @(Html.Grid(Model.StatusReport.DisplayValues)
+                  .Columns(columns =>
+                  {
+
+                  columns.Add().Encoded(false)
+                          .Titled("Вид перевозки")
+                          .SetWidth(60)
+                          .Css("new_columns_block_start")
+                          .Sanitized(false)
+                          .Sortable(true)
+                          .RenderValueAs(o =>
+                        @<div>
+                            @o.TruckTypeName
+                        </div>);
+
+    columns.Add().Encoded(false)
+           .SetWidth(200)
+           .Titled("Заказчик")
+           .Sanitized(false)
+           .Filterable(true)
+           .Sortable(true)
+           .RenderValueAs(o =>
+        @<div>
+            @o.PayerName
+        </div>);
+
+    columns.Add().Encoded(false)
+        .SetWidth(200)
+        .Titled("Итог")
+        .Css("rigth_column")
+        .Sanitized(false)
+        .Filterable(true)
+        .Sortable(true)
+        .RenderValueAs(o =>
+        @<div>
+            @o.CntAll
+        </div>);
+
+    columns.Add().Encoded(false)
+                 .SetWidth(200)
+                 .Titled("Плановая")
+                 .Css("rigth_column")
+                 .Sanitized(false)
+                 .Filterable(true)
+                 .Sortable(true)
+                 .RenderValueAs(o =>
+                @<div>
+                    @o.CntZero
+                </div>);
+
+
+    columns.Add().Encoded(false)
+            .SetWidth(200)
+            .Titled("% плановых")
+            .Css("rigth_column")
+            .Sanitized(false)
+            .Filterable(true)
+            .Sortable(true)
+            .RenderValueAs(o =>
+            @<div>
+                @o.CntZeroPercentRaw
+            </div>);
+
+
+    columns.Add().Encoded(false)
+            .SetWidth(200)
+            .Titled("Срочная")
+            .Css("rigth_column")
+            .Sanitized(false)
+            .Filterable(true)
+            .Sortable(true)
+            .RenderValueAs(o =>
+            @<div>
+                @o.CntOne
+            </div>);
+
+
+
+    columns.Add().Encoded(false)
+            .SetWidth(200)
+            .Titled("% срочных")
+            .Css("rigth_column")
+            .Sanitized(false)
+            .Filterable(true)
+            .Sortable(true)
+            .Css("new_columns_block_end")
+            .RenderValueAs(o =>
+            @<div>
+                @o.CntOnePercentRaw
+            </div>);
+
+                  })//.WithPaging((int)Model.StatusReport.RequestParams.PageSize)
+                  )
+
+
+    </div>
+
+<div class="col-md-1">
+</div>

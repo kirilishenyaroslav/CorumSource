@@ -1,0 +1,89 @@
+﻿@model Corum.Models.ViewModels.Customers.OrganizationViewModel
+
+<div class="form-group" style="margin-top: 20px;">
+    @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+        @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+    </div>
+</div>
+<div class="row">
+        <div class="form-group">
+            @Html.LabelFor(model => model.CountryId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-3" style="margin-left: 10px">
+                <div class="form-control-container full-width-select">
+                    @Html.TextBoxFor(model => model.CountryId,
+                       new
+                       {
+                           id = "CountryId",
+                           @class = "filter_dropdown form-control input",
+                           @name = "CountryId",
+                           @style = "max-width: 90% !important; width: 90% !important;",
+                           data_source_url = Url.Action("GetCountries", "Orders"),
+                           data_droplist_placeholder = "Выберите страну",
+                           data_selected_text = Model.Country
+                       })
+
+                </div>
+                @Html.ValidationMessageFor(model => model.CountryId, "", new { @class = "text-danger" })
+            </div>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.City, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.City, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+        @Html.ValidationMessageFor(model => model.City, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+        @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+
+<div class="form-group">
+    @Html.LabelFor(model => model.IsTruck, htmlAttributes: new {@class = "control-label col-md-2"})
+    <div class="col-md-10">
+        <div class="checkbox">
+            @Html.EditorFor(model => model.IsTruck)
+            @Html.ValidationMessageFor(model => model.IsTruck, "", new {@class = "text-danger"})
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.IsSystemOrg, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+        <div class="checkbox">
+            @Html.EditorFor(model => model.IsSystemOrg)
+            @Html.ValidationMessageFor(model => model.IsSystemOrg, "", new { @class = "text-danger" })
+        </div>
+    </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Latitude, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-3">
+        @Html.EditorFor(model => model.Latitude, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+        @Html.ValidationMessageFor(model => model.Latitude, "", new { @class = "text-danger" })
+    </div>  
+         <div class="col-md-3" style="margin-left: -20px;">
+            <input type="button" value="Карта" id="MapButton" class="btn delete_link btn-success" style="margin: 5px 5px 5px 5px;width:130px;" onclick="ShowMap()" /><br>
+        </div>
+</div>
+
+<div class="form-group">
+    @Html.LabelFor(model => model.Longitude, htmlAttributes: new { @class = "control-label col-md-2" })
+    <div class="col-md-10">
+           @Html.EditorFor(model => model.Longitude, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+            @Html.ValidationMessageFor(model => model.Longitude, "", new { @class = "text-danger" })
+    </div>
+</div>
+
+

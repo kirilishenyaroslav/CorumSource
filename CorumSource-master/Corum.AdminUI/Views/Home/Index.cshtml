@@ -1,0 +1,142 @@
+﻿@model Corum.Models.ViewModels.Dashboard.DashboardViewModel
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using Corum.Common;
+
+<div class="logo-logistic"></div>
+
+<div class="col-md-7 bg-dashboard" style="float: right!important;">
+
+</div>
+
+<div class="col-md-4" style="float: right; background-color: rgba(0,0,0,0);">
+    <div class="row" style="margin-top:25px; margin-left:100px;" onchange="ReloadReport()">
+        <select name='reporttype' id='reporttype' size='1'>
+            <option value="false" selected="@(Model.isFinishStatuses==false)">Обработка заявок с @Model.dateStart.ToString("dd.MM.yyyy")</option>
+            <option value="true" selected="@(Model.isFinishStatuses==true)">Финальные статусы с @Model.dateStart.ToString("dd.MM.yyyy")</option>
+        </select>
+    </div>
+    @foreach (var report in Model.BPInfo)
+    {
+
+            <div class="col-xs-12 col-sm-12 col-md-10 col-lg-12">
+                <div @Html.Raw("id='chart_div_" + @report.OrderType.ToString() + "'") style="height: 200px;"></div>
+                <br>
+                <div>
+                    <a @Html.Raw("id='title_" + @report.OrderType.ToString() + "'") class="title_overlay barnivann_text_color" href="@Url.Action( (@report.IsTransportType? "Orders":"OrdersBase"),"Orders",
+                                                                                                                        new {
+                                                                                                                            UseOrderTypeFilter = true,
+                                                                                                                            FilterOrderTypeId  = @report.OrderType,
+                                                                                                                            UseOrderDateFilter = true,
+                                                                                                                            FilterOrderDateBeg = @Model.dateStart.ToString("dd.MM.yyyy"),
+                                                                                                                            FilterOrderDateBegRaw = DateTimeConvertClass.getString(Model.dateStart),
+                                                                                                                            FilterOrderDateEnd = @Model.dateEnd.ToString("dd.MM.yyyy"),
+                                                                                                                            FilterOrderDateEndRaw = DateTimeConvertClass.getString(@Model.dateEnd) })">
+
+                    </a>
+                </div>
+            </div>
+    }
+</div>
+
+       
+
+
+@section head_scripts {
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+
+    <script type="text/javascript">
+	    google.load('visualization', '1.0', { 'packages': ['corechart'] });
+    </script>
+
+    <script type="text/javascript">
+
+        function ReloadReport(){
+            
+            var e = document.getElementById("reporttype");
+            var reportType = e.options[e.selectedIndex].value;
+
+            window.location.href="Home?isFinishStatuses="+reportType;
+        }
+
+
+        @foreach (var report in Model.BPInfo)
+        {
+            <text>
+                 google.setOnLoadCallback(function(){
+
+                 var localOrderType = @report.OrderType;
+                 var localOrderTypeName = '@report.OrderTypeName';
+
+                 var data = new google.visualization.DataTable();
+                 data.addColumn('string', 'OrderType');
+                 data.addColumn('number', 'PercentPart');
+                     
+                 data.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
+                 data.addRows([
+                     @foreach (var typeItem in report.BPInfo)
+                     {
+                            <text>
+                              ['@typeItem.ItemName'+"("+@typeItem.OrderCount.ToString()+")", @typeItem.Percent, "@Url.Action((@report.IsTransportType ? "Orders" : "OrdersBase"), "Orders",
+                                                                                                                                new
+                                                                                                                                {
+                                                                                                                                    UseOrderTypeFilter = true,
+                                                                                                                                    FilterOrderTypeId = @report.OrderType,
+                                                                                                                                    UseOrderDateFilter = true,
+                                                                                                                                    FilterOrderDateBeg = @Model.dateStart.ToString("dd.MM.yyyy"),
+                                                                                                                                    FilterOrderDateBegRaw = DateTimeConvertClass.getString(Model.dateStart),
+                                                                                                                                    FilterOrderDateEnd = @Model.dateEnd.AddDays(1).ToString("dd.MM.yyyy"),
+                                                                                                                                    FilterOrderDateEndRaw = DateTimeConvertClass.getString(@Model.dateEnd.AddDays(1)),
+                                                                                                                                    UseStatusFilter = true,
+                                                                                                                                    FilterStatusId = @typeItem.StatusId,
+                                                                                                                                    UseFinalStatusFilter = (@typeItem.StatusId == 0),
+                                                                                                                                    FilterFinalStatus= (@typeItem.StatusId == 0)
+                                                                                                                                })"],
+                            </text>
+                     }
+
+                     ]);
+
+                 var options = {
+                     titlePosition: 'none',
+                     legend: { position: 'right' },
+                     pieHole: 1.0,
+                     colors: [
+                     @foreach (var typeItem in report.BPInfo)
+                     {
+                         <text>
+                            '@typeItem.Color',
+                         </text>
+                     }
+                 ],
+                 pieSliceTextStyle: { position: 'none' },
+                 tooltip: { trigger: 'none' },
+                 enableInteractivity: true
+
+                 };
+
+
+                 var chart = new google.visualization.PieChart(document.getElementById('chart_div_@report.OrderType.ToString()'));
+
+                 function selectHandler() {
+                     var selectedItem = chart.getSelection()[0];
+                     if (selectedItem) {
+                         var topping = data.getValue(selectedItem.row, 2).replace(/&amp;/g, '&');
+                         window.location.href=topping;
+                     }
+                 }
+
+                 jQuery('#title_@report.OrderType.ToString()').text('@report.OrderTypeShortName');
+                 google.visualization.events.addListener(chart, 'select', selectHandler);    
+                 chart.draw(data, options);
+
+             });
+      	    </text>
+        }
+
+    </script>
+}

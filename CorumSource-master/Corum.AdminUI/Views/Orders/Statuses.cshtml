@@ -1,0 +1,123 @@
+﻿@model Corum.Models.NavigationResult<Corum.Models.ViewModels.Orders.OrderStatusViewModel>
+@using GridMvc.Html
+@{
+    ViewBag.Title = "Статусы заявок";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12 main">
+            <h4>Статусы заявок</h4>
+            
+            <div class="table-header clearfix">
+                <div>
+                    @Html.ActionLink("Новый+", "NewStatus", "Orders", null, new { @class = "btn btn-primary", @style = "margin-bottom:10px" })
+                </div>
+                <div style="font-size: 13px;">
+                @(Html.Grid(Model.DisplayValues)
+                  .Columns(columns =>
+                  {
+
+                  columns.Add(model => model.Id)
+                    .Titled("Код статуса").Filterable(true).Sortable(true);
+
+                  columns.Add(model => model.ShortName)
+                    .Titled("Сокращенное<br>наименование").Filterable(true).Sortable(true);
+
+                  columns.Add().Encoded(false)
+                               .Titled("Иконка")
+                               .Sanitized(false)
+                               .RenderValueAs(o =>
+                                @<div>
+                                     <img id="selectedIcon" src="~/Content/icons/@(o.IconFile).png" width="24" height="24" alt="@o.IconFile">
+                                </div>);
+
+                  columns.Add(model => model.StatusName)
+                    .Titled("Cтатус").Filterable(true).Sortable(true);
+
+                  columns.Add(model => model.ActionName)
+                    .Titled("Наименование<br>действия").Filterable(true).Sortable(true);
+
+                  columns.Add().Encoded(false)
+                                   .Titled("Цвет<br>графа")
+                                   .Sanitized(false)
+                                   .RenderValueAs(o =>
+                                    @<div @Html.Raw("style='background:" + @o.StatusColor + "!important; '")>
+                                          тестовая фраза
+                                    </div>);
+
+                  columns.Add().Encoded(false)
+                                   .Titled("Цвет<br>шрифта")
+                                   .Sanitized(false)
+                                   .RenderValueAs(o =>
+                                @<div @Html.Raw("style='color:" + @o.FontColor + "!important; '")>
+                                    тестовая фраза
+                                </div>);
+
+                  columns.Add().Encoded(false)
+                                   .Titled("Цвет<br>фона")
+                                   .Sanitized(false)
+                                   .RenderValueAs(o =>
+                                @<div @Html.Raw("style='background:" + @o.BackgroundColor + "!important; '")>
+                                    тестовая фраза
+                                </div>);
+
+                  columns.Add(model => model.AllowClientData).Filterable(true).Sortable(true)
+                     .Encoded(false)
+                     .Sanitized(false)
+                     .Css("centered_column")
+                     .Titled("Редактирование<br>данных<br>о клиенте")
+                     .RenderValueAs(o =>
+                    @<div>
+                        @Html.CheckBox(o.Id.ToString(), @o.AllowClientData, new { disabled = "disabled", @readonly = "readonly" })
+                    </div>);
+
+                  columns.Add(model => model.AllowExecuterData).Filterable(true).Sortable(true)
+                     .Encoded(false)
+                     .Sanitized(false)
+                     .Css("centered_column")
+                     .Titled("Редактирование<br>данных<br>о исполнителе")
+                     .RenderValueAs(o =>
+                    @<div>
+                        @Html.CheckBox(o.Id.ToString(), @o.AllowExecuterData, new { disabled = "disabled", @readonly = "readonly" })
+                    </div>);
+
+               columns.Add()
+               .Encoded(false)
+               .Sanitized(false)
+               .Css("centered_column")
+               .RenderValueAs(o =>
+               @<div class="edit-delete-copy-links">
+                <a class="tarash-i update_link tooltips" href="@Url.Action("UpdateStatus", "Orders", new { Id = o.Id })">
+                    <span class="tooltip-message">Изменить статус заявки</span>
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </a>
+
+                @if (o.CanBeDelete)
+                {
+                    <a class="tarash-i delete_link tooltips" href="@Url.Action("RemoveStatus", "Orders", new { Id = o.Id })" onclick="var var1='@o.StatusName'; return confirm('Вы действительно хотите удалить статус заявки '+var1+' ?');">
+                        <span class="tooltip-message">Удалить статус заявки</span>
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                }
+                else
+                {
+                    <a class="disable-glyphicon tooltips tarash-i" href="#">
+                        <span class="tooltip-message">Статус заявки не может быть удален</span>
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+                }
+
+            </div>);
+
+                  }))
+                </div>
+            </div>
+
+            
+
+        </div>
+    </div>
+</div>
+

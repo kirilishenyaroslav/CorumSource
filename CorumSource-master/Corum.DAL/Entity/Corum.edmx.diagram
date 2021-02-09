@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="b4a6c1a554cf47f59a5f500411226b7d" Name="Diagram1" ZoomLevel="33">
+        <EntityTypeShape EntityType="CorumModel.ELMAH_Error" Width="1.5" PointX="11.375" PointY="0.5" IsExpanded="true" />
+        <EntityTypeShape EntityType="CorumModel.MenuStructure" Width="1.5" PointX="8.375" PointY="1" />
+        <EntityTypeShape EntityType="CorumModel.Permissions" Width="1.5" PointX="2.375" PointY="0.5" />
+        <AssociationConnector Association="CorumModel.FK_Permissions_MenuStructure" />
+        <EntityTypeShape EntityType="CorumModel.OrdersDocTypes" Width="1.5" PointX="13.125" PointY="7.625" />
+        <EntityTypeShape EntityType="CorumModel.OrderDogs" Width="1.5" PointX="4.5" PointY="10.25" />
+        <EntityTypeShape EntityType="CorumModel.OrderObservers" Width="1.5" PointX="10.125" PointY="13.25" />
+        <EntityTypeShape EntityType="CorumModel.OrderStatusHistory" Width="2.5" PointX="10.625" PointY="4.25" />
+        <EntityTypeShape EntityType="CorumModel.OrderAttachments" Width="2.375" PointX="15.625" PointY="4.875" />
+        <AssociationConnector Association="CorumModel.FK_OrderAttachments_OrdersDocTypes" />
+        <EntityTypeShape EntityType="CorumModel.ImportConfig" Width="3.375" PointX="3.375" PointY="24.875" />
+        <EntityTypeShape EntityType="CorumModel.DocsSnapshot" Width="1.5" PointX="5.5" PointY="31.125" />
+        <EntityTypeShape EntityType="CorumModel.RestsSnapshot" Width="1.5" PointX="8.25" PointY="24.5" />
+        <EntityTypeShape EntityType="CorumModel.LogisticSnapshots" Width="1.5" PointX="3.25" PointY="29.625" />
+        <AssociationConnector Association="CorumModel.FK_DocsSnapshot_LogisticSnapshots" />
+        <AssociationConnector Association="CorumModel.FK_RestsSnapshot_LogisticSnapshots" />
+        <EntityTypeShape EntityType="CorumModel.LogImportErrors" Width="1.5" PointX="0.875" PointY="28.25" />
+        <AssociationConnector Association="CorumModel.FK_LogImportErrors_LogisticSnapshots" />
+        <EntityTypeShape EntityType="CorumModel.LoginHistory" Width="1.5" PointX="2.375" PointY="13.625" />
+        <EntityTypeShape EntityType="CorumModel.BalanceKeepers" Width="1.5" PointX="4.375" PointY="13.125" />
+        <EntityTypeShape EntityType="CorumModel.Centers" Width="1.5" PointX="15.25" PointY="8.875" />
+        <EntityTypeShape EntityType="CorumModel.OrderPipelineSteps" Width="1.875" PointX="10.875" PointY="8.625" />
+        <EntityTypeShape EntityType="CorumModel.RoleGroupsRole" Width="1.5" PointX="13.75" PointY="0.875" />
+        <EntityTypeShape EntityType="CorumModel.OrderStatuses" Width="2.5" PointX="14.25" PointY="11.75" />
+        <AssociationConnector Association="CorumModel.FK_OrderPipelineSteps_OrderStatuses" />
+        <AssociationConnector Association="CorumModel.FK_OrderPipelineSteps_OrderStatuses1" />
+        <AssociationConnector Association="CorumModel.FK_OrderStatusHistory_OrderStatuses" />
+        <AssociationConnector Association="CorumModel.FK_OrderStatusHistory_OrderStatuses1" />
+        <EntityTypeShape EntityType="CorumModel.AspNetRoles" Width="1.5" PointX="5.25" PointY="4.75" />
+        <EntityTypeShape EntityType="CorumModel.RoleGroups" Width="1.5" PointX="15.75" PointY="2.5" />
+        <AssociationConnector Association="CorumModel.FK_dbo_RoleGroupsRole_dbo_AspNetRoles_RoleId" />
+        <AssociationConnector Association="CorumModel.FK_OrderPipelineSteps_AspNetRoles" />
+        <AssociationConnector Association="CorumModel.FK_Permissions_AspNetRoles" />
+        <AssociationConnector Association="CorumModel.FK_dbo_RoleGroupsRole_dbo_RoleGroups_RoleGroupsId" />
+        <AssociationConnector Association="CorumModel.AspNetMenuRoles" />
+        <EntityTypeShape EntityType="CorumModel.OrderClients" Width="1.5" PointX="0.5" PointY="3.75" />
+        <AssociationConnector Association="CorumModel.FK_OrderClients_AspNetRoles" />
+        <AssociationConnector Association="CorumModel.FK_OrderClients_Centers" />
+        <AssociationConnector Association="CorumModel.FK_OrderDogs_OrderClients" />
+        <EntityTypeShape EntityType="CorumModel.Countries" Width="1.5" PointX="7.875" PointY="19.25" />
+        <EntityTypeShape EntityType="CorumModel.CarOwners" Width="1.5" PointX="14.375" PointY="17.5" />
+        <EntityTypeShape EntityType="CorumModel.Cars" Width="1.5" PointX="16.625" PointY="17" />
+        <EntityTypeShape EntityType="CorumModel.CarsFuelType" Width="1.5" PointX="14.375" PointY="21" />
+        <AssociationConnector Association="CorumModel.FKCars_CarOwners" />
+        <AssociationConnector Association="CorumModel.FKCars_CarsFuelType" />
+        <EntityTypeShape EntityType="CorumModel.OrderNotifications" Width="2.75" PointX="17.625" PointY="0.75" />
+        <EntityTypeShape EntityType="CorumModel.OrderNotificationTypes" Width="2.25" PointX="14.125" PointY="23.375" />
+        <AssociationConnector Association="CorumModel.FK_OrderNotificationsTypes" />
+        <EntityTypeShape EntityType="CorumModel.UserSettings" Width="1.5" PointX="0.875" PointY="17.75" />
+        <EntityTypeShape EntityType="CorumModel.OrderLoadingTypes" Width="1.5" PointX="17.25" PointY="25.875" />
+        <EntityTypeShape EntityType="CorumModel.OrderTruckTypes" Width="1.5" PointX="17.25" PointY="28.125" />
+        <EntityTypeShape EntityType="CorumModel.OrderUnloadingTypes" Width="1.5" PointX="17.25" PointY="24" />
+        <EntityTypeShape EntityType="CorumModel.OrderVehicleTypes" Width="1.5" PointX="17.25" PointY="21.75" />
+        <EntityTypeShape EntityType="CorumModel.OrderFilterSettings" Width="1.5" PointX="20.5" PointY="7.75" />
+        <AssociationConnector Association="CorumModel.FK_OrderFilterSettings_OrderClients" />
+        <AssociationConnector Association="CorumModel.FK_OrderFilterSettings_OrderStatuses" />
+        <EntityTypeShape EntityType="CorumModel.FAQAnswers" Width="1.5" PointX="3" PointY="20.875" />
+        <EntityTypeShape EntityType="CorumModel.FAQGroupes" Width="1.5" PointX="0.75" PointY="21.125" />
+        <AssociationConnector Association="CorumModel.FK_PK_FAQAnswers_FAQGroupes" />
+        <EntityTypeShape EntityType="CorumModel.UserMessages" Width="1.5" PointX="4.75" PointY="43.25" />
+        <EntityTypeShape EntityType="CorumModel.UserProfile" Width="1.5" PointX="18" PointY="8.875" />
+        <AssociationConnector Association="CorumModel.FK_UserProfile_Countries" />
+        <EntityTypeShape EntityType="CorumModel.RouteTypes" Width="1.5" PointX="12.25" PointY="28.75" />
+        <EntityTypeShape EntityType="CorumModel.OrderTypesBase" Width="1.5" PointX="7.75" PointY="13.375" />
+        <AssociationConnector Association="CorumModel.FK_OrderTypesBase_AccessFK" />
+        <AssociationConnector Association="CorumModel.FK_OrderTypesBase_AspNetRoles" />
+        <AssociationConnector Association="CorumModel.FK_OrderTypesBase_AspNetRoles1" />
+        <AssociationConnector Association="CorumModel.FK_OrderTypesBase_AspNetRoles2" />
+        <AssociationConnector Association="CorumModel.FK_OrderFilterSettings_OrderTypesBase" />
+        <AssociationConnector Association="CorumModel.FK_OrderPipelineSteps_OrderTypesBase" />
+        <EntityTypeShape EntityType="CorumModel.ProjectTypes" Width="1.5" PointX="10.75" PointY="19.75" />
+        <EntityTypeShape EntityType="CorumModel.CarCarryCapacity" Width="1.5" PointX="26.875" PointY="14.875" />
+        <EntityTypeShape EntityType="CorumModel.RouteIntervalType" Width="1.5" PointX="19.375" PointY="4.875" />
+        <EntityTypeShape EntityType="CorumModel.SpecificationTypes" Width="1.5" PointX="32" PointY="20.625" />
+        <EntityTypeShape EntityType="CorumModel.SpecificationNames" Width="1.5" PointX="7.375" PointY="4.75" />
+        <EntityTypeShape EntityType="CorumModel.Projects" Width="1.5" PointX="25.5" PointY="3.125" />
+        <AssociationConnector Association="CorumModel.FK_ProjectsCFO" />
+        <AssociationConnector Association="CorumModel.FK_ProjectType" />
+        <AssociationConnector Association="CorumModel.FK_Projects_Projects" />
+        <EntityTypeShape EntityType="CorumModel.ContractGroupesSpecifications" Width="1.5" PointX="22.875" PointY="9.875" />
+        <EntityTypeShape EntityType="CorumModel.Contracts" Width="1.5" PointX="19.625" PointY="15.625" />
+        <AssociationConnector Association="CorumModel.FK_Contracts_BalanceKeepers" />
+        <AssociationConnector Association="CorumModel.FK_Contracts_CarOwners" />
+        <AssociationConnector Association="CorumModel.FKContracts_CarOwners" />
+        <AssociationConnector Association="CorumModel.FK_Contracts_GroupesSpec" />
+        <EntityTypeShape EntityType="CorumModel.OrderBaseProjects" Width="1.5" PointX="33" PointY="7.375" />
+        <AssociationConnector Association="CorumModel.FK_OrderBaseProjects_Projects" />
+        <EntityTypeShape EntityType="CorumModel.OrderBaseSpecification" Width="1.5" PointX="33.125" PointY="13.75" />
+        <AssociationConnector Association="CorumModel.FK_OrderBaseSpecification_SpecificationTypes" />
+        <EntityTypeShape EntityType="CorumModel.OrderConcursSteps" Width="1.5" PointX="32" PointY="18.125" />
+        <EntityTypeShape EntityType="CorumModel.ConcursDiscountRate" Width="1.5" PointX="4.375" PointY="0.75" />
+        <EntityTypeShape EntityType="CorumModel.OrderConcursListsSteps" Width="3.75" PointX="35.25" PointY="7.625" />
+        <AssociationConnector Association="CorumModel.FK_OrderConcursListsSteps" />
+        <EntityTypeShape EntityType="CorumModel.ContractSpecifications" Width="1.5" PointX="34.25" PointY="18.375" />
+        <AssociationConnector Association="CorumModel.FK_Specifications_CarCarryCapacity" />
+        <AssociationConnector Association="CorumModel.FK_GroupesSpec_Specifications" />
+        <AssociationConnector Association="CorumModel.FK_Specifications_Names" />
+        <AssociationConnector Association="CorumModel.FK_Specifications_RouteIntervalType" />
+        <AssociationConnector Association="CorumModel.FK_Specifications_RouteTypes" />
+        <AssociationConnector Association="CorumModel.FK_Specifications_Types" />
+        <AssociationConnector Association="CorumModel.FK_Specifications_Vehicles" />
+        <EntityTypeShape EntityType="CorumModel.AdditionalRoutePoints" Width="1.5" PointX="39.125" PointY="11.125" />
+        <EntityTypeShape EntityType="CorumModel.OrderCompetitiveList" Width="1.5" PointX="36.5" PointY="13.25" />
+        <AssociationConnector Association="CorumModel.FK_OrderCompetitiveList_ContractSpecifications" />
+        <EntityTypeShape EntityType="CorumModel.OrderFilters" Width="1.5" PointX="19.5" PointY="24.125" />
+        <EntityTypeShape EntityType="CorumModel.OrderFilterSettings2" Width="1.5" PointX="4.75" PointY="47.625" />
+        <AssociationConnector Association="CorumModel.FK_OrderFilters_OrderClients" />
+        <AssociationConnector Association="CorumModel.FK_OrderFilters_OrderFilterSettings2" />
+        <AssociationConnector Association="CorumModel.FK_OrderFilters_OrderStatuses" />
+        <AssociationConnector Association="CorumModel.FK_OrderFilters_OrderTypesBase" />
+        <EntityTypeShape EntityType="CorumModel.RoutePointType" Width="1.5" PointX="13" PointY="31.75" />
+        <EntityTypeShape EntityType="CorumModel.RoutePoints" Width="1.5" PointX="15.25" PointY="37" />
+        <AssociationConnector Association="CorumModel.FK_RoutePoints_RoutePointType" />
+        <EntityTypeShape EntityType="CorumModel.Routes" Width="1.5" PointX="12.375" PointY="47.625" />
+        <AssociationConnector Association="CorumModel.FK_Routes_Specifications" />
+        <AssociationConnector Association="CorumModel.FK_RoutePoints_Routes" />
+        <EntityTypeShape EntityType="CorumModel.OrdersPassengerTransport" Width="1.5" PointX="42.5" PointY="31.25" />
+        <AssociationConnector Association="CorumModel.FK_OrdersPassengerTransport_Countries" />
+        <AssociationConnector Association="CorumModel.FK_OrdersPassengerTransport_Countries1" />
+        <AssociationConnector Association="CorumModel.FK_OrdersPassengerTransport_RouteTypes" />
+        <EntityTypeShape EntityType="CorumModel.OrderTruckTransport" Width="1.5" PointX="39.5" PointY="31.125" />
+        <AssociationConnector Association="CorumModel.FK_OrderTruckTransport_ConsigneeCountries" />
+        <AssociationConnector Association="CorumModel.FK_OrderTruckTransport_ShipperCountries" />
+        <AssociationConnector Association="CorumModel.FK_OrderTruckTransport3" />
+        <AssociationConnector Association="CorumModel.FK_OrderTruckTransport" />
+        <AssociationConnector Association="CorumModel.FK_OrderTruckTransport_RouteTypes" />
+        <AssociationConnector Association="CorumModel.FK_OrderTruckTransport2" />
+        <AssociationConnector Association="CorumModel.FK_OrderTruckTransport4" />
+        <EntityTypeShape EntityType="CorumModel.OrdersBase" Width="1.5" PointX="37.25" PointY="20.5" />
+        <AssociationConnector Association="CorumModel.FK_AdditionalRoutePoints_Order" />
+        <AssociationConnector Association="CorumModel.FK_OrdersBase_BalanceKeepers" />
+        <AssociationConnector Association="CorumModel.FK_OrderAttachments_OrdersBase" />
+        <AssociationConnector Association="CorumModel.FK_OrderBaseProjects_OrdersBase" />
+        <AssociationConnector Association="CorumModel.FK_OrderBaseSpecification_OrdersBase" />
+        <AssociationConnector Association="CorumModel.FK_OrdersBase_OrderClients" />
+        <AssociationConnector Association="CorumModel.FK_OrderCompetitiveList_OrdersBase" />
+        <AssociationConnector Association="CorumModel.FK_OrderConcursListsSteps2" />
+        <AssociationConnector Association="CorumModel.FK_OrdersBase_OrderDogs" />
+        <AssociationConnector Association="CorumModel.FK_OrderObservers_OrdersBase" />
+        <AssociationConnector Association="CorumModel.FK__OrdersBas__Proje__73501C2F" />
+        <AssociationConnector Association="CorumModel.FK_OrderBase_Routes" />
+        <AssociationConnector Association="CorumModel.FK_OrdersBase_OrderStatuses" />
+        <AssociationConnector Association="CorumModel.FK_OrdersBase_OrderTypesBase" />
+        <AssociationConnector Association="CorumModel.FK_OrdersBase_SpecificationTypes" />
+        <AssociationConnector Association="CorumModel.FK_OrdersPassengerTransport_OrdersBase" />
+        <AssociationConnector Association="CorumModel.FK_OrderStatusHistory_OrdersBase" />
+        <AssociationConnector Association="CorumModel.FK_OrderTruckTransport5" />
+        <EntityTypeShape EntityType="CorumModel.AspNetUsers" Width="1.5" PointX="7.5" PointY="43.25" />
+        <AssociationConnector Association="CorumModel.FK_GroupesSpec_AspNetUsers" />
+        <AssociationConnector Association="CorumModel.FK_LoginHistory_AspNetUsers1" />
+        <AssociationConnector Association="CorumModel.FK_OrderAttachments_AspNetUsers" />
+        <AssociationConnector Association="CorumModel.FK_OrderConcursListsUsers" />
+        <AssociationConnector Association="CorumModel.FK_OrderFilters_AspNetUsers" />
+        <AssociationConnector Association="CorumModel.FK_OrderFilters_AspNetUsersEx" />
+        <AssociationConnector Association="CorumModel.FK_OrderFilterSettings_AspNetUsers" />
+        <AssociationConnector Association="CorumModel.FK_OrderFilterSettings_AspNetUsersCur" />
+        <AssociationConnector Association="CorumModel.FK_OrderFilterSettings_AspNetUsersEx" />
+        <AssociationConnector Association="CorumModel.FK_OrderFilterSettings2_AspNetUsersCur" />
+        <AssociationConnector Association="CorumModel.FK_OrderNotifications" />
+        <AssociationConnector Association="CorumModel.FK_OrderNotificationsCreator" />
+        <AssociationConnector Association="CorumModel.FK_OrderObservers_AspNetUsers" />
+        <AssociationConnector Association="CorumModel.FK_OrdersBase_AspNetUsers" />
+        <AssociationConnector Association="CorumModel.FK_OrdersBase_AspNetUsers1" />
+        <AssociationConnector Association="CorumModel.FK_OrderStatusHistory_AspNetUsers" />
+        <AssociationConnector Association="CorumModel.FK_OrderTypesBase_AspNetAnnonymousUsers" />
+        <AssociationConnector Association="CorumModel.FK_OrderTypesBase_AspNetUsers" />
+        <AssociationConnector Association="CorumModel.FK_PK_UserMessages_AspNetUsers" />
+        <AssociationConnector Association="CorumModel.FK_PK_UserMessages_AspNetUsers2" />
+        <AssociationConnector Association="CorumModel.FK_Specifications_AspNetUsers" />
+        <AssociationConnector Association="CorumModel.FK_User" />
+        <AssociationConnector Association="CorumModel.FK_UserProfile_AspNetUsers" />
+        <AssociationConnector Association="CorumModel.AspNetUserRoles" />
+        <EntityTypeShape EntityType="CorumModel.Organization" Width="1.5" PointX="10.125" PointY="36.375" />
+        <AssociationConnector Association="CorumModel.FK_AdditionalRoutePoints_Organization" />
+        <AssociationConnector Association="CorumModel.FK_Organization_Countries" />
+        <AssociationConnector Association="CorumModel.FK_Passenger_OrgFrom" />
+        <AssociationConnector Association="CorumModel.FK_Passenger_OrgTo" />
+        <AssociationConnector Association="CorumModel.FK_Passenger_Consignee" />
+        <AssociationConnector Association="CorumModel.FK_Passenger_Shipper" />
+        <AssociationConnector Association="CorumModel.FK_Projects_Organization" />
+        <AssociationConnector Association="CorumModel.FK_Projects_Organization1" />
+        <AssociationConnector Association="CorumModel.FK_RoutePoints_Organization" />
+        <AssociationConnector Association="CorumModel.FK_Routes_FromOrganization" />
+        <AssociationConnector Association="CorumModel.FK_Routes_ToOrganization" />
+        <EntityTypeShape EntityType="CorumModel.OrderUsedCars" Width="1.5" PointX="39.5" PointY="19.75" />
+        <AssociationConnector Association="CorumModel.FK_OrderUsedCars_CarOwners" />
+        <AssociationConnector Association="CorumModel.FK_OrderUsedCars" />
+        <AssociationConnector Association="CorumModel.FK_OrderUsedCarsContract" />
+        <AssociationConnector Association="CorumModel.FK_OrderUsedCarsContracts1" />
+        <AssociationConnector Association="CorumModel.FK_OrderUsedCarsOrder" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

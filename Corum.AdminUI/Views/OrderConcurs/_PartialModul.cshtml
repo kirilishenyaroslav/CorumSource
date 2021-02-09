@@ -8,6 +8,7 @@
             <div class="col-md-8">
                 @{SelectList listServices = new SelectList(Model.ToList(), "Id", "Title"); }
                 @Html.DropDownList("Список услуг", listServices as SelectList)
+                
 
                 @*@Html.TextBox("Receiver", "",
                                     htmlAttributes: new

@@ -1,0 +1,181 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <!--Project was exported from assembly: D:\Projects\BarniVann\barnivann\Barnivann\BarnivannAdminUI\bin\GridMvc.dll-->
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{C0DBDCDD-BD5D-4B91-914C-BDF5C09859C6}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AssemblyName>Corum.GridMvc</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkProfile />
+    <ApplicationVersion>2.0.0.0</ApplicationVersion>
+    <FileAlignment>512</FileAlignment>
+    <RootNamespace>GridMvc</RootNamespace>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <Prefer32Bit>false</Prefer32Bit>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure">
+      <HintPath>..\..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.8.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Mvc">
+      <HintPath>..\..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.Razor">
+      <HintPath>..\..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor">
+      <HintPath>..\..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="WebGrease">
+      <HintPath>..\..\packages\WebGrease.1.6.0\lib\WebGrease.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="IGridItemsProcessor.cs" />
+    <Compile Include="IGridColumnHeaderRenderer.cs" />
+    <Compile Include="GridStyledRenderer.cs" />
+    <Compile Include="GridHeaderRenderer.cs" />
+    <Compile Include="GridHiddenHeaderRenderer.cs" />
+    <Compile Include="GridBase.cs" />
+    <Compile Include="IGrid.cs" />
+    <Compile Include="ISanitizer.cs" />
+    <Compile Include="Sanitizer.cs" />
+    <Compile Include="Grid.cs" />
+    <Compile Include="IGridCell.cs" />
+    <Compile Include="GridCell.cs" />
+    <Compile Include="IGridCellRenderer.cs" />
+    <Compile Include="GridCellRenderer.cs" />
+    <Compile Include="GridHiddenCellRenderer.cs" />
+    <Compile Include="IGridSettingsProvider.cs" />
+    <Compile Include="QueryStringGridSettingsProvider.cs" />
+    <Compile Include="Columns\IColumnBuilder.cs" />
+    <Compile Include="Columns\DefaultColumnBuilder.cs" />
+    <Compile Include="Columns\IColumn.cs" />
+    <Compile Include="Columns\IColumn_.cs" />
+    <Compile Include="Columns\ISortableColumn.cs" />
+    <Compile Include="Columns\ISortableColumn_.cs" />
+    <Compile Include="Columns\IFilterableColumn.cs" />
+    <Compile Include="Columns\IFilterableColumn_.cs" />
+    <Compile Include="Columns\IGridColumn.cs" />
+    <Compile Include="Columns\IGridColumn_.cs" />
+    <Compile Include="Columns\GridColumnBase.cs" />
+    <Compile Include="Columns\IGridColumnCollection.cs" />
+    <Compile Include="Columns\IGridColumnCollection_.cs" />
+    <Compile Include="Columns\GridColumnCollection.cs" />
+    <Compile Include="Columns\HiddenGridColumn.cs" />
+    <Compile Include="Columns\GridColumn.cs" />
+    <Compile Include="DataAnnotations\IGridAnnotaionsProvider.cs" />
+    <Compile Include="DataAnnotations\GridAnnotaionsProvider.cs" />
+    <Compile Include="DataAnnotations\GridTableAttribute.cs" />
+    <Compile Include="DataAnnotations\GridHiddenColumnAttribute.cs" />
+    <Compile Include="DataAnnotations\GridColumnAttribute.cs" />
+    <Compile Include="DataAnnotations\NotMappedColumnAttribute.cs" />
+    <Compile Include="Filtering\IColumnFilter.cs" />
+    <Compile Include="Filtering\DefaultColumnFilter.cs" />
+    <Compile Include="Filtering\ColumnFilterValue.cs" />
+    <Compile Include="Filtering\IFilterColumnCollection.cs" />
+    <Compile Include="Filtering\DefaultFilterColumnCollection.cs" />
+    <Compile Include="Filtering\FilterGridItemsProcessor.cs" />
+    <Compile Include="Filtering\GridFilterType.cs" />
+    <Compile Include="Filtering\IGridFilterSettings.cs" />
+    <Compile Include="Filtering\QueryStringFilterSettings.cs" />
+    <Compile Include="Filtering\QueryStringFilterColumnHeaderRenderer.cs" />
+    <Compile Include="Filtering\Types\IFilterType.cs" />
+    <Compile Include="Filtering\Types\FilterTypeBase.cs" />
+    <Compile Include="Filtering\Types\BooleanFilterType.cs" />
+    <Compile Include="Filtering\Types\ByteFilterType.cs" />
+    <Compile Include="Filtering\Types\LongFilterType.cs" />
+    <Compile Include="Filtering\Types\DecimalFilterType.cs" />
+    <Compile Include="Filtering\Types\SingleFilterType.cs" />
+    <Compile Include="Filtering\Types\DoubleFilterType.cs" />
+    <Compile Include="Filtering\Types\DateTimeFilterType.cs" />
+    <Compile Include="Filtering\Types\IntegerFilterType.cs" />
+    <Compile Include="Filtering\Types\FilterTypeResolver.cs" />
+    <Compile Include="Filtering\Types\TextFilterType.cs" />
+    <Compile Include="Html\GridExtensions.cs" />
+    <Compile Include="Html\IGridHtmlOptions.cs" />
+    <Compile Include="Html\GridHtmlOptions.cs" />
+    <Compile Include="Html\GridRenderOptions.cs" />
+    <Compile Include="Html\HtmlGrid.cs" />
+    <Compile Include="Pagination\IGridPager.cs" />
+    <Compile Include="Pagination\GridPager.cs" />
+    <Compile Include="Pagination\PagerGridItemsProcessor.cs" />
+    <Compile Include="Resources\Strings.cs" />
+    <Compile Include="Sorting\IColumnOrderer`1.cs" />
+    <Compile Include="Sorting\OrderByGridOrderer.cs" />
+    <Compile Include="Sorting\ThenByColumnOrderer.cs" />
+    <Compile Include="Sorting\GridSortDirection.cs" />
+    <Compile Include="Sorting\IGridSortSettings.cs" />
+    <Compile Include="Sorting\QueryStringSortColumnHeaderRenderer.cs" />
+    <Compile Include="Sorting\QueryStringSortSettings.cs" />
+    <Compile Include="Sorting\SortGridItemsProcessor.cs" />
+    <Compile Include="Utility\JsonHelper.cs" />
+    <Compile Include="Utility\PropertiesHelper.cs" />
+    <Compile Include="Utility\CustomQueryStringBuilder.cs" />
+    <Compile Include="AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Resources\Strings.resx" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="app.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

@@ -1,0 +1,191 @@
+﻿@model Corum.Models.RestsNavigationResult<Corum.Models.ViewModels.BriefViewModel>
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Sorting
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+@Html.Hidden("FilterStorageId_", Model.FilterStorageId, new { id = "FilterStorageId_" })
+@Html.Hidden("FilterCenterId_", Model.FilterCenterId, new { id = "FilterCenterId_" })
+@Html.Hidden("FilterRecieverPlanId_", Model.FilterRecieverPlanId, new { id = "FilterRecieverPlanId_" })
+@Html.Hidden("FilterRecieverFactId_", Model.FilterRecieverFactId, new { id = "FilterRecieverFactId_" })
+@Html.Hidden("FilterKeeperId_", Model.FilterKeeperId, new { id = "FilterKeeperId_" })
+@Html.Hidden("FilterProducerId_", Model.FilterProducerId, new { id = "FilterProducerId_" })
+
+@Html.Hidden("UseStorageFilter_", Model.UseStorageFilter, new { id = "UseStorageFilter_" })
+@Html.Hidden("UseCenterFilter_", Model.UseCenterFilter, new { id = "UseCenterFilter_" })
+@Html.Hidden("UseRecieverPlanFilter_", Model.UseRecieverPlanFilter, new { id = "UseRecieverPlanFilter_" })
+@Html.Hidden("UseRecieverFactFilter_", Model.UseRecieverFactFilter, new { id = "UseRecieverFactFilter_" })
+@Html.Hidden("UseKeeperFilter_", Model.UseKeeperFilter, new { id = "UseKeeperFilter_" })
+@Html.Hidden("UseProducerFilter_", Model.UseProducerFilter, new { id = "UseProducerFilter_" })
+
+@Html.Hidden("PriceForEndConsumer_", Model.PriceForEndConsumer, new { id = "PriceForEndConsumer_" })
+@Html.Hidden("PriceForFirstReciver_", Model.PriceForFirstReciver, new { id = "PriceForFirstReciver_" })
+@Html.Hidden("PlanFullCost_", Model.PlanFullCost, new { id = "PlanFullCost_" })
+@Html.Hidden("PlanChangableCost_", Model.PlanChangableCost, new { id = "PlanChangableCost_" })
+@Html.Hidden("FactFullCosts_", Model.FactFullCosts, new { id = "FactFullCosts_" })
+@Html.Hidden("FactChangableCosts_", Model.FactChangableCosts, new { id = "FactChangableCosts_" })
+@Html.Hidden("BalancePrice_", Model.BalancePrice, new { id = "BalancePrice_" })
+
+<div class="container-fluid">
+
+    @Html.Partial("_briefReportSetSettingsDialog");
+
+    <div class="row">
+        <div class="col-lg-12 main">
+            <div class="row">
+                <div class="row">
+                    <div style="margin-bottom: 15px; text-align:center;" class="col-md-12">
+                        <span style="margin-bottom: 20px; font-weight: bold;">Сводка за период: @Model.SnapshotInfo.ActualDateBeg.Value.ToString("dd.MM.yyyy") - @Model.SnapshotInfo.ActualDateEnd.Value.ToString("dd.MM.yyyy")</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row" style="margin-bottom: 20px;">
+                <div class="col-md-8">
+
+                <input type="button" value="Конфигурация" class="btn btn-default" onclick="ShowSettings()" />&nbsp;&nbsp;
+                
+                    @Html.ActionLink("Экспорт в excel", "BriefReportAsExcel", "ExportToExcel", new
+                          {
+                              snapshotId = Model.SnapshotInfo.Id,
+                              CurrentGroupFieldName = Model.CurrentGroupFieldName,
+
+                              FilterStorageId = Model.FilterStorageId,
+                              FilterCenterId = Model.FilterCenterId,
+                              FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                              FilterRecieverFactId = Model.FilterRecieverFactId,
+                              FilterKeeperId = Model.FilterKeeperId,
+                              FilterProducerId = Model.FilterProducerId,
+
+                              UseStorageFilter = Model.UseStorageFilter,
+                              UseCenterFilter = Model.UseCenterFilter,
+                              UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                              UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                              UseKeeperFilter = Model.UseKeeperFilter,
+                              UseProducerFilter = Model.UseProducerFilter,
+
+                              PriceForEndConsumer = Model.PriceForEndConsumer,
+                              PriceForFirstReciver = Model.PriceForFirstReciver,
+                              PlanFullCost = Model.PlanFullCost,
+                              PlanChangableCost = Model.PlanChangableCost,
+                              FactFullCosts = Model.FactFullCosts,
+                              FactChangableCosts = Model.FactChangableCosts,
+                              BalancePrice = Model.BalancePrice                              
+                          }, new { @class = "btn btn-success delete_link" })
+
+                @Html.ActionLink("Сводная", "GroupRestReport", "Reports", new
+               {
+                   snapshotId = Model.SnapshotInfo.Id,
+                   CurrentGroupFieldName = Model.CurrentGroupFieldName,
+
+                   FilterStorageId = Model.FilterStorageId,
+                   FilterCenterId = Model.FilterCenterId,
+                   FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                   FilterRecieverFactId = Model.FilterRecieverFactId,
+                   FilterKeeperId = Model.FilterKeeperId,
+                   FilterProducerId = Model.FilterProducerId,
+
+                   UseStorageFilter = Model.UseStorageFilter,
+                   UseCenterFilter = Model.UseCenterFilter,
+                   UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                   UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                   UseKeeperFilter = Model.UseKeeperFilter,
+                   UseProducerFilter = Model.UseProducerFilter,
+
+                   PriceForEndConsumer = Model.PriceForEndConsumer,
+                   PriceForFirstReciver = Model.PriceForFirstReciver,
+                   PlanFullCost = Model.PlanFullCost,
+                   PlanChangableCost = Model.PlanChangableCost,
+                   FactFullCosts = Model.FactFullCosts,
+                   FactChangableCosts = Model.FactChangableCosts,
+                   BalancePrice = Model.BalancePrice
+               }, new { @class = "btn btn-info" })
+                </div>
+                <div class="col-md-4" style="font-size: 10px !important;">
+                    @Html.Partial("_briefReportFilterSettings")
+                </div>
+            </div>
+
+
+            <div class="row">
+                @{
+                    var numberFormat = new CultureInfo("en-US", false).NumberFormat;
+                }
+
+                <div id="RestReportTableWrapper" class="table-header clearfix row" style="font-size: 10px !important;">
+                      @Html.Partial("_briefReportDetailsValues");
+                </div>
+            </div>
+            
+
+        </div>
+    </div>
+
+</div>
+
+@section scripts
+{
+    <script>
+
+        var offset = $('.navbar').height();
+        $("html:not(.legacy) table").stickyTableHeaders({ fixedOffset: offset });
+
+        function ShowSettings() {
+            ShowDialogColumnSettings();
+        }
+
+        function ShowDialogColumnSettings() {
+
+            $('#restsettings')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,
+                    resizable: false,
+                    title: "Конфигурация сводки",
+                    modal: true,
+                    open: function (event, ui) {
+                        InitFilterDropDowns();
+                    },
+                    close: function (event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function () {
+
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Ок",
+                            "class": 'btn btn-primary',
+                            click: function () {
+                                $("#settingsForm").submit();
+                            }
+                        }
+                    ]
+                });
+
+            $('#restsettings').dialog('open');
+
+            return;
+        }
+
+
+    </script>
+}
+

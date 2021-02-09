@@ -1,0 +1,107 @@
+﻿@model Corum.Models.ViewModels.Cars.GroupCarsViewModel
+
+
+<h4>Автомобили перевозчика @Model.GroupCarsInfo.CarrierName</h4>
+
+@Html.HiddenFor(m => m.GroupCarsInfo.Id, new { @id = "carOwnerId", @Name = "carOwnerId" })
+<div style="font-size: 13px;">
+    <div class="grid-mvc" data-lang="en" data-gridname="" data-selectable="true" data-multiplefilters="true">
+        <div>
+            @if (Model.GroupCarsInfo.is_Leaf)
+            {
+                @Ajax.ActionLink("Добавить автомобиль", "NewCar", "Cars", new { carOwnerId = @Model.GroupCarsInfo.Id }, new AjaxOptions { UpdateTargetId = "Cars" }, new { @class = "btn btn-primary", @style = "margin-bottom:10px" })
+            }
+            else
+            {
+                @Ajax.ActionLink("Добавить автомобиль", "NewCar", "Cars", new { carOwnerId = @Model.GroupCarsInfo.Id }, new AjaxOptions { UpdateTargetId = "Cars" }, new { @class = "btn btn-primary disabled", @style = "margin-bottom:10px" })
+            }
+           
+            <div class="grid-wrap">
+                <table class="table table-header clearfix table-striped table-bordered no-footer sort-table-header">
+
+                    <thead>
+                        <tr>
+                            <th class="grid-header centered_column">Марка</th>
+                            <th class="grid-header centered_column">Госномер</th>
+                            <th class="grid-header centered_column">Ф.И.О<br>водителя</th>
+                            <th class="grid-header centered_column">Серия/<br>номер прав</th>
+                            <th class="grid-header centered_column">Вид<br>топлива</th>
+                            <th class="grid-header centered_column">Расход<br>город, л/<br>за город, л</th>
+                            <th class="grid-header centered_column">Количество<br>посадочных<br>мест</th>
+                            <th class="grid-header">Действия</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var car in Model.Cars)
+                        {
+                            <tr class="odd gradeX">
+                                <td class="">
+                                    <div style="float: left">
+                                        @car.CarModel
+                                    </div>
+                                </td>
+                                <td class="">
+                                    <div style="float: left">
+                                        @car.Number
+                                    </div>
+                                </td>
+                                <td class="">
+                                    <div style="float: left">
+                                        @car.Driver
+                                    </div>
+                                </td>
+                                <td class="">
+                                    <div style="float: left">
+                                        @car.DriverLicenseSeria<br><hr>
+                                        @car.DriverLicenseNumber
+                                    </div>
+                                </td>
+                                <td class="">
+                                    <div style="float: left">
+                                        @car.FuelType
+                                    </div>
+                                </td>
+                                <td class="">
+                                    <div style="float: left">
+                                        @car.ConsumptionCity<br><hr>
+                                        @car.ConsumptionHighway
+                                    </div>
+                                </td>
+
+                                <td class="">
+                                    <div style="float: left">
+                                        @car.PassNumber
+                                    </div>
+                                </td>
+                                <td class="centered_column">
+                                    <div class="edit-delete-copy-links" style="width: 10%">
+                                        <a class="tarash-i update_link tooltips" data-ajax="true" data-ajax-mode="replace" data-ajax-update="#Cars"
+                                           href="/Cars/UpdateCar?carId=@car.CarId&amp;carOwnerId=@Model.GroupCarsInfo.Id">
+                                            <span class="tooltip-message">Изменить данные об автомобиле</span>
+                                            <span class="glyphicon glyphicon-pencil"></span>
+                                        </a>
+
+                                        <a class="tarash-i delete_link tooltips" href="@Url.Action("RemoveCar", "Cars", new {carId = car.CarId})" onclick="var var1 = '@car.Number'; return confirm('Вы действительно хотите удалить автомобиль с госномером ' + var1 + ' ?');">
+                                            <span class="tooltip-message">Удалить автомобиль</span>
+                                            <span class="glyphicon glyphicon-trash"></span>
+                                        </a>
+
+                                        <a class="tarash-i update_link tooltips" data-ajax="true" data-ajax-mode="replace" data-ajax-update="#Cars"
+                                           href="/Cars/UpdateOwnerForCar?carId=@car.CarId&amp;carOwnerId=@Model.GroupCarsInfo.Id">
+                                            <span class="tooltip-message">Переназначить автомобиль другому перевозчику</span>
+                                            <span class="glyphicon glyphicon-share"></span>
+                                        </a>
+
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+

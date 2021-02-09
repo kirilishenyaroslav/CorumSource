@@ -1,0 +1,175 @@
+﻿@model Corum.Models.OrderNavigationResult<Corum.Models.ViewModels.OrderConcurs.OrderCompetitiveListViewModel>
+
+@using GridMvc.Html
+
+<div id="addconcursdialog" class="row" style="display: none; margin:auto;">
+
+    <div class="col-md-12">
+        <div class="form-group" style="margin-left: 5px;">
+            <div id="AddConcursTable" class="row">
+                <div class="row">
+                    <div class="col-md-12" style="margin-top: 10px;">
+                        <div class="col-md-4">
+                            <div class="form-group">                                
+                                    <label style="font-weight: normal !important;">
+                                        @Html.CheckBoxFor(model => model.CompetitiveListInfo.UseTripTypeFilter, new { onclick = "$('#FilterTripTypeId').prop('disabled', !this.checked);" })&nbsp;Тип маршрута
+                                    </label>                                    
+                                        @Html.TextBoxFor(model => model.CompetitiveListInfo.FilterTripTypeId,
+                                            Model.CompetitiveListInfo.UseTripTypeFilter ?
+                                                (object)new
+                                                {
+
+                                                    id = "FilterTripTypeId",
+                                                    @class = "filter_dropdown",
+                                                    @name = "FilterTripTypeId",
+                                                    data_source_url = Url.Action("GetTripTypes", "Orders"),
+                                                    data_droplist_placeholder = "Введите тип маршрута",
+                                                    data_selected_text = Model.CompetitiveListInfo.tripTypeName
+                                                } :
+                                                (object)new
+                                                {
+                                                    id = "FilterTripTypeId",
+                                                    @class = "filter_dropdown",
+                                                    @name = "FilterTripTypeId",
+                                                    data_source_url = Url.Action("GetTripTypes", "Orders"),
+                                                    data_droplist_placeholder = "Введите тип маршрута",
+                                                    @disabled = "disabled",
+                                                    data_selected_text = Model.CompetitiveListInfo.tripTypeName
+                                                })
+
+                                        @Html.HiddenFor(model => model.CompetitiveListInfo.FilterTripTypeId)
+                                        @Html.HiddenFor(model => model.CompetitiveListInfo.UseTripTypeFilter)                                    
+                                </div>
+                            </div>
+                        
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                    <label style="font-weight: normal !important;">
+                                        @Html.CheckBoxFor(model => model.CompetitiveListInfo.UseSpecificationTypeFilter, new {onclick = "$('#FilterSpecificationTypeId').prop('disabled', !this.checked);"})&nbsp;Тип услуги
+
+                                    </label>
+                                    @Html.TextBoxFor(model => model.CompetitiveListInfo.FilterSpecificationTypeId,
+                                        Model.CompetitiveListInfo.UseSpecificationTypeFilter ?
+                                            (object) new
+                                            {
+
+                                                id = "FilterSpecificationTypeId",
+                                                @class = "filter_dropdown",
+                                                @name = "FilterSpecificationTypeId",
+                                                data_source_url = Url.Action("GetSpecificationType", "OrderConcurs"),
+                                                data_droplist_placeholder = "Введите тип услуги",
+                                                data_selected_text = Model.CompetitiveListInfo.SpecificationType
+                                            } :
+                                            (object) new
+                                            {
+                                                id = "FilterSpecificationTypeId",
+                                                @class = "filter_dropdown",
+                                                @name = "FilterSpecificationTypeId",
+                                                data_source_url = Url.Action("GetSpecificationType", "OrderConcurs"),
+                                                data_droplist_placeholder = "Введите тип услуги",
+                                                @disabled = "disabled",
+                                                data_selected_text = Model.CompetitiveListInfo.SpecificationType
+                                            })                                
+                                @Html.HiddenFor(model => model.CompetitiveListInfo.FilterTripTypeId)
+                                @Html.HiddenFor(model => model.CompetitiveListInfo.UseSpecificationTypeFilter)
+                            </div>                            
+                        </div>
+
+                        @if (Model.CompetitiveListInfo.IsTruck)
+                        {
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                        <label style="font-weight: normal !important;">
+                                            @Html.CheckBoxFor(model => model.CompetitiveListInfo.UseVehicleTypeFilter, new {onclick = "$('#FilterVehicleTypeId').prop('disabled', !this.checked);"})&nbsp;Тип автомобиля
+
+                                        </label>
+                                        @Html.TextBoxFor(model => model.CompetitiveListInfo.FilterVehicleTypeId,
+                                            Model.CompetitiveListInfo.UseVehicleTypeFilter ?
+                                                (object) new
+                                                {
+                                                    id = "FilterVehicleTypeId",
+                                                    @class = "filter_dropdown",
+                                                    @name = "FilterVehicleTypeId",
+                                                    data_source_url = Url.Action("GetVehicleTypes", "Orders"),
+                                                    data_droplist_placeholder = "Введите тип авто",
+                                                    data_selected_text = Model.CompetitiveListInfo.VehicleTypeName
+                                                } :
+                                                (object) new
+                                                {
+                                                    id = "FilterVehicleTypeId",
+                                                    @class = "filter_dropdown",
+                                                    @name = "FilterVehicleTypeId",
+                                                    data_source_url = Url.Action("GetVehicleTypes", "Orders"),
+                                                    data_droplist_placeholder = "Введите тип авто",
+                                                    @disabled = "disabled",
+                                                    data_selected_text = Model.CompetitiveListInfo.VehicleTypeName
+                                                })
+
+                                        @Html.HiddenFor(model => model.CompetitiveListInfo.FilterVehicleTypeId)
+                                        @Html.HiddenFor(model => model.CompetitiveListInfo.UseVehicleTypeFilter)
+                                    </div>                                                                    
+                            </div>
+                        }
+                    </div>
+                </div>
+                <div class="row" style="margin-left: 0px;">                    
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label style="font-weight: normal !important;">
+                                    @Html.CheckBoxFor(model => model.CompetitiveListInfo.UsePayerFilter, new { onclick = "$('#FilterPayerId').prop('disabled', !this.checked);" })&nbsp;Плательщик
+                                </label>                                
+                                    @Html.TextBoxFor(model => model.CompetitiveListInfo.FilterPayerId,
+                                        Model.CompetitiveListInfo.UsePayerFilter ?
+                                            (object)new
+                                            {
+
+                                                id = "FilterPayerId",
+                                                @class = "filter_dropdown",
+                                                @name = "FilterPayerId",
+                                                data_source_url = Url.Action("GetPayers", "Orders"),
+                                                data_droplist_placeholder = "Введите плательщика",
+                                                data_selected_text = Model.CompetitiveListInfo.PayerName
+                                            } :
+                                            (object)new
+                                            {
+                                                id = "FilterPayerId",
+                                                @class = "filter_dropdown",
+                                                @name = "FilterPayerId",
+                                                data_source_url = Url.Action("GetPayers", "Orders"),
+                                                data_droplist_placeholder = "Введите плательщика",
+                                                @disabled = "disabled",
+                                                data_selected_text = Model.CompetitiveListInfo.PayerName
+                                            })
+
+                                    @Html.HiddenFor(model => model.CompetitiveListInfo.FilterPayerId)
+                                    @Html.HiddenFor(model => model.CompetitiveListInfo.UsePayerFilter)
+                                </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label style="font-weight: normal !important;">
+                                @Html.CheckBoxFor(model => model.CompetitiveListInfo.UseRouteFilter, new { })&nbsp;Отфильтровать по маршруту из заявки
+                            </label>                            
+                            @Html.HiddenFor(model => model.CompetitiveListInfo.UseRouteFilter)
+                        </div>
+                    </div>
+                </div>
+                        
+                    <div class="row">
+                        <div style="margin-top: 0px;">
+                            <a style="margin-bottom: 10px; margin-left: 35px" class="delete_link btn btn-primary" onclick="GetSpecification(2)">
+                                <span class="tooltip-message">Применить</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div id="jqxWidgetAddConcurs">
+                        <div id="jqxgridAddConcurs">
+
+                        </div>
+                    </div>
+                </div>
+    </div>
+</div>
+    </div>
+
+

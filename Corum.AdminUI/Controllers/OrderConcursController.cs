@@ -32,6 +32,13 @@ namespace CorumAdminUI.Controllers
 
 
 
+        [HttpPost]
+        public ActionResult SendNotificationTender()
+        {
+            
+            return Content("You have successfully created a tender request!");
+        }
+
         [HttpGet]
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult GetSpecifications(long OrderId, bool UseTripTypeFilter, string FilterTripTypeId,

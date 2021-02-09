@@ -1,0 +1,36 @@
+﻿@model Corum.Models.ViewModels.Customers.OrganizationViewModel
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="col-md-6">
+            <ul class="list-group">
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.Name</span>Название организации
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.Country</span>Страна
+                </li>              
+            </ul>
+        </div>
+        <div class="col-md-6">
+            <ul class="list-group">
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.City</span>Город
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge">@Model.Address</span>Адрес
+                </li>
+                <li class="list-group-item" style="padding: 2px 2px;">
+                    <span class="badge" style="background-color: white;">
+                        @Html.CheckBox(@Model.Id.ToString(), @Model.IsTruck, new {disabled = "disabled", @readonly = "readonly"})
+                    </span>Грузовые перевозки
+                </li>                
+            </ul>
+        </div>        
+    </div>
+</div>
+
+
+
+
+

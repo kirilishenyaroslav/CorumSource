@@ -16,16 +16,17 @@ namespace CorumAdminUI.Controllers
     { 
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult OrderCompetitiveList(OrderNavigationInfo navInfo)
-        {            
+        {
             var model = new OrderNavigationResult<OrderCompetitiveListViewModel>(navInfo, userId)
             {
-                DisplayValues       = context.getOrderCompetitiveList(userId, navInfo.OrderId),
+                DisplayValues = context.getOrderCompetitiveList(userId, navInfo.OrderId),
                 CompetitiveListInfo = context.getCompetitiveListInfo(navInfo.OrderId),
-                listStatuses        = context.getAvialiableStepsForList(navInfo.OrderId),
-                orderInfo           = context.getOrder(navInfo.OrderId),
-                currentStatus       = context.getCurrentStatusForList(navInfo.OrderId),             
+                listStatuses = context.getAvialiableStepsForList(navInfo.OrderId),
+                orderInfo = context.getOrder(navInfo.OrderId),
+                currentStatus = context.getCurrentStatusForList(navInfo.OrderId),
+                tenderServices = context.GetTenderServices()
         };
-           
+            
             return View(model);
         }
 

@@ -92,11 +92,13 @@
     <Compile Include="Interfaces\ICorumDataProvider.RestReports.cs" />
     <Compile Include="Interfaces\ICorumDataProvider.Roles.cs" />
     <Compile Include="Interfaces\ICorumDataProvider.Orders.cs" />
+    <Compile Include="Interfaces\ICorumDataProvider.Tender.cs" />
     <Compile Include="Interfaces\ICorumDataProvider.Users.cs" />
     <Compile Include="Interfaces\ICorumDataProvider.Settings.cs" />
     <Compile Include="Interfaces\ICorumDataProvider.Main.cs" />
     <Compile Include="Interfaces\IReportRenderer.cs" />
     <Compile Include="Navigation\NavigationModels.cs" />
+    <Compile Include="Tender\TenderServices.cs" />
     <Compile Include="Toastr\ToastMessage.cs" />
     <Compile Include="Toastr\Toastr.cs" />
     <Compile Include="Toastr\ToastType.cs" />
@@ -195,7 +197,9 @@
     <Content Include="Client Scripts\MvcFoolproofValidation.js" />
     <Content Include="Client Scripts\MvcFoolproofValidation.min.js" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="ViewModels\Tender\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

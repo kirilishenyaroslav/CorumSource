@@ -19,7 +19,7 @@
     }
 </style>
 
-@Html.Partial("_PartialModul")
+@Html.Partial("_PartialModul", Model.tenderServices)
 
 
 @helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
@@ -30,8 +30,8 @@
 
         <div class="pull-left dropdown-footer">
             @page.Html.DropDownListFor(model => navInfo.PageSize,
-                                                          (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
-                                                                            new { @id = "PageSizeTemplates", onchange = proc })
+                                                               (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                                                 new { @id = "PageSizeTemplates", onchange = proc })
         </div>
     </div>
 
@@ -110,21 +110,19 @@
                             </span>
                             Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-1)
                         </a>
-                    </th>
- }
-                else
-                {
-    <th rowspan="2" class="grid-header centered_column" style="display: none;">
-        <a class="tarash-i update_link tooltips" href="#">
-            <span class="tooltip-message">
-                Стоимость одного автомобиля, грн. без  НДС (согласно КП-1)<br>
-                <strong>региональные:</strong> 1 тур рассылка первому ранжированному перевозчику или <br>
-                <strong>экспорт, спецтр-т</strong> – 1 этап редукцион<br>
-            </span>
-            Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-1)
-        </a>
-    </th>
-}
+                    </th> }
+                                else
+                                {
+                    <th rowspan="2" class="grid-header centered_column" style="display: none;">
+                        <a class="tarash-i update_link tooltips" href="#">
+                            <span class="tooltip-message">
+                                Стоимость одного автомобиля, грн. без  НДС (согласно КП-1)<br>
+                                <strong>региональные:</strong> 1 тур рассылка первому ранжированному перевозчику или <br>
+                                <strong>экспорт, спецтр-т</strong> – 1 этап редукцион<br>
+                            </span>
+                            Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-1)
+                        </a>
+                    </th>}
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                 {
                     <th rowspan="2" class="grid-header centered_column">
@@ -136,21 +134,19 @@
                             </span>
                             Стоимость одного автомобиля, грн.<br>без НДС (согласно КП-2)
                         </a>
-                    </th>
- }
-                else
-                {
-    <th rowspan="2" class="grid-header centered_column" style="display: none;">
-        <a class="tarash-i update_link tooltips" href="#">
-            <span class="tooltip-message">
-                Стоимость одного автомобиля, грн. без  НДС (согласно КП-2)<br>
-                <strong>региональные:</strong> 2 тур рассылка на всех перевозчиков) или <br>
-                <strong>экспорт, спецтр-т</strong> – 2 этап редукцион
-            </span>
-            Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-2)
-        </a>
-    </th>
-}
+                    </th> }
+                                else
+                                {
+                    <th rowspan="2" class="grid-header centered_column" style="display: none;">
+                        <a class="tarash-i update_link tooltips" href="#">
+                            <span class="tooltip-message">
+                                Стоимость одного автомобиля, грн. без  НДС (согласно КП-2)<br>
+                                <strong>региональные:</strong> 2 тур рассылка на всех перевозчиков) или <br>
+                                <strong>экспорт, спецтр-т</strong> – 2 этап редукцион
+                            </span>
+                            Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-2)
+                        </a>
+                    </th>}
 
 
                                 <th rowspan="2" class="grid-header centered_column">
@@ -246,27 +242,23 @@
                                 {
                     <th class="grid-header centered_column">
                         8
-                    </th>
- }
-                else
-                {
-    <th class="grid-header centered_column" style="display:none;">
-        8
-    </th>
-}
+                    </th> }
+                                else
+                                {
+                    <th class="grid-header centered_column" style="display:none;">
+                        8
+                    </th>}
 
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                 {
                     <th class="grid-header centered_column">
                         9
-                    </th>
- }
-                else
-                {
-    <th class="grid-header centered_column" style="display:none;">
-        9
-    </th>
-}
+                    </th> }
+                                else
+                                {
+                    <th class="grid-header centered_column" style="display:none;">
+                        9
+                    </th>}
 
                                 <th class="grid-header centered_column">
                                     10
@@ -327,21 +319,17 @@
                     </td>
                     @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
                     {
-    <td class="grid-cell rigth_column"> @item.CarCost7 </td>
- }
-else
-{
-<td class="grid-cell rigth_column" style="display:none;"> @item.CarCost7 </td>
-}
+    <td class="grid-cell rigth_column"> @item.CarCost7 </td> }
+                    else
+                    {
+    <td class="grid-cell rigth_column" style="display:none;"> @item.CarCost7 </td>}
 
                     @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                     {
-    <td class="grid-cell rigth_column"> @item.CarCost </td>
- }
-else
-{
-<td class="grid-cell rigth_column" style="display:none;"> @item.CarCost </td>
-}
+    <td class="grid-cell rigth_column"> @item.CarCost </td> }
+                    else
+                    {
+    <td class="grid-cell rigth_column" style="display:none;"> @item.CarCost </td>}
                     <td class="grid-cell rigth_column"> @item.DaysDelaySteps </td>
                     <td class="grid-cell rigth_column"> @item.DelayEffect </td>
 
@@ -395,8 +383,7 @@ else
                                                                         <span class="glyphicon glyphicon-trash"></span>
                                                                     </a>}
                     </td>
-                </tr>
-}
+                </tr>}
                         </tbody>
                     </table>
 

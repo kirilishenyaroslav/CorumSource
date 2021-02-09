@@ -33,10 +33,20 @@ namespace CorumAdminUI.Controllers
 
 
         [HttpPost]
-        public ActionResult SendNotificationTender()
+        public ActionResult SendNotificationTender(string services, int cars)
         {
-            
-            return Content("You have successfully created a tender request!");
+            Dictionary<Corum.Models.Tender.TenderServices, int> tender = new Dictionary<Corum.Models.Tender.TenderServices, int>();
+            var tenderServices = context.GetTenderServices();
+            Corum.Models.Tender.TenderServices service = new Corum.Models.Tender.TenderServices();
+            foreach (var item in tenderServices)
+            {
+                if (item.Id == int.Parse(services))
+                {
+                    service = item;
+                    tender[service] = cars;
+                }
+            }          
+            return Content($"You have successfully created a tender request! Service: {service.Title}, Cars: {cars}");
         }
 
         [HttpGet]

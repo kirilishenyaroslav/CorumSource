@@ -10,6 +10,7 @@ namespace Corum.Models.Tender
     public class TenderServices
     {
         public int Id { get; set; }
-        public string Title { get; set; }
+        public string industryName { get; set; }
+        public int industryId { get; set; }
     }
 }

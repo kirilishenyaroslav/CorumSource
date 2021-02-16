@@ -27,7 +27,8 @@ namespace Corum.DAL
             {
                 Corum.Models.Tender.TenderServices tender = new Models.Tender.TenderServices();
                 tender.Id = item.Id;
-                tender.Title = item.Title;
+                tender.industryName = item.industryName;
+                tender.industryId = item.industryId;
 
                 services.Add(tender);
             }

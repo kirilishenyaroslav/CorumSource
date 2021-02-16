@@ -8,7 +8,7 @@
                 Услуга для тендера
             </label>
             <div class="col-md-8">
-                @{SelectList listServices = new SelectList(Model.ToList(), "Id", "Title"); }
+                @{SelectList listServices = new SelectList(Model.ToList(), "Id", "industryName"); }
                 @Html.DropDownList("services", listServices as SelectList)
 
 

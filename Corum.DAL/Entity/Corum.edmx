@@ -968,7 +968,8 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" Nullable="false" />
-          <Property Name="Title" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="industryName" Type="nchar" MaxLength="150" Nullable="false" />
+          <Property Name="industryId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="UserMessages">
           <Key>
@@ -8510,7 +8511,8 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" />
-          <Property Name="Title" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="industryName" Type="String" Nullable="false" MaxLength="150" FixedLength="true" Unicode="true" />
+          <Property Name="industryId" Type="Int32" Nullable="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -10514,7 +10516,8 @@
           <EntitySetMapping Name="TenderServices">
             <EntityTypeMapping TypeName="CorumModel.TenderServices">
               <MappingFragment StoreEntitySet="TenderServices">
-                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="industryId" ColumnName="industryId" />
+                <ScalarProperty Name="industryName" ColumnName="industryName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

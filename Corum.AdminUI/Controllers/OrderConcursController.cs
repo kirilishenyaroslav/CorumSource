@@ -36,17 +36,9 @@ namespace CorumAdminUI.Controllers
         public ActionResult SendNotificationTender(string services, int cars)
         {
             Dictionary<Corum.Models.Tender.TenderServices, int> tender = new Dictionary<Corum.Models.Tender.TenderServices, int>();
-            var tenderServices = context.GetTenderServices();
-            Corum.Models.Tender.TenderServices service = new Corum.Models.Tender.TenderServices();
-            foreach (var item in tenderServices)
-            {
-                if (item.Id == int.Parse(services))
-                {
-                    service = item;
-                    tender[service] = cars;
-                }
-            }          
-            return Content($"You have successfully created a tender request! Service: {service.Title}, Cars: {cars}");
+            var query = context.GetTenderServices().Find(m => m.Id == int.Parse(services));
+            
+            return Content($"You have successfully created a tender request! Service: {query.industryName}, Cars: {cars}");
         }
 
         [HttpGet]

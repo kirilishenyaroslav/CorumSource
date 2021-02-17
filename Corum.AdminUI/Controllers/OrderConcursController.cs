@@ -7,13 +7,15 @@ using Corum.Models.ViewModels.Cars;
 using System;
 using Corum.Models.ViewModels;
 using Corum.Common;
+using Corum.Models.Tender;
+using Corum.Models.ViewModels.Tender;
 
 namespace CorumAdminUI.Controllers
 {
 
     [Authorize]
     public partial class OrderConcursController : CorumBaseController
-    { 
+    {
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult OrderCompetitiveList(OrderNavigationInfo navInfo)
         {
@@ -25,8 +27,8 @@ namespace CorumAdminUI.Controllers
                 orderInfo = context.getOrder(navInfo.OrderId),
                 currentStatus = context.getCurrentStatusForList(navInfo.OrderId),
                 tenderServices = context.GetTenderServices()
-        };
-            
+            };
+
             return View(model);
         }
 
@@ -35,10 +37,96 @@ namespace CorumAdminUI.Controllers
         [HttpPost]
         public ActionResult SendNotificationTender(string services, int cars)
         {
-            Dictionary<Corum.Models.Tender.TenderServices, int> tender = new Dictionary<Corum.Models.Tender.TenderServices, int>();
+            Dictionary<TenderServices, int> tender = new Dictionary<TenderServices, int>();
             var query = context.GetTenderServices().Find(m => m.Id == int.Parse(services));
+
+            return PostRequest(query, cars);
+        }
+
+        private ContentResult PostRequest(TenderServices services, int cars)
+        {
+            Random random = new Random();
+           
+                TenderForma postValues = new TenderForma();
+                postValues.data = new DataTender()
+                {
+                    tenderName = "Услуги перевозки",
+                    industryId = 384,
+
+                    budget = 123.89,
+                    tenderAuthorId = 38,
+                    companyId = 8,
+                    subCompanyId = 8,
+                    depId = 401,
+                    tenderExternalN = "45-" + random.Next(1, 10000).ToString(),
+                    //tenderHead = "Петров В.Н.",
+                    mode = 2,
+                    kind = 2,
+                    dateStart = "2021-02-23T20:45:00",
+                    dateEnd = "2021-02-28T17:45:00",
+                    lots = new List<Lots>()
+                    {
+                        {
+                            new Lots()
+                            {
+                                lotName = "Лот №1",
+                                //props = new List<Props>()
+                                //{
+
+                                //        new Props()
+                                //        {
+                                //        properties = "Цвет"
+                                //        },
+
+                                //        new Props()
+                                //        {
+                                //        properties = "Марка"
+                                //        }
+                                //},
+                                items = new List<Items>()
+                                {
+                                        new Items()
+                                        {
+                                            nmcId = 782,
+                                            itemName = services.industryName.ToString(),
+                                            qty = cars,
+                                            itemNote = "Машина с комфортом",
+                                            itemExternalN = "566532-23566",
+                                            //propValues = new List<PropValues>()
+                                            //{
+                                            //        new PropValues()
+                                            //        {
+                                            //             propValItems = "февраль-март"
+                                            //        }
+                                            //},
+                                            detailId = 4
+                                        },
+
+                                        new Items()
+                                        {
+                                            nmcId = 782,
+                                            itemName = services.industryName.ToString(),
+                                            qty = cars,
+                                            itemNote = "Машина с без комфорта",
+                                            itemExternalN = "566532-24555",
+                                            //propValues = new List<PropValues>()
+                                            //{
+                                            //        new PropValues()
+                                            //        {
+                                            //             propValItems = "февраль-март"
+                                            //        }
+                                            //},
+                                            detailId = 3
+                                        }
+                                }
+                            }
+                        }
+                    },
+                    lightMode = 0
+                };
             
-            return Content($"You have successfully created a tender request! Service: {query.industryName}, Cars: {cars}");
+            BaseClient clientbase = new BaseClient("https://tender.corum.com/test/rest/rest.dll/tender/append", "supervisor", "4AA4DAEB367ADC060FCFAFECCF7F4506");
+            return Content($"\nMessage: { new PostApiTender().GetCallAsync(clientbase, postValues).Result.ResponseMessage}");          
         }
 
         [HttpGet]
@@ -61,25 +149,25 @@ namespace CorumAdminUI.Controllers
         {
             context.SaveListStatus(new CompetetiveListStepsInfoViewModel()
             {
-                StepId  = StepId,
+                StepId = StepId,
                 OrderId = OrderId,
-                userId  = this.userId
+                userId = this.userId
             });
 
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderId });
         }
 
-        
+
         private static Select2PagedResult OrderSpecVmToSelect2Format(IEnumerable<SpecificationListViewModel> groupItems,
             int totalRecords)
         {
-            var jsonGroupItems = new Select2PagedResult {Results = new List<Select2Result>()};
+            var jsonGroupItems = new Select2PagedResult { Results = new List<Select2Result>() };
             foreach (var groupItem in groupItems)
             {
                 jsonGroupItems.Results.Add(new Select2Result
                 {
                     id = groupItem.Id.ToString(),
-                    text = groupItem.ExpeditorName                    
+                    text = groupItem.ExpeditorName
 
                 });
             }
@@ -91,14 +179,14 @@ namespace CorumAdminUI.Controllers
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult AddSpecificationsInfo(SpecificationListViewModel model)
         {
-            var result = context.NewSpecification(model, this.userId);         
+            var result = context.NewSpecification(model, this.userId);
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = model.OrderId });
         }
 
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult DeleteConcurs(long Id, long OrderId)
-        {            
-            context.DeleteConcurs(Id);          
+        {
+            context.DeleteConcurs(Id);
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderId });
         }
 
@@ -108,7 +196,7 @@ namespace CorumAdminUI.Controllers
         {
             var concursInfo = context.getConcurs(Id);
             concursInfo.CompetitiveListInfo = context.getCompetitiveListInfo(OrderId);
-                    
+
             return View(concursInfo);
         }
 
@@ -122,34 +210,34 @@ namespace CorumAdminUI.Controllers
 
 
         [HttpGet]
-       public ActionResult GetSpecificationType(string searchTerm, int pageSize, int pageNum)
-       {
-           var storages = context.GetSpecificationTypes(searchTerm, pageSize, pageNum);
-           var storagesCount = context.GetSpecificationTypesCount(searchTerm);
+        public ActionResult GetSpecificationType(string searchTerm, int pageSize, int pageNum)
+        {
+            var storages = context.GetSpecificationTypes(searchTerm, pageSize, pageNum);
+            var storagesCount = context.GetSpecificationTypesCount(searchTerm);
 
-           var pagedAttendees = SpecificationTypeVmToSelect2Format(storages, storagesCount);
+            var pagedAttendees = SpecificationTypeVmToSelect2Format(storages, storagesCount);
 
-           return new JsonpResult
-           {
-               Data = pagedAttendees,
-               JsonRequestBehavior = JsonRequestBehavior.AllowGet
-           };
-       }
+            return new JsonpResult
+            {
+                Data = pagedAttendees,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
 
-       private static Select2PagedResult SpecificationTypeVmToSelect2Format(IEnumerable<SpecificationTypesViewModel> groupItems, int totalRecords)
-       {
-           var jsonGroupItems = new Select2PagedResult { Results = new List<Select2Result>() };
-           foreach (var groupItem in groupItems)
-           {
-               jsonGroupItems.Results.Add(new Select2Result
-               {
-                   id = groupItem.Id.ToString(),
-                   text = groupItem.SpecificationType
-               });
-           }
-           jsonGroupItems.Total = totalRecords;
-           return jsonGroupItems;
-       }
+        private static Select2PagedResult SpecificationTypeVmToSelect2Format(IEnumerable<SpecificationTypesViewModel> groupItems, int totalRecords)
+        {
+            var jsonGroupItems = new Select2PagedResult { Results = new List<Select2Result>() };
+            foreach (var groupItem in groupItems)
+            {
+                jsonGroupItems.Results.Add(new Select2Result
+                {
+                    id = groupItem.Id.ToString(),
+                    text = groupItem.SpecificationType
+                });
+            }
+            jsonGroupItems.Total = totalRecords;
+            return jsonGroupItems;
+        }
 
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult GetListTimeLine(OrderNavigationInfo navInfo)
@@ -168,7 +256,7 @@ namespace CorumAdminUI.Controllers
             DateTime OrderDate = context.getConcursHistoryHeader(navInfo.OrderId);
             if (navInfo.FilterOrderDateBeg == null)
             {
-                navInfo.FilterOrderDateBeg = OrderDate.AddMonths(-3).ToString("dd.MM.yyyy");                    
+                navInfo.FilterOrderDateBeg = OrderDate.AddMonths(-3).ToString("dd.MM.yyyy");
                 navInfo.FilterOrderDateBegRaw = DateTimeConvertClass.getString(OrderDate.AddMonths(-3));
             }
             if (navInfo.FilterOrderDateEnd == null)
@@ -199,14 +287,14 @@ namespace CorumAdminUI.Controllers
             };
             return View(model);
         }
-   
-        
+
+
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult ConcursDiscountRate(OrderNavigationInfo navInfo)
         {
             var model = new OrderNavigationResult<ConcursDiscountRateModel>(navInfo, userId)
             {
-                DisplayValues = context.GetConcursDiscountRate(),               
+                DisplayValues = context.GetConcursDiscountRate(),
                 OrderId = navInfo.OrderId
             };
             return View(model);
@@ -223,7 +311,7 @@ namespace CorumAdminUI.Controllers
             return View(model);
         }
 
-        
+
         public string StatusSendToTenderQuery()
         {
             return "<h2>Заявка отправлена!</h2>";
@@ -269,7 +357,7 @@ namespace CorumAdminUI.Controllers
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult CloneConcurs(long Id, long OrderId)
         {
-            context.CloneConcurs(Id, userId);            
+            context.CloneConcurs(Id, userId);
 
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderId });
 

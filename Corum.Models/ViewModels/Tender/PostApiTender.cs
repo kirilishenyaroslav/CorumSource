@@ -20,7 +20,7 @@ namespace Corum.Models.ViewModels.Tender
             BaseResponse baseresponse = clientbase.baseresponse;
             try
             {
-                baseresponse.response = await client.PostAsJsonAsync(client.BaseAddress, postValues);
+                baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postContent).Result;
                 if (baseresponse.response.IsSuccessStatusCode)
                 {
                     baseresponse.ResponseMessage = await baseresponse.response.Content.ReadAsStringAsync();
@@ -29,7 +29,7 @@ namespace Corum.Models.ViewModels.Tender
                     using (StreamReader stream = new StreamReader(baseresponse.response.Content.ReadAsStreamAsync().Result, System.Text.Encoding.GetEncoding(Encoding.UTF8.WebName)))
                     {
                         content = stream.ReadToEnd();
-                        string path = Path.GetFullPath("client-server_Api.json");
+                        string path = @"C:\Users\Work\Dropbox\Стажировка\Corum project\CorumSource-master\Corum.AdminUI\bin\client-server_Api.json";
                         File.WriteAllText(path, content);
                     }
                 }

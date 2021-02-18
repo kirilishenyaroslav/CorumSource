@@ -51,7 +51,7 @@ namespace CorumAdminUI.Controllers
                 postValues.data = new DataTender()
                 {
                     tenderName = "Услуги перевозки",
-                    industryId = 384,
+                    industryId = services.industryId,
 
                     budget = 123.89,
                     tenderAuthorId = 38,

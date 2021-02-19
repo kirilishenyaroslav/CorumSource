@@ -16,9 +16,11 @@ namespace CorumAdminUI.Controllers
     [Authorize]
     public partial class OrderConcursController : CorumBaseController
     {
+        static long OrderID;
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult OrderCompetitiveList(OrderNavigationInfo navInfo)
         {
+            OrderID = navInfo.OrderId;
             var model = new OrderNavigationResult<OrderCompetitiveListViewModel>(navInfo, userId)
             {
                 DisplayValues = context.getOrderCompetitiveList(userId, navInfo.OrderId),
@@ -39,69 +41,69 @@ namespace CorumAdminUI.Controllers
         {
             Dictionary<TenderServices, int> tender = new Dictionary<TenderServices, int>();
             var query = context.GetTenderServices().Find(m => m.Id == int.Parse(services));
-
-            return PostRequest(query, cars);
+            PostRequest(query, cars);
+            return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderID });
         }
 
-        private ContentResult PostRequest(TenderServices services, int cars)
+        void PostRequest(TenderServices services, int cars)
         {
             Random random = new Random();
-           
-                TenderForma postValues = new TenderForma();
-                postValues.data = new DataTender()
-                {
-                    tenderName = "Услуги перевозки",
-                    industryId = services.industryId,
 
-                    budget = 123.89,
-                    tenderAuthorId = 38,
-                    companyId = 8,
-                    subCompanyId = 8,
-                    depId = 401,
-                    tenderExternalN = "45-" + random.Next(1, 10000).ToString(),
-                    mode = 2,
-                    kind = 2,
-                    dateStart = "2021-02-23T20:45:00",
-                    dateEnd = "2021-02-28T17:45:00",
-                    lots = new List<Lots>()
+            TenderForma postValues = new TenderForma();
+            postValues.data = new DataTender()
+            {
+                tenderName = "Тендер на закупку услуг мультимодальной перевозки механизированной секции крепи ДТМ с Украины в Грузию(3 шт-17 ПВ)",
+                industryId = services.industryId,
+
+                budget = 6552323,
+                tenderAuthorId = 38,
+                companyId = 8,
+                subCompanyId = 8,
+                depId = 401,
+                tenderExternalN = "45-" + random.Next(1, 10000).ToString(),
+                mode = 2,
+                kind = 2,
+                dateStart = "2021-05-23T20:45:00",
+                dateEnd = "2021-05-28T17:45:00",
+                lots = new List<Lots>()
                     {
                         {
                             new Lots()
                             {
                                 lotName = "Лот №1",
-                                
+
                                 items = new List<Items>()
                                 {
                                         new Items()
                                         {
-                                            nmcId = 782,
+                                            nmcId = 783,
                                             itemName = services.industryName.ToString(),
                                             qty = cars,
-                                            itemNote = "Машина с комфортом",
+                                            itemNote = "Перевозка деталей",
                                             itemExternalN = "566532-23566",
-                                           
+
                                             detailId = 4
                                         },
 
                                         new Items()
                                         {
-                                            nmcId = 782,
+                                            nmcId = 783,
                                             itemName = services.industryName.ToString(),
                                             qty = cars,
-                                            itemNote = "Машина с без комфорта",
+                                            itemNote = "Перевозка деталей",
                                             itemExternalN = "566532-24555",
-                                           
+
                                             detailId = 3
                                         }
                                 }
                             }
                         }
                     },
-                    lightMode = 0
-                };
-            
+                lightMode = 0
+            };
+
             BaseClient clientbase = new BaseClient("https://tender.corum.com/test/rest/rest.dll/tender/append", "supervisor", "4AA4DAEB367ADC060FCFAFECCF7F4506");
-            return Content($"\nMessage: { new PostApiTender().GetCallAsync(clientbase, postValues).Result.ResponseMessage}");          
+            string content = $"\nMessage: { new PostApiTender().GetCallAsync(clientbase, postValues).Result.ResponseMessage}";
         }
 
         [HttpGet]

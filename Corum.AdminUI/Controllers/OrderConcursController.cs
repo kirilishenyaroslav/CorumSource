@@ -59,7 +59,6 @@ namespace CorumAdminUI.Controllers
                     subCompanyId = 8,
                     depId = 401,
                     tenderExternalN = "45-" + random.Next(1, 10000).ToString(),
-                    //tenderHead = "Петров В.Н.",
                     mode = 2,
                     kind = 2,
                     dateStart = "2021-02-23T20:45:00",
@@ -70,19 +69,7 @@ namespace CorumAdminUI.Controllers
                             new Lots()
                             {
                                 lotName = "Лот №1",
-                                //props = new List<Props>()
-                                //{
-
-                                //        new Props()
-                                //        {
-                                //        properties = "Цвет"
-                                //        },
-
-                                //        new Props()
-                                //        {
-                                //        properties = "Марка"
-                                //        }
-                                //},
+                                
                                 items = new List<Items>()
                                 {
                                         new Items()
@@ -92,13 +79,7 @@ namespace CorumAdminUI.Controllers
                                             qty = cars,
                                             itemNote = "Машина с комфортом",
                                             itemExternalN = "566532-23566",
-                                            //propValues = new List<PropValues>()
-                                            //{
-                                            //        new PropValues()
-                                            //        {
-                                            //             propValItems = "февраль-март"
-                                            //        }
-                                            //},
+                                           
                                             detailId = 4
                                         },
 
@@ -109,13 +90,7 @@ namespace CorumAdminUI.Controllers
                                             qty = cars,
                                             itemNote = "Машина с без комфорта",
                                             itemExternalN = "566532-24555",
-                                            //propValues = new List<PropValues>()
-                                            //{
-                                            //        new PropValues()
-                                            //        {
-                                            //             propValItems = "февраль-март"
-                                            //        }
-                                            //},
+                                           
                                             detailId = 3
                                         }
                                 }

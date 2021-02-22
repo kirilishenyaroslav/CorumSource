@@ -1,32 +1,171 @@
 ﻿@model List<Corum.Models.Tender.TenderServices>
+
+
+
 <div id="partialModul" class="row" style="display: none; margin:auto;">
 
     @using (Html.BeginForm("SendNotificationTender", "OrderConcurs", FormMethod.Post))
     {
-        <div class="form-group row" dir="auto">
+        <div class="form-group row">
             <label class="col-md-4" style="font-weight: normal !important;">
-                Услуга для тендера
+                Наименование тендера
             </label>
             <div class="col-md-8">
-                @{SelectList listServices = new SelectList(Model.ToList(), "Id", "industryName"); }
-                @Html.DropDownList("services", listServices as SelectList)
-
-
+                @Html.TextBox("tenderName")
             </div>
         </div>
 
         <div class="form-group row">
             <label class="col-md-4" style="font-weight: normal !important;">
-                Количество автомобилей
+                Автор тендера
             </label>
             <div class="col-md-8">
-                <input type="number" min="1" value="1" name="cars" />
+                @Html.TextBox("authorId", "Иванов П.П.")
             </div>
-
         </div>
+
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Группа компаний
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("companyId", "ООО «КОРУМ ГРУПП»")
+            </div>
+        </div>
+
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Компания заказчик
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("subCompanyId")
+            </div>
+        </div>
+
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Категория тендера
+            </label>
+            <div class="col-md-8">
+                @{SelectList listServices = new SelectList(Model.ToList(), "industryId", "industryName"); }
+                @Html.DropDownList("services", listServices as SelectList)
+            </div>
+        </div>
+
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Подразделение компании
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("depId", "Департамент по логистике")
+            </div>
+        </div>
+
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Бюджет тендера
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("budget", "0")
+            </div>
+        </div>
+
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Тип тура
+            </label>
+            <div class="col-md-8">
+                @{SelectList listTures = new SelectList(Model.ToList(), "Id", "modeName"); }
+                @Html.DropDownList("services", listServices as SelectList)
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Тип публикации
+            </label>
+            <div class="col-md-8">
+                @{SelectList listPublication = new SelectList(Model.ToList(), "Id", "kindName"); }
+                @Html.DropDownList("services", listServices as SelectList)
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Дата создания тендера
+            </label>
+            <div class="col-md-8">
+                <input type="datetime-local" name="dateCreate" />
+            </div>
+        </div>
+
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Дата окончания приема предложений
+            </label>
+            <div class="col-md-8">
+                <input type="datetime-local" name="dateCreate" />
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Режим подачи тендера
+            </label>
+            <div class="col-md-8">
+                @{SelectList listLightMode = new SelectList(Model.ToList(), "Id", "lightMode"); }
+                @Html.DropDownList("services", listServices as SelectList)
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Наименование лота
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("lotName", "Лот №1")
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Номенклатура
+            </label>
+            <div class="col-md-8">
+                @{SelectList listnmc = new SelectList(Model.ToList(), "Id", "nmcName"); }
+                @Html.DropDownList("services", listServices as SelectList)
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Единица измерения
+            </label>
+            <div class="col-md-8">
+                @{SelectList listitemNames = new SelectList(Model.ToList(), "Id", "itemName"); }
+                @Html.DropDownList("services", listServices as SelectList)
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Количество
+            </label>
+            <div class="col-md-8">
+                <input type="number" min="1" value="1" name="qty"/>
+            </div>
+        </div>
+
         <div style="float:right;">
-            <button class="btn btn-default" onclick="$('#partialModul').dialog('close');" type ="reset" name="action" value="">Отмена</button>
-            <button class="btn btn-success" type ="submit" name="action" value="">Отправить</button>
+            <button class="btn btn-default" onclick="$('#partialModul').dialog('close');" type="reset" name="action" value="">Отмена</button>
+            <button class="btn btn-success" type="submit" name="action" value="">Отправить</button>
         </div>
 
     }

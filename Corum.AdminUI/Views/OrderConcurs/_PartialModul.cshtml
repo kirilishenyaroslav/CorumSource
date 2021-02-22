@@ -1,6 +1,16 @@
 ﻿@model List<Corum.Models.Tender.TenderServices>
 
+@{
+    string[] typeTures = new string[] { "Тендер RFx", "Аукцион/Редукцион" };
 
+    string[] typePublications = new string[] { "Открытый", "Закрытый" };
+
+    string[] regums = new string[] { "Облегченный", "Не облегченный" };
+
+    string[] nmcs = new string[] { "Номенклатура 1", "Номенклатура 2", "Номенклатура 3", "Номенклатура 4", "Номенклатура 5" };
+
+    string[] unitNames = new string[] { "шт.", "послуга"};
+}
 
 <div id="partialModul" class="row" style="display: none; margin:auto;">
 
@@ -81,8 +91,8 @@
                 Тип тура
             </label>
             <div class="col-md-8">
-                @{SelectList listTures = new SelectList(Model.ToList(), "Id", "modeName"); }
-                @Html.DropDownList("services", listServices as SelectList)
+                @{SelectList listTures = new SelectList(typeTures); }
+                @Html.DropDownList("ture", listTures as SelectList)
             </div>
         </div>
 
@@ -91,8 +101,8 @@
                 Тип публикации
             </label>
             <div class="col-md-8">
-                @{SelectList listPublication = new SelectList(Model.ToList(), "Id", "kindName"); }
-                @Html.DropDownList("services", listServices as SelectList)
+                @{SelectList listPublications = new SelectList(typePublications); }
+                @Html.DropDownList("typePublication", listPublications as SelectList)
             </div>
         </div>
 
@@ -111,7 +121,7 @@
                 Дата окончания приема предложений
             </label>
             <div class="col-md-8">
-                <input type="datetime-local" name="dateCreate" />
+                <input type="datetime-local" name="dateClose" />
             </div>
         </div>
 
@@ -120,8 +130,8 @@
                 Режим подачи тендера
             </label>
             <div class="col-md-8">
-                @{SelectList listLightMode = new SelectList(Model.ToList(), "Id", "lightMode"); }
-                @Html.DropDownList("services", listServices as SelectList)
+                @{SelectList listRegums = new SelectList(regums); }
+                @Html.DropDownList("regume", listRegums as SelectList)
             </div>
         </div>
 
@@ -139,8 +149,8 @@
                 Номенклатура
             </label>
             <div class="col-md-8">
-                @{SelectList listnmc = new SelectList(Model.ToList(), "Id", "nmcName"); }
-                @Html.DropDownList("services", listServices as SelectList)
+                @{SelectList listnmcs = new SelectList(nmcs); }
+                @Html.DropDownList("nmcName", listnmcs as SelectList)
             </div>
         </div>
 
@@ -149,8 +159,8 @@
                 Единица измерения
             </label>
             <div class="col-md-8">
-                @{SelectList listitemNames = new SelectList(Model.ToList(), "Id", "itemName"); }
-                @Html.DropDownList("services", listServices as SelectList)
+                @{SelectList listUnitNames = new SelectList(unitNames); }
+                @Html.DropDownList("unitName", listUnitNames as SelectList)
             </div>
         </div>
 
@@ -159,7 +169,7 @@
                 Количество
             </label>
             <div class="col-md-8">
-                <input type="number" min="1" value="1" name="qty"/>
+                <input type="number" min="1" value="1" name="qty" />
             </div>
         </div>
 

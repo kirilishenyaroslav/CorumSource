@@ -9,6 +9,8 @@ using Corum.Models.ViewModels;
 using Corum.Common;
 using Corum.Models.Tender;
 using Corum.Models.ViewModels.Tender;
+using System.Collections;
+using System.Linq;
 
 namespace CorumAdminUI.Controllers
 {
@@ -37,25 +39,45 @@ namespace CorumAdminUI.Controllers
 
 
         [HttpPost]
-        public ActionResult SendNotificationTender(string services, int cars)
+        public ActionResult SendNotificationTender(string tenderName, string authorId, string companyId, string subCompanyId,
+            string services, string depId, string budget, string ture, string typePublication, string dateCreate, string dateClose, string regume,
+            string lotName, string nmcName, string unitName, int qty)
         {
-            Dictionary<TenderServices, int> tender = new Dictionary<TenderServices, int>();
-            var query = context.GetTenderServices().Find(m => m.Id == int.Parse(services));
-            PostRequest(query, cars);
+            IList listParamsFormTender = new string[] {
+                tenderName,
+                authorId,
+                companyId,
+                subCompanyId,
+                services,
+                depId,
+                budget,
+                ture,
+                typePublication,
+                dateCreate,
+                dateClose,
+                regume,
+                lotName,
+                nmcName,
+                unitName,
+                qty.ToString() };
+            
+            PostRequest(listParamsFormTender);
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderID });
         }
 
-        void PostRequest(TenderServices services, int cars)
+        void PostRequest(IList listParamsFormTender)
         {
             Random random = new Random();
+            Dictionary<TenderServices, int> tender = new Dictionary<TenderServices, int>();
+            var query = context.GetTenderServices().Find(m => m.industryId == int.Parse(listParamsFormTender[4].ToString()));
 
             TenderForma postValues = new TenderForma();
             postValues.data = new DataTender()
             {
-                tenderName = "Тендер на закупку услуг мультимодальной перевозки механизированной секции крепи ДТМ с Украины в Грузию(3 шт-17 ПВ)",
-                industryId = services.industryId,
+                tenderName = listParamsFormTender[0].ToString(),
+                industryId = query.industryId,
 
-                budget = 6552323,
+                budget = Convert.ToDouble(listParamsFormTender[6]),
                 tenderAuthorId = 38,
                 companyId = 8,
                 subCompanyId = 8,
@@ -63,37 +85,25 @@ namespace CorumAdminUI.Controllers
                 tenderExternalN = "45-" + random.Next(1, 10000).ToString(),
                 mode = 2,
                 kind = 2,
-                dateStart = "2021-05-23T20:45:00",
-                dateEnd = "2021-05-28T17:45:00",
+                dateStart = listParamsFormTender[9].ToString(),
+                dateEnd = listParamsFormTender[10].ToString(),
                 lots = new List<Lots>()
                     {
                         {
                             new Lots()
                             {
-                                lotName = "Лот №1",
+                                lotName = listParamsFormTender[12].ToString(),
 
                                 items = new List<Items>()
                                 {
                                         new Items()
                                         {
                                             nmcId = 783,
-                                            itemName = services.industryName.ToString(),
-                                            qty = cars,
-                                            itemNote = "Перевозка деталей",
+                                            itemName = listParamsFormTender[13].ToString(),
+                                            qty = Convert.ToDouble(listParamsFormTender[15]),
                                             itemExternalN = "566532-23566",
 
                                             detailId = 4
-                                        },
-
-                                        new Items()
-                                        {
-                                            nmcId = 783,
-                                            itemName = services.industryName.ToString(),
-                                            qty = cars,
-                                            itemNote = "Перевозка деталей",
-                                            itemExternalN = "566532-24555",
-
-                                            detailId = 3
                                         }
                                 }
                             }

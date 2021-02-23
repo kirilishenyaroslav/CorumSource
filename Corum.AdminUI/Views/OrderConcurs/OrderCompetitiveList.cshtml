@@ -636,14 +636,13 @@
 
         // Модульное окно при нажатии на кнопку "Тендер"
         function SendNotification(orderId) {
-            @*$("#ReceiverId").attr("data-source-url", '@Url.Action("GetReceivers", "Orders")' + '?Id=' + orderId);*@
-
+           
             $('#partialModul')
                 .dialog({
                     dialogClass: "jq-dialog-window-custom  modal_dialog",
                     autoOpen: false,
-                    width: 600,
-                    top: 25,
+                    width: 1000,
+                    top: 50,
                     resizable: false,
                     tags: true,
                     title: "Запрос на тендер",
@@ -661,44 +660,11 @@
                         $("#disable_all").removeClass("disable_all");
                     },
                     buttons:
-                    [
-                        //{
-                        //    text: "Отмена",
-                        //    "class": 'cancel-btn btn btn-outline',
-                        //    click: function() {
-
-                        //        $(this).dialog("close");
-                        //    }
-                        //},
-                        @*{
-                            text: "Отправить",
-                            "class": 'btn btn-primary',
-                            click: function() {
-
-                                var ReceiverId = $('#ReceiverId').val();
-                                var MessageText = $('#MessageText').val();
-
-                                $.post('@Url.Action("SendNotificationTender", "OrderConcurs")',
-                                    {
-                                        //ReceiverId: ReceiverId,
-                                        //OrderId: orderId,
-                                        //MessageText: MessageText
-                                    },
-                                    function(data) {
-                                        alert('Уведомление отправлено');
-                                    });
-
-                                $(this).dialog("close");
-                            }
-                        }*@
+                    [                      
                     ]
                 });
-
             $('#partialModul').dialog('open');
-
             return;
         }
-
-
     </script>
 }

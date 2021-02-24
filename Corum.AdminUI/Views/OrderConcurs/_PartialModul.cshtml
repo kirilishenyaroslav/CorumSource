@@ -1,4 +1,5 @@
-﻿@model List<Corum.Models.Tender.TenderServices>
+﻿@model Corum.Models.OrderNavigationResult<Corum.Models.ViewModels.OrderConcurs.OrderCompetitiveListViewModel>
+@using System.Globalization;
 
 <link type="text/css" rel="stylesheet" href="~/Content/Tender/TableTender.css" />
 
@@ -7,11 +8,14 @@
 
     string[] typePublications = new string[] { "Открытый", "Закрытый" };
 
-    string[] regums = new string[] { "Облегченный", "Не облегченный" };
+    string[] regums = new string[] { "Облегченный" };
 
     string[] nmcs = new string[] { "Номенклатура 1", "Номенклатура 2", "Номенклатура 3", "Номенклатура 4", "Номенклатура 5" };
 
     string[] unitNames = new string[] { "шт.", "послуга" };
+
+    DateTime date = DateTime.Now;
+    string dateStart = date.ToString("yyyy-MM-dd'T'HH:mm");
 }
 
 <div id="partialModul" class="row" style="display: none; margin:auto;">
@@ -26,12 +30,12 @@
                     </label>
                     <div class="col-md-8">
                         @Html.TextBox("tenderName", null,
-                        new
-                        {
-                            @class = "form-control",
-                            type = "text",
-                            title = "Введите название тендера"
-                        })
+     new
+     {
+         @class = "form-control",
+         type = "text",
+         title = "Введите название тендера"
+     })
                     </div>
                 </div>
 
@@ -44,7 +48,7 @@
                    {
                        @class = "form-control",
                        @readonly = "readonly",
-                       type = "text"         
+                       type = "text"
                    })
                     </div>
                 </div>
@@ -85,7 +89,7 @@
                         Категория тендера
                     </label>
                     <div class="col-md-8">
-                        @{SelectList listServices = new SelectList(Model.ToList(), "industryId", "industryName"); }
+                        @{SelectList listServices = new SelectList(Model.tenderServices.ToList(), "industryId", "industryName"); }
                         @Html.DropDownList("services", listServices as SelectList, new
                    {
                        @class = "form-control"
@@ -113,11 +117,11 @@
                         Бюджет тендера
                     </label>
                     <div class="col-md-8">
-                        @Html.TextBox("budget", "0.00", new
+                        @Html.TextBox("budget", "0", new
                    {
                        @class = "form-control",
                        type = "number",
-                       min = "0.00"
+                       min = "0"
                    })
                     </div>
                 </div>
@@ -158,7 +162,7 @@
                         Дата создания тендера
                     </label>
                     <div class="col-md-8">
-                        <input class = "form-control" type="datetime-local" name="dateCreate" />
+                        <input class="form-control" type="datetime-local" name="dateCreate" value="@dateStart" />
                     </div>
                 </div>
 
@@ -168,7 +172,7 @@
                         Дата окончания приема предложений
                     </label>
                     <div class="col-md-8">
-                        <input class = "form-control" type="datetime-local" name="dateClose" />
+                        <input class="form-control" type="datetime-local" name="dateClose" />
                     </div>
                 </div>
 
@@ -193,6 +197,7 @@
                         @Html.TextBox("lotName", "Лот №1", new
                    {
                        @class = "form-control",
+                       @disabled = "disabled",
                        type = "text"
                    })
                     </div>
@@ -206,7 +211,8 @@
                         @{SelectList listnmcs = new SelectList(nmcs); }
                         @Html.DropDownList("nmcName", listnmcs as SelectList, new
                    {
-                       @class = "form-control"
+                       @class = "form-control",
+                       @disabled = "disabled"
                    })
                     </div>
                 </div>
@@ -219,7 +225,8 @@
                         @{SelectList listUnitNames = new SelectList(unitNames); }
                         @Html.DropDownList("unitName", listUnitNames as SelectList, new
                    {
-                       @class = "form-control"
+                       @class = "form-control",
+                       @disabled = "disabled"
                    })
                     </div>
                 </div>
@@ -229,7 +236,7 @@
                         Количество
                     </label>
                     <div class="col-md-8">
-                        <input class = "form-control" type="number" min="1" value="1" name="qty" />
+                        <input class="form-control" disabled="disabled" type="number" min="1" value="1" name="qty" />
                     </div>
                 </div>
 

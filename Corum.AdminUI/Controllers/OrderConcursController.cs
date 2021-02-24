@@ -11,6 +11,8 @@ using Corum.Models.Tender;
 using Corum.Models.ViewModels.Tender;
 using System.Collections;
 using System.Linq;
+using System.Configuration;
+using System.Collections.Specialized;
 
 namespace CorumAdminUI.Controllers
 {
@@ -30,9 +32,10 @@ namespace CorumAdminUI.Controllers
                 listStatuses = context.getAvialiableStepsForList(navInfo.OrderId),
                 orderInfo = context.getOrder(navInfo.OrderId),
                 currentStatus = context.getCurrentStatusForList(navInfo.OrderId),
-                tenderServices = context.GetTenderServices()
+                tenderServices = context.GetTenderServices(),
+                //userInfo = context.getUser(userId)
             };
-
+            //var dispName = model.orderInfo.CreatedByUserName;
             return View(model);
         }
 
@@ -40,8 +43,8 @@ namespace CorumAdminUI.Controllers
 
         [HttpPost]
         public ActionResult SendNotificationTender(string tenderName, string authorId, string companyId, string subCompanyId,
-            string services, string depId, string budget, string ture, string typePublication, string dateCreate, string dateClose, string regume,
-            string lotName, string nmcName, string unitName, int qty)
+            string services, string depId, string budget, string ture, string typePublication, string dateCreate, string dateClose, string regume
+            /*,string lotName, string nmcName, string unitName, int qty*/)
         {
             IList listParamsFormTender = new string[] {
                 tenderName,
@@ -55,62 +58,72 @@ namespace CorumAdminUI.Controllers
                 typePublication,
                 dateCreate,
                 dateClose,
-                regume,
-                lotName,
-                nmcName,
-                unitName,
-                qty.ToString() };
-            
+                regume
+                //,lotName,
+                //nmcName,
+                //unitName,
+                //qty.ToString()
+            };
+
             PostRequest(listParamsFormTender);
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderID });
         }
 
         void PostRequest(IList listParamsFormTender)
         {
+            NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
+
             Random random = new Random();
             Dictionary<TenderServices, int> tender = new Dictionary<TenderServices, int>();
             var query = context.GetTenderServices().Find(m => m.industryId == int.Parse(listParamsFormTender[4].ToString()));
 
             TenderForma postValues = new TenderForma();
-            postValues.data = new DataTender()
+            try
             {
-                tenderName = listParamsFormTender[0].ToString(),
-                industryId = query.industryId,
+                postValues.data = new DataTender()
+                {
+                    tenderName = listParamsFormTender[0].ToString(),
+                    industryId = query.industryId,
 
-                budget = Convert.ToDouble(listParamsFormTender[6]),
-                tenderAuthorId = 38,
-                companyId = 8,
-                subCompanyId = 8,
-                depId = 401,
-                tenderExternalN = "45-" + random.Next(1, 10000).ToString(),
-                mode = 2,
-                kind = 2,
-                dateStart = listParamsFormTender[9].ToString(),
-                dateEnd = listParamsFormTender[10].ToString(),
-                lots = new List<Lots>()
-                    {
+                    budget = Convert.ToDouble(listParamsFormTender[6]),
+                    tenderAuthorId = Convert.ToInt64(allAppSettings["tenderAuthorId"]),
+                    companyId = Convert.ToInt64(allAppSettings["companyId"]),
+                    subCompanyId = Convert.ToInt64(allAppSettings["subCompanyId"]),
+                    depId = Convert.ToInt64(allAppSettings["depId"]),
+                    tenderExternalN = OrderID.ToString()+"-"+random.Next(1, 10000).ToString(),
+                    mode = (listParamsFormTender[7].ToString() != "Тендер RFx") ? 2 : 1,
+                    kind = (listParamsFormTender[8].ToString() != "Открытый") ? 2 : 1,
+                    dateStart = listParamsFormTender[9].ToString(),
+                    dateEnd = listParamsFormTender[10].ToString(),
+                    lots = new List<Lots>()
                         {
-                            new Lots()
-                            {
-                                lotName = listParamsFormTender[12].ToString(),
+                            //{
+                            //    new Lots()
+                            //    {
+                            //        //lotName = listParamsFormTender[12].ToString(),
 
-                                items = new List<Items>()
-                                {
-                                        new Items()
-                                        {
-                                            nmcId = 783,
-                                            itemName = listParamsFormTender[13].ToString(),
-                                            qty = Convert.ToDouble(listParamsFormTender[15]),
-                                            itemExternalN = "566532-23566",
+                            //        items = new List<Items>()
+                            //        {
+                            //                new Items()
+                            //                {
+                            //                    nmcId = 783,
+                            //                    //itemName = listParamsFormTender[13].ToString(),
+                            //                    //qty = Convert.ToDouble(listParamsFormTender[15]),
+                            //                    itemExternalN = "566532-23566",
 
-                                            detailId = 4
-                                        }
-                                }
-                            }
-                        }
-                    },
-                lightMode = 0
-            };
+                            //                    detailId = 4
+                            //                }
+                            //        }
+                            //    }
+                            //}
+                        },
+                    lightMode = (listParamsFormTender[11].ToString() != "Облегченный") ? 0 : 1
+                };
+            }
+            catch (Exception e)
+            { 
+            
+            }
 
             BaseClient clientbase = new BaseClient("https://tender.corum.com/test/rest/rest.dll/tender/append", "supervisor", "4AA4DAEB367ADC060FCFAFECCF7F4506");
             string content = $"\nMessage: { new PostApiTender().GetCallAsync(clientbase, postValues).Result.ResponseMessage}";

@@ -239,6 +239,8 @@ namespace Corum.Models
 
     public class OrderNavigationResult<T> : NavigationResult<T> where T : class
     {
+        public UserViewModel userInfo;
+
         public List<TenderServices> tenderServices { get; set; }
         public OrderBaseViewModel orderInfo { get; set; }
 

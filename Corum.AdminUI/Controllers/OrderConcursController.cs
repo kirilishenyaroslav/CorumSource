@@ -125,7 +125,7 @@ namespace CorumAdminUI.Controllers
             
             }
 
-            BaseClient clientbase = new BaseClient("https://tender.corum.com/test/rest/rest.dll/tender/append", "supervisor", "4AA4DAEB367ADC060FCFAFECCF7F4506");
+            BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
             string content = $"\nMessage: { new PostApiTender().GetCallAsync(clientbase, postValues).Result.ResponseMessage}";
         }
 

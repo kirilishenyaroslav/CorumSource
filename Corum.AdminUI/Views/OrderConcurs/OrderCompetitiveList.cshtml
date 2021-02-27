@@ -6,6 +6,7 @@
 @{ ViewBag.Title = "Работа с конкурентным листом";
     Layout = "~/Views/Shared/_Layout.cshtml"; }
 
+
 <style type="text/css">
     #jqxgridAddConcurs .jqx-grid-cell-pinned, #jqxgridAddConcurs .jqx-grid-column-header {
         background-color: #f7b662;
@@ -658,10 +659,7 @@
                     },
                     beforeClose: function(event, ui) {
                         $("#disable_all").removeClass("disable_all");
-                    },
-                    buttons:
-                    [                      
-                    ]
+                    }                 
                 });
             $('#partialModul').dialog('open');
             return;

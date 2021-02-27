@@ -29,7 +29,9 @@
                         Наименование тендера
                     </label>
                     <div class="col-md-8">
-                        @Html.TextArea("tenderName", null,
+                        @Html.TextArea("tenderName", $"({Model.CompetitiveListInfo.Id}) Перевозка по маршруту: «‎{Model.CompetitiveListInfo.Route}». " +
+                       $"Дата подачи/выгрузки: «‎{Model.CompetitiveListInfo.ToDate}/{Model.CompetitiveListInfo.ToDateRaw}». " +
+                       $"Наименование груза: «‎{Model.CompetitiveListInfo.TruckDescription}».",
      new
      {
          @class = "form-control textarea",
@@ -74,7 +76,7 @@
                         Компания заказчик
                     </label>
                     <div class="col-md-8">
-                        @Html.TextBox("subCompanyId", "ООО «КОРУМ ГРУПП»", new
+                        @Html.TextBox("subCompanyId", Model.CompetitiveListInfo.PayerName, new
                    {
                        @class = "form-control",
                        @readonly = "readonly",

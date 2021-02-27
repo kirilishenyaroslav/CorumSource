@@ -90,7 +90,7 @@ namespace CorumAdminUI.Controllers
                     companyId = Convert.ToInt64(allAppSettings["companyId"]),
                     subCompanyId = Convert.ToInt64(allAppSettings["subCompanyId"]),
                     depId = Convert.ToInt64(allAppSettings["depId"]),
-                    tenderExternalN = OrderID.ToString()+"-"+random.Next(1, 10000).ToString(),
+                    tenderExternalN = OrderID.ToString()/*+"-"+random.Next(1, 10000).ToString()*/,
                     mode = (listParamsFormTender[7].ToString() != "Тендер RFx") ? 2 : 1,
                     kind = (listParamsFormTender[8].ToString() != "Открытый") ? 2 : 1,
                     dateStart = listParamsFormTender[9].ToString(),

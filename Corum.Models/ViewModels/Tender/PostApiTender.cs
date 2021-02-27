@@ -20,6 +20,7 @@ namespace Corum.Models.ViewModels.Tender
             BaseResponse baseresponse = clientbase.baseresponse;
             try
             {
+                again:
                 baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postContent).Result;
                 if (baseresponse.response.IsSuccessStatusCode)
                 {
@@ -35,6 +36,7 @@ namespace Corum.Models.ViewModels.Tender
                 }
                 else
                 {
+                    goto again;
                     baseresponse.ResponseMessage = await baseresponse.response.Content.ReadAsStringAsync();
                     baseresponse.StatusCode = (int)baseresponse.response.StatusCode;
                 }

@@ -1,249 +1,192 @@
-﻿@model Corum.Models.OrderNavigationResult<Corum.Models.ViewModels.OrderConcurs.OrderCompetitiveListViewModel>
+﻿@model Corum.Models.ViewModels.Tender.TenderForma
 @using System.Globalization;
 
 <link type="text/css" rel="stylesheet" href="~/Content/Tender/TableTender.css" />
 
-@{
-    string[] typeTures = new string[] { "Тендер RFx", "Аукцион/Редукцион" };
-
-    string[] typePublications = new string[] { "Открытый", "Закрытый" };
-
-    string[] regums = new string[] { "Облегченный" };
-
-    string[] nmcs = new string[] { "Номенклатура 1", "Номенклатура 2", "Номенклатура 3", "Номенклатура 4", "Номенклатура 5" };
-
-    string[] unitNames = new string[] { "шт.", "послуга" };
-
-    DateTime date = DateTime.Now;
-    string dateStart = date.ToString("yyyy-MM-dd'T'HH:mm");
-}
 
 <div id="partialModul" class="row" style="display: none; margin:auto;">
 
     @using (Html.BeginForm("SendNotificationTender", "OrderConcurs", FormMethod.Post))
     {
-        <div id="container">
-            <div id="sidebar">
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Наименование тендера
-                    </label>
-                    <div class="col-md-8">
-                        @Html.TextArea("tenderName", $"({Model.CompetitiveListInfo.Id}) Перевозка по маршруту: «‎{Model.CompetitiveListInfo.Route}». " +
-                       $"Дата подачи/выгрузки: «‎{Model.CompetitiveListInfo.ToDate}/{Model.CompetitiveListInfo.ToDateRaw}». " +
-                       $"Наименование груза: «‎{Model.CompetitiveListInfo.TruckDescription}».",
-     new
-     {
-         @class = "form-control textarea",
-         type = "text",
-         title = "Введите название тендера"
-     })
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group" style="margin-left:20px;">
+                    @Html.LabelFor(model => model.data.tenderName, htmlAttributes: new { @class = "control-label" })
+
+                    <div class="form-control-container full-width-select">
+                        @Html.TextAreaFor(model => model.data.tenderName,
+                         new
+                         {
+                             @class = "form-control textarea",
+                             type = "text"
+                         })
+                        @Html.ValidationMessageFor(model => model.data.tenderName, "", new { @class = "text-danger" })
                     </div>
                 </div>
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Автор тендера
-                    </label>
-                    <div class="col-md-8">
-                        @Html.TextBox("authorId", "Литовченко С.В.", new
-                   {
-                       @class = "form-control",
-                       @readonly = "readonly",
-                       type = "text"
-                   })
-                    </div>
-                </div>
-
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Группа компаний
-                    </label>
-                    <div class="col-md-8">
-                        @Html.TextBox("companyId", "ООО «КОРУМ ГРУПП»", new
-                   {
-                       @class = "form-control",
-                       @readonly = "readonly",
-                       type = "text"
-                   })
-                    </div>
-                </div>
-
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Компания заказчик
-                    </label>
-                    <div class="col-md-8">
-                        @Html.TextBox("subCompanyId", Model.CompetitiveListInfo.PayerName, new
-                   {
-                       @class = "form-control",
-                       @readonly = "readonly",
-                       type = "text"
-                   })
-                    </div>
-                </div>
-
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Категория тендера
-                    </label>
-                    <div class="col-md-8">
-                        @{SelectList listServices = new SelectList(Model.tenderServices.ToList(), "industryId", "industryName"); }
-                        @Html.DropDownList("services", listServices as SelectList, new
-                   {
-                       @class = "form-control"
-                   })
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Подразделение компании
-                    </label>
-                    <div class="col-md-8">
-                        @Html.TextBox("depId", "Департамент по логистике", new
-                   {
-                       @class = "form-control",
-                       @readonly = "readonly",
-                       type = "text"
-                   })
-                    </div>
-                </div>
-
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Бюджет тендера
-                    </label>
-                    <div class="col-md-8">
-                        @Html.TextBox("budget", "0", new
-                   {
-                       @class = "form-control",
-                       type = "number",
-                       min = "0"
-                   })
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Тип тура
-                    </label>
-                    <div class="col-md-8">
-                        @{SelectList listTures = new SelectList(typeTures); }
-                        @Html.DropDownList("ture", listTures as SelectList, new
-                   {
-                       @class = "form-control"
-                   })
-                    </div>
-                </div>
-
-            </div>
-
-
-            <div id="content">
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Тип публикации
-                    </label>
-                    <div class="col-md-8">
-                        @{SelectList listPublications = new SelectList(typePublications); }
-                        @Html.DropDownList("typePublication", listPublications as SelectList, new
-                   {
-                       @class = "form-control"
-                   })
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Дата создания тендера
-                    </label>
-                    <div class="col-md-8">
-                        <input class="form-control" type="datetime-local" name="dateCreate" value="@dateStart" />
-                    </div>
-                </div>
-
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Дата окончания приема предложений
-                    </label>
-                    <div class="col-md-8">
-                        <input class="form-control" type="datetime-local" name="dateClose" />
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Режим подачи тендера
-                    </label>
-                    <div class="col-md-8">
-                        @{SelectList listRegums = new SelectList(regums); }
-                        @Html.DropDownList("regume", listRegums as SelectList, new
-                   {
-                       @class = "form-control"
-                   })
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Наименование лота
-                    </label>
-                    <div class="col-md-8">
-                        @Html.TextBox("lotName", "Лот №1", new
-                   {
-                       @class = "form-control",
-                       @disabled = "disabled",
-                       type = "text"
-                   })
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Номенклатура
-                    </label>
-                    <div class="col-md-8">
-                        @{SelectList listnmcs = new SelectList(nmcs); }
-                        @Html.DropDownList("nmcName", listnmcs as SelectList, new
-                   {
-                       @class = "form-control",
-                       @disabled = "disabled"
-                   })
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Единица измерения
-                    </label>
-                    <div class="col-md-8">
-                        @{SelectList listUnitNames = new SelectList(unitNames); }
-                        @Html.DropDownList("unitName", listUnitNames as SelectList, new
-                   {
-                       @class = "form-control",
-                       @disabled = "disabled"
-                   })
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label class="col-md-4" style="font-weight: normal !important;">
-                        Количество
-                    </label>
-                    <div class="col-md-8">
-                        <input class="form-control" disabled="disabled" type="number" min="1" value="1" name="qty" />
-                    </div>
-                </div>
-
             </div>
         </div>
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" style="margin-left:20px;">
+                    @Html.LabelFor(model => model.data.tenderAuthorName, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.data.tenderAuthorName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", autocomplete = "off" } })
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="form-group" style="margin-left:20px;">
+                    @Html.LabelFor(model => model.data.budget, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.data.budget, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0", autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.data.budget, "", new { @class = "text-danger" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" style="margin-left:20px;">
+                    @Html.LabelFor(model => model.data.companyName, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.data.companyName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", autocomplete = "off" } })
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="form-group" style="margin-left:20px;">
+                    @Html.LabelFor(model => model.data.companyName, htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownListFor(model => model.data.regume, Model.data.listRegums as SelectList, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" style="margin-left:20px;">
+                    @Html.LabelFor(model => model.data.subCompanyName, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.data.subCompanyName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.data.subCompanyName, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="form-group" style="margin-left:20px;">
+                    @Html.LabelFor(model => model.data.typeTrure, htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownListFor(model => model.data.typeTrure, Model.data.listTures as SelectList, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" style="margin-left:20px;">
+                    @Html.LabelFor(model => model.data.depName, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.data.depName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", autocomplete = "off" } })
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="form-group" style="margin-left:20px;">
+                    @Html.LabelFor(model => model.data.industryName, htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownListFor(model => model.data.industryName, Model.data.listServices as SelectList, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" style="margin-left:20px;">
+                    @Html.LabelFor(model => model.data.dateStart, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.data.dateStart, new { htmlAttributes = new { @class = "form-control", type = "datetime-local", autocomplete = "off" } })
+                </div>
+            </div>
+
+
+            <div class="col-md-6">
+                <div class="form-group" style="margin-left:20px;">
+                    @Html.LabelFor(model => model.data.typePublic, htmlAttributes: new { @class = "control-label" })
+                    @Html.DropDownListFor(model => model.data.typePublic, Model.data.listPublications as SelectList, new { @class = "form-control" })
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group" style="margin-left:20px;">
+                    @Html.LabelFor(model => model.data.dateEnd, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.data.dateEnd, new { htmlAttributes = new { @class = "form-control", type = "datetime-local", autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.data.dateEnd, "", new { @class = "text-danger" })
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="form-group" style="margin-left:20px;">
+
+                </div>
+            </div>
+        </div>
+
+
+        @*<div class="form-group row">
+                <label class="col-md-4" style="font-weight: normal !important;">
+                    Наименование лота
+                </label>
+                <div class="col-md-8">
+                    @Html.TextBox("lotName", "Лот №1", new
+               {
+                   @class = "form-control",
+                   @disabled = "disabled",
+                   type = "text"
+               })
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-4" style="font-weight: normal !important;">
+                    Номенклатура
+                </label>
+                <div class="col-md-8">
+                    @{SelectList listnmcs = new SelectList(nmcs); }
+                    @Html.DropDownList("nmcName", listnmcs as SelectList, new
+               {
+                   @class = "form-control",
+                   @disabled = "disabled"
+               })
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-4" style="font-weight: normal !important;">
+                    Единица измерения
+                </label>
+                <div class="col-md-8">
+                    @{SelectList listUnitNames = new SelectList(unitNames); }
+                    @Html.DropDownList("unitName", listUnitNames as SelectList, new
+               {
+                   @class = "form-control",
+                   @disabled = "disabled"
+               })
+                </div>
+            </div>
+
+            <div class="form-group row">
+                <label class="col-md-4" style="font-weight: normal !important;">
+                    Количество
+                </label>
+                <div class="col-md-8">
+                    <input class="form-control" disabled="disabled" type="number" min="1" value="1" name="qty" />
+                </div>
+            </div>*@
+
 
         <div style="float:right;">
             <button class="btn btn-default" onclick="$('#partialModul').dialog('close');" type="reset" name="action" value="">Отмена</button>

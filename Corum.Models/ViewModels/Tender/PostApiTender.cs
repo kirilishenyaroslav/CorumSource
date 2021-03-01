@@ -18,27 +18,31 @@ namespace Corum.Models.ViewModels.Tender
             HttpClient client = clientbase.client;
             TenderForma postContent = postValues;
             BaseResponse baseresponse = clientbase.baseresponse;
+            int count = 0;
             try
             {
-                again:
-                baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postContent).Result;
-                if (baseresponse.response.IsSuccessStatusCode)
+                while (count < 10)
                 {
-                    baseresponse.ResponseMessage = await baseresponse.response.Content.ReadAsStringAsync();
-                    baseresponse.StatusCode = (int)baseresponse.response.StatusCode;
-                    string content = string.Empty;
-                    using (StreamReader stream = new StreamReader(baseresponse.response.Content.ReadAsStreamAsync().Result, System.Text.Encoding.GetEncoding(Encoding.UTF8.WebName)))
+                    baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postContent).Result;
+                    if (baseresponse.response.IsSuccessStatusCode)
                     {
-                        content = stream.ReadToEnd();
-                        string path = @"C:\Users\Work\Dropbox\Стажировка\Corum project\CorumSource-master\Corum.AdminUI\bin\client-server_Api.json";
-                        File.WriteAllText(path, content);
+                        baseresponse.ResponseMessage = await baseresponse.response.Content.ReadAsStringAsync();
+                        baseresponse.StatusCode = (int)baseresponse.response.StatusCode;
+                        string content = string.Empty;
+                        using (StreamReader stream = new StreamReader(baseresponse.response.Content.ReadAsStreamAsync().Result, System.Text.Encoding.GetEncoding(Encoding.UTF8.WebName)))
+                        {
+                            content = stream.ReadToEnd();
+                            string path = @"C:\Users\Work\Dropbox\Стажировка\Corum project\CorumSource-master\Corum.AdminUI\bin\client-server_Api.json";
+                            File.WriteAllText(path, content);
+                        }
+                        count = 10;
                     }
-                }
-                else
-                {
-                    goto again;
-                    baseresponse.ResponseMessage = await baseresponse.response.Content.ReadAsStringAsync();
-                    baseresponse.StatusCode = (int)baseresponse.response.StatusCode;
+                    else
+                    {
+                        baseresponse.ResponseMessage = await baseresponse.response.Content.ReadAsStringAsync();
+                        baseresponse.StatusCode = (int)baseresponse.response.StatusCode;
+                    }
+                    ++count;
                 }
                 return baseresponse;
             }

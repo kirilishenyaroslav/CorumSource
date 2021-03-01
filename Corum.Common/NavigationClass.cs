@@ -11,23 +11,24 @@ using Corum.Models.ViewModels.Admin;
 using Corum.Models.ViewModels.Customers;
 using Corum.Models.ViewModels.OrderConcurs;
 using Corum.Models.Tender;
+using Corum.Models.ViewModels.Tender;
 
 
 
 
 namespace Corum.Models
 {
-    
+
     public class OrdersReportsNavigationResult
     {
         public OrdersNavigationResult<BaseReportViewModel> BaseReport { get; set; }
         public OrdersNavigationResult<StatusReportViewModel> StatusReport { get; set; }
         public OrdersNavigationResult<OrdersReportViewModel> OrdersReport { get; set; }
-        public OrdersNavigationResult<FinalReportViewModel> FinalReport { get; set; }        
-        public OrdersNavigationResult<TruckViewModel> TruckReport { get; set; }        
+        public OrdersNavigationResult<FinalReportViewModel> FinalReport { get; set; }
+        public OrdersNavigationResult<TruckViewModel> TruckReport { get; set; }
         public OrdersNavigationResult<TruckViewModel> TruckReportDetail { get; set; }
-        
-        public string JSONData { get; set; }       
+
+        public string JSONData { get; set; }
 
         public bool UseOrderDateFilter { get; set; }
         public string FilterOrderDateBeg { get; set; }
@@ -62,7 +63,7 @@ namespace Corum.Models
 
         public string OrgName { get; set; }
 
-        public int OrgId  { get; set; }
+        public int OrgId { get; set; }
 
         public DateTime ReportDate { get; set; }
 
@@ -77,11 +78,11 @@ namespace Corum.Models
     public class NavigationResult<T> where T : class
     {
         private ICorumDataProvider context;
-        private string userId = "";        
-        public NavigationInfo RequestParams { get; set; }                
+        private string userId = "";
+        public NavigationInfo RequestParams { get; set; }
         public IQueryable<T> DisplayValues { get; set; }
-        
-        public NavigationResult(NavigationInfo request,                                
+
+        public NavigationResult(NavigationInfo request,
                                 string userId)
         {
             try
@@ -94,25 +95,25 @@ namespace Corum.Models
 
                 RequestParams = new NavigationInfo()
                 {
-                    PageSize = currentPageSize,                                       
-                    PageSizeTemplates = NavigationProperties.GetPageSizeTemplates(currentPageSize)                    
+                    PageSize = currentPageSize,
+                    PageSizeTemplates = NavigationProperties.GetPageSizeTemplates(currentPageSize)
                 };
             }
-            catch 
+            catch
             {
                 throw;
             }
         }
-                
+
         private int ProcessPageSizeValue(int OldPageSizeValue, int NewPageSizeValue)
-        {            
+        {
             if (OldPageSizeValue != NewPageSizeValue)
             {
                 context.setCurrentPageSizeForUser(this.userId, NewPageSizeValue);
             }
 
             return NewPageSizeValue;
-        }                                
+        }
     }
 
 
@@ -126,15 +127,15 @@ namespace Corum.Models
 
         }
     }
-    
+
     public class OrdersNavigationResult<T> : NavigationResult<T> where T : class
     {
         public List<OrderTypeViewModel> AvailiableTypes { get; set; }
         public ICorumDataProvider context { get; set; }
 
-        public List<CompetetiveListStepsInfoViewModel> Timeline { get; set; } 
-        public IQueryable<T> DataDisplayValues { get; set; }       
-        public String IdTree { get; set; }  
+        public List<CompetetiveListStepsInfoViewModel> Timeline { get; set; }
+        public IQueryable<T> DataDisplayValues { get; set; }
+        public String IdTree { get; set; }
 
         public OrdersNavigationResult(NavigationInfo request, string userId) : base(request, userId)
         {
@@ -143,7 +144,7 @@ namespace Corum.Models
             ExecuteDate = false;
             isTransport = true;
         }
-        
+
         public bool isTransport { get; set; }
         public bool isChrome { get; set; }
 
@@ -164,7 +165,7 @@ namespace Corum.Models
         public bool UseOrderExecuterFilter { get; set; }
 
         public string FilterOrderPayerId { get; set; }
-        public string FilterOrderPayerName { get; set; }        
+        public string FilterOrderPayerName { get; set; }
         public bool UseOrderPayerFilter { get; set; }
 
         public string FilterOrderOrgFromId { get; set; }
@@ -196,9 +197,9 @@ namespace Corum.Models
 
         public string FilterOrderClientId { get; set; }
         public string FilterOrderClientName { get; set; }
-        public bool UseOrderClientFilter { get; set; }   
+        public bool UseOrderClientFilter { get; set; }
 
-        public int FilterOrderPriority { get; set; }        
+        public int FilterOrderPriority { get; set; }
         public bool UseOrderPriorityFilter { get; set; }
 
         public bool UseOrderDateFilter { get; set; }
@@ -225,21 +226,22 @@ namespace Corum.Models
         public string FilterOrderProjectCode { get; set; }
 
         public string OrgName { get; set; }
-       /* public int OrgId { get; set; }
-        public DateTime ReportDate { get; set; }
-        public String Address { get; set; }
-        public int IdGroup { get; set; }
-        public String CurrentId { get; set; }*/
-        
+        /* public int OrgId { get; set; }
+         public DateTime ReportDate { get; set; }
+         public String Address { get; set; }
+         public int IdGroup { get; set; }
+         public String CurrentId { get; set; }*/
+
         public List<string> FinalStatuses { get; set; }
 
         public Dictionary<string, int> orderFinalStatusesDict { get; set; }
-        
+
     }
 
     public class OrderNavigationResult<T> : NavigationResult<T> where T : class
     {
         public UserViewModel userInfo;
+        public TenderForma tenderForma;
 
         public List<TenderServices> tenderServices { get; set; }
         public OrderBaseViewModel orderInfo { get; set; }
@@ -252,7 +254,7 @@ namespace Corum.Models
 
         public ConcursDiscountRateModel discountRate { get; set; }
 
-        public string  headerInfo { get; set; }
+        public string headerInfo { get; set; }
 
         public long OrderId { get; set; }
 
@@ -268,7 +270,7 @@ namespace Corum.Models
         public string FilterOrderDateEnd { set; get; }
         public string FilterOrderDateEndRaw { set; get; }
 
-        public OrderNavigationResult(NavigationInfo request, string userId): base(request, userId)
+        public OrderNavigationResult(NavigationInfo request, string userId) : base(request, userId)
         {
 
         }
@@ -276,7 +278,7 @@ namespace Corum.Models
 
     public class RestsNavigationResult<T> : NavigationResult<T> where T : class
     {
-        public RestsNavigationResult(NavigationInfo request,string userId): base(request, userId)
+        public RestsNavigationResult(NavigationInfo request, string userId) : base(request, userId)
         {
             PriceForEndConsumer = false;
             PriceForFirstReciver = false;
@@ -344,7 +346,7 @@ namespace Corum.Models
     {
         public ImportErrorsNavigationResult(NavigationInfo request, string userId) : base(request, userId)
         {
-            
+
         }
 
         public ImportErrorsInfo errorCommonInfo { set; get; }
@@ -368,7 +370,7 @@ namespace Corum.Models
 
     public class OrderCarsNavigationResult<T> : OrdersNavigationResult<T> where T : class
     {
-        
+
         public bool UseOrderIdFilter { get; set; }
         public string FilterOrderIdFilter { get; set; }
         public string FilterOrderIdName { get; set; }
@@ -428,7 +430,7 @@ namespace Corum.Models
         public string FilterFactConsigneeBegRaw { get; set; }
         public string FilterFactConsigneeEnd { get; set; }
         public string FilterFactConsigneeEndRaw { get; set; }
-        
+
         /*public bool UseOrderExDateFilter { get; set; }
         public string FilterOrderExDateBeg { get; set; }
         public string FilterOrderExDateBegRaw { get; set; }

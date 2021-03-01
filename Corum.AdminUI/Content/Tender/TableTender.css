@@ -1,20 +1,4 @@
-﻿#container {
-    overflow: hidden
-}
-
-#content {
-    float: left;
-    width: 50%;
-}
-
-#sidebar {
-    float: left;
-    width: 50%;
-}
-
-.textarea {
-    width: 280px; /* Ширина поля в процентах */
-    min-height: 100px; /* Высота поля в пикселах */
-    resize: none; /* Запрещаем изменять размер */
-    padding: 1px 1px 1px 1px; /* Отступ текста от края поля в пикселях */
+﻿.textarea {
+    min-height: 90px; /* Высота поля в пикселах */
+    /*resize: none;*/ /* Запрещаем изменять размер */
 } 

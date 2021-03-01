@@ -49,6 +49,7 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -189,6 +190,7 @@
     <Compile Include="ViewModels\Orders\VehicleViewModel.cs" />
     <Compile Include="ViewModels\Orders\TruckTypeViewModel.cs" />
     <Compile Include="ViewModels\Customers\OrganizationViewModel.cs" />
+    <Compile Include="ViewModels\Tender\TenderParamsDefaults.cs" />
     <Compile Include="ViewModels\Tender\PostApiTender.cs" />
     <Compile Include="ViewModels\Tender\TenderForma.cs" />
   </ItemGroup>

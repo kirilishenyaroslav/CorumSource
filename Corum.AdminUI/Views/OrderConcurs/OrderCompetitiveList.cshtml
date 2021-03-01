@@ -20,7 +20,7 @@
     }
 </style>
 
-@Html.Partial("_PartialModul")
+@Html.Partial("_PartialModul", Model.tenderForma)
 
 
 @helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
@@ -642,7 +642,7 @@
                 .dialog({
                     dialogClass: "jq-dialog-window-custom  modal_dialog",
                     autoOpen: false,
-                    width: 1000,
+                    width: 800,
                     top: 50,
                     resizable: false,
                     tags: true,

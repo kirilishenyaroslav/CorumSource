@@ -33,101 +33,22 @@ namespace CorumAdminUI.Controllers
                 orderInfo = context.getOrder(navInfo.OrderId),
                 currentStatus = context.getCurrentStatusForList(navInfo.OrderId),
                 tenderServices = context.GetTenderServices(),
-                //userInfo = context.getUser(userId)
-            };
-            //var dispName = model.orderInfo.CreatedByUserName;
+                tenderForma = new TenderForma(context.getCompetitiveListInfo(navInfo.OrderId), context.GetTenderServices())
+            };         
             return View(model);
         }
 
 
 
         [HttpPost]
-        public ActionResult SendNotificationTender(string tenderName, string authorId, string companyId, string subCompanyId,
-            string services, string depId, string budget, string ture, string typePublication, string dateCreate, string dateClose, string regume
-            /*,string lotName, string nmcName, string unitName, int qty*/)
+        public ActionResult SendNotificationTender(TenderForma tenderForma)
         {
-            IList listParamsFormTender = new string[] {
-                tenderName,
-                authorId,
-                companyId,
-                subCompanyId,
-                services,
-                depId,
-                budget,
-                ture,
-                typePublication,
-                dateCreate,
-                dateClose,
-                regume
-                //,lotName,
-                //nmcName,
-                //unitName,
-                //qty.ToString()
-            };
-
-            PostRequest(listParamsFormTender);
+            NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
+            BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
+            new PostApiTender().GetCallAsync(clientbase, tenderForma);
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderID });
         }
 
-        void PostRequest(IList listParamsFormTender)
-        {
-            NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
-
-            Random random = new Random();
-            Dictionary<TenderServices, int> tender = new Dictionary<TenderServices, int>();
-            var query = context.GetTenderServices().Find(m => m.industryId == int.Parse(listParamsFormTender[4].ToString()));
-
-            TenderForma postValues = new TenderForma();
-            try
-            {
-                postValues.data = new DataTender()
-                {
-                    tenderName = listParamsFormTender[0].ToString(),
-                    industryId = query.industryId,
-
-                    budget = Convert.ToDouble(listParamsFormTender[6]),
-                    tenderAuthorId = Convert.ToInt64(allAppSettings["tenderAuthorId"]),
-                    companyId = Convert.ToInt64(allAppSettings["companyId"]),
-                    subCompanyId = Convert.ToInt64(allAppSettings["subCompanyId"]),
-                    depId = Convert.ToInt64(allAppSettings["depId"]),
-                    tenderExternalN = OrderID.ToString()/*+"-"+random.Next(1, 10000).ToString()*/,
-                    mode = (listParamsFormTender[7].ToString() != "Тендер RFx") ? 2 : 1,
-                    kind = (listParamsFormTender[8].ToString() != "Открытый") ? 2 : 1,
-                    dateStart = listParamsFormTender[9].ToString(),
-                    dateEnd = listParamsFormTender[10].ToString(),
-                    lots = new List<Lots>()
-                        {
-                            //{
-                            //    new Lots()
-                            //    {
-                            //        //lotName = listParamsFormTender[12].ToString(),
-
-                            //        items = new List<Items>()
-                            //        {
-                            //                new Items()
-                            //                {
-                            //                    nmcId = 783,
-                            //                    //itemName = listParamsFormTender[13].ToString(),
-                            //                    //qty = Convert.ToDouble(listParamsFormTender[15]),
-                            //                    itemExternalN = "566532-23566",
-
-                            //                    detailId = 4
-                            //                }
-                            //        }
-                            //    }
-                            //}
-                        },
-                    lightMode = (listParamsFormTender[11].ToString() != "Облегченный") ? 0 : 1
-                };
-            }
-            catch (Exception e)
-            { 
-            
-            }
-
-            BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
-            string content = $"\nMessage: { new PostApiTender().GetCallAsync(clientbase, postValues).Result.ResponseMessage}";
-        }
 
         [HttpGet]
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]

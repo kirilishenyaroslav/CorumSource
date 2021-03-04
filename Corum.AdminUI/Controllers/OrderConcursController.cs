@@ -7,28 +7,47 @@ using Corum.Models.ViewModels.Cars;
 using System;
 using Corum.Models.ViewModels;
 using Corum.Common;
+using Corum.Models.Tender;
+using Corum.Models.ViewModels.Tender;
+using System.Collections;
+using System.Linq;
+using System.Configuration;
+using System.Collections.Specialized;
 
 namespace CorumAdminUI.Controllers
 {
 
     [Authorize]
     public partial class OrderConcursController : CorumBaseController
-    { 
+    {
+        static long OrderID;
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult OrderCompetitiveList(OrderNavigationInfo navInfo)
-        {            
+        {
+            OrderID = navInfo.OrderId;
             var model = new OrderNavigationResult<OrderCompetitiveListViewModel>(navInfo, userId)
             {
-                DisplayValues       = context.getOrderCompetitiveList(userId, navInfo.OrderId),
+                DisplayValues = context.getOrderCompetitiveList(userId, navInfo.OrderId),
                 CompetitiveListInfo = context.getCompetitiveListInfo(navInfo.OrderId),
-                listStatuses        = context.getAvialiableStepsForList(navInfo.OrderId),
-                orderInfo           = context.getOrder(navInfo.OrderId),
-                currentStatus       = context.getCurrentStatusForList(navInfo.OrderId),             
-        };
-           
+                listStatuses = context.getAvialiableStepsForList(navInfo.OrderId),
+                orderInfo = context.getOrder(navInfo.OrderId),
+                currentStatus = context.getCurrentStatusForList(navInfo.OrderId),
+                tenderServices = context.GetTenderServices(),
+                tenderForma = new TenderForma(context.getCompetitiveListInfo(navInfo.OrderId), context.GetTenderServices())
+            };
             return View(model);
         }
 
+
+
+        [HttpPost]
+        public ActionResult SendNotificationTender(TenderForma tenderForma)
+        {
+            NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
+            BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
+            new PostApiTender().GetCallAsync(clientbase, tenderForma);
+            return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderID });
+        }
 
 
         [HttpGet]
@@ -51,25 +70,25 @@ namespace CorumAdminUI.Controllers
         {
             context.SaveListStatus(new CompetetiveListStepsInfoViewModel()
             {
-                StepId  = StepId,
+                StepId = StepId,
                 OrderId = OrderId,
-                userId  = this.userId
+                userId = this.userId
             });
 
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderId });
         }
 
-        
+
         private static Select2PagedResult OrderSpecVmToSelect2Format(IEnumerable<SpecificationListViewModel> groupItems,
             int totalRecords)
         {
-            var jsonGroupItems = new Select2PagedResult {Results = new List<Select2Result>()};
+            var jsonGroupItems = new Select2PagedResult { Results = new List<Select2Result>() };
             foreach (var groupItem in groupItems)
             {
                 jsonGroupItems.Results.Add(new Select2Result
                 {
                     id = groupItem.Id.ToString(),
-                    text = groupItem.ExpeditorName                    
+                    text = groupItem.ExpeditorName
 
                 });
             }
@@ -81,14 +100,14 @@ namespace CorumAdminUI.Controllers
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult AddSpecificationsInfo(SpecificationListViewModel model)
         {
-            var result = context.NewSpecification(model, this.userId);         
+            var result = context.NewSpecification(model, this.userId);
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = model.OrderId });
         }
 
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult DeleteConcurs(long Id, long OrderId)
-        {            
-            context.DeleteConcurs(Id);          
+        {
+            context.DeleteConcurs(Id);
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderId });
         }
 
@@ -98,7 +117,7 @@ namespace CorumAdminUI.Controllers
         {
             var concursInfo = context.getConcurs(Id);
             concursInfo.CompetitiveListInfo = context.getCompetitiveListInfo(OrderId);
-                    
+
             return View(concursInfo);
         }
 
@@ -112,34 +131,34 @@ namespace CorumAdminUI.Controllers
 
 
         [HttpGet]
-       public ActionResult GetSpecificationType(string searchTerm, int pageSize, int pageNum)
-       {
-           var storages = context.GetSpecificationTypes(searchTerm, pageSize, pageNum);
-           var storagesCount = context.GetSpecificationTypesCount(searchTerm);
+        public ActionResult GetSpecificationType(string searchTerm, int pageSize, int pageNum)
+        {
+            var storages = context.GetSpecificationTypes(searchTerm, pageSize, pageNum);
+            var storagesCount = context.GetSpecificationTypesCount(searchTerm);
 
-           var pagedAttendees = SpecificationTypeVmToSelect2Format(storages, storagesCount);
+            var pagedAttendees = SpecificationTypeVmToSelect2Format(storages, storagesCount);
 
-           return new JsonpResult
-           {
-               Data = pagedAttendees,
-               JsonRequestBehavior = JsonRequestBehavior.AllowGet
-           };
-       }
+            return new JsonpResult
+            {
+                Data = pagedAttendees,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
 
-       private static Select2PagedResult SpecificationTypeVmToSelect2Format(IEnumerable<SpecificationTypesViewModel> groupItems, int totalRecords)
-       {
-           var jsonGroupItems = new Select2PagedResult { Results = new List<Select2Result>() };
-           foreach (var groupItem in groupItems)
-           {
-               jsonGroupItems.Results.Add(new Select2Result
-               {
-                   id = groupItem.Id.ToString(),
-                   text = groupItem.SpecificationType
-               });
-           }
-           jsonGroupItems.Total = totalRecords;
-           return jsonGroupItems;
-       }
+        private static Select2PagedResult SpecificationTypeVmToSelect2Format(IEnumerable<SpecificationTypesViewModel> groupItems, int totalRecords)
+        {
+            var jsonGroupItems = new Select2PagedResult { Results = new List<Select2Result>() };
+            foreach (var groupItem in groupItems)
+            {
+                jsonGroupItems.Results.Add(new Select2Result
+                {
+                    id = groupItem.Id.ToString(),
+                    text = groupItem.SpecificationType
+                });
+            }
+            jsonGroupItems.Total = totalRecords;
+            return jsonGroupItems;
+        }
 
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult GetListTimeLine(OrderNavigationInfo navInfo)
@@ -158,7 +177,7 @@ namespace CorumAdminUI.Controllers
             DateTime OrderDate = context.getConcursHistoryHeader(navInfo.OrderId);
             if (navInfo.FilterOrderDateBeg == null)
             {
-                navInfo.FilterOrderDateBeg = OrderDate.AddMonths(-3).ToString("dd.MM.yyyy");                    
+                navInfo.FilterOrderDateBeg = OrderDate.AddMonths(-3).ToString("dd.MM.yyyy");
                 navInfo.FilterOrderDateBegRaw = DateTimeConvertClass.getString(OrderDate.AddMonths(-3));
             }
             if (navInfo.FilterOrderDateEnd == null)
@@ -189,17 +208,34 @@ namespace CorumAdminUI.Controllers
             };
             return View(model);
         }
-   
-        
+
+
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult ConcursDiscountRate(OrderNavigationInfo navInfo)
         {
             var model = new OrderNavigationResult<ConcursDiscountRateModel>(navInfo, userId)
             {
-                DisplayValues = context.GetConcursDiscountRate(),               
+                DisplayValues = context.GetConcursDiscountRate(),
                 OrderId = navInfo.OrderId
             };
             return View(model);
+        }
+
+        [HttpGet]
+        public ActionResult ConcursTenderQuery(OrderNavigationInfo navInfo)
+        {
+            var model = new OrderNavigationResult<ConcursDiscountRateModel>(navInfo, userId)
+            {
+                DisplayValues = context.GetConcursDiscountRate(),
+                OrderId = navInfo.OrderId
+            };
+            return View(model);
+        }
+
+
+        public string StatusSendToTenderQuery()
+        {
+            return "<h2>Заявка отправлена!</h2>";
         }
 
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
@@ -242,7 +278,7 @@ namespace CorumAdminUI.Controllers
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult CloneConcurs(long Id, long OrderId)
         {
-            context.CloneConcurs(Id, userId);            
+            context.CloneConcurs(Id, userId);
 
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderId });
 

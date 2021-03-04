@@ -992,6 +992,14 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SpecificationType" Type="nvarchar" MaxLength="256" />
         </EntityType>
+        <EntityType Name="TenderServices">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="industryName" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="industryId" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="UserMessages">
           <Key>
             <PropertyRef Name="Id" />
@@ -3384,6 +3392,7 @@
           <EntitySet Name="RouteTypes" EntityType="Self.RouteTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpecificationNames" EntityType="Self.SpecificationNames" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpecificationTypes" EntityType="Self.SpecificationTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TenderServices" EntityType="Self.TenderServices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserMessages" EntityType="Self.UserMessages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserSettings" EntityType="Self.UserSettings" Schema="dbo" store:Type="Tables" />
@@ -5069,6 +5078,7 @@
           </FunctionImport>
           <EntitySet Name="BucketDocumentRows" EntityType="CorumModel.BucketDocumentRows" />
           <EntitySet Name="BucketDocuments" EntityType="CorumModel.BucketDocuments" />
+          <EntitySet Name="TenderServices" EntityType="CorumModel.TenderServices" />
           </EntityContainer>
         <ComplexType Name="SelectFieldsOfStuctureForImport_Result">
           <Property Type="String" Name="ColumnName" Nullable="true" />
@@ -8582,6 +8592,14 @@
           <Property Name="DocNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="TenderServices">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="industryName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="industryId" Type="Int32" Nullable="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10621,6 +10639,15 @@
                 <ScalarProperty Name="DocNumber" ColumnName="DocNumber" />
                 <ScalarProperty Name="DocDate" ColumnName="DocDate" />
                 <ScalarProperty Name="IdBucketDocument" ColumnName="IdBucketDocument" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TenderServices">
+            <EntityTypeMapping TypeName="CorumModel.TenderServices">
+              <MappingFragment StoreEntitySet="TenderServices">
+                <ScalarProperty Name="industryId" ColumnName="industryId" />
+                <ScalarProperty Name="industryName" ColumnName="industryName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

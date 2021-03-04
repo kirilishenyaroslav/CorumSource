@@ -10,6 +10,8 @@ using Corum.Models.ViewModels.Orders;
 using Corum.Models.ViewModels.Admin;
 using Corum.Models.ViewModels.OrderConcurs;
 using Corum.Models.ViewModels.Bucket;
+using Corum.Models.Tender;
+using Corum.Models.ViewModels.Tender;
 
 namespace Corum.Models
 {
@@ -236,6 +238,10 @@ namespace Corum.Models
 
     public class OrderNavigationResult<T> : NavigationResult<T> where T : class
     {
+        public UserViewModel userInfo;
+        public TenderForma tenderForma;
+
+        public List<TenderServices> tenderServices { get; set; }
         public OrderBaseViewModel orderInfo { get; set; }
 
         public CompetitiveListViewModel CompetitiveListInfo { get; set; }

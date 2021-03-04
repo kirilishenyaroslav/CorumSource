@@ -2,7 +2,6 @@
 using System.Web.Mvc;
 using System.Collections.Generic;
 using System.Linq;
-using Corum.Models.ViewModels.Orders;
 
 namespace Corum.Models
 {
@@ -10,7 +9,7 @@ namespace Corum.Models
     {
         public int? PageSize { get; set; }
         public string SearchResult { get; set; }
-        public List<SelectListItem> PageSizeTemplates { get; set; }                                        
+        public List<SelectListItem> PageSizeTemplates { get; set; }
     }
 
     public class OrdersNavigationInfo : NavigationInfo
@@ -47,7 +46,7 @@ namespace Corum.Models
         public string FilterOrderDateEndRaw { get; set; }
 
         public string FilterOrderDate { get; set; }
-        public string FilterOrderDateRaw { get; set; }        
+        public string FilterOrderDateRaw { get; set; }
 
         public bool UseAcceptDateFilter { get; set; }
         public string FilterAcceptDateBeg { get; set; }
@@ -103,9 +102,7 @@ namespace Corum.Models
     public class OrderNavigationInfo : NavigationInfo
     {
         public bool ShowAll { get; set; }
-
-        public long OrderId { get; set; }       
-
+        public long OrderId { get; set; }
     }
 
     public class PipelinesNavigationInfo : NavigationInfo
@@ -133,6 +130,7 @@ namespace Corum.Models
         public string FilterKeeperId { get; set; }
         public string FilterProducerId { get; set; }
         public string FilterOrderProjectId { get; set; }
+        public string FilterProductBarcodeId { get; set; }
 
         public bool UseStorageFilter { get; set; }
         public bool UseCenterFilter { get; set; }
@@ -141,6 +139,7 @@ namespace Corum.Models
         public bool UseKeeperFilter { get; set; }
         public bool UseProducerFilter { get; set; }
         public bool UseOrderProjectFilter { get; set; }
+        public bool UseProductBarcodeFilter { get; set; }
 
         public int IsPrihodDocs { get; set; }
 
@@ -165,7 +164,7 @@ namespace Corum.Models
                 }).ToList();
         }
     }
-    public class OrderCarsNavigationInfo : OrdersNavigationInfo//NavigationInfo
+    public class OrderCarsNavigationInfo : OrdersNavigationInfo
     {
        public string userId { get; set; }
         public bool isAdmin { get; set; }
@@ -206,93 +205,6 @@ namespace Corum.Models
         public string FilterFactConsigneeBegRaw { get; set; }
         public string FilterFactConsigneeEnd { get; set; }
         public string FilterFactConsigneeEndRaw { get; set; }
-
-       /* public bool UseOrderExDateFilter { get; set; }
-        public string FilterOrderExDateBeg { get; set; }
-        public string FilterOrderExDateBegRaw { get; set; }
-        public string FilterOrderExDateEnd { get; set; }
-        public string FilterOrderExDateEndRaw { get; set; }
-
-
-        public bool UseOrderEndDateFilter { get; set; }
-        public string FilterOrderEndDateBeg { get; set; }
-        public string FilterOrderEndDateBegRaw { get; set; }
-        public string FilterOrderEndDateEnd { get; set; }
-        public string FilterOrderEndDateEndRaw { get; set; }*/
-
-        ///////////
-         /*public bool DriftDate { get; set; }
-        public bool AcceptDate { get; set; }
-        public bool ExecuteDate { get; set; }
-
-        public string FilterOrderExecuterId { get; set; }
-        public bool UseOrderExecuterFilter { get; set; }
-
-        public string FilterStatusId { get; set; }
-        public bool UseStatusFilter { get; set; }
-
-        public string FilterOrderCreatorId { get; set; }
-        public bool UseOrderCreatorFilter { get; set; }
-
-        public string FilterOrderTypeId { get; set; }
-        public bool UseOrderTypeFilter { get; set; }
-
-        public string FilterTripTypeId { get; set; }
-        public bool UseTripTypeFilter { get; set; }
-
-        public string FilterOrderClientId { get; set; }
-        public bool UseOrderClientFilter { get; set; }
-
-        public int FilterOrderPriority { get; set; }
-        public bool UseOrderPriorityFilter { get; set; }
-
-        public bool UseOrderDateFilter { get; set; }
-        public string FilterOrderDateBeg { get; set; }
-        public string FilterOrderDateBegRaw { get; set; }
-        public string FilterOrderDateEnd { get; set; }
-        public string FilterOrderDateEndRaw { get; set; }
-
-        public bool UseAcceptDateFilter { get; set; }
-        public string FilterAcceptDateBeg { get; set; }
-        public string FilterAcceptDateBegRaw { get; set; }
-        public string FilterAcceptDateEnd { get; set; }
-        public string FilterAcceptDateEndRaw { get; set; }
-
-
-     public bool UseOrderExDateFilter { get; set; }
-        public string FilterOrderExDateBeg { get; set; }
-        public string FilterOrderExDateBegRaw { get; set; }
-        public string FilterOrderExDateEnd { get; set; }
-        public string FilterOrderExDateEndRaw { get; set; }
-
-
-        public bool UseOrderEndDateFilter { get; set; }
-        public string FilterOrderEndDateBeg { get; set; }
-        public string FilterOrderEndDateBegRaw { get; set; }
-        public string FilterOrderEndDateEnd { get; set; }
-        public string FilterOrderEndDateEndRaw { get; set; }
-
-        public bool UseFinalStatusFilter { get; set; }
-        public bool FilterFinalStatus { get; set; }
-
-        public bool UseOrderProjectFilter { get; set; }
-        public string FilterOrderProjectId { get; set; }
-
-        public int PageNumber { get; set; }
-
-        public bool isPassOrders { get; set; }
-
-        public int? DateType { get; set; }
-
-        public string FilterOrderPayerId { get; set; }
-        public bool UseOrderPayerFilter { get; set; }
-
-        public string FilterOrderOrgFromId { get; set; }
-        public bool UseOrderOrgFromFilter { get; set; }
-
-        public string FilterOrderOrgToId { get; set; }
-        public bool UseOrderOrgToFilter { get; set; }*/
-
     }
 
     public class ContractNavigationInfo : NavigationInfo
@@ -358,7 +270,6 @@ namespace Corum.Models
 
         public string FilterOrderDateEnd { set; get; }
         public string FilterOrderDateEndRaw { set; get; }
-
     }
 
 }

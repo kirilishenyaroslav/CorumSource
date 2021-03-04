@@ -94,6 +94,8 @@ namespace Corum.DAL.Entity
         public virtual DbSet<AspNetUsers> AspNetUsers { get; set; }
         public virtual DbSet<Organization> Organization { get; set; }
         public virtual DbSet<OrderUsedCars> OrderUsedCars { get; set; }
+        public virtual DbSet<BucketDocumentRows> BucketDocumentRows { get; set; }
+        public virtual DbSet<BucketDocuments> BucketDocuments { get; set; }
     
         public virtual ObjectResult<SelectFieldsOfStuctureForImport_Result> SelectFieldsOfStuctureForImport(Nullable<bool> isRests)
         {
@@ -2214,73 +2216,8 @@ namespace Corum.DAL.Entity
             return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetRestDataByInnerPartyKey_Result>("GetRestDataByInnerPartyKey", snapShotIdParameter, innerPartyKeyParameter);
         }
     
-        public virtual ObjectResult<GetRestDataBySnapshot_Result> GetRestDataBySnapshot(Nullable<int> snapShotId, string filterStorageId, string filterCenterId, string filterRecieverPlanId, string filterRecieverFactId, string filterKeeperId, string filterProducerId, string filterOrderProjectId, Nullable<int> useStorageFilter, Nullable<int> useCenterFilter, Nullable<int> useRecieverPlanFilter, Nullable<int> useRecieverFactFilter, Nullable<int> useKeeperFilter, Nullable<int> useProducerFilter, Nullable<int> useOrderProjectFilter)
-        {
-            var snapShotIdParameter = snapShotId.HasValue ?
-                new ObjectParameter("snapShotId", snapShotId) :
-                new ObjectParameter("snapShotId", typeof(int));
-    
-            var filterStorageIdParameter = filterStorageId != null ?
-                new ObjectParameter("FilterStorageId", filterStorageId) :
-                new ObjectParameter("FilterStorageId", typeof(string));
-    
-            var filterCenterIdParameter = filterCenterId != null ?
-                new ObjectParameter("FilterCenterId", filterCenterId) :
-                new ObjectParameter("FilterCenterId", typeof(string));
-    
-            var filterRecieverPlanIdParameter = filterRecieverPlanId != null ?
-                new ObjectParameter("FilterRecieverPlanId", filterRecieverPlanId) :
-                new ObjectParameter("FilterRecieverPlanId", typeof(string));
-    
-            var filterRecieverFactIdParameter = filterRecieverFactId != null ?
-                new ObjectParameter("FilterRecieverFactId", filterRecieverFactId) :
-                new ObjectParameter("FilterRecieverFactId", typeof(string));
-    
-            var filterKeeperIdParameter = filterKeeperId != null ?
-                new ObjectParameter("FilterKeeperId", filterKeeperId) :
-                new ObjectParameter("FilterKeeperId", typeof(string));
-    
-            var filterProducerIdParameter = filterProducerId != null ?
-                new ObjectParameter("FilterProducerId", filterProducerId) :
-                new ObjectParameter("FilterProducerId", typeof(string));
-    
-            var filterOrderProjectIdParameter = filterOrderProjectId != null ?
-                new ObjectParameter("FilterOrderProjectId", filterOrderProjectId) :
-                new ObjectParameter("FilterOrderProjectId", typeof(string));
-    
-            var useStorageFilterParameter = useStorageFilter.HasValue ?
-                new ObjectParameter("UseStorageFilter", useStorageFilter) :
-                new ObjectParameter("UseStorageFilter", typeof(int));
-    
-            var useCenterFilterParameter = useCenterFilter.HasValue ?
-                new ObjectParameter("UseCenterFilter", useCenterFilter) :
-                new ObjectParameter("UseCenterFilter", typeof(int));
-    
-            var useRecieverPlanFilterParameter = useRecieverPlanFilter.HasValue ?
-                new ObjectParameter("UseRecieverPlanFilter", useRecieverPlanFilter) :
-                new ObjectParameter("UseRecieverPlanFilter", typeof(int));
-    
-            var useRecieverFactFilterParameter = useRecieverFactFilter.HasValue ?
-                new ObjectParameter("UseRecieverFactFilter", useRecieverFactFilter) :
-                new ObjectParameter("UseRecieverFactFilter", typeof(int));
-    
-            var useKeeperFilterParameter = useKeeperFilter.HasValue ?
-                new ObjectParameter("UseKeeperFilter", useKeeperFilter) :
-                new ObjectParameter("UseKeeperFilter", typeof(int));
-    
-            var useProducerFilterParameter = useProducerFilter.HasValue ?
-                new ObjectParameter("UseProducerFilter", useProducerFilter) :
-                new ObjectParameter("UseProducerFilter", typeof(int));
-    
-            var useOrderProjectFilterParameter = useOrderProjectFilter.HasValue ?
-                new ObjectParameter("UseOrderProjectFilter", useOrderProjectFilter) :
-                new ObjectParameter("UseOrderProjectFilter", typeof(int));
-    
-            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetRestDataBySnapshot_Result>("GetRestDataBySnapshot", snapShotIdParameter, filterStorageIdParameter, filterCenterIdParameter, filterRecieverPlanIdParameter, filterRecieverFactIdParameter, filterKeeperIdParameter, filterProducerIdParameter, filterOrderProjectIdParameter, useStorageFilterParameter, useCenterFilterParameter, useRecieverPlanFilterParameter, useRecieverFactFilterParameter, useKeeperFilterParameter, useProducerFilterParameter, useOrderProjectFilterParameter);
-        }
-    
         [DbFunction("Entities", "GetRestInfoByRestMultiKey")]
-        public virtual IQueryable<GetRestInfoByRestMultiKey_Result> GetRestInfoByRestMultiKey(Nullable<int> snapShotId, string product, string shifr, string figure, string measure, string storage, string shifr_MDM, string bacodeProduct, string bacodeConsignment)
+        public virtual IQueryable<GetRestInfoByRestMultiKey_Result> GetRestInfoByRestMultiKey(Nullable<int> snapShotId, string product, string shifr, string figure, string measure, string storage, string shifr_MDM, string bacodeProduct, string bacodeConsignment, string bacodesAll)
         {
             var snapShotIdParameter = snapShotId.HasValue ?
                 new ObjectParameter("snapShotId", snapShotId) :
@@ -2318,7 +2255,98 @@ namespace Corum.DAL.Entity
                 new ObjectParameter("BacodeConsignment", bacodeConsignment) :
                 new ObjectParameter("BacodeConsignment", typeof(string));
     
-            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<GetRestInfoByRestMultiKey_Result>("[Entities].[GetRestInfoByRestMultiKey](@snapShotId, @Product, @Shifr, @Figure, @Measure, @Storage, @Shifr_MDM, @BacodeProduct, @BacodeConsignment)", snapShotIdParameter, productParameter, shifrParameter, figureParameter, measureParameter, storageParameter, shifr_MDMParameter, bacodeProductParameter, bacodeConsignmentParameter);
+            var bacodesAllParameter = bacodesAll != null ?
+                new ObjectParameter("BacodesAll", bacodesAll) :
+                new ObjectParameter("BacodesAll", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<GetRestInfoByRestMultiKey_Result>("[Entities].[GetRestInfoByRestMultiKey](@snapShotId, @Product, @Shifr, @Figure, @Measure, @Storage, @Shifr_MDM, @BacodeProduct, @BacodeConsignment, @BacodesAll)", snapShotIdParameter, productParameter, shifrParameter, figureParameter, measureParameter, storageParameter, shifr_MDMParameter, bacodeProductParameter, bacodeConsignmentParameter, bacodesAllParameter);
+        }
+    
+        [DbFunction("Entities", "GetProductBarcodeFilter")]
+        public virtual IQueryable<GetProductBarcodeFilter_Result> GetProductBarcodeFilter(string searchTerm, Nullable<long> snapShot)
+        {
+            var searchTermParameter = searchTerm != null ?
+                new ObjectParameter("searchTerm", searchTerm) :
+                new ObjectParameter("searchTerm", typeof(string));
+    
+            var snapShotParameter = snapShot.HasValue ?
+                new ObjectParameter("snapShot", snapShot) :
+                new ObjectParameter("snapShot", typeof(long));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.CreateQuery<GetProductBarcodeFilter_Result>("[Entities].[GetProductBarcodeFilter](@searchTerm, @snapShot)", searchTermParameter, snapShotParameter);
+        }
+    
+        public virtual ObjectResult<GetRestDataBySnapshot_Result> GetRestDataBySnapshot(Nullable<int> snapShotId, string filterStorageId, string filterCenterId, string filterRecieverPlanId, string filterRecieverFactId, string filterKeeperId, string filterProducerId, string filterOrderProjectId, string filterProductBarcodeId, Nullable<int> useStorageFilter, Nullable<int> useCenterFilter, Nullable<int> useRecieverPlanFilter, Nullable<int> useRecieverFactFilter, Nullable<int> useKeeperFilter, Nullable<int> useProducerFilter, Nullable<int> useOrderProjectFilter, Nullable<int> useProductBarcodeFilter)
+        {
+            var snapShotIdParameter = snapShotId.HasValue ?
+                new ObjectParameter("snapShotId", snapShotId) :
+                new ObjectParameter("snapShotId", typeof(int));
+    
+            var filterStorageIdParameter = filterStorageId != null ?
+                new ObjectParameter("FilterStorageId", filterStorageId) :
+                new ObjectParameter("FilterStorageId", typeof(string));
+    
+            var filterCenterIdParameter = filterCenterId != null ?
+                new ObjectParameter("FilterCenterId", filterCenterId) :
+                new ObjectParameter("FilterCenterId", typeof(string));
+    
+            var filterRecieverPlanIdParameter = filterRecieverPlanId != null ?
+                new ObjectParameter("FilterRecieverPlanId", filterRecieverPlanId) :
+                new ObjectParameter("FilterRecieverPlanId", typeof(string));
+    
+            var filterRecieverFactIdParameter = filterRecieverFactId != null ?
+                new ObjectParameter("FilterRecieverFactId", filterRecieverFactId) :
+                new ObjectParameter("FilterRecieverFactId", typeof(string));
+    
+            var filterKeeperIdParameter = filterKeeperId != null ?
+                new ObjectParameter("FilterKeeperId", filterKeeperId) :
+                new ObjectParameter("FilterKeeperId", typeof(string));
+    
+            var filterProducerIdParameter = filterProducerId != null ?
+                new ObjectParameter("FilterProducerId", filterProducerId) :
+                new ObjectParameter("FilterProducerId", typeof(string));
+    
+            var filterOrderProjectIdParameter = filterOrderProjectId != null ?
+                new ObjectParameter("FilterOrderProjectId", filterOrderProjectId) :
+                new ObjectParameter("FilterOrderProjectId", typeof(string));
+    
+            var filterProductBarcodeIdParameter = filterProductBarcodeId != null ?
+                new ObjectParameter("FilterProductBarcodeId", filterProductBarcodeId) :
+                new ObjectParameter("FilterProductBarcodeId", typeof(string));
+    
+            var useStorageFilterParameter = useStorageFilter.HasValue ?
+                new ObjectParameter("UseStorageFilter", useStorageFilter) :
+                new ObjectParameter("UseStorageFilter", typeof(int));
+    
+            var useCenterFilterParameter = useCenterFilter.HasValue ?
+                new ObjectParameter("UseCenterFilter", useCenterFilter) :
+                new ObjectParameter("UseCenterFilter", typeof(int));
+    
+            var useRecieverPlanFilterParameter = useRecieverPlanFilter.HasValue ?
+                new ObjectParameter("UseRecieverPlanFilter", useRecieverPlanFilter) :
+                new ObjectParameter("UseRecieverPlanFilter", typeof(int));
+    
+            var useRecieverFactFilterParameter = useRecieverFactFilter.HasValue ?
+                new ObjectParameter("UseRecieverFactFilter", useRecieverFactFilter) :
+                new ObjectParameter("UseRecieverFactFilter", typeof(int));
+    
+            var useKeeperFilterParameter = useKeeperFilter.HasValue ?
+                new ObjectParameter("UseKeeperFilter", useKeeperFilter) :
+                new ObjectParameter("UseKeeperFilter", typeof(int));
+    
+            var useProducerFilterParameter = useProducerFilter.HasValue ?
+                new ObjectParameter("UseProducerFilter", useProducerFilter) :
+                new ObjectParameter("UseProducerFilter", typeof(int));
+    
+            var useOrderProjectFilterParameter = useOrderProjectFilter.HasValue ?
+                new ObjectParameter("UseOrderProjectFilter", useOrderProjectFilter) :
+                new ObjectParameter("UseOrderProjectFilter", typeof(int));
+    
+            var useProductBarcodeFilterParameter = useProductBarcodeFilter.HasValue ?
+                new ObjectParameter("UseProductBarcodeFilter", useProductBarcodeFilter) :
+                new ObjectParameter("UseProductBarcodeFilter", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<GetRestDataBySnapshot_Result>("GetRestDataBySnapshot", snapShotIdParameter, filterStorageIdParameter, filterCenterIdParameter, filterRecieverPlanIdParameter, filterRecieverFactIdParameter, filterKeeperIdParameter, filterProducerIdParameter, filterOrderProjectIdParameter, filterProductBarcodeIdParameter, useStorageFilterParameter, useCenterFilterParameter, useRecieverPlanFilterParameter, useRecieverFactFilterParameter, useKeeperFilterParameter, useProducerFilterParameter, useOrderProjectFilterParameter, useProductBarcodeFilterParameter);
         }
     }
 }

@@ -1,41 +1,46 @@
 ﻿@if (Model.UseProducerFilter
-                      || Model.UseRecieverFactFilter
-                      || Model.UseRecieverPlanFilter
-                      || Model.UseStorageFilter
-                      || Model.UseKeeperFilter
-                      || Model.UseCenterFilter
-                      || Model.UseOrderProjectFilter)
+  || Model.UseRecieverFactFilter
+  || Model.UseRecieverPlanFilter
+  || Model.UseStorageFilter
+  || Model.UseKeeperFilter
+  || Model.UseCenterFilter
+  || Model.UseOrderProjectFilter
+  || Model.UseProductBarcodeFilter)
 {
-    <div class="list-group">
-        @if (Model.UseStorageFilter)
-        {
-            <span class="list-group-item">Активный фильтр по складу:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterStorageId</span></span>
-        }
-        @if (Model.UseRecieverFactFilter)
-        {
-            <span class="list-group-item">Активный фильтр по грузополучателю(факт):&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterRecieverFactId</span></span>
-        }
-        @if (Model.UseRecieverPlanFilter)
-        {
-            <span class="list-group-item">Активный фильтр по грузополучателю(план):&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterRecieverPlanId</span></span>
-        }
-        @if (Model.UseProducerFilter)
-        {
-            <span class="list-group-item">Активный фильтр по производителю:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterProducerId</span></span>
-        }
-        @if (Model.UseKeeperFilter)
-        {
-            <span class="list-group-item">Активный фильтр по балансодержателю:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterKeeperId</span></span>
-        }
-        @if (Model.UseCenterFilter)
-        {
-            <span class="list-group-item">Активный фильтр по ЦФО:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterCenterId</span></span>
-        }
-        @if (Model.UseOrderProjectFilter)
-        {
-            <span class="list-group-item">Активный фильтр по внутреннему заказу ПП:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterOrderProjectId</span></span>
-        }
-    </div>
+<div class="list-group">
+    @if (Model.UseStorageFilter)
+    {
+        <span class="list-group-item">Активный фильтр по складу:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterStorageId</span></span>
+    }
+    @if (Model.UseRecieverFactFilter)
+    {
+        <span class="list-group-item">Активный фильтр по грузополучателю(факт):&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterRecieverFactId</span></span>
+    }
+    @if (Model.UseRecieverPlanFilter)
+    {
+        <span class="list-group-item">Активный фильтр по грузополучателю(план):&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterRecieverPlanId</span></span>
+    }
+    @if (Model.UseProducerFilter)
+    {
+        <span class="list-group-item">Активный фильтр по производителю:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterProducerId</span></span>
+    }
+    @if (Model.UseKeeperFilter)
+    {
+        <span class="list-group-item">Активный фильтр по балансодержателю:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterKeeperId</span></span>
+    }
+    @if (Model.UseCenterFilter)
+    {
+        <span class="list-group-item">Активный фильтр по ЦФО:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterCenterId</span></span>
+    }
+    @if (Model.UseOrderProjectFilter)
+    {
+        <span class="list-group-item">Активный фильтр по внутреннему заказу ПП:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterOrderProjectId</span></span>
+    }
+    @if (Model.UseProductBarcodeFilter)
+    {
+        <span class="list-group-item">Активный фильтр по штрихкоду:&nbsp;&nbsp;<span style="font-weight: bold">@Model.FilterProductBarcodeId</span></span>
+    }
+</div>
 }
 else
 {

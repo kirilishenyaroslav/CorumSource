@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Web.Mvc;
-using Barnivann.Models;
 using Corum.Models.ViewModels.Orders;
 
 namespace Corum.Models.ViewModels.Cars

@@ -27,6 +27,7 @@
     <UseGlobalApplicationHostFile />
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <Use64BitIISExpress />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -265,12 +266,15 @@
     <Content Include="Content\icons\Icon7.png" />
     <Content Include="Content\icons\Icon8.png" />
     <Content Include="Content\icons\Icon9.png" />
+    <Content Include="Content\images\busket.jpg" />
+    <Content Include="Content\images\busket.png" />
     <Content Include="Content\images\select2.png" />
     <Content Include="Content\img\arrow_back.png" />
     <Content Include="Content\img\bg_dashboard.jpg" />
     <Content Include="Content\img\icon_close_dilog.png" />
     <Content Include="Content\img\logo_logistic.jpg" />
     <Content Include="Content\img\select2.png" />
+    <Content Include="Content\jqx.orange.css" />
     <Content Include="Content\select2-spinner.gif" />
     <Content Include="Content\select2.png" />
     <Content Include="Content\select2x2.png" />
@@ -1254,6 +1258,12 @@
     <Content Include="Views\Orders\TruckReport.cshtml" />
     <Content Include="Views\Orders\TruckReportDetails.cshtml" />
     <Content Include="Views\Orders\OldTruckReport.cshtml" />
+    <Content Include="Views\Reports\_restReportBasketContent.cshtml" />
+    <Content Include="Views\Reports\_restReportBasket.cshtml" />
+    <Content Include="Views\Reports\_restReportAddItemToBasket.cshtml" />
+    <Content Include="Views\Reports\BucketDocuments.cshtml" />
+    <Content Include="Views\Reports\ViewBucketDocument.cshtml" />
+    <Content Include="Views\Reports\_restAddItemToBasketByBarcode.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

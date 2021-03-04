@@ -1,7 +1,5 @@
 ﻿@model Corum.Models.RestsNavigationResult<Corum.Models.ViewModels.RestViewModel>
 @using System.Globalization
-@using GridMvc.Html
-@using GridMvc.Sorting
 
 @{
     var numberFormat = new CultureInfo("en-US", false).NumberFormat;
@@ -37,6 +35,7 @@
 @Html.Hidden("FilterRecieverFactId_", Model.FilterRecieverFactId, new { id = "FilterRecieverFactId_" })
 @Html.Hidden("FilterKeeperId_", Model.FilterKeeperId, new { id = "FilterKeeperId_" })
 @Html.Hidden("FilterProducerId_", Model.FilterProducerId, new { id = "FilterProducerId_" })
+@Html.Hidden("FilterProductBarcodeId_", Model.FilterProductBarcodeId, new { id = "FilterProductBarcodeId_" })
 
 @Html.Hidden("UseStorageFilter_", Model.UseStorageFilter, new { id = "UseStorageFilter_" })
 @Html.Hidden("UseCenterFilter_", Model.UseCenterFilter, new { id = "UseCenterFilter_" })
@@ -44,6 +43,7 @@
 @Html.Hidden("UseRecieverFactFilter_", Model.UseRecieverFactFilter, new { id = "UseRecieverFactFilter_" })
 @Html.Hidden("UseKeeperFilter_", Model.UseKeeperFilter, new { id = "UseKeeperFilter_" })
 @Html.Hidden("UseProducerFilter_", Model.UseProducerFilter, new { id = "UseProducerFilter_" })
+@Html.Hidden("UseProductBarcodeFilter_", Model.UseProductBarcodeFilter, new { id = "UseProductBarcodeFilter_" })
 
 
 @Html.Hidden("PriceForEndConsumer_", Model.PriceForEndConsumer, new { id = "PriceForEndConsumer_" })
@@ -56,78 +56,86 @@
 
 <div class="container-fluid">
 
-    @Html.Partial("_restReportSetSettingsDialog");
+    @Html.Partial("_restReportSetSettingsDialog")
+    @Html.Partial("_restReportAddItemToBasket")
+    @Html.Partial("_restReportBasketContent")
+    @Html.Partial("_restReportBasket")
+    @Html.Partial("_restAddItemToBasketByBarcode")
 
     <div class="row">
         <div class="col-lg-12 main">
 
             <div class="row">
+                @{
+                    var monthStart = new DateTime(Model.SnapshotInfo.ActualDateBeg.Value.Year, Model.SnapshotInfo.ActualDateBeg.Value.Month, 1);
+                }
                 <div style="margin-bottom: 15px; text-align:center;" class="col-md-12">
-                    <span style="margin-bottom: 20px; font-weight: bold;">Реестр остатков за период: @Model.SnapshotInfo.ActualDateBeg.Value.ToString("dd.MM.yyyy") - @Model.SnapshotInfo.ActualDateEnd.Value.ToString("dd.MM.yyyy")</span>
+                    <span style="margin-bottom: 20px; font-weight: bold;">Реестр остатков за период: @monthStart.ToString("dd.MM.yyyy") - @Model.SnapshotInfo.ActualDateEnd.Value.ToString("dd.MM.yyyy")</span>
                 </div>
             </div>
 
             <div class="row">
                 <div id="showrestsettings" style="margin-bottom: 15px;" class="col-md-8">
-                        <input type="button" value="Конфигурация" class="btn btn-default" onclick="ShowSettings()"/>&nbsp;&nbsp;                     
-                      @Html.ActionLink("Экспорт в excel", "ReestrReportAsExcel", "ExportToExcel", new
-                          {
-                              snapshotId = Model.SnapshotInfo.Id,
+                    <input type="button" value="Конфигурация" class="btn btn-default" onclick="ShowSettings()" />&nbsp;&nbsp;
+                    @Html.ActionLink("Экспорт в excel", "ReestrReportAsExcel", "ExportToExcel", new
+                    {
+                       snapshotId = Model.SnapshotInfo.Id,
 
-                              CurrentGroupFieldName = Model.CurrentGroupFieldName,
+                       CurrentGroupFieldName = Model.CurrentGroupFieldName,
 
-                              FilterStorageId = Model.FilterStorageId,
-                              FilterCenterId = Model.FilterCenterId,
-                              FilterRecieverPlanId = Model.FilterRecieverPlanId,
-                              FilterRecieverFactId = Model.FilterRecieverFactId,
-                              FilterKeeperId = Model.FilterKeeperId,
-                              FilterProducerId = Model.FilterProducerId,
+                       FilterStorageId = Model.FilterStorageId,
+                       FilterCenterId = Model.FilterCenterId,
+                       FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                       FilterRecieverFactId = Model.FilterRecieverFactId,
+                       FilterKeeperId = Model.FilterKeeperId,
+                       FilterProducerId = Model.FilterProducerId,
 
-                              UseStorageFilter = Model.UseStorageFilter,
-                              UseCenterFilter = Model.UseCenterFilter,
-                              UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
-                              UseRecieverFactFilter = Model.UseRecieverFactFilter,
-                              UseKeeperFilter = Model.UseKeeperFilter,
-                              UseProducerFilter = Model.UseProducerFilter,
+                       UseStorageFilter = Model.UseStorageFilter,
+                       UseCenterFilter = Model.UseCenterFilter,
+                       UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                       UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                       UseKeeperFilter = Model.UseKeeperFilter,
+                       UseProducerFilter = Model.UseProducerFilter,
 
-                              PriceForEndConsumer = Model.PriceForEndConsumer,
-                              PriceForFirstReciver = Model.PriceForFirstReciver,
-                              PlanFullCost = Model.PlanFullCost,
-                              PlanChangableCost = Model.PlanChangableCost,
-                              FactFullCosts = Model.FactFullCosts,
-                              FactChangableCosts = Model.FactChangableCosts,
-                              BalancePrice = Model.BalancePrice
+                       PriceForEndConsumer = Model.PriceForEndConsumer,
+                       PriceForFirstReciver = Model.PriceForFirstReciver,
+                       PlanFullCost = Model.PlanFullCost,
+                       PlanChangableCost = Model.PlanChangableCost,
+                       FactFullCosts = Model.FactFullCosts,
+                       FactChangableCosts = Model.FactChangableCosts,
+                       BalancePrice = Model.BalancePrice
 
-                          }, new { @class = "btn btn-success delete_link" })&nbsp;&nbsp;
+                    }, new { @class = "btn btn-success delete_link" })&nbsp;&nbsp;
 
+                    @Html.ActionLink("Сводная", "GroupRestReport", "Reports", new
+                    {
+                       snapshotId = Model.SnapshotInfo.Id,
+                       CurrentGroupFieldName = Model.CurrentGroupFieldName,
 
-                        @Html.ActionLink("Сводная", "GroupRestReport", "Reports", new
-                        {
-                            snapshotId = Model.SnapshotInfo.Id,
-                            CurrentGroupFieldName = Model.CurrentGroupFieldName,
+                       FilterStorageId = Model.FilterStorageId,
+                       FilterCenterId = Model.FilterCenterId,
+                       FilterRecieverPlanId = Model.FilterRecieverPlanId,
+                       FilterRecieverFactId = Model.FilterRecieverFactId,
+                       FilterKeeperId = Model.FilterKeeperId,
+                       FilterProducerId = Model.FilterProducerId,
 
-                            FilterStorageId = Model.FilterStorageId,
-                            FilterCenterId = Model.FilterCenterId,
-                            FilterRecieverPlanId = Model.FilterRecieverPlanId,
-                            FilterRecieverFactId = Model.FilterRecieverFactId,
-                            FilterKeeperId = Model.FilterKeeperId,
-                            FilterProducerId = Model.FilterProducerId,
+                       UseStorageFilter = Model.UseStorageFilter,
+                       UseCenterFilter = Model.UseCenterFilter,
+                       UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
+                       UseRecieverFactFilter = Model.UseRecieverFactFilter,
+                       UseKeeperFilter = Model.UseKeeperFilter,
+                       UseProducerFilter = Model.UseProducerFilter,
 
-                            UseStorageFilter = Model.UseStorageFilter,
-                            UseCenterFilter = Model.UseCenterFilter,
-                            UseRecieverPlanFilter = Model.UseRecieverPlanFilter,
-                            UseRecieverFactFilter = Model.UseRecieverFactFilter,
-                            UseKeeperFilter = Model.UseKeeperFilter,
-                            UseProducerFilter = Model.UseProducerFilter,
+                       PriceForEndConsumer = Model.PriceForEndConsumer,
+                       PriceForFirstReciver = Model.PriceForFirstReciver,
+                       PlanFullCost = Model.PlanFullCost,
+                       PlanChangableCost = Model.PlanChangableCost,
+                       FactFullCosts = Model.FactFullCosts,
+                       FactChangableCosts = Model.FactChangableCosts,
+                       BalancePrice = Model.BalancePrice
 
-                            PriceForEndConsumer = Model.PriceForEndConsumer,
-                            PriceForFirstReciver = Model.PriceForFirstReciver,
-                            PlanFullCost = Model.PlanFullCost,
-                            PlanChangableCost = Model.PlanChangableCost,
-                            FactFullCosts = Model.FactFullCosts,
-                            FactChangableCosts = Model.FactChangableCosts,
-                            BalancePrice = Model.BalancePrice
-                        }, new { @class = "btn btn-info" })
+                    }, new { @class = "btn btn-info" }) &nbsp;
+                    @Html.ActionLink("Реестр документов корзины", "BucketDocuments", "Reports", null, new { @class = "btn btn-info" })
                 </div>
                 <div class="col-md-4" style="font-size: 10px !important;">
                     @Html.Partial("_restReportFilterSettings")
@@ -136,7 +144,6 @@
 
             <div id="RestReportTableWrapper" class="table-header clearfix row" style="font-size: 10px !important;">
                 @Html.Partial("_restReportDetailsValues")
-                
             </div>
 
             @TPagging("RestReport", "Reports", @Model.RequestParams, this)
@@ -150,13 +157,13 @@
 @section scripts
 {
     <script>
-
         var offset = $('.navbar').height();
         $("html:not(.legacy) table").stickyTableHeaders({ fixedOffset: offset });
 
         $(document).ready(function ()
         {
-            if ($(".filtered").length == 0) {
+            if ($(".filtered").length == 0)
+            {
                 var table = document.getElementsByTagName("table")[0];
                 var footer = table.createTFoot();
                 var row = footer.insertRow(0);
@@ -167,20 +174,27 @@
 
                 var EmptyCell = row.insertCell(1);
                 EmptyCell.innerHTML = "";
+
                 var EmptyCell = row.insertCell(2);
                 EmptyCell.innerHTML = "";
+
                 var EmptyCell = row.insertCell(3);
                 EmptyCell.innerHTML = "";
+
                 var EmptyCell = row.insertCell(4);
                 EmptyCell.innerHTML = "";
+
                 var EmptyCell = row.insertCell(5);
                 EmptyCell.innerHTML = "";
+
                 var EmptyCell = row.insertCell(6);
                 EmptyCell.innerHTML = "";
+
                 var EmptyCell = row.insertCell(7);
                 EmptyCell.innerHTML = "";
-                var EmptyCell = row.insertCell(8);
 
+                var EmptyCell = row.insertCell(8);
+                EmptyCell.innerHTML = "";
 
                 var EmptyCell = row.insertCell(9);
                 addClass(EmptyCell, "right_column new_columns_block_start new_columns_block_end");
@@ -198,18 +212,202 @@
                 var EmptyCell = row.insertCell(13);
                 EmptyCell.innerHTML = "";
 
-
                 var EmptyCell = row.insertCell(14);
                 addClass(EmptyCell, "new_columns_block_end");
                 EmptyCell.innerHTML = "";
             }
         });
 
+        function ShowItemBeforeAddToBusket(InnerPartyKey, Storage, Product, Shifr, Shifr_MDM, BacodeConsignment, BacodeProduct, BalanceKeeper, Weight)
+        {
+            ShowDialogItemSettings(InnerPartyKey, Storage, Product, Shifr, Shifr_MDM, BacodeConsignment, BacodeProduct, BalanceKeeper, Weight);
+        }
 
-
-
-        function ShowSettings() {
+        function ShowSettings()
+        {
             ShowDialogColumnSettings();
+        }
+
+        function ShowNewItemByBarcode() {
+            $('#barcodeValue').val('');
+            AddBusketItemByBarCode();
+        }
+
+        function AddBusketItemByBarCode() {
+            $('#barcodeValue').val('');
+
+            $('#itemByBarcode')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 450,
+                    resizable: false,
+                    title: "Добавление в корзину по коду",
+                    modal: true,
+                    open: function (event, ui) {
+
+                    },
+                    close: function (event, ui) {
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                        [
+                            {
+                                text: "Отмена",
+                                "class": 'cancel-btn btn btn-outline',
+                                click: function () {
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Найти",
+                                "class": 'btn btn-primary',
+                                click: function () {
+                                    let streamMode = document.getElementById('streamMode').checked;
+                                    let searchBy = 0;
+                                    const radios = document.getElementsByName('searchBy');
+
+                                    for (var i = 0, length = radios.length; i < length; i++) {
+                                        if (radios[i].checked) {
+                                            searchBy = radios[i].value;
+                                            break;
+                                        }
+                                    }
+
+                                    $.ajax({
+                                        type: "GET",
+                                        url: '/Reports/GetRestItemsByBarcode?barcode=' + $('#barcodeValue').val() + '&searchBy=' + searchBy,
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (response) {
+                                            if (response.length > 0) {
+
+                                                ShowDialogItemSettings(response[0].InnerPartyKey,
+                                                    response[0].Storage,
+                                                    response[0].Product,
+                                                    response[0].Shifr,
+                                                    response[0].Shifr_MDM,
+                                                    response[0].BacodeConsignment,
+                                                    response[0].BacodeProduct,
+                                                    response[0].BalanceKeeper,
+                                                    response[0].Weight.toFixed(2));
+                                            }
+                                            else {
+                                                alert('Номенклатура с введенным кодом не найдена!');
+                                                if (streamMode) {
+                                                    AddBusketItemByBarCode();
+                                                }
+                                            }
+                                        },
+                                        failure: function (response) {
+                                            alert('При поиске возникла ошибка!');
+                                        },
+                                        error: function (response) {
+                                            alert('При поиске возникла ошибка!');
+                                        }
+                                    });
+
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Найти и добавить",
+                                "class": 'btn btn-primary',
+                                click: function () {
+                                    let streamMode = document.getElementById('streamMode').checked;
+                                    let searchBy = 0;
+                                    const radios = document.getElementsByName('searchBy');
+
+                                    for (var i = 0, length = radios.length; i < length; i++) {
+                                        if (radios[i].checked) {
+                                            searchBy = radios[i].value;
+                                            break;
+                                        }
+                                    }
+
+                                    $.ajax({
+                                        type: "GET",
+                                        url: '/Reports/GetRestItemsByBarcode?barcode=' + $('#barcodeValue').val() + '&searchBy=' + searchBy,
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (response) {
+                                            if (response.length > 0) {
+
+                                                let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+
+                                                if (bucketValues === null || bucketValues === undefined) {
+                                                    bucketValues = [];
+                                                }
+
+                                                var theSameProduct = bucketValues.find((element) => {
+                                                    if (element.InnerPartyKey === response[0].InnerPartyKey) {
+                                                        let w = parseFloat(element.Weight);
+                                                        let c = parseFloat(element.Count);
+                                                        element.Count = c + 1;
+                                                        c = parseFloat(element.Count);
+                                                        element.TotalWeight = w * c;
+                                                        return true;
+                                                    }
+                                                });
+
+                                                if (theSameProduct === null || theSameProduct === undefined) {
+                                                    let newBuckekItem = new Object();
+                                                    let count = 1.0;
+                                                    newBuckekItem.InnerPartyKey = response[0].InnerPartyKey;
+                                                    newBuckekItem.Storage = response[0].Storage;
+                                                    newBuckekItem.Product = response[0].Product;
+                                                    newBuckekItem.Shifr = response[0].Shifr;
+                                                    newBuckekItem.Shifr_MDM = response[0].Shifr_MDM;
+                                                    newBuckekItem.BacodeConsignment = response[0].BacodeConsignment;
+                                                    newBuckekItem.BacodeProduct = response[0].BacodeProduct;
+                                                    newBuckekItem.BalanceKeeper = response[0].BalanceKeeper;
+                                                    newBuckekItem.Weight = response[0].Weight.toFixed(2);
+                                                    newBuckekItem.Count = count.toFixed(2);
+                                                    newBuckekItem.Comments = '';
+                                                    newBuckekItem.StorageCode = '';
+                                                    newBuckekItem.TotalWeight = response[0].Weight.toFixed(2);
+                                                    bucketValues.push(newBuckekItem);
+                                                }
+
+                                                sessionStorage.setItem('bucketValues', JSON.stringify(bucketValues));
+                                                $('.basketCount').html(bucketValues.length);
+
+
+                                                alert(response.length + ' позиция номенклаnуры была добавлено в корзину!');
+                                                if (streamMode) {
+                                                    AddBusketItemByBarCode();
+                                                }
+                                            }
+                                            else {
+                                                alert('Номенклатура с введенным кодом не найдена!');
+                                                if (streamMode) {
+                                                    AddBusketItemByBarCode();
+                                                }
+                                            }
+                                        },
+                                        failure: function (response) {
+                                            alert('При поиске возникла ошибка!');
+                                        },
+                                        error: function (response) {
+                                            alert('При поиске возникла ошибка!');
+                                        }
+                                    });
+
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                });
+
+            $('#itemByBarcode').dialog('open');
+
+            return;
         }
 
         function ShowDialogColumnSettings() {
@@ -260,7 +458,538 @@
             return;
         }
 
+        function ShowDialogItemSettings(InnerPartyKey, Storage, Product, Shifr, Shifr_MDM, BacodeConsignment, BacodeProduct, BalanceKeeper,  Weight)
+        {
+            $('#additemtobasket')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,
+                    resizable: false,
+                    title: "Параметры добавления остатка в корзину",
+                    modal: true,
+                    position: {
+                        my: "top",
+                        at: "top+100",
+                        of: ".container-fluid"
+                    },
+                    open: function (event, ui) {
 
+                        $("#Comments").innerHTML="";
+                        $("#StorageCode").val("");
+                        $("#Count").val("1");
+                        $("#innerPartyKey").html(InnerPartyKey);
+                        $("#Storage").html(Storage);
+                        $("#Product").html(Product);
+                        $("#Shifr").html(Shifr);
+                        $("#Shifr_MDM").html(Shifr_MDM);
+                        $("#BacodeConsignment").html(BacodeConsignment);
+                        $("#BacodeProduct").html(BacodeProduct);
+                        $("#BalanceKeeper").html(BalanceKeeper);
+                        $("#Weight").html(Weight);
+
+
+                    },
+                    close: function (event, ui) {
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                        [
+                            {
+                                text: "Отмена",
+                                "class": 'cancel-btn btn btn-outline',
+                                click: function () {
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Добавить",
+                                "class": 'btn btn-primary',
+                                click: function () {
+
+                                    let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+
+                                    if (bucketValues === null || bucketValues === undefined) {
+                                        bucketValues = [];
+                                    }
+
+                                    var theSameProduct = bucketValues.find((element) =>
+                                    {
+                                        if (element.InnerPartyKey === InnerPartyKey) {
+
+                                            let w = element.Weight;
+                                            if (typeof element.Weight === 'string' || element.Weight instanceof String) {
+                                                w = parseFloat(element.Weight.replace(',', '.'));
+                                            }
+                                            let c = element.Count;
+                                            if (typeof element.Count === 'string' || element.Count instanceof String) {
+                                                c = parseFloat(element.Count.replace(',', '.'));
+                                            }
+
+                                            element.Count = c + 1;
+                                            element.TotalWeight = w * (c + 1);
+
+                                            return true;
+                                        }
+                                    });
+
+                                    if (theSameProduct === null || theSameProduct === undefined)
+                                    {
+                                        let newBuckekItem = new Object();
+
+                                        newBuckekItem.InnerPartyKey = InnerPartyKey;
+                                        newBuckekItem.Storage = Storage;
+                                        newBuckekItem.Product = Product;
+                                        newBuckekItem.Shifr = Shifr;
+                                        newBuckekItem.Shifr_MDM = Shifr_MDM;
+                                        newBuckekItem.BacodeConsignment = BacodeConsignment;
+                                        newBuckekItem.BacodeProduct = BacodeProduct;
+                                        newBuckekItem.BalanceKeeper =BalanceKeeper;
+                                        newBuckekItem.Weight = Weight;
+                                        newBuckekItem.Count = $("#Count").val();
+                                        newBuckekItem.Comments = $("#comments").val();
+                                        newBuckekItem.StorageCode = $("#StorageCode").val();
+                                        let w = parseFloat(newBuckekItem.Weight.replace(',','.'));
+                                        let c = parseFloat(newBuckekItem.Count.replace(',', '.'));
+                                        newBuckekItem.TotalWeight = w * c;
+                                        bucketValues.push(newBuckekItem);
+                                    }
+
+                                    sessionStorage.setItem('bucketValues', JSON.stringify(bucketValues));
+                                    $('.basketCount').html(bucketValues.length);
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                });
+
+            $('#additemtobasket').dialog('open');
+
+            return;
+        }
+
+        function ShowBusketDialog() {
+            $('#busketContent')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom modal_dialog",
+                    autoOpen: false,
+                    width: 1150,
+                    resizable: false,
+                    modal: true,
+                    position: {
+                        my: "top",
+                        at: "top+50",
+                        of: ".container-fluid"
+                    },
+                    open: function (event, ui) {
+                        let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+
+                        if (bucketValues === null || bucketValues === undefined) {
+                            bucketValues = [];
+                        }
+
+                        bucketValues.forEach(element => {
+
+                            let w = element.Weight;
+                            if (typeof element.Weight === 'string' || element.Weight instanceof String) {
+                                w = parseFloat(element.Weight.replace(',', '.'));
+                            }
+                            let c = element.Count;
+                            if (typeof element.Count === 'string' || element.Count instanceof String) {
+                                c = parseFloat(element.Count.replace(',', '.'));
+                            }
+                            element.TotalWeight = w * c;
+                        });
+
+                        var sourceBusketItems =
+                        {
+                            localData: bucketValues,
+                            dataType: "array",
+                            datafields: [
+                                { name: 'InnerPartyKey' },
+                                { name: 'Storage' },
+                                { name: 'Product' },
+                                { name: 'Shifr' },
+                                { name: 'Shifr_MDM' },
+                                { name: 'BacodeConsignment' },
+                                { name: 'BacodeProduct' },
+                                { name: 'Count' },
+                                { name: 'Comments' },
+                                { name: 'StorageCode' },
+                                { name: 'BalanceKeeper' },
+                                { name: 'Weight' },
+                                { name: 'TotalWeight' },
+                            ],
+                            id: 'InnerPartyKey'
+                        };
+
+                        var dataAdapterBusketItems = new $.jqx.dataAdapter(sourceBusketItems);
+
+                        $("#jqxgridUC").jqxDataTable(
+                            {
+                                width: 1100,
+                                source: dataAdapterBusketItems,
+                                theme: 'orange',
+                                altRows: false,
+                                columnsheight: 80,
+                                pageSize: 5,
+                                sortable: true,
+                                filterable: true,
+                                pageable: true,
+                                editable: true,
+                                editSettings: { saveOnPageChange: true, saveOnBlur: true, saveOnSelectionChange: true, cancelOnEsc: true, saveOnEnter: true, editSingleCell: true, editOnDoubleClick: true, editOnF2: false },
+                                rendering: function () {
+                                    // destroys all buttons.
+                                    if ($(".editButtons").length > 0) {
+                                        $(".editButtons").jqxButton('destroy');
+                                    }
+                                },
+                                // called when jqxDataTable is rendered.
+                                rendered: function () {
+                                    if ($(".editButtons").length > 0) {
+
+                                        var editClick = function (event) {
+
+                                            var target = $(event.target);
+                                            // get button's value.
+                                            var value = target.val();
+                                            // get clicked row.
+                                            var rowIndex = parseInt(event.target.getAttribute('data-row'));
+                                            if (isNaN(rowIndex)) {
+                                                return;
+                                            }
+
+                                            var rowKey = event.target.getAttribute('data-key');
+                                            if (rowKey === null || rowKey === undefined) {
+                                                return;
+                                            }
+
+                                            let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+
+                                            if (bucketValues === null || bucketValues === undefined) {
+                                                bucketValues = [];
+                                            }
+
+                                            bucketValues.forEach(element => {
+                                                let w = element.Weight;
+                                                if (typeof element.Weight === 'string' || element.Weight instanceof String) {
+                                                    w = parseFloat(element.Weight.replace(',', '.'));
+                                                }
+                                                let c = element.Count;
+                                                if (typeof element.Count === 'string' || element.Count instanceof String) {
+                                                    c = parseFloat(element.Count.replace(',', '.'));
+                                                }
+                                                element.TotalWeight = w * c;
+                                            });
+
+                                            var filtered = bucketValues.filter(function (el) { return el.InnerPartyKey != rowKey; });
+
+                                            sessionStorage.setItem('bucketValues', JSON.stringify(filtered));
+
+                                            $('.basketCount').html(filtered.length);
+
+                                            $("#jqxgridUC").jqxDataTable('beginUpdate', rowIndex);
+                                            $("#jqxgridUC").jqxDataTable('deleteRow', rowIndex);
+                                            $("#jqxgridUC").jqxDataTable('endUpdate', rowIndex);
+                                        }
+
+                                        $(".editButtons").on('click', function (event) {
+                                            editClick(event);
+                                        });
+                                    }
+                                },
+                                pagerButtonsCount: 8,
+                                showAggregates: true,
+                                aggregatesHeight: 50,
+                                columns: [
+                                    {
+                                        text: '#', sortable: false, filterable: false, editable: false, pinned: true,
+                                        groupable: false, draggable: false, resizable: false,
+                                        datafield: null, columntype: 'number', width: 35,
+                                        cellsrenderer: function (row, column, value) {
+                                            return "<div style='margin:4px;'>" + (row + 1) + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'АРТИКУЛ', editable: false, datafield: 'Shifr', width: 125, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'НОМЕНКЛАТУРА', editable: false, datafield: 'Product', width: 300, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>"+text+"</div>";
+                                        },
+                                    },
+                                    {
+                                        text: 'СКЛАД', editable: false, datafield: 'Storage', width: 150, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'КОД МЕСТА ХР.', editable: false, datafield: 'StorageCode', width: 150, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'КОЛ-ВО ЕД.', editable: true, datafield: 'Count', width: 100, type: 'float', cellsFormat: 'F2', cellsalign: 'right',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'><strong>" + text + "</strong></div>";
+                                        },
+                                        cellsrenderer: function (row, column, value) {
+                                            return "<div style='margin:4px;'><strong>" + value + "</strong></div>";
+                                        },
+                                        validation: function (cell, value) {
+                                            if (value < 0) return { message: "Количество должно быть больше 0!", result: false };
+                                            return true;
+                                        },
+                                        aggregates: ['sum'],
+                                        aggregatesRenderer: function (aggregates, column, element) {
+                                            let renderString = "<div style='margin: 4px; float: right;  height: 100%;'>";
+                                            let renderedValue = 0;
+                                            if (aggregates === null || aggregates.sum === undefined || aggregates === undefined || aggregates.sum === undefined) {
+                                                renderedValue = 0;
+                                            }
+                                            else {
+                                                renderedValue = aggregates.sum;
+                                            }
+
+                                            renderString += "<strong>Всего, eд:<br><span style='color:green;'>" + renderedValue + "</span></strong></div>";
+                                            return renderString;
+                                        }
+                                    },
+                                    {
+                                        text: 'ВЕС 1 ЕД./КГ.', editable: false, datafield: 'Weight', width: 100, type: 'float', cellsFormat: 'F2', cellsalign: 'right',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'><strong>" + text + "</strong></div>";
+                                        },
+                                        cellsrenderer: function (row, column, value) {
+                                            return "<div style='margin:4px;'>" + value + "</div>";
+                                        },
+                                    },
+                                    {
+                                        text: 'СУММ.ВЕС', editable: false, datafield: 'TotalWeight', width: 100, type: 'float', cellsFormat: 'F2', cellsalign: 'right',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'><strong>" + text + "</strong></div>";
+                                        },
+                                        cellsrenderer: function (row, column, value) {
+                                            return "<div style='margin:4px;'><strong>" + value + "</strong></div>";
+                                        },
+                                        aggregates: ['sum'],
+                                        aggregatesRenderer: function (aggregates, column, element) {
+                                            let renderString = "<div style='margin: 4px; float: right;  height: 100%;'>";
+                                            let renderedValue = 0;
+                                            if (aggregates === null || aggregates.sum === undefined || aggregates === undefined || aggregates.sum === undefined) {
+                                                renderedValue = 0;
+                                            }
+                                            else {
+                                                renderedValue = aggregates.sum;
+                                            }
+
+                                            renderString += "<strong>Всего, кг:<br><span style='color:green;'>" + renderedValue + "</span></strong></div>";
+                                            return renderString;
+                                        }
+                                    },
+                                    {
+                                        text: 'АРТИКУЛ МДМ', editable: false, datafield: 'Shifr_MDM', width: 150, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'Ш.К. ПАРТИИ', editable: false, datafield: 'BacodeConsignment', width: 150, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'Ш.К. ТОВАРА', editable: false, datafield: 'BacodeProduct', width: 150, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'БАЛАНС', editable: false, datafield: 'BalanceKeeper', width: 150, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: 'КОММЕНТАРИЙ', datafield: 'Comments', width: 200, columnType: 'string', type: 'string',
+                                        renderer: function (text, align, height) {
+                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
+                                        }
+                                    },
+                                    {
+                                        text: '', cellsAlign: 'center', align: "center", columnType: 'string', editable: false, sortable: false, dataField: 'InnerPartyKey', width: 45,
+                                        cellsRenderer: function (row, column, value) {
+                                            return "<button data-row='" + row + "' data-key='" + value +"' class='editButtons'></button>";
+                                        }
+                                    }
+                                ]
+                            });
+
+                        $("#jqxgridUC").on('cellEndEdit', function (event) {
+                            var args = event.args;
+                            // row key
+                            var rowKey = args.key;
+                            var value = args.value;
+
+                            let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+
+                            if (bucketValues === null || bucketValues === undefined) {
+                                bucketValues = [];
+                            }
+
+                            bucketValues.find((element) => {
+                                if (element.InnerPartyKey === rowKey) {
+
+                                    element.Count = value;
+                                    let w = element.Weight;
+                                    if (typeof element.Weight === 'string' || element.Weight instanceof String) {
+                                        w = parseFloat(element.Weight.replace(',', '.'));
+                                    }
+                                    let c = element.Count;
+                                    if (typeof element.Count === 'string' || element.Count instanceof String) {
+                                        c = parseFloat(element.Count.replace(',', '.'));
+                                    }
+                                    element.TotalWeight = w * c;
+
+                                    return true;
+                                }
+                            });
+
+                            sessionStorage.setItem('bucketValues', JSON.stringify(bucketValues));
+                        });
+
+                        $("#jqxgridUC").jqxDataTable('beginUpdate');
+                        $("#jqxgridUC").jqxDataTable('hideColumn', 'Shifr_MDM');
+                        $("#jqxgridUC").jqxDataTable('hideColumn', 'BacodeConsignment');
+                        $("#jqxgridUC").jqxDataTable('hideColumn', 'BacodeProduct');
+                        $("#jqxgridUC").jqxDataTable('hideColumn', 'BalanceKeeper');
+                        $("#jqxgridUC").jqxDataTable('endUpdate');
+
+                        $("#shortForm").on('change', function (event)
+                        {
+                            $("#jqxgridUC").jqxDataTable('beginUpdate');
+
+                            if (event.currentTarget.checked) {
+                                $("#jqxgridUC").jqxDataTable('showColumn', 'Shifr_MDM');
+                                $("#jqxgridUC").jqxDataTable('showColumn', 'BacodeConsignment');
+                                $("#jqxgridUC").jqxDataTable('showColumn', 'BacodeProduct');
+                                $("#jqxgridUC").jqxDataTable('showColumn', 'BalanceKeeper');
+                            }
+                            else {
+                                $("#jqxgridUC").jqxDataTable('hideColumn', 'Shifr_MDM');
+                                $("#jqxgridUC").jqxDataTable('hideColumn', 'BacodeConsignment');
+                                $("#jqxgridUC").jqxDataTable('hideColumn', 'BacodeProduct');
+                                $("#jqxgridUC").jqxDataTable('hideColumn', 'BalanceKeeper');
+                            }
+
+                            $("#jqxgridUC").jqxDataTable('endUpdate');
+
+                        });
+                    },
+                    close: function (event, ui) {
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                        [
+                            {
+                                text: "Очистить корзину",
+                                "class": 'btn',
+                                click: function () {
+                                    sessionStorage.setItem('bucketValues', JSON.stringify([]));
+                                    $('.basketCount').html(0);
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Закрыть",
+                                "class": 'btn',
+                                click: function () {
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Создать документ",
+                                "class": 'btn btn-primary',
+                                click: function () {
+
+                                    let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+
+                                    if (bucketValues === null || bucketValues === undefined) {
+                                        bucketValues = [];
+                                    }
+
+                                    bucketValues.forEach(element => {
+                                        element.Count = parseInt(element.Count);
+                                        element.Weight = element.Weight.toString().replace('.',',');
+                                        element.TotalWeight = element.TotalWeight.toString().replace('.', ',');
+                                    });
+
+
+                                    $.ajax({
+                                        type: "POST",
+                                        url: '@Url.Action("SaveBucketDocument", "Reports")',
+                                        data: JSON.stringify(bucketValues),
+                                        contentType: "application/json; charset=utf-8",
+                                        dataType: "json",
+                                        success: function (response) {
+                                            alert('Документ корзины № ' + response + ' был успешно сохранен!!');
+                                        },
+                                        failure: function (response) {
+                                            alert('При сохранении возникла ошибка!');
+                                        },
+                                        error: function (response) {
+                                            alert('При сохранении возникла ошибка!');
+                                        }
+                                    });
+
+                                    ClearBusket();
+
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                });
+
+            $('#busketContent').dialog('open');
+
+            return;
+        }
+
+        function ShowBusket() {
+            ShowBusketDialog();
+        }
+
+        function ClearBusket() {
+            sessionStorage.setItem('bucketValues', JSON.stringify([]));
+            $('.basketCount').html(0);
+        }
+
+        $(document).ready(function () {
+            let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+            if (bucketValues === null || bucketValues === undefined) {
+                bucketValues = [];
+            }
+            $('.basketCount').html(bucketValues.length);
+        });
     </script>
 }
 

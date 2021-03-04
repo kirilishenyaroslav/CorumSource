@@ -7,6 +7,7 @@ using Corum.DAL.Entity;
 using Corum.Models;
 using Corum.DAL.Mappings;
 using Corum.Models.ViewModels;
+using Corum.Models.ViewModels.Bucket;
 
 namespace Corum.DAL
 {
@@ -29,56 +30,56 @@ namespace Corum.DAL
                       Convert.ToInt32(filters.UseProducerFilter))
                         .Select(s => new BriefViewModel
                         {
-                            currentDate     = s.currentDate.Value,
+                            currentDate = s.currentDate.Value,
                             Quantity_OnDate = s.Quantity_OnDate.Value,
-                            Mass_OnDate     = s.Mass_OnDate.Value/1000,
-                            PE_OnDate       = s.PE_OnDate.Value,
-                            PF_OnDate       = s.PF_OnDate.Value,
-                            PCP_OnDate      = s.PCP_OnDate.Value,
-                            PCPC_OnDate     = s.PCPC_OnDate.Value,
-                            FCP_OnDate      = s.FCP_OnDate.Value,
-                            FCPC_OnDate     = s.FCPC_OnDate.Value,
-                            BP_OnDate       = s.BP_OnDate.Value,
+                            Mass_OnDate = s.Mass_OnDate.Value / 1000,
+                            PE_OnDate = s.PE_OnDate.Value,
+                            PF_OnDate = s.PF_OnDate.Value,
+                            PCP_OnDate = s.PCP_OnDate.Value,
+                            PCPC_OnDate = s.PCPC_OnDate.Value,
+                            FCP_OnDate = s.FCP_OnDate.Value,
+                            FCPC_OnDate = s.FCPC_OnDate.Value,
+                            BP_OnDate = s.BP_OnDate.Value,
 
                             ShipOnDate_Quantity = s.ShipOnDate_Quantity.Value,
-                            ShipOnDate_Mass = s.ShipOnDate_Mass.Value/1000,
-                            ShipOnDate_PE   = s.ShipOnDate_PE.Value,
-                            ShipOnDate_PF   = s.ShipOnDate_PF.Value,
-                            ShipOnDate_PCP  = s.ShipOnDate_PCP.Value,
+                            ShipOnDate_Mass = s.ShipOnDate_Mass.Value / 1000,
+                            ShipOnDate_PE = s.ShipOnDate_PE.Value,
+                            ShipOnDate_PF = s.ShipOnDate_PF.Value,
+                            ShipOnDate_PCP = s.ShipOnDate_PCP.Value,
                             ShipOnDate_PCPC = s.ShipOnDate_PCPC.Value,
-                            ShipOnDate_FCP  = s.ShipOnDate_FCP.Value,
+                            ShipOnDate_FCP = s.ShipOnDate_FCP.Value,
                             ShipOnDate_FCPC = s.ShipOnDate_FCPC.Value,
-                            ShipOnDate_BP   = s.ShipOnDate_BP.Value,
+                            ShipOnDate_BP = s.ShipOnDate_BP.Value,
 
                             ShipForPeriod_Quantity = s.ShipForPeriod_Quantity.Value,
-                            ShipForPeriod_Mass = s.ShipForPeriod_Mass.Value/1000,
-                            ShipForPeriod_PE   = s.ShipForPeriod_PE.Value,
-                            ShipForPeriod_PF   = s.ShipForPeriod_PF.Value,
-                            ShipForPeriod_PCP  = s.ShipForPeriod_PCP.Value,
+                            ShipForPeriod_Mass = s.ShipForPeriod_Mass.Value / 1000,
+                            ShipForPeriod_PE = s.ShipForPeriod_PE.Value,
+                            ShipForPeriod_PF = s.ShipForPeriod_PF.Value,
+                            ShipForPeriod_PCP = s.ShipForPeriod_PCP.Value,
                             ShipForPeriod_PCPC = s.ShipForPeriod_PCPC.Value,
-                            ShipForPeriod_FCP  = s.ShipForPeriod_FCP.Value,
+                            ShipForPeriod_FCP = s.ShipForPeriod_FCP.Value,
                             ShipForPeriod_FCPC = s.ShipForPeriod_FCPC.Value,
-                            ShipForPeriod_BP   = s.ShipForPeriod_BP.Value,
+                            ShipForPeriod_BP = s.ShipForPeriod_BP.Value,
 
                             ProdOnDate_Quantity = s.ProdOnDate_Quantity.Value,
-                            ProdOnDate_Mass    = s.ProdOnDate_Mass.Value/1000,
-                            ProdOnDate_PE      = s.ProdOnDate_PE.Value,
-                            ProdOnDate_PF      = s.ProdOnDate_PF.Value,
-                            ProdOnDate_PCP     = s.ProdOnDate_PCP.Value,
-                            ProdOnDate_PCPC    = s.ProdOnDate_PCPC.Value,
-                            ProdOnDate_FCP     = s.ProdOnDate_FCP.Value,
-                            ProdOnDate_FCPC    = s.ProdOnDate_FCPC.Value,
-                            ProdOnDate_BP      = s.ProdOnDate_BP.Value,
+                            ProdOnDate_Mass = s.ProdOnDate_Mass.Value / 1000,
+                            ProdOnDate_PE = s.ProdOnDate_PE.Value,
+                            ProdOnDate_PF = s.ProdOnDate_PF.Value,
+                            ProdOnDate_PCP = s.ProdOnDate_PCP.Value,
+                            ProdOnDate_PCPC = s.ProdOnDate_PCPC.Value,
+                            ProdOnDate_FCP = s.ProdOnDate_FCP.Value,
+                            ProdOnDate_FCPC = s.ProdOnDate_FCPC.Value,
+                            ProdOnDate_BP = s.ProdOnDate_BP.Value,
 
-                            ProdByPeriod_Quantity  = s.ProdByPeriod_Quantity.Value,
-                            ProdByPeriod_Mass  = s.ProdByPeriod_Mass.Value/1000,
-                            ProdByPeriod_PE    = s.ProdByPeriod_PE.Value,
-                            ProdByPeriod_PF    = s.ProdByPeriod_PF.Value,
-                            ProdByPeriod_PCP   = s.ProdByPeriod_PCP.Value,
-                            ProdByPeriod_PCPC  = s.ProdByPeriod_PCPC.Value,
-                            ProdByPeriod_FCP   = s.ProdByPeriod_FCP.Value,
-                            ProdByPeriod_FCPC  = s.ProdByPeriod_FCPC.Value,
-                            ProdByPeriod_BP    = s.ProdByPeriod_BP.Value
+                            ProdByPeriod_Quantity = s.ProdByPeriod_Quantity.Value,
+                            ProdByPeriod_Mass = s.ProdByPeriod_Mass.Value / 1000,
+                            ProdByPeriod_PE = s.ProdByPeriod_PE.Value,
+                            ProdByPeriod_PF = s.ProdByPeriod_PF.Value,
+                            ProdByPeriod_PCP = s.ProdByPeriod_PCP.Value,
+                            ProdByPeriod_PCPC = s.ProdByPeriod_PCPC.Value,
+                            ProdByPeriod_FCP = s.ProdByPeriod_FCP.Value,
+                            ProdByPeriod_FCPC = s.ProdByPeriod_FCPC.Value,
+                            ProdByPeriod_BP = s.ProdByPeriod_BP.Value
                         }).OrderBy(o => o.currentDate).ToList().AsQueryable();
 
         }
@@ -94,10 +95,10 @@ namespace Corum.DAL
         public SnapshotInfoViewModel GetMaxScreenShot()
         {
             var max = db.LogisticSnapshots
-                        .Where(s=>s.isDefaultForReports==1)
+                        .Where(s => s.isDefaultForReports == 1)
                          .OrderByDescending(o => (o.shapshot_data))
                           .FirstOrDefault();
-            if (max!=null) return Mapper.Map(max);
+            if (max != null) return Mapper.Map(max);
 
             return new SnapshotInfoViewModel()
             {
@@ -188,60 +189,61 @@ namespace Corum.DAL
         public RestViewModel GetRestById(string InnerPartyKey, int snapshotId)
         {
             return (from s in db.GetRestDataByInnerPartyKey(snapshotId, InnerPartyKey)
-                       select new RestViewModel
-                        {
-                           InnerPartyKey = s.InnerPartyKey,
-                           Producer = s.Producer,
-                           Product = s.Product,
-                           Shifr = s.Shifr,
-                           //Shifr_MDM =  s.Shifr_MDM,
-                           //BacodeProduct = s.BacodeProduct,
-                           //BacodeConsignment = s.BacodeConsignment,
-                           Figure = s.Figure,
-                           Measure = s.Measure,
-                           Weight = s.Weight,
-                           pType = s.pType,
-                           pGroup = s.pGroup,
-                           ProductFullName = string.Concat(s.Product, " (", s.Shifr, ")"),
-                           pRecieverPlan = s.pRecieverPlan,
-                           pRecieverFact = s.pRecieverFact,
-                           RecieverGroupPlan = s.RecieverGroupPlan,
-                           InnerOrderNum = s.InnerOrderNum,
-                           OrderedBy = s.OrderedBy,
-                           OrderNum = s.OrderNum,
-                           QuantityBefore = s.QuantityBefore ?? 0,
-                           MassBefore = s.Weight * s.QuantityBefore ?? 0,
-                           PE_Before = s.PE_Before ?? 0,
-                           PF_Before = s.PF_Before ?? 0,
-                           PCPC_Before = s.PCPC_Before ?? 0,
-                           FCP_Before = s.FCP_Before ?? 0,
-                           FCPC_Before = s.FCPC_Before ?? 0,
-                           BP_Before = s.BP_Before ?? 0,
-                           QuantityAfter = s.QuantityAfter ?? 0,
-                           MassAfter = s.Weight * s.QuantityAfter ?? 0,
-                           PE_After = s.PE_After ?? 0,
-                           PF_After = s.PF_After ?? 0,
-                           PCPC_After = s.PCPC_After ?? 0,
-                           FCP_After = s.FCP_After ?? 0,
-                           FCPC_After = s.FCPC_After ?? 0,
-                           BP_After = s.BP_After ?? 0,
-                           Storage = s.Storage,
-                           StorageCity = s.StorageCity,
-                           StorageCountry = s.StorageCountry,
-                           Сenter = s.Сenter,
-                           BalanceKeeper = s.BalanceKeeper,
-                           ReadyForSaleStatus = s.ReadyForSaleStatus,
-                           ReserveStatus = s.ReserveStatus,
-                           FullSellStatus = string.Concat(s.ReadyForSaleStatus, ",", s.ReserveStatus),
-                           ProduceDate = s.ProduceDate,
-                           ReconcervationDate = s.ReconcervationDate,
-                           TermOnStorage = s.TermOnStorage,
-                           PrihodDocType = s.PrihodDocType,
-                           PrihodDocNum = s.PrihodDocNum,
-                           PrihodDocDate = s.PrihodDocDate,
-                           BalanceCurrency = s.BalanceCurrency,
-                           CurrencyIndexToUAH = s.CurrencyIndexToUAH
-                       }).FirstOrDefault();
+                    select new RestViewModel
+                    {
+                        InnerPartyKey = s.InnerPartyKey,
+                        Producer = s.Producer,
+                        Product = s.Product,
+                        Shifr = s.Shifr,
+                        Shifr_MDM = s.Shifr_MDM,
+                        BacodeProduct = s.BarcodeProduct,
+                        BacodeConsignment = s.BacodeConsignment,
+                        BacodesAll = s.BacodesAll,
+                        Figure = s.Figure,
+                        Measure = s.Measure,
+                        Weight = s.Weight,
+                        pType = s.pType,
+                        pGroup = s.pGroup,
+                        ProductFullName = string.Concat(s.Product, " (", s.Shifr, ")"),
+                        pRecieverPlan = s.pRecieverPlan,
+                        pRecieverFact = s.pRecieverFact,
+                        RecieverGroupPlan = s.RecieverGroupPlan,
+                        InnerOrderNum = s.InnerOrderNum,
+                        OrderedBy = s.OrderedBy,
+                        OrderNum = s.OrderNum,
+                        QuantityBefore = s.QuantityBefore ?? 0,
+                        MassBefore = s.Weight * s.QuantityBefore ?? 0,
+                        PE_Before = s.PE_Before ?? 0,
+                        PF_Before = s.PF_Before ?? 0,
+                        PCPC_Before = s.PCPC_Before ?? 0,
+                        FCP_Before = s.FCP_Before ?? 0,
+                        FCPC_Before = s.FCPC_Before ?? 0,
+                        BP_Before = s.BP_Before ?? 0,
+                        QuantityAfter = s.QuantityAfter ?? 0,
+                        MassAfter = s.Weight * s.QuantityAfter ?? 0,
+                        PE_After = s.PE_After ?? 0,
+                        PF_After = s.PF_After ?? 0,
+                        PCPC_After = s.PCPC_After ?? 0,
+                        FCP_After = s.FCP_After ?? 0,
+                        FCPC_After = s.FCPC_After ?? 0,
+                        BP_After = s.BP_After ?? 0,
+                        Storage = s.Storage,
+                        StorageCity = s.StorageCity,
+                        StorageCountry = s.StorageCountry,
+                        Сenter = s.Сenter,
+                        BalanceKeeper = s.BalanceKeeper,
+                        ReadyForSaleStatus = s.ReadyForSaleStatus,
+                        ReserveStatus = s.ReserveStatus,
+                        FullSellStatus = string.Concat(s.ReadyForSaleStatus, ",", s.ReserveStatus),
+                        ProduceDate = s.ProduceDate,
+                        ReconcervationDate = s.ReconcervationDate,
+                        TermOnStorage = s.TermOnStorage,
+                        PrihodDocType = s.PrihodDocType,
+                        PrihodDocNum = s.PrihodDocNum,
+                        PrihodDocDate = s.PrihodDocDate,
+                        BalanceCurrency = s.BalanceCurrency,
+                        CurrencyIndexToUAH = s.CurrencyIndexToUAH
+                    }).FirstOrDefault();
         }
 
         public IQueryable<RestViewModel> GetRestsByScreenShotId(int screenShotId, GroupItemFilters filters)
@@ -254,13 +256,15 @@ namespace Corum.DAL
                       filters.FilterKeeperId,
                       filters.FilterProducerId,
                       filters.FilterOrderProjectId,
+                      filters.FilterProductBarcodeId,
                       Convert.ToInt32(filters.UseStorageFilter),
                       Convert.ToInt32(filters.UseCenterFilter),
                       Convert.ToInt32(filters.UseRecieverPlanFilter),
                       Convert.ToInt32(filters.UseRecieverFactFilter),
                       Convert.ToInt32(filters.UseKeeperFilter),
                       Convert.ToInt32(filters.UseProducerFilter),
-                      Convert.ToInt32(filters.UseOrderProjectFilter)
+                      Convert.ToInt32(filters.UseOrderProjectFilter),
+                      Convert.ToInt32(filters.UseProductBarcodeFilter)
                       )
                         .Select(s => new RestViewModel
                         {
@@ -269,14 +273,14 @@ namespace Corum.DAL
                             Product = s.Product,
                             Shifr = s.Shifr,
                             Figure = s.Figure,
-                            Shifr_MDM =  s.Shifr_MDM,
+                            Shifr_MDM = s.Shifr_MDM,
                             BacodeProduct = s.BacodeProduct,
                             BacodeConsignment = s.BacodeConsignment,
                             Measure = s.Measure,
                             Weight = s.Weight,
                             pType = s.pType,
                             pGroup = s.pGroup,
-                            ProductFullName = string.Concat(s.Product," (", s.Shifr,")"),
+                            ProductFullName = string.Concat(s.Product, " (", s.Shifr, ")"),
                             pRecieverPlan = s.pRecieverPlan,
                             pRecieverFact = s.pRecieverFact,
                             RecieverGroupPlan = s.RecieverGroupPlan,
@@ -284,7 +288,7 @@ namespace Corum.DAL
                             OrderedBy = s.OrderedBy,
                             OrderNum = s.OrderNum,
                             QuantityBefore = s.QuantityBefore ?? 0,
-                            MassBefore = s.Weight* s.QuantityBefore ?? 0,
+                            MassBefore = s.Weight * s.QuantityBefore ?? 0,
                             PE_Before = s.PE_Before ?? 0,
                             PF_Before = s.PF_Before ?? 0,
                             PCPC_Before = s.PCPC_Before ?? 0,
@@ -306,7 +310,7 @@ namespace Corum.DAL
                             BalanceKeeper = s.BalanceKeeper,
                             ReadyForSaleStatus = s.ReadyForSaleStatus,
                             ReserveStatus = s.ReserveStatus,
-                            FullSellStatus=string.Concat(s.ReadyForSaleStatus,",", s.ReserveStatus),
+                            FullSellStatus = string.Concat(s.ReadyForSaleStatus, ",", s.ReserveStatus),
                             ProduceDate = s.ProduceDate,
                             ReconcervationDate = s.ReconcervationDate,
                             TermOnStorage = s.TermOnStorage,
@@ -377,10 +381,10 @@ namespace Corum.DAL
                       Convert.ToInt32(filters.UseRecieverFactFilter),
                       Convert.ToInt32(filters.UseKeeperFilter),
                       Convert.ToInt32(filters.UseProducerFilter))
-                    .Where(s=>s.ISPrihod==filters.IsPrihodDocs)
+                    .Where(s => s.ISPrihod == filters.IsPrihodDocs)
                     .Select(s => new DocViewModel
                     {
-                        idrow= s.idrow,
+                        idrow = s.idrow,
                         id_snapshot = s.id_snapshot,
                         InnerPartyKey = s.InnerPartyKey,
                         Producer = s.Producer,
@@ -397,14 +401,14 @@ namespace Corum.DAL
                         InnerOrderNum = s.InnerOrderNum,
                         OrderedBy = s.OrderedBy,
                         OrderNum = s.OrderNum,
-                        Quantity = s.Quantity??0,
-                        PE = s.PE??0,
-                        PF = s.PF??0,
-                        PCP = s.PCP??0,
-                        PCPC = s.PCPC??0,
-                        FCP = s.FCP??0,
-                        FCPC = s.FCPC??0,
-                        BP = s.BP??0,
+                        Quantity = s.Quantity ?? 0,
+                        PE = s.PE ?? 0,
+                        PF = s.PF ?? 0,
+                        PCP = s.PCP ?? 0,
+                        PCPC = s.PCPC ?? 0,
+                        FCP = s.FCP ?? 0,
+                        FCPC = s.FCPC ?? 0,
+                        BP = s.BP ?? 0,
                         Storage = s.Storage,
                         StorageCity = s.StorageCity,
                         StorageCountry = s.StorageCountry,
@@ -421,7 +425,7 @@ namespace Corum.DAL
                         BalanceCurrency = s.BalanceCurrency,
                         CurrencyIndexToUAH = s.CurrencyIndexToUAH,
                         ISPrihod = s.ISPrihod,
-                        Mass = s.Quantity*s.Weight??0
+                        Mass = s.Quantity * s.Weight ?? 0
                     }).OrderBy(o => o.DocDate).ToList().AsQueryable();
         }
 
@@ -452,36 +456,36 @@ namespace Corum.DAL
                     {
                         Position = 0,
                         groupItem = (string)g.FirstOrDefault().GetType().GetProperty(FieldName).GetValue(g.FirstOrDefault()),
-                        QuantityBefore = g.Sum(s => s.QuantityBefore??0),
-                        QuantityAfter = g.Sum(s => s.QuantityAfter??0),
-                        WeightBefore = g.Sum(s=>(s.QuantityBefore ?? 0)*(s.Weight ?? 0)),
+                        QuantityBefore = g.Sum(s => s.QuantityBefore ?? 0),
+                        QuantityAfter = g.Sum(s => s.QuantityAfter ?? 0),
+                        WeightBefore = g.Sum(s => (s.QuantityBefore ?? 0) * (s.Weight ?? 0)),
                         WeightAfter = g.Sum(s => (s.QuantityAfter ?? 0) * (s.Weight ?? 0)),
-                        PE_Before = g.Sum(s => s.PE_Before??0),
-                        PF_Before = g.Sum(s => s.PF_Before??0),
-                        PCP_Before = g.Sum(s => s.PCP_Before??0),
-                        PCPC_Before = g.Sum(s => s.PCPC_Before??0),
-                        FCP_Before = g.Sum(s => s.FCP_Before??0),
-                        FCPC_Before = g.Sum(s => s.FCPC_Before??0),
-                        BP_Before = g.Sum(s => s.BP_Before??0),
-                        PE_After = g.Sum(s => s.PE_After??0),
-                        PF_After = g.Sum(s => s.PF_After??0),
-                        PCP_After = g.Sum(s => s.PCP_After??0),
-                        PCPC_After = g.Sum(s => s.PCPC_After??0),
-                        FCP_After = g.Sum(s => s.FCP_After??0),
-                        FCPC_After = g.Sum(s => s.FCPC_After??0),
-                        BP_After = g.Sum(s => s.BP_After??0),
+                        PE_Before = g.Sum(s => s.PE_Before ?? 0),
+                        PF_Before = g.Sum(s => s.PF_Before ?? 0),
+                        PCP_Before = g.Sum(s => s.PCP_Before ?? 0),
+                        PCPC_Before = g.Sum(s => s.PCPC_Before ?? 0),
+                        FCP_Before = g.Sum(s => s.FCP_Before ?? 0),
+                        FCPC_Before = g.Sum(s => s.FCPC_Before ?? 0),
+                        BP_Before = g.Sum(s => s.BP_Before ?? 0),
+                        PE_After = g.Sum(s => s.PE_After ?? 0),
+                        PF_After = g.Sum(s => s.PF_After ?? 0),
+                        PCP_After = g.Sum(s => s.PCP_After ?? 0),
+                        PCPC_After = g.Sum(s => s.PCPC_After ?? 0),
+                        FCP_After = g.Sum(s => s.FCP_After ?? 0),
+                        FCPC_After = g.Sum(s => s.FCPC_After ?? 0),
+                        BP_After = g.Sum(s => s.BP_After ?? 0),
 
-                        QuantityPrihod = g.Sum(s => s.QuantityPrihod??0),
-                        MassPrihod = g.Sum(s => s.MassPrihod??0),
-                        PE_Prihod = g.Sum(s => s.PE_Prihod??0),
-                        PF_Prihod = g.Sum(s => s.PF_Prihod??0),        
-                        PCP_Prihod = g.Sum(s => s.PCP_Prihod??0),       
-                        PCPC_Prihod = g.Sum(s => s.PCPC_Prihod??0),
-                        FCP_Prihod  = g.Sum(s => s.FCP_Prihod??0),     
-                        FCPC_Prihod = g.Sum(s => s.FCPC_Prihod??0),
-                        BP_Prihod = g.Sum(s => s.BP_Prihod??0),
+                        QuantityPrihod = g.Sum(s => s.QuantityPrihod ?? 0),
+                        MassPrihod = g.Sum(s => s.MassPrihod ?? 0),
+                        PE_Prihod = g.Sum(s => s.PE_Prihod ?? 0),
+                        PF_Prihod = g.Sum(s => s.PF_Prihod ?? 0),
+                        PCP_Prihod = g.Sum(s => s.PCP_Prihod ?? 0),
+                        PCPC_Prihod = g.Sum(s => s.PCPC_Prihod ?? 0),
+                        FCP_Prihod = g.Sum(s => s.FCP_Prihod ?? 0),
+                        FCPC_Prihod = g.Sum(s => s.FCPC_Prihod ?? 0),
+                        BP_Prihod = g.Sum(s => s.BP_Prihod ?? 0),
 
-                        QuantityRashod = g.Sum(s => s.QuantityRashod??0),
+                        QuantityRashod = g.Sum(s => s.QuantityRashod ?? 0),
                         MassRashod = g.Sum(s => s.MassRashod ?? 0),
                         PE_Rashod = g.Sum(s => s.PE_Rashod ?? 0),
                         PF_Rashod = g.Sum(s => s.PF_Rashod ?? 0),
@@ -491,7 +495,7 @@ namespace Corum.DAL
                         FCPC_Rashod = g.Sum(s => s.FCPC_Rashod ?? 0),
                         BP_Rashod = g.Sum(s => s.BP_Rashod ?? 0)
 
-                    }).OrderBy(o=>o.groupItem).ToList().AsQueryable();
+                    }).OrderBy(o => o.groupItem).ToList().AsQueryable();
         }
 
         public IQueryable<RestViewModel> GetGroupRecieverRestsByScreenShotId(int screenShotId, string storage)
@@ -501,7 +505,7 @@ namespace Corum.DAL
 
         public List<GroupItemViewModel> GetStorages(int snapShot, string searchTerm, int pageSize, int pageNum)
         {
-            return  GetStoragesBySearchString(snapShot, searchTerm)
+            return GetStoragesBySearchString(snapShot, searchTerm)
                         .Skip(pageSize * (pageNum - 1))
                          .Take(pageSize)
                            .ToList();
@@ -644,7 +648,7 @@ namespace Corum.DAL
                              .AsQueryable();
         }
 
-            public List<RestViewModel> GetProjects(int snapShot, string searchTerm, int pageSize, int pageNum)
+        public List<RestViewModel> GetProjects(int snapShot, string searchTerm, int pageSize, int pageNum)
         {
             return GetProjectsBySearchString(snapShot, searchTerm)
                         .Skip(pageSize * (pageNum - 1))
@@ -652,16 +656,218 @@ namespace Corum.DAL
                            .ToList();
         }
 
+        public List<RestViewModel> GetBarcodes(int snapShot, string searchTerm, int pageSize, int pageNum)
+        {
+            return GetBarcodesBySearchString(snapShot, searchTerm)
+                        .Skip(pageSize * (pageNum - 1))
+                         .Take(pageSize)
+                           .ToList();
+        }
+
+        public int GetBarcodesCount(int snapShot, string searchTerm)
+        {
+            return GetBarcodesBySearchString(snapShot, searchTerm).Count();
+        }
+
         public int GetProjectsCount(int snapShot, string searchTerm)
         {
             return GetProjectsBySearchString(snapShot, searchTerm).Count();
         }
 
+        public long SaveBucketDocument(IEnumerable<BucketItem> items, string userId)
+        {
+            var document = new BucketDocuments
+            {
+                DocDate = DateTime.Now,
+                DocNumber = DateTime.Now.Ticks.ToString(),
+                CreatedBy = userId
+            };
+
+            db.BucketDocuments.Add(document);
+            db.SaveChanges();
+
+            foreach (var item in items)
+            {
+                var documentItem = new BucketDocumentRows
+                {
+                    IdBucketDocument = document.IdBucketDocument,
+                    InnerPartyKey = item.InnerPartyKey,
+                    Storage = item.Storage,
+                    Product = item.Product,
+                    Shifr = string.IsNullOrEmpty(item.Shifr) ? string.Empty : item.Shifr,
+                    Shifr_MDM = string.IsNullOrEmpty(item.Shifr_MDM) ? string.Empty : item.Shifr_MDM,
+                    BacodeConsignment = item.BacodeConsignment,
+                    BacodeProduct = item.BacodeProduct,
+                    StorageCode = string.IsNullOrEmpty(item.StorageCode) ? string.Empty : item.StorageCode,
+                    Comments = string.IsNullOrEmpty(item.Comments) ? string.Empty : item.Comments,
+                    BalanceKeeper = item.BalanceKeeper,
+                    Weight = item.Weight,
+                    TotalWeight = item.TotalWeight,
+                    Count = (int)item.Count
+                };
+
+                db.BucketDocumentRows.Add(documentItem);
+            }
+
+            db.SaveChanges();
+            return document.IdBucketDocument;
+        }
+
+        public IQueryable<BucketDocument> GetBucketDocuments()
+        {
+            var query = from d in db.BucketDocuments
+                        join u in db.AspNetUsers on d.CreatedBy equals u.Id
+                        select new BucketDocument
+                        {
+                            Id = d.IdBucketDocument,
+                            Date = d.DocDate,
+                            Number = d.DocNumber,
+                            CreatedBy = u.DisplayName
+                        };
+
+            return query.OrderByDescending(o => o.Id).AsQueryable();
+        }
+
+        public RestViewModel GetItemsByBarcode(string barcode, int searchBy)
+        {
+            return db.RestsSnapshot
+                      .Where(r => (searchBy == 0 && r.BacodeProduct == barcode)
+                                ||(searchBy == 1 && r.BacodeConsignment == barcode)
+                                ||(searchBy == 2 && r.Shifr_MDM == barcode))
+                       .Select(s => new RestViewModel
+                       {
+                           InnerPartyKey = s.InnerPartyKey,
+                           Producer = s.Producer,
+                           Product = s.Product,
+                           Shifr = s.Shifr,
+                           Figure = s.Figure,
+                           Shifr_MDM = s.Shifr_MDM,
+                           BacodeProduct = s.BacodeProduct,
+                           BacodeConsignment = s.BacodeConsignment,
+                           Measure = s.Measure,
+                           Weight = s.Weight,
+                           pType = s.pType,
+                           pGroup = s.pGroup,
+                           ProductFullName = string.Concat(s.Product, " (", s.Shifr, ")"),
+                           pRecieverPlan = s.pRecieverPlan,
+                           pRecieverFact = s.pRecieverFact,
+                           RecieverGroupPlan = s.RecieverGroupPlan,
+                           InnerOrderNum = s.InnerOrderNum,
+                           OrderedBy = s.OrderedBy,
+                           OrderNum = s.OrderNum,
+                           QuantityBefore = s.QuantityBefore ?? 0,
+                           MassBefore = s.Weight * s.QuantityBefore ?? 0,
+                           PE_Before = s.PE_Before ?? 0,
+                           PF_Before = s.PF_Before ?? 0,
+                           PCPC_Before = s.PCPC_Before ?? 0,
+                           FCP_Before = s.FCP_Before ?? 0,
+                           FCPC_Before = s.FCPC_Before ?? 0,
+                           BP_Before = s.BP_Before ?? 0,
+                           QuantityAfter = s.QuantityAfter ?? 0,
+                           MassAfter = s.Weight * s.QuantityAfter ?? 0,
+                           PE_After = s.PE_After ?? 0,
+                           PF_After = s.PF_After ?? 0,
+                           PCPC_After = s.PCPC_After ?? 0,
+                           FCP_After = s.FCP_After ?? 0,
+                           FCPC_After = s.FCPC_After ?? 0,
+                           BP_After = s.BP_After ?? 0,
+                           Storage = s.Storage,
+                           StorageCity = s.StorageCity,
+                           StorageCountry = s.StorageCountry,
+                           Сenter = s.Сenter,
+                           BalanceKeeper = s.BalanceKeeper,
+                           ReadyForSaleStatus = s.ReadyForSaleStatus,
+                           ReserveStatus = s.ReserveStatus,
+                           FullSellStatus = string.Concat(s.ReadyForSaleStatus, ",", s.ReserveStatus),
+                           ProduceDate = s.ProduceDate,
+                           ReconcervationDate = s.ReconcervationDate,
+                           TermOnStorage = s.TermOnStorage,
+                           PrihodDocType = s.PrihodDocType,
+                           PrihodDocNum = s.PrihodDocNum,
+                           PrihodDocDate = s.PrihodDocDate,
+                           BalanceCurrency = s.BalanceCurrency,
+                           CurrencyIndexToUAH = s.CurrencyIndexToUAH
+                       })
+                       .FirstOrDefault();
+        }
+
+        public BucketDocument GetBucketDocument(long Id)
+        {
+            var query = from d in db.BucketDocuments
+                        join u in db.AspNetUsers on d.CreatedBy equals u.Id
+                        where d.IdBucketDocument == Id
+                        select new BucketDocument
+                        {
+                            Id = d.IdBucketDocument,
+                            Date = d.DocDate,
+                            Number = d.DocNumber,
+                            CreatedBy = u.DisplayName
+                        };
+
+            var items = from r in db.BucketDocumentRows
+                        where r.IdBucketDocument == Id
+                        select new BucketItem
+                        {
+                            InnerPartyKey = r.InnerPartyKey,
+                            Storage = r.Storage,
+                            Product = r.Product,
+                            Shifr = r.Shifr,
+                            Shifr_MDM = r.Shifr_MDM,
+                            BacodeConsignment = r.BacodeConsignment,
+                            BacodeProduct = r.BacodeProduct,
+                            StorageCode = r.StorageCode,
+                            Comments = r.Comments,
+                            Count = r.Count,
+                            BalanceKeeper = r.BalanceKeeper,
+                            Weight = r.Weight ?? 0,
+                            TotalWeight = r.TotalWeight ?? 0
+                        };
+
+            var doc = query.FirstOrDefault();
+
+            if (doc != null)
+            {
+                doc.Items = items.AsQueryable();
+            }
+
+            return doc;
+        }
+
+        public bool RemoveDocument(long Id)
+        {
+            var query = from d in db.BucketDocuments
+                        where d.IdBucketDocument == Id
+                        select d;
+
+            var items = from r in db.BucketDocumentRows
+                        where r.IdBucketDocument == Id
+                        select r;
+
+            var doc = query.FirstOrDefault();
+
+            if (doc != null)
+            {
+                foreach (var item in items)
+                {
+                    db.BucketDocumentRows.Remove(item);
+                }
+
+                db.BucketDocuments.Remove(doc);
+
+                db.SaveChanges();
+            }
+
+            return true;
+        }
+
         private IQueryable<RestViewModel> GetProjectsBySearchString(int snapShot, string searchTerm)
         {
-            return db.GetInnerOrderNumFilter(searchTerm,snapShot).ToList().Select(Mapper.Map).AsQueryable();
+            return db.GetInnerOrderNumFilter(searchTerm, snapShot).ToList().Select(Mapper.Map).AsQueryable();
+        }
 
-          
+        private IQueryable<RestViewModel> GetBarcodesBySearchString(int snapShot, string searchTerm)
+        {
+            return db.GetProductBarcodeFilter(searchTerm, snapShot).ToList().Select(Mapper.Map).AsQueryable();
         }
     }
 }

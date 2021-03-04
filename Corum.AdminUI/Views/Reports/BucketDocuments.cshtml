@@ -1,0 +1,95 @@
+﻿@model Corum.Models.BucketDocsDocsNavigationResult<Corum.Models.ViewModels.Bucket.BucketDocument>
+
+@using System.Globalization
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+@{
+    ViewBag.Title = "Документы корзины";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    var numberFormat = new CultureInfo("en-US", false).NumberFormat;
+}
+
+@helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
+{
+    <div class="table-footer clearfix">
+
+        @{
+            var proc = string.Concat("OnPageSizeTemplateChange('", page.Url.Action(@action, @controller), "');");
+        }
+
+        <div class="pull-left dropdown-footer">
+            @page.Html.DropDownListFor(model => navInfo.PageSize,
+                                 (List<System.Web.Mvc.SelectListItem>)navInfo.PageSizeTemplates,
+                                                   new { @id = "PageSizeTemplates", onchange = proc })
+        </div>
+
+    </div>
+}
+
+<div class="container-fluid">
+    <div class="row ">
+        <div class="col-lg-12 main panel" style="margin-top:35px;">
+            <div class="row ">
+                <h2 class="centered_column" style="margin-top:0px!important;">Реестр документов корзины</h2> <br>
+            </div>
+            <div style="font-size: 13px;">
+                @(Html.Grid(Model.DisplayValues)
+                                              .Columns(columns =>
+                                              {
+                                                  columns.Add(model => model.Id).SetWidth(75)
+                                                   .Css("centered_column new_columns_block_start")
+                                                   .Titled("Номер<br>документа").Filterable(false).Sortable(true);
+
+                                                  columns.Add(model => model.Date).SetWidth(250)
+                                                   .Titled("Дата создания<br>документа").Filterable(false).Sortable(true)
+                                                   .Encoded(false)
+                                                   .Sanitized(false)
+                                                   .Css("centered_column")
+                                                   .RenderValueAs(o =>@<div style="text-align:center!important;">@o.Date.ToString("dd.MM.yyyy")</div>);
+
+                                                  columns.Add(model => model.Number).SetWidth(250)
+                                                   .Titled("Время создания<br>документа").Filterable(false).Sortable(true)
+                                                   .Encoded(false)
+                                                   .Sanitized(false)
+                                                   .Css("centered_column new_columns_block_end")
+                                                   .RenderValueAs(o =>@<div style="text-align:center!important;">@o.Date.ToString("hh:mm:ss")</div>);
+
+                                                  columns.Add(model => model.CreatedBy)
+                                                   .Titled("Автор<br>документа").Filterable(true).Sortable(true);
+
+                                                  columns.Add().SetWidth(30)
+                                                   .Encoded(false)
+                                                   .Sanitized(false)
+                                                   .Css("centered_column new_columns_block_start new_columns_block_end")
+                                                   .RenderValueAs(o =>@<div class="edit-delete-copy-links" style="text-align:center!important;">
+                                                    <a class="tarash-i update_link tooltips" href="@Url.Action("ViewBucketDocument", "Reports", new { Id = o.Id })">
+                                                          <span class="tooltip-message">Просмотреть документ</span>
+                                                          <span class="glyphicon glyphicon-eye-open"></span>
+                                                    </a>
+                                                    <a class="tarash-i delete_link tooltips" href="@Url.Action("RemoveBucketDocument", "Reports", new { Id = o.Id })" onclick="var var1='@o.Id'; return confirm('Вы действительно хотите удалить документ № '+var1+' ?');">
+                                                          <span class="tooltip-message">Удалить документ</span>
+                                                          <span class="glyphicon glyphicon-trash"></span>
+                                                    </a>
+                                                    </div>);
+
+                                              }).WithPaging((int)Model.RequestParams.PageSize))
+            </div>
+
+            @TPagging("BucketDocuments", "Reports", @Model.RequestParams, this)
+        </div>
+    </div>
+</div>
+
+
+
+@section scripts
+    {
+    <script>
+        var offset = $('.navbar').height();
+        $("html:not(.legacy) table").stickyTableHeaders({ fixedOffset: offset });
+    </script>
+}

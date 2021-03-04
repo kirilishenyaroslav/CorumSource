@@ -38,6 +38,7 @@ namespace Corum.Models
         List<ColumnNameModel> GetImportColumnName();
         IQueryable<ImportError> getImportErrors(int idSnapshot, string logId);
 
+        int GetDefaultSnapshotId();
         bool DeleteSnapshot(int Id);
         bool MakeSnapshotAsDefault(int Id);
         bool MakeSnapshotAsArchive(int Id);

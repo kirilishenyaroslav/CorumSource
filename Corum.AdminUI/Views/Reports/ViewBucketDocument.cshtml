@@ -1,0 +1,189 @@
+﻿@model Corum.Models.ViewModels.Bucket.BucketDocument
+
+@using GridMvc.Html
+@using GridMvc.Sorting
+
+@{
+    ViewBag.Title = "Документ корзины";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container-fluid">
+    <div class="row ">
+        <div class="col-lg-12 main panel" style="margin-top:35px;">
+            <div class="row ">
+                <h2 class="centered_column" style="margin-top:0px!important;">Документ корзины</h2> <br>
+            </div>
+            <div class="row">
+                <div style="margin-bottom: 15px;" class="col-md-12">
+                    @Html.ActionLink("Экспорт в excel", "BucketDocumentAsExcel", "ExportToExcel", new
+                    {
+                       Id = Model.Id
+
+                    }, new { @class = "btn btn-success delete_link" })&nbsp;&nbsp;
+
+                    @Html.ActionLink("Реестр документов корзины", "BucketDocuments", "Reports", null, new { @class = "btn btn-info" })
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Id, htmlAttributes: new { @class = "control-label", @style = "text-transform: uppercase!important;font-size: 15px!important;" })
+                        <div class="form-control-container full-width-select">
+                            @Html.TextBoxFor(model => model.Id, new { id = "Id", @name = "Id", @disabled = "disabled" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Date, htmlAttributes: new { @class = "control-label", @style = "text-transform: uppercase!important;font-size: 15px!important;" })
+                        <div class="form-control-container full-width-select">
+                            @Html.TextBoxFor(model => model.Date, new { id = "Id", @name = "Id", @disabled = "disabled" })
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.CreatedBy, htmlAttributes: new { @class = "control-label", @style = "text-transform: uppercase!important;font-size: 15px!important;" })
+                        <div class="form-control-container full-width-select">
+                            @Html.TextBoxFor(model => model.CreatedBy, new { id = "Id", @name = "Id", @disabled = "disabled", @style= "width: 500px; max-width:500px!important;" })
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="font-size: 13px;" class="table-header clearfix row">
+                @(Html.Grid(Model.Items)
+                   .Columns(columns =>
+                   {
+                      columns.Add(model => model.OrderNum)
+                       .Css("new_columns_block_start")
+                       .Titled("№").SetWidth(15).Filterable(false).Sortable(true);
+
+                      columns.Add(model => model.Product)
+                       .Titled("Номенклатура").Filterable(false).Sortable(true);
+
+                      columns.Add(model => model.Storage)
+                       .Titled("Склад").Filterable(false).Sortable(true);
+
+                      columns.Add(model => model.BalanceKeeper)
+                       .Titled("Баланс").Filterable(false).Sortable(true);
+
+                      columns.Add(model => model.StorageCode)
+                       .Css("new_columns_block_end")
+                       .Titled("Код места<br>хранения").Filterable(false).Sortable(true);
+
+                      columns.Add(model => model.Shifr)
+                       .Css("new_columns_block_start")
+                       .Titled("Артикул").Filterable(false).Sortable(true);
+
+                      columns.Add(model => model.Shifr_MDM)
+                       .Titled("Артикул<br>МДМ").Filterable(false).Sortable(true);
+
+                      columns.Add(model => model.BacodeProduct)
+                       .Titled("Штрих код<br>номенклатуры").Filterable(false).Sortable(true);
+
+                      columns.Add(model => model.BacodeConsignment)
+                       .Css("new_columns_block_end")
+                       .Titled("Штрих код партии<br>номенклатуры").Filterable(false).Sortable(true);
+
+                      columns.Add(model => model.Count)
+                       .Titled("Кол-во").Filterable(false).Sortable(false)
+                       .Encoded(false).Sanitized(false)
+                       .RenderValueAs(o =>@<div style="text-align:right!important;">@o.Count.ToString("N2")</div>);
+
+                      columns.Add(model => model.Weight)
+                       .Titled("Вес<br>1 ед./кг.").Filterable(false).Sortable(false)
+                       .Encoded(false).Sanitized(false)
+                       .RenderValueAs(o =>@<div style="text-align:right!important;">@o.Weight.ToString("N2")</div>);
+
+                      columns.Add(model => model.TotalWeight)
+                       .Titled("Вес<br>итого кг.").Filterable(false).Sortable(false)
+                       .Encoded(false).Sanitized(false)
+                       .RenderValueAs(o =>@<div style="text-align:right!important;">@o.TotalWeight.ToString("N2")</div>);
+
+                      columns.Add(model => model.Comments)
+                       .Titled("Коментарий").Filterable(false).Sortable(true);
+
+                      columns.Add()
+                        .Encoded(false).Css("new_columns_block_end")
+                        .Sanitized(false)
+                        .Css("centered_column")
+                        .SetWidth(40)
+                        .RenderValueAs(o =>
+                    @<div style="min-width:20px!important;">
+                        <a class="tarash-i update_link tooltips" href="@Url.Action("PartyCard", "Reports", new { InnerPartyKey = o.InnerPartyKey })">
+                            <span class="tooltip-message">Просмотр карточки партии</span>
+                            <span class="glyphicon glyphicon-list-alt"></span>
+                        </a>
+                    </div>);
+
+                     }))
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+@section scripts
+    {
+    <script>
+        var offset = $('.navbar').height();
+        $("html:not(.legacy) table").stickyTableHeaders({ fixedOffset: offset });
+
+        $(document).ready(function ()
+        {
+             var table = document.getElementsByTagName("table")[0];
+             var footer = table.createTFoot();
+             var row = footer.insertRow(0);
+
+             var EmptyCell = row.insertCell(0);
+             EmptyCell.innerHTML = "";
+             addClass(EmptyCell, "right_column main_column new_columns_block_start");
+
+             var EmptyCell = row.insertCell(1);
+             EmptyCell.innerHTML = "";
+
+             var EmptyCell = row.insertCell(2);
+             EmptyCell.innerHTML = "";
+
+             var EmptyCell = row.insertCell(3);
+             EmptyCell.innerHTML = "";
+
+             var EmptyCell = row.insertCell(4);
+             addClass(EmptyCell, "new_columns_block_end");
+             EmptyCell.innerHTML = "";
+
+             var EmptyCell = row.insertCell(5);
+             EmptyCell.innerHTML = "";
+
+             var EmptyCell = row.insertCell(6);
+             EmptyCell.innerHTML = "";
+
+             var EmptyCell = row.insertCell(7);
+             EmptyCell.innerHTML = "";
+
+             var cell = row.insertCell(8);
+             cell.innerHTML = "<strong>ВСЕГО:</strong>";
+
+             var EmptyCell = row.insertCell(9);
+             addClass(EmptyCell, "right_column new_columns_block_start");
+             EmptyCell.innerHTML = "<span class='pull-right'><strong>@Model.Items.Sum(s=>s.Count).ToString("N0") шт.</strong></span>";
+
+             var EmptyCell = row.insertCell(10);
+             EmptyCell.innerHTML = "";
+
+             var EmptyCell = row.insertCell(11);
+             addClass(EmptyCell, "right_column");
+             EmptyCell.innerHTML = "<span class='pull-right'><strong>@Model.Items.Sum(s=>s.TotalWeight).ToString("N2") кг.</strong></span>";
+
+             var EmptyCell = row.insertCell(12);
+             EmptyCell.innerHTML = "";
+
+             var EmptyCell = row.insertCell(13);
+             addClass(EmptyCell, "new_columns_block_end");
+             EmptyCell.innerHTML = "";
+        });
+    </script>
+}

@@ -44,6 +44,10 @@ namespace Corum.Models.ViewModels
         public string Shifr { get; set; }
         public string Figure { get; set; }
         public string Measure { get; set; }
+        public string BacodeProduct { get; set; }
+        public string BacodeConsignment { get; set; }
+        public string Shifr_MDM { get; set; }
+        public string BacodesAll { get; set; }
         public string ProductFullName { get; set; }
         public Nullable<decimal> Weight { get; set; }
         public string pType { get; set; }
@@ -88,9 +92,6 @@ namespace Corum.Models.ViewModels
         public string BalanceCurrency { get; set; }
         public Nullable<decimal> CurrencyIndexToUAH { get; set; }
         public string FullSellStatus { get; set; }
-        public string BacodeProduct { get; set; }
-        public string BacodeConsignment { get; set; }
-        public string Shifr_MDM { get; set; }
     }
 
     public class GroupItemRestViewModel
@@ -118,11 +119,11 @@ namespace Corum.Models.ViewModels
 
         public decimal QuantityPrihod { get; set; }
         public decimal MassPrihod {get; set;}
-        public decimal PE_Prihod {get; set;} 
-        public decimal PF_Prihod {get; set;}          
-        public decimal PCP_Prihod {get; set;}         
+        public decimal PE_Prihod {get; set;}
+        public decimal PF_Prihod {get; set;}
+        public decimal PCP_Prihod {get; set;}
         public decimal PCPC_Prihod {get; set;}
-        public decimal FCP_Prihod  {get; set;}      
+        public decimal FCP_Prihod  {get; set;}
         public decimal FCPC_Prihod {get; set;}
         public decimal BP_Prihod { get; set; }
 
@@ -156,7 +157,7 @@ namespace Corum.Models.ViewModels
         public string pType { get; set; }
         public string pGroup { get; set; }
         public string pRecieverPlan { get; set; }
-        public string pRecieverFact { get; set; }        
+        public string pRecieverFact { get; set; }
         public string RecieverGroupPlan { get; set; }
         public string InnerOrderNum { get; set; }
         public string OrderedBy { get; set; }

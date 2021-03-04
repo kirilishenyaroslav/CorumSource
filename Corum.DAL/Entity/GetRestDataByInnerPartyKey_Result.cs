@@ -15,6 +15,10 @@ namespace Corum.DAL.Entity
     {
         public string Product { get; set; }
         public string Shifr { get; set; }
+        public string Shifr_MDM { get; set; }
+        public string BarcodeProduct { get; set; }
+        public string BacodeConsignment { get; set; }
+        public string BacodesAll { get; set; }
         public string Figure { get; set; }
         public string Measure { get; set; }
         public string Storage { get; set; }

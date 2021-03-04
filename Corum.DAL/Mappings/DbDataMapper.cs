@@ -10,6 +10,7 @@ using Corum.Models.ViewModels.Cars;
 using Corum.Models.ViewModels.Customers;
 using Corum.Models.ViewModels.OrderConcurs;
 using System.Globalization;
+using Corum.Models.ViewModels.Bucket;
 
 namespace Corum.DAL.Mappings
 {
@@ -32,6 +33,16 @@ namespace Corum.DAL.Mappings
             };
         }
 
+
+        public static BucketDocument Map(BucketDocuments bd)
+        {
+            return new BucketDocument()
+            {
+                Id = bd.IdBucketDocument,
+                Number = bd.DocNumber,
+                CreatedBy = bd.CreatedBy
+            };
+        }
 
         public static CompetitiveListStepViewModel Map(OrderConcursSteps o)
         {
@@ -562,13 +573,6 @@ namespace Corum.DAL.Mappings
 
         public static OrderBaseViewModel Map (OrdersBase o)
         {
-            /* var RouteTime = o.TimeRoute ?? 0;
-             TimeSpan t = TimeSpan.FromMilliseconds((double)RouteTime);
-             string routeTime = string.Format("{0:D2}:{1:D2}",
-                                    (int) t.TotalHours,
-                                     t.Minutes);            
-            */
-
             var TotalDistanceLength = o.TotalDistanceLength ?? 0;
 
             var result = new OrderBaseViewModel()
@@ -1516,13 +1520,22 @@ namespace Corum.DAL.Mappings
             };
         }
 
-            public static RestViewModel Map(GetInnerOrderNumFilter_Result o)
+        public static RestViewModel Map(GetInnerOrderNumFilter_Result o)
         {
             return new RestViewModel()
             {
                 InnerOrderNum = o.InnerOrderNum,
                 idrow = o.idrow ?? 0,
                
+            };
+        }
+
+        public static RestViewModel Map(GetProductBarcodeFilter_Result o)
+        {
+            return new RestViewModel()
+            {
+                BacodesAll = o.ProductBarcode,
+                idrow = o.idrow ?? 0,
             };
         }
 

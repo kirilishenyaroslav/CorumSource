@@ -13,11 +13,11 @@ namespace BarnivannAdminUI
             bundles.Add(new ScriptBundle("~/bundles/jqueryUI").Include(
                         "~/Scripts/jquery-ui-{version}.js"));
 
-            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(                        
+            bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
 
             bundles.Add(new ScriptBundle("~/bundles/jquery_ajax").Include(
-                        "~/Scripts/jquery.unobtrusive-ajax.js"));            
+                        "~/Scripts/jquery.unobtrusive-ajax.js"));
 
             bundles.Add(new ScriptBundle("~/bundles/datetime").Include(
                         "~/Scripts/jquery.datetimepicker.js",
@@ -118,6 +118,7 @@ namespace BarnivannAdminUI
                 .Include("~/scripts/jqwidgets/jqxpasswordinput.js")
                 .Include("~/scripts/jqwidgets/jqxnumberinput.js")
                 .Include("~/scripts/jqwidgets/jqxcombobox.js")
+                .Include("~/scripts/jqwidgets/jqxdata.export.js")
                 .Include("~/scripts/jqwidgets/globalize.js")
                 );
 
@@ -131,6 +132,7 @@ namespace BarnivannAdminUI
                 new StyleBundle("~/Content/JQWidgetsCss")
                 .Include("~/Content/jqwidgets/jqx.base.css")
                 .Include("~/Content/jqx.nms.css")
+                .Include("~/Content/jqx.orange.css")
                 );
 
 

@@ -89,7 +89,6 @@ namespace CorumAdminUI.Controllers
             return RedirectToAction("UploadFile", "Admin");
         }
 
-
         [HttpPost]
         public ActionResult UploadFile(UploadFileViewModel model, HttpPostedFileBase ExternalFile)
         {

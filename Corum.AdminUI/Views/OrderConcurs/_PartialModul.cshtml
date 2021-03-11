@@ -4,7 +4,7 @@
 <link type="text/css" rel="stylesheet" href="~/Content/Tender/TableTender.css" />
 
 
-<div id="partialModul" class="row" style="display: none; margin:auto;">
+<div id="partialModul" class="row modal-custom" style="display: none; margin:auto; overflow-y:auto;">
 
     @using (Html.BeginForm("SendNotificationTender", "OrderConcurs", FormMethod.Post))
     {
@@ -130,25 +130,15 @@
 
             <div class="col-md-6">
                 <div class="form-group" style="margin-left:20px;">
-
+                    @Html.LabelFor(model => model.data.lotName, htmlAttributes: new { @class = "control-label" })
+                    @Html.EditorFor(model => model.data.lotName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+                    @Html.ValidationMessageFor(model => model.data.lotName, "", new { @class = "text-danger" })
                 </div>
             </div>
         </div>
 
 
-        @*<div class="form-group row">
-                <label class="col-md-4" style="font-weight: normal !important;">
-                    Наименование лота
-                </label>
-                <div class="col-md-8">
-                    @Html.TextBox("lotName", "Лот №1", new
-               {
-                   @class = "form-control",
-                   @disabled = "disabled",
-                   type = "text"
-               })
-                </div>
-            </div>
+        @*
 
             <div class="form-group row">
                 <label class="col-md-4" style="font-weight: normal !important;">

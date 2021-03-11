@@ -25,16 +25,6 @@ namespace Corum.Models.ViewModels.Tender
         }
     }
 
-    public class PropAliasValues : TenderParamsDefaults  // Класс опивающий значения словарных атрибутов 
-    {
-        public string propAliasVal { get; set; }  // Значение словарного атрибута
-    }
-
-    public class PropValues : TenderParamsDefaults  // Класс описывающий атрибуты items
-    {
-        public string propValItems { get; set; }  // Атрибут item
-    }
-
 
     public class Items : TenderParamsDefaults  //Класс описывающий позицию лота (обязательное поле)
     {
@@ -81,72 +71,57 @@ namespace Corum.Models.ViewModels.Tender
     }
 
 
-    public class PropAliases : TenderParamsDefaults  // Класс описывающий алиасы словарных атрибутов (необязательное поле)
-    {
-        public string aliase { get; set; }
-    }
-
-
     public class Lots : TenderParamsDefaults  // Класс описывающий лот тендера
     {
-        private string lotNAME;
-        public string lotName  // наименование лота (тип  данных string, максимальная длина 100 символов) (необязательное поле)
-        {
-            get
-            {
-                return lotNAME;
-            }
-            set
-            {
-                lotNAME = (value.Length > 100) ? value.Substring(0, 99) : value;
-            }
-        }
+        public string lotName { get; set; }  // наименование лота (тип  данных string, максимальная длина 100 символов) (необязательное поле)
+
         //public string[] props { get; set; }  //  Атрибуты лота тендера
-        //public string[] propAliases { get; set; } // Алиасы словарных атрибутов (необязательное поле)
+        public string[] propAliases { get; set; } // Алиасы словарных атрибутов (необязательное поле)
 
 
         //public List<Props> props { get; set; }  // массив атрибутов (необязательное поле)
         //public List<PropAliases> propAliases { get; set; }  // массив алиасов словарных атрибутов (необязательное поле)
-        //public List<Items> items { get; set; }  // массив позиций лота (обязательное поле)
+        public List<Items> items { get; set; }  // массив позиций лота (обязательное поле)
 
         public Lots()
         {
-            ////props = new string[]
-            ////{
-            ////    //"Наименование груза","Вес, т","Упаковка","Габариты","Дата подачи"
-            ////    //,
-            ////    //"Дата выгрузки","Маршрут","Расстояние, км","Требуемое кол-во автомобилей","Тип заявки (плановая/срочная)"
-            ////};
-            //propAliases = new string[]
+            this.lotName = "Лот №1";
+            //props = new string[]
             //{
-            //        //"CARGO_NAME",
-            //        //"WEIGHT",
-            //        //"PACKAGE",
-            //        //"DIMENSIONS",
-            //        //"APPLICATION_DATE",
-            //        //"UPLOAD_DATE",
-            //        //"ROUTE",
-            //        //"DISTANCE",
-            //        //"REQUIRED_NUMBER_OF_CARS",
-            //        //"APPLICATION_TYPE"
+            //    //"Наименование груза","Вес, т","Упаковка","Габариты","Дата подачи"
+            //    //,
+            //    //"Дата выгрузки","Маршрут","Расстояние, км","Требуемое кол-во автомобилей","Тип заявки (плановая/срочная)"
             //};
-            //items = new List<Items>()
-            //{
-            //    new Items()
-            //    {
-            //        qty = 1,
-            //        itemExternalN = "656523",
-            //        nmcId = 349,
-            //        detailId = 6
-            //    },
-            //    new Items()
-            //    {
-            //        qty = 2,
-            //        itemExternalN = "562325",
-            //        nmcId = 321,
-            //        detailId = 6
-            //    }
-            //};
+            propAliases = new string[]
+            {
+                    //"CARGO_NAME",
+                    //"WEIGHT",
+                    //"PACKAGE",
+                    //"DIMENSIONS",
+                    //"APPLICATION_DATE",
+                    //"UPLOAD_DATE",
+                    //"ROUTE",
+                    //"DISTANCE",
+                    //"REQUIRED_NUMBER_OF_CARS",
+                    //"APPLICATION_TYPE"
+            };
+            items = new List<Items>()
+            {
+                new Items()
+                {
+                    qty = 1,
+                    itemExternalN = "656523",
+                    nmcId = 349,
+                    detailId = 6
+                },
+                new Items()
+                {
+                    qty = 2,
+                    itemExternalN = "562325",
+                    nmcId = 321,
+                    detailId = 6
+                }
+            };
         }
     }
 
@@ -308,7 +283,24 @@ namespace Corum.Models.ViewModels.Tender
         public string dateEnd { get; set; }  // дата конца приема предложений (необязательное поле, тип данных string, дата в формате ISO 8601)
 
 
+
+        [Display(Name = "Наименование лота")]
+        [Required(ErrorMessage = "Введите наименование лота")]
+        [StringLength(100, ErrorMessage = "Максимальная длина поля не больше 100 символов")]
+        public string lotName            // наименование лота (тип  данных string, максимальная длина 100 символов) (необязательное поле)
+        {
+            get
+            {
+                return this.lots[0].lotName;
+            }
+            set { this.lots[0].lotName = value; }
+        }  
+
+
         public List<Lots> lots { get; set; }  // массив лотов тендера (обязательное поле при необлегченном режиме)
+
+
+
 
 
         [Display(Name = "Режим подачи тендера")]

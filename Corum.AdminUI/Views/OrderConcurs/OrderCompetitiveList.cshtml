@@ -643,8 +643,7 @@
         $(document).ready(function() {
             InitFilterMultipleDropDowns();
             GetSpecification(1);
-                $("#tabs").tabs();
-
+            $("#tabs").tabs();
         });
 
 
@@ -666,7 +665,7 @@
                         InitFilterDropDowns();
                     },
                     close: function(event, ui) {
-                        //$(this).dialog('destroy');
+                        $(this).dialog('destroy');
                     },
                     create: function(event, ui) {
                         $("#disable_all").addClass("disable_all");

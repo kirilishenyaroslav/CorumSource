@@ -112,7 +112,7 @@
                                             Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-1)
                                         </a>
                                     </th>
- }
+                                }
                                 else
                                 {
                                     <th rowspan="2" class="grid-header centered_column" style="display: none;">
@@ -125,7 +125,7 @@
                                             Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-1)
                                         </a>
                                     </th>
-}
+                                }
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                 {
                                     <th rowspan="2" class="grid-header centered_column">
@@ -138,7 +138,7 @@
                                             Стоимость одного автомобиля, грн.<br>без НДС (согласно КП-2)
                                         </a>
                                     </th>
- }
+                                }
                                 else
                                 {
                                     <th rowspan="2" class="grid-header centered_column" style="display: none;">
@@ -151,7 +151,7 @@
                                             Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-2)
                                         </a>
                                     </th>
-}
+                                }
 
 
                                 <th rowspan="2" class="grid-header centered_column">
@@ -248,26 +248,26 @@
                                     <th class="grid-header centered_column">
                                         8
                                     </th>
- }
+                                }
                                 else
                                 {
                                     <th class="grid-header centered_column" style="display:none;">
                                         8
                                     </th>
-}
+                                }
 
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                 {
                                     <th class="grid-header centered_column">
                                         9
                                     </th>
- }
+                                }
                                 else
                                 {
                                     <th class="grid-header centered_column" style="display:none;">
                                         9
                                     </th>
-}
+                                }
 
                                 <th class="grid-header centered_column">
                                     10
@@ -329,20 +329,20 @@
                                     @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
                                     {
                                         <td class="grid-cell rigth_column"> @item.CarCost7 </td>
- }
+                                    }
                                     else
                                     {
                                         <td class="grid-cell rigth_column" style="display:none;"> @item.CarCost7 </td>
-}
+                                    }
 
                                     @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                     {
                                         <td class="grid-cell rigth_column"> @item.CarCost </td>
- }
+                                    }
                                     else
                                     {
                                         <td class="grid-cell rigth_column" style="display:none;"> @item.CarCost </td>
-}
+                                    }
                                     <td class="grid-cell rigth_column"> @item.DaysDelaySteps </td>
                                     <td class="grid-cell rigth_column"> @item.DelayEffect </td>
 
@@ -397,7 +397,7 @@
                                             </a>}
                                     </td>
                                 </tr>
-}
+                            }
                         </tbody>
                     </table>
 
@@ -643,7 +643,7 @@
         $(document).ready(function() {
             InitFilterMultipleDropDowns();
             GetSpecification(1);
-
+                $("#tabs").tabs();
 
         });
 
@@ -666,7 +666,7 @@
                         InitFilterDropDowns();
                     },
                     close: function(event, ui) {
-                        $(this).dialog('destroy');
+                        //$(this).dialog('destroy');
                     },
                     create: function(event, ui) {
                         $("#disable_all").addClass("disable_all");

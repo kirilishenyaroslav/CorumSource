@@ -8,13 +8,18 @@
     @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/ui_css")
     @Styles.Render("~/Content/JQWidgetsCss")
-    
+    <link rel="stylesheet" href="~/Content/themes/base/jquery-ui.css">
+    <link rel="stylesheet" href="/resources/demos/style.css">
+    @Scripts.Render("~/scripts/jquery-1.12.4.js")
+    @Scripts.Render("~/scripts/jquery-ui-1.12.0.js")
+
+
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/grathVis")
-     
-	@RenderSection("head_scripts", required: false)
-    
-	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,400italic,600italic,600,700,700italic,800,800italic' rel='stylesheet' type='text/css'>	
+
+    @RenderSection("head_scripts", required: false)
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,400italic,600italic,600,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
     <meta name="description" content="Corum" />
 </head>
 <body>

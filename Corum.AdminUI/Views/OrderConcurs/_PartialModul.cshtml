@@ -6,7 +6,26 @@
 
 <div id="partialModul" class="row modal-custom" style="display: none; margin:auto; overflow-y:auto;">
 
-    @using (Html.BeginForm("SendNotificationTender", "OrderConcurs", FormMethod.Post))
+    <div class="row">
+        <div id="tabs">
+            <ul>
+                <li><a href="#tabs-1">Nunc tincidunt</a></li>
+                <li><a href="#tabs-2">Proin dolor</a></li>
+                <li><a href="#tabs-3">Aenean lacinia</a></li>
+            </ul>
+            <div id="tabs-1">
+                <p>abc.</p>
+            </div>
+            <div id="tabs-2">
+                <p>def.</p>
+            </div>
+            <div id="tabs-3">
+                <p>ghi.</p>
+            </div>
+        </div>
+    </div>
+
+    @*@using (Html.BeginForm("SendNotificationTender", "OrderConcurs", FormMethod.Post))
     {
         <div class="row">
             <div class="col-md-12">
@@ -57,7 +76,7 @@
 
             <div class="col-md-6">
                 <div class="form-group" style="margin-left:20px;">
-                    @Html.LabelFor(model => model.data.companyName, htmlAttributes: new { @class = "control-label" })
+                    @Html.LabelFor(model => model.data.regume, htmlAttributes: new { @class = "control-label" })
                     @Html.DropDownListFor(model => model.data.regume, Model.data.listRegums as SelectList, new { @class = "form-control" })
                 </div>
             </div>
@@ -138,51 +157,11 @@
         </div>
 
 
-        @*
-
-            <div class="form-group row">
-                <label class="col-md-4" style="font-weight: normal !important;">
-                    Номенклатура
-                </label>
-                <div class="col-md-8">
-                    @{SelectList listnmcs = new SelectList(nmcs); }
-                    @Html.DropDownList("nmcName", listnmcs as SelectList, new
-               {
-                   @class = "form-control",
-                   @disabled = "disabled"
-               })
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-md-4" style="font-weight: normal !important;">
-                    Единица измерения
-                </label>
-                <div class="col-md-8">
-                    @{SelectList listUnitNames = new SelectList(unitNames); }
-                    @Html.DropDownList("unitName", listUnitNames as SelectList, new
-               {
-                   @class = "form-control",
-                   @disabled = "disabled"
-               })
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-md-4" style="font-weight: normal !important;">
-                    Количество
-                </label>
-                <div class="col-md-8">
-                    <input class="form-control" disabled="disabled" type="number" min="1" value="1" name="qty" />
-                </div>
-            </div>*@
-
-
         <div style="float:right;">
             <button class="btn btn-default" onclick="$('#partialModul').dialog('close');" type="reset" name="action" value="">Отмена</button>
             <button class="btn btn-success" type="submit" name="action" value="">Отправить</button>
         </div>
 
-    }
+    }*@
 </div>
 

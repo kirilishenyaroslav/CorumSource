@@ -110,15 +110,22 @@ namespace Corum.Models.ViewModels.Tender
                 new Items()
                 {
                     qty = 1,
-                    itemExternalN = "656523",
-                    nmcId = 349,
+                    itemExternalN = "656524",
+                    nmcId = 805,
                     detailId = 6
                 },
                 new Items()
                 {
-                    qty = 2,
-                    itemExternalN = "562325",
-                    nmcId = 321,
+                    qty = 1,
+                    itemExternalN = "562326",
+                    nmcId = 806,
+                    detailId = 6
+                },
+                new Items()
+                {
+                    qty = 1,
+                    itemExternalN = "562327",
+                    nmcId = 808,
                     detailId = 6
                 }
             };

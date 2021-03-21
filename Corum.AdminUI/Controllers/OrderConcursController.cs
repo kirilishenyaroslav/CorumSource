@@ -37,8 +37,11 @@ namespace CorumAdminUI.Controllers
             };
             return View(model);
         }
-
-
+        [HttpGet]
+        public ActionResult Tabs()
+        {
+            return View();
+        }
 
         [HttpPost]
         public ActionResult SendNotificationTender(TenderForma tenderForma)

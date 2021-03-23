@@ -8,12 +8,6 @@
     @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/ui_css")
     @Styles.Render("~/Content/JQWidgetsCss")
-    <link rel="stylesheet" href="~/Content/themes/base/jquery-ui.css">
-    <link rel="stylesheet" href="/resources/demos/style.css">
-    @Scripts.Render("~/scripts/jquery-1.12.4.js")
-    @Scripts.Render("~/scripts/jquery-ui-1.12.0.js")
-
-
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/grathVis")
 
@@ -40,8 +34,8 @@
                         </a>
                     </div>
                     <div class="navbar-collapse collapse">
-                            @{ Html.RenderAction("MainMenu", "Access"); }    
-                            @Html.Partial("_Toastr")
+                        @{ Html.RenderAction("MainMenu", "Access"); }
+                        @Html.Partial("_Toastr")
                     </div>
                 </div>
             </div>

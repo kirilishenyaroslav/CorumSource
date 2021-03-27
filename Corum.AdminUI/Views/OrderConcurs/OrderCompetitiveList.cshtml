@@ -674,199 +674,117 @@
                     autoOpen: false,
                     width: 800,
                     top: 50,
-                    height: 500,
+                    height: 525,
                     resizable: false,
                     tags: true,
-                    title: "Запрос на облегченный тендер",
+                    title: "Запрос на тендер",
                     modal: true,
                     open: function(event, ui) {
                         InitFilterDropDowns();
-                        let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+                        $(document).ready(function () {
+                            // prepare the data
+                            var data = {};
+                            var nmcNames =
+                                [
+                                    "3.1.1. Послуги перевезення вантажів довгоміри - Тягачі з бортовими напівпричепами та бортові автомобілі (Q =от 5 до 20тн.) З тентом і без",
+                                    "4.1.2. Послуги самоскида (Q = 16-35тн.)",
+                                    "5.2.4. Послуги автовишки (висота підйому 40м):",
+                                    "2.2.1.  Послуги пасс.перевозок автобусами місткістю від 16 до 22 місць",
+                                    "1.1.1 Послуги перевзеннь ПВ по Україні"
+                                ];
+                            var unitNames =
+                                [
+                                    "послуга", "послуга", "послуга", "послуга", "послуга"
+                                ];
+                            var qties =
+                                [
+                                    "1","2","1","3","1"
+                                ];
+                            var nmcIds =
+                                [
+                                    "351","371","385","363","388"
+                                ];
 
-                        if (bucketValues === null || bucketValues === undefined) {
-                            bucketValues = [];
-                        }
-
-                        bucketValues.forEach(element => {
-
-                            let w = element.Weight;
-                            if (typeof element.Weight === 'string' || element.Weight instanceof String) {
-                                w = parseFloat(element.Weight.replace(',', '.'));
+                            var generaterow = function (i) {
+                                var row = {};
+                                var nmcindex = Math.floor(Math.random() * nmcNames.length);
+                                row["nmcName"] = nmcNames[Math.floor(Math.random() * nmcNames.length)];
+                                row["unitName"] = unitNames[Math.floor(Math.random() * unitNames.length)];
+                                row["qty"] = parseFloat(qties[nmcindex]);
+                                row["nmcId"] = parseFloat(nmcIds[nmcindex]);
+                                return row;
                             }
-                            let c = element.Count;
-                            if (typeof element.Count === 'string' || element.Count instanceof String) {
-                                c = parseFloat(element.Count.replace(',', '.'));
-                            }
-                            element.TotalWeight = w * c;
-                        });
-
-                        var sourceBusketItems =
-                        {
-                            localData: bucketValues,
-                            dataType: "array",
-                            datafields: [
-                                { name: 'InnerPartyKey' },
-                                { name: 'Storage' },
-                                { name: 'Product' },
-                                { name: 'Shifr' },
-                                { name: 'Shifr_MDM' },
-                                { name: 'BacodeConsignment' },
-                                { name: 'BacodeProduct' },
-                                { name: 'Count' },
-                                { name: 'Comments' },
-                                { name: 'StorageCode' },
-                                { name: 'BalanceKeeper' },
-                                { name: 'Weight' },
-                                { name: 'TotalWeight' },
-                            ],
-                            id: 'InnerPartyKey'
-                        };
-
-                        var dataAdapterBusketItems = new $.jqx.dataAdapter(sourceBusketItems);
-
-                        $("#jqxgridUC").jqxDataTable(
+                            //for (var i = 0; i < 5; i++) {
+                            //    var row = generaterow(i);
+                            //    data[i] = row;
+                            //}
+                            var source =
                             {
-                                width: 750,
-                                source: dataAdapterBusketItems,
-                                theme: 'orange',
-                                altRows: false,
-                                columnsheight: 80,
-                                pageSize: 5,
-                                sortable: true,
-                                filterable: true,
-                                pageable: true,
-                                editable: true,
-                                editSettings: { saveOnPageChange: true, saveOnBlur: true, saveOnSelectionChange: true, cancelOnEsc: true, saveOnEnter: true, editSingleCell: true, editOnDoubleClick: true, editOnF2: false },
-                                rendering: function () {
-                                    // destroys all buttons.
-                                    if ($(".editButtons").length > 0) {
-                                        $(".editButtons").jqxButton('destroy');
-                                    }
+                                localdata: data,
+                                datatype: "local",
+                                datafields:
+                                    [
+                                        { name: 'nmcName', type: 'string' },
+                                        { name: 'unitName', type: 'string' },
+                                        { name: 'qty', type: 'number' },
+                                        { name: 'nmcId', type: 'number' }
+                                    ],
+                                addrow: function (rowid, rowdata, position, commit) {
+                                    // synchronize with the server - send insert command
+                                    // call commit with parameter true if the synchronization with the server is successful
+                                    //and with parameter false if the synchronization failed.
+                                    // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
+                                    commit(true);
                                 },
-                                // called when jqxDataTable is rendered.
-                                rendered: function () {
-                                    if ($(".editButtons").length > 0) {
+                                deleterow: function (rowid, commit) {
+                                    // synchronize with the server - send delete command
+                                    // call commit with parameter true if the synchronization with the server is successful
+                                    //and with parameter false if the synchronization failed.
+                                    commit(true);
+                                }
+                            };
+                            var dataAdapter = new $.jqx.dataAdapter(source);
+                            // initialize jqxGrid
+                            $("#grid").jqxGrid(
+                                {
+                                    width: 750,
+                                    height: 340,
+                                    theme:'orange',
+                                    source: dataAdapter,
+                                    showtoolbar: true,
+                                    rendertoolbar: function (toolbar) {
+                                        var me = this;
+                                        var container = $("<div style='margin: 5px;'></div>");
+                                        toolbar.append(container);
+                                        container.append('<input id="addrowbutton" type="button" value="Добавить" />');
+                                        container.append('<input style="margin-left: 5px;" id="deleterowbutton" type="button" value="Удалить" />');
+                                        $("#addrowbutton").jqxButton();
+                                        $("#deleterowbutton").jqxButton();
 
-                                        var editClick = function (event) {
-
-                                            var target = $(event.target);
-                                            // get button's value.
-                                            var value = target.val();
-                                            // get clicked row.
-                                            var rowIndex = parseInt(event.target.getAttribute('data-row'));
-                                            if (isNaN(rowIndex)) {
-                                                return;
-                                            }
-
-                                            var rowKey = event.target.getAttribute('data-key');
-                                            if (rowKey === null || rowKey === undefined) {
-                                                return;
-                                            }
-
-                                            let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
-
-                                            if (bucketValues === null || bucketValues === undefined) {
-                                                bucketValues = [];
-                                            }
-
-                                            bucketValues.forEach(element => {
-                                                let w = element.Weight;
-                                                if (typeof element.Weight === 'string' || element.Weight instanceof String) {
-                                                    w = parseFloat(element.Weight.replace(',', '.'));
-                                                }
-                                                let c = element.Count;
-                                                if (typeof element.Count === 'string' || element.Count instanceof String) {
-                                                    c = parseFloat(element.Count.replace(',', '.'));
-                                                }
-                                                element.TotalWeight = w * c;
-                                            });
-
-                                            var filtered = bucketValues.filter(function (el) { return el.InnerPartyKey != rowKey; });
-
-                                            sessionStorage.setItem('bucketValues', JSON.stringify(filtered));
-
-                                            $('.basketCount').html(filtered.length);
-
-                                            $("#jqxgridUC").jqxDataTable('beginUpdate', rowIndex);
-                                            $("#jqxgridUC").jqxDataTable('deleteRow', rowIndex);
-                                            $("#jqxgridUC").jqxDataTable('endUpdate', rowIndex);
-                                        }
-
-                                        $(".editButtons").on('click', function (event) {
-                                            editClick(event);
+                                        // create new row.
+                                        $("#addrowbutton").on('click', function () {
+                                            var datarow = generaterow();
+                                            var commit = $("#grid").jqxGrid('addrow', null, datarow);
                                         });
-                                    }
-                                },
-                                pagerButtonsCount: 8,
-                                showAggregates: true,
-                                aggregatesHeight: 50,
-                                columns: [
-                                    {
-                                        text: '#', sortable: false, filterable: false, editable: false, pinned: true,
-                                        groupable: false, draggable: false, resizable: false,
-                                        datafield: null, columntype: 'number', width: 35,
-                                        cellsrenderer: function (row, column, value) {
-                                            return "<div style='margin:4px;'>" + (row + 1) + "</div>";
-                                        }
-                                    },
-                                    
-                                    {
-                                        text: 'НОМЕНКЛАТУРА', editable: false, datafield: 'Product', width: 300, columnType: 'string', type: 'string',
-                                        renderer: function (text, align, height) {
-                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
-                                        },
-                                    },
-                                    
-                                    {
-                                        text: 'КОЛ-ВО ЕД.', editable: true, datafield: 'Count', width: 100, type: 'float', cellsFormat: 'F2', cellsalign: 'right',
-                                        renderer: function (text, align, height) {
-                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'><strong>" + text + "</strong></div>";
-                                        },
-                                        cellsrenderer: function (row, column, value) {
-                                            return "<div style='margin:4px;'><strong>" + value + "</strong></div>";
-                                        },
-                                        validation: function (cell, value) {
-                                            if (value < 0) return { message: "Количество должно быть больше 0!", result: false };
-                                            return true;
-                                        },
-                                        aggregates: ['sum'],
-                                        aggregatesRenderer: function (aggregates, column, element) {
-                                            let renderString = "<div style='margin: 4px; float: right;  height: 100%;'>";
-                                            let renderedValue = 0;
-                                            if (aggregates === null || aggregates.sum === undefined || aggregates === undefined || aggregates.sum === undefined) {
-                                                renderedValue = 0;
-                                            }
-                                            else {
-                                                renderedValue = aggregates.sum;
-                                            }
 
-                                            renderString += "<strong>Всего, eд:<br><span style='color:green;'>" + renderedValue + "</span></strong></div>";
-                                            return renderString;
-                                        }
+                                        // delete row.
+                                        $("#deleterowbutton").on('click', function () {
+                                            var selectedrowindex = $("#grid").jqxGrid('getselectedrowindex');
+                                            var rowscount = $("#grid").jqxGrid('getdatainformation').rowscount;
+                                            if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
+                                                var id = $("#grid").jqxGrid('getrowid', selectedrowindex);
+                                                var commit = $("#grid").jqxGrid('deleterow', id);
+                                            }
+                                        });
                                     },
-                                    
-                                    {
-                                        text: 'АРТИКУЛ МДМ', editable: false, datafield: 'Shifr_MDM', width: 150, columnType: 'string', type: 'string',
-                                        renderer: function (text, align, height) {
-                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
-                                        }
-                                    },
-                                    
-                                    {
-                                        text: 'БАЛАНС', editable: false, datafield: 'BalanceKeeper', width: 150, columnType: 'string', type: 'string',
-                                        renderer: function (text, align, height) {
-                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
-                                        }
-                                    },
-                                    
-                                    {
-                                        text: '', cellsAlign: 'center', align: "center", columnType: 'string', editable: false, sortable: false, dataField: 'InnerPartyKey', width: 45,
-                                        cellsRenderer: function (row, column, value) {
-                                            return "<button data-row='" + row + "' data-key='" + value + "' class='editButtons'></button>";
-                                        }
-                                    }
-                                ]
-                            });
+                                    columns: [
+                                        { text: 'Наименование позиции', datafield: 'nmcName', width: 475 },
+                                        { text: 'Ед.изм.', datafield: 'unitName', width: 75 },
+                                        { text: 'Количество', datafield: 'qty', width: 100 },
+                                        { text: 'Код номенк.', datafield: 'nmcId', width: 100, cellsalign: 'left' }
+                                             ]
+                                });
+                        });
                     },
                     close: function(event, ui) {
                         $(this).dialog('destroy');

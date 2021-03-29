@@ -674,199 +674,97 @@
                     autoOpen: false,
                     width: 800,
                     top: 50,
-                    height: 500,
+                    height: 525,
                     resizable: false,
                     tags: true,
-                    title: "Запрос на облегченный тендер",
+                    title: "Запрос на тендер",
                     modal: true,
                     open: function(event, ui) {
                         InitFilterDropDowns();
-                        let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
+                        $(document).ready(function () {
+                            // prepare the data
+                            var data = {};
 
-                        if (bucketValues === null || bucketValues === undefined) {
-                            bucketValues = [];
-                        }
 
-                        bucketValues.forEach(element => {
-
-                            let w = element.Weight;
-                            if (typeof element.Weight === 'string' || element.Weight instanceof String) {
-                                w = parseFloat(element.Weight.replace(',', '.'));
+                            var generaterow = function (i) {
+                                var row = {};
+                                return row;
                             }
-                            let c = element.Count;
-                            if (typeof element.Count === 'string' || element.Count instanceof String) {
-                                c = parseFloat(element.Count.replace(',', '.'));
+                            for (var i = 0; i < 20; i++) {
+                                var row = generaterow(i);
+                                data[i] = row;
                             }
-                            element.TotalWeight = w * c;
-                        });
-
-                        var sourceBusketItems =
-                        {
-                            localData: bucketValues,
-                            dataType: "array",
-                            datafields: [
-                                { name: 'InnerPartyKey' },
-                                { name: 'Storage' },
-                                { name: 'Product' },
-                                { name: 'Shifr' },
-                                { name: 'Shifr_MDM' },
-                                { name: 'BacodeConsignment' },
-                                { name: 'BacodeProduct' },
-                                { name: 'Count' },
-                                { name: 'Comments' },
-                                { name: 'StorageCode' },
-                                { name: 'BalanceKeeper' },
-                                { name: 'Weight' },
-                                { name: 'TotalWeight' },
-                            ],
-                            id: 'InnerPartyKey'
-                        };
-
-                        var dataAdapterBusketItems = new $.jqx.dataAdapter(sourceBusketItems);
-
-                        $("#jqxgridUC").jqxDataTable(
+                            var source =
                             {
-                                width: 750,
-                                source: dataAdapterBusketItems,
-                                theme: 'orange',
-                                altRows: false,
-                                columnsheight: 80,
-                                pageSize: 5,
-                                sortable: true,
-                                filterable: true,
-                                pageable: true,
-                                editable: true,
-                                editSettings: { saveOnPageChange: true, saveOnBlur: true, saveOnSelectionChange: true, cancelOnEsc: true, saveOnEnter: true, editSingleCell: true, editOnDoubleClick: true, editOnF2: false },
-                                rendering: function () {
-                                    // destroys all buttons.
-                                    if ($(".editButtons").length > 0) {
-                                        $(".editButtons").jqxButton('destroy');
-                                    }
-                                },
-                                // called when jqxDataTable is rendered.
-                                rendered: function () {
-                                    if ($(".editButtons").length > 0) {
+                                localdata: data,
+                                datatype: "local",
+                                datafields:
+                                    [
+                                        { name: 'nmcName', type: 'string' },
+                                        { name: 'unitName', type: 'string' },
+                                        { name: 'qty', type: 'number' }
+                                    ]
+                            };
+                            var dataAdapter = new $.jqx.dataAdapter(source);
+                            // initialize jqxGrid
+                            $("#grid").jqxGrid(
+                                {
+                                    width: 750,
+                                    height: 340,
+                                    theme:'orange',
+                                    source: dataAdapter,
+                                    autorowheight: true,
+                                    pageable: true,
+                                    selectionmode: 'singlecell',
+                                    editable: true,
 
-                                        var editClick = function (event) {
-
-                                            var target = $(event.target);
-                                            // get button's value.
-                                            var value = target.val();
-                                            // get clicked row.
-                                            var rowIndex = parseInt(event.target.getAttribute('data-row'));
-                                            if (isNaN(rowIndex)) {
-                                                return;
+                                    columns: [
+                                        {
+                                            text: 'Наименование позиции', datafield: 'nmcName', width: 500, columntype: 'combobox',
+                                            createeditor: function (row, column, editor) {
+                                                // assign a new data source to the combobox.
+                                                var list = [
+                                                    "3.1.1. Послуги перевезення вантажів довгоміри - Тягачі з бортовими напівпричепами та бортові автомобілі (Q =от 5 до 20тн.) З тентом і без",
+                                                    "4.1.2. Послуги самоскида (Q = 16-35тн.)",
+                                                    "5.2.4. Послуги автовишки (висота підйому 40м):",
+                                                    "2.2.1.  Послуги пасс.перевозок автобусами місткістю від 16 до 22 місць",
+                                                    "1.1.1 Послуги перевзеннь ПВ по Україні"
+                                                ];
+                                                editor.jqxComboBox({ autoDropDownHeight: false, source: list, promptText: "Сделайте выбор:" });
+                                            },
+                                            cellvaluechanging: function (row, column, columntype, oldvalue, newvalue) {
+                                                // return the old value, if the new value is empty.
+                                                if (newvalue == "") return oldvalue;
                                             }
-
-                                            var rowKey = event.target.getAttribute('data-key');
-                                            if (rowKey === null || rowKey === undefined) {
-                                                return;
-                                            }
-
-                                            let bucketValues = JSON.parse(sessionStorage.getItem("bucketValues"));
-
-                                            if (bucketValues === null || bucketValues === undefined) {
-                                                bucketValues = [];
-                                            }
-
-                                            bucketValues.forEach(element => {
-                                                let w = element.Weight;
-                                                if (typeof element.Weight === 'string' || element.Weight instanceof String) {
-                                                    w = parseFloat(element.Weight.replace(',', '.'));
+                                        },
+                                        {
+                                            text: 'Ед.изм.', datafield: 'unitName', width: 150, columntype: 'combobox',
+                                            createeditor: function (row, column, editor) {
+                                                // assign a new data source to the combobox.
+                                                var list = [
+                                                    "послуга", "шт."
+                                                ];
+                                                editor.jqxComboBox({ autoDropDownHeight: false, source: list, promptText: "Сделайте выбор:" });
+                                            },
+                                            cellvaluechanging: function (row, column, columntype, oldvalue, newvalue) {
+                                                // return the old value, if the new value is empty.
+                                                if (newvalue == "") return oldvalue;
+                                            } },
+                                        {
+                                            text: 'Количество', datafield: 'qty', width: 100, columntype: 'numberinput',
+                                            validation: function (cell, value) {
+                                                if (value < 0 || value > 150) {
+                                                    return { result: false, message: "Quantity should be in the 0-150 interval" };
                                                 }
-                                                let c = element.Count;
-                                                if (typeof element.Count === 'string' || element.Count instanceof String) {
-                                                    c = parseFloat(element.Count.replace(',', '.'));
-                                                }
-                                                element.TotalWeight = w * c;
-                                            });
-
-                                            var filtered = bucketValues.filter(function (el) { return el.InnerPartyKey != rowKey; });
-
-                                            sessionStorage.setItem('bucketValues', JSON.stringify(filtered));
-
-                                            $('.basketCount').html(filtered.length);
-
-                                            $("#jqxgridUC").jqxDataTable('beginUpdate', rowIndex);
-                                            $("#jqxgridUC").jqxDataTable('deleteRow', rowIndex);
-                                            $("#jqxgridUC").jqxDataTable('endUpdate', rowIndex);
-                                        }
-
-                                        $(".editButtons").on('click', function (event) {
-                                            editClick(event);
-                                        });
-                                    }
-                                },
-                                pagerButtonsCount: 8,
-                                showAggregates: true,
-                                aggregatesHeight: 50,
-                                columns: [
-                                    {
-                                        text: '#', sortable: false, filterable: false, editable: false, pinned: true,
-                                        groupable: false, draggable: false, resizable: false,
-                                        datafield: null, columntype: 'number', width: 35,
-                                        cellsrenderer: function (row, column, value) {
-                                            return "<div style='margin:4px;'>" + (row + 1) + "</div>";
-                                        }
-                                    },
-                                    
-                                    {
-                                        text: 'НОМЕНКЛАТУРА', editable: false, datafield: 'Product', width: 300, columnType: 'string', type: 'string',
-                                        renderer: function (text, align, height) {
-                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
-                                        },
-                                    },
-                                    
-                                    {
-                                        text: 'КОЛ-ВО ЕД.', editable: true, datafield: 'Count', width: 100, type: 'float', cellsFormat: 'F2', cellsalign: 'right',
-                                        renderer: function (text, align, height) {
-                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'><strong>" + text + "</strong></div>";
-                                        },
-                                        cellsrenderer: function (row, column, value) {
-                                            return "<div style='margin:4px;'><strong>" + value + "</strong></div>";
-                                        },
-                                        validation: function (cell, value) {
-                                            if (value < 0) return { message: "Количество должно быть больше 0!", result: false };
-                                            return true;
-                                        },
-                                        aggregates: ['sum'],
-                                        aggregatesRenderer: function (aggregates, column, element) {
-                                            let renderString = "<div style='margin: 4px; float: right;  height: 100%;'>";
-                                            let renderedValue = 0;
-                                            if (aggregates === null || aggregates.sum === undefined || aggregates === undefined || aggregates.sum === undefined) {
-                                                renderedValue = 0;
+                                                return true;
+                                            },
+                                            createeditor: function (row, cellvalue, editor) {
+                                                editor.jqxNumberInput({ decimalDigits: 0, digits: 3 });
                                             }
-                                            else {
-                                                renderedValue = aggregates.sum;
-                                            }
-
-                                            renderString += "<strong>Всего, eд:<br><span style='color:green;'>" + renderedValue + "</span></strong></div>";
-                                            return renderString;
                                         }
-                                    },
-                                    
-                                    {
-                                        text: 'АРТИКУЛ МДМ', editable: false, datafield: 'Shifr_MDM', width: 150, columnType: 'string', type: 'string',
-                                        renderer: function (text, align, height) {
-                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
-                                        }
-                                    },
-                                    
-                                    {
-                                        text: 'БАЛАНС', editable: false, datafield: 'BalanceKeeper', width: 150, columnType: 'string', type: 'string',
-                                        renderer: function (text, align, height) {
-                                            return "<div style='font-weight:bold; text-align:center; width:100%; height:100%; margin-top:25px;'>" + text + "</div>";
-                                        }
-                                    },
-                                    
-                                    {
-                                        text: '', cellsAlign: 'center', align: "center", columnType: 'string', editable: false, sortable: false, dataField: 'InnerPartyKey', width: 45,
-                                        cellsRenderer: function (row, column, value) {
-                                            return "<button data-row='" + row + "' data-key='" + value + "' class='editButtons'></button>";
-                                        }
-                                    }
-                                ]
-                            });
+                                             ]
+                                });
+                        });
                     },
                     close: function(event, ui) {
                         $(this).dialog('destroy');

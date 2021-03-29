@@ -7,24 +7,6 @@
     Layout = "~/Views/Shared/_Layout.cshtml"; }
 
 
-<!--<script type="text/javascript" src="~/Scripts/jquery-1.12.4.js"></script>
-<script type="text/javascript" src="~/Scripts/jquery-ui-1.12.0.js"></script>-->
-@*<script type="text/javascript" src="https://www.jqwidgets.com/jquery-widgets-demo/scripts/jquery-1.11.1.min.js"></script>*@
-<!--<script type="text/javascript" src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxcore.js"></script>
-<script type="text/javascript" src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxtooltip.js"></script>
-<script type="text/javascript" src="https://www.jqwidgets.com/jquery-widgets-demo/scripts/demos.js"></script>
-<script type="text/javascript" src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxbuttons.js"></script>
-<script type="text/javascript" src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxscrollbar.js"></script>
-<script type="text/javascript" src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxdatatable.js"></script>
-<script type="text/javascript" src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxlistbox.js"></script>
-<script type="text/javascript" src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxdropdownlist.js"></script>
-<script type="text/javascript" src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxdata.js"></script>
-<script type="text/javascript" src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxinput.js"></script>
-<script type="text/javascript" src="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/jqxbuttons.js"></script>
-
-<link rel="stylesheet" href="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/styles/jqx.light.css" media="screen">
-<link rel="stylesheet" href="https://www.jqwidgets.com/jquery-widgets-demo/jqwidgets/styles/jqx.base.css" type="text/css">-->
-
 <style type="text/css">
     #jqxgridAddConcurs .jqx-grid-cell-pinned, #jqxgridAddConcurs .jqx-grid-column-header {
         background-color: #f7b662;
@@ -723,14 +705,16 @@
                                             text: 'Наименование позиции', datafield: 'nmcName', width: 500, columntype: 'combobox',
                                             createeditor: function (row, column, editor) {
                                                 // assign a new data source to the combobox.
-                                                var list = [
-                                                    "3.1.1. Послуги перевезення вантажів довгоміри - Тягачі з бортовими напівпричепами та бортові автомобілі (Q =от 5 до 20тн.) З тентом і без",
-                                                    "4.1.2. Послуги самоскида (Q = 16-35тн.)",
-                                                    "5.2.4. Послуги автовишки (висота підйому 40м):",
-                                                    "2.2.1.  Послуги пасс.перевозок автобусами місткістю від 16 до 22 місць",
-                                                    "1.1.1 Послуги перевзеннь ПВ по Україні"
-                                                ];
-                                                editor.jqxComboBox({ autoDropDownHeight: false, source: list, promptText: "Сделайте выбор:" });
+                                                var list = {};
+                                                @*var item = @Model.specificationNames;
+                                                for (var i = 0; i < @Model.specificationNames.Count; i++)
+                                                {
+                                                    var spec = item[i];
+                                                    list[i] = spec['SpecName'];
+                                                }*@
+
+
+                                                    editor.jqxComboBox({ autoDropDownHeight: false, source: list, promptText: "Сделайте выбор:" });
                                             },
                                             cellvaluechanging: function (row, column, columntype, oldvalue, newvalue) {
                                                 // return the old value, if the new value is empty.

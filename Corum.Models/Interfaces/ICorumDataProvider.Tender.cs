@@ -10,5 +10,6 @@ namespace Corum.Models
     public partial interface ICorumDataProvider
     {
         List<TenderServices> GetTenderServices();
+        List<SpecificationNames> GetSpecificationNames();
     }
 }

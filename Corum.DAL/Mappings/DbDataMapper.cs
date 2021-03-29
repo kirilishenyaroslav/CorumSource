@@ -1274,7 +1274,10 @@ namespace Corum.DAL.Mappings
             {
                 Id = o.Id,
                 SpecCode = o.SpecCode,
-                SpecName = o.SpecName
+                SpecName = o.SpecName,
+                industryId = o.industryId,
+                nmcTestId = o.nmcTestId,
+                nmcWorkId = o.nmcWorkId
             };
         }
 

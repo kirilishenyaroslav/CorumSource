@@ -242,6 +242,8 @@ namespace Corum.Models
         public TenderForma tenderForma;
 
         public List<TenderServices> tenderServices { get; set; }
+        public List<SpecificationNames> specificationNames { get; set; }
+
         public OrderBaseViewModel orderInfo { get; set; }
 
         public CompetitiveListViewModel CompetitiveListInfo { get; set; }

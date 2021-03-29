@@ -34,5 +34,24 @@ namespace Corum.DAL
             }
             return services;
         }
+
+        public List<Corum.Models.Tender.SpecificationNames> GetSpecificationNames()
+        {
+            List<Corum.Models.Tender.SpecificationNames> specList = new List<Models.Tender.SpecificationNames>();
+            var specNamesList = db.SpecificationNames.ToList();
+            foreach (var item in specNamesList)
+            {
+                Corum.Models.Tender.SpecificationNames specNames = new Models.Tender.SpecificationNames();
+                specNames.Id = item.Id;
+                specNames.SpecCode = item.SpecCode;
+                specNames.SpecName = item.SpecName;
+                specNames.nmcTestId = item.nmcTestId;
+                specNames.nmcWorkId = item.nmcWorkId;
+                specNames.industryId = item.industryId;
+
+                specList.Add(specNames);
+            }
+            return specList;
+        }
     }
 }

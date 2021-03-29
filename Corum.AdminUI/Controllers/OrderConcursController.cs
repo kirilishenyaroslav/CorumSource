@@ -33,6 +33,7 @@ namespace CorumAdminUI.Controllers
                 orderInfo = context.getOrder(navInfo.OrderId),
                 currentStatus = context.getCurrentStatusForList(navInfo.OrderId),
                 tenderServices = context.GetTenderServices(),
+                specificationNames = context.GetSpecificationNames(),
                 tenderForma = new TenderForma(context.getCompetitiveListInfo(navInfo.OrderId), context.GetTenderServices())
             };
             return View(model);

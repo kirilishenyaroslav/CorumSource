@@ -45,11 +45,11 @@ namespace CorumAdminUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult SendNotificationTender(TenderForma tenderForma)
+        public ActionResult SendNotificationTender(string ListItemsModelTenderForm)
         {
             NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
             BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
-            new PostApiTender().GetCallAsync(clientbase, tenderForma);
+            //new PostApiTender().GetCallAsync(clientbase, tenderForma);
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderID });
         }
 

@@ -1098,6 +1098,7 @@
     <Content Include="Views\TabsTend\TabsTend.cshtml" />
     <Content Include="Views\TabsTend\TabsTender.cshtml" />
     <Content Include="Views\TabsTend\Index.cshtml" />
+    <Content Include="Views\OrderConcurs\_restReportAddItemToBasket2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

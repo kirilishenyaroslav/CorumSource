@@ -22,6 +22,7 @@ namespace CorumAdminUI.Controllers
     public partial class OrderConcursController : CorumBaseController
     {
         static long OrderID;
+
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult OrderCompetitiveList(OrderNavigationInfo navInfo)
         {
@@ -35,26 +36,27 @@ namespace CorumAdminUI.Controllers
                 currentStatus = context.getCurrentStatusForList(navInfo.OrderId),
                 tenderServices = context.GetTenderServices(),
                 specificationNames = context.GetSpecificationNames(),
-                tenderForma = new TenderForma(context.getCompetitiveListInfo(navInfo.OrderId), context.GetTenderServices())
+                tenderForma = new TenderForma(context.getCompetitiveListInfo(navInfo.OrderId), context.GetTenderServices(), context.GetBalanceKeepers())
             };
             return View(model);
         }
-        
+
 
         [HttpPost]
         public ActionResult SendNotificationTender(string ListItemsModelTenderForm)
         {
+            TenderForma tenderForma = null;
             try
             {
                 TendFormDeserializedJSON tendFormDeserializedJSON = JsonSerializer.Deserialize<TendFormDeserializedJSON>(ListItemsModelTenderForm);
+                tenderForma = new TenderForma(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(), tendFormDeserializedJSON, context.GetSpecificationNames());
+                tenderForma.data.InitializedAfterDeserialized();
             }
-            catch (Exception e)
-            {
-            }
+            catch { }
 
             NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
             BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
-            //new PostApiTender().GetCallAsync(clientbase, tenderForma);
+            new PostApiTender().GetCallAsync(clientbase, tenderForma);
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderID });
         }
 

@@ -18,10 +18,18 @@ namespace Corum.Models.ViewModels.Tender
         public DataTender data { get; set; }
         public TenderForma()
         { }
-        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices) : base(competitiveListViewModel, listTenderServices)
+        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers) : base(competitiveListViewModel, listTenderServices, listBalanceKeepers)
         {
             this.competitiveListViewModel = competitiveListViewModel;
             data = new DataTender();
+        }
+
+        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, TendFormDeserializedJSON formDeserializedJSON, List<SpecificationNames> specificationNames) : base(competitiveListViewModel, listTenderServices, listBalanceKeepers, formDeserializedJSON, specificationNames)
+        {
+            this.competitiveListViewModel = competitiveListViewModel;
+            data = new DataTender();
+            this.formDeserializedJSON = formDeserializedJSON;
+            this.listSpecificationNames = specificationNames;
         }
     }
 
@@ -67,12 +75,13 @@ namespace Corum.Models.ViewModels.Tender
         //public List<PropValues> propValues { get; set; }  // массив значений атрибутов item (необязательное поле)
         //public List<PropAliasValues> propAliasValues { get; set; }  // массив значений словарных атрибутов (необязательное поле)
 
-        public long detailId { get; set; }  // код места поставки (тип  данных long) (необязательное поле)
+        //public long detailId { get; set; }  // код места поставки (тип  данных long) (необязательное поле)
     }
 
 
     public class Lots : TenderParamsDefaults  // Класс описывающий лот тендера
     {
+
         public string lotName { get; set; }  // наименование лота (тип  данных string, максимальная длина 100 символов) (необязательное поле)
 
         //public string[] props { get; set; }  //  Атрибуты лота тендера
@@ -85,6 +94,7 @@ namespace Corum.Models.ViewModels.Tender
 
         public Lots()
         {
+            //var bud = this.formDeserializedJSON.Budget;
             this.lotName = "Лот №1";
             //props = new string[]
             //{
@@ -105,30 +115,7 @@ namespace Corum.Models.ViewModels.Tender
                     //"REQUIRED_NUMBER_OF_CARS",
                     //"APPLICATION_TYPE"
             };
-            items = new List<Items>()
-            {
-                new Items()
-                {
-                    qty = 1,
-                    itemExternalN = "656524",
-                    nmcId = 805,
-                    detailId = 6
-                },
-                new Items()
-                {
-                    qty = 1,
-                    itemExternalN = "562326",
-                    nmcId = 806,
-                    detailId = 6
-                },
-                new Items()
-                {
-                    qty = 1,
-                    itemExternalN = "562327",
-                    nmcId = 808,
-                    detailId = 6
-                }
-            };
+
         }
     }
 
@@ -137,15 +124,15 @@ namespace Corum.Models.ViewModels.Tender
 
     public class DataTender : TenderParamsDefaults// Тело data из формы тендера
     {
-        private string dateEND, tenderEXTERNALN, dateStartDef;
-        private long industryID;
-        private int modeID, kindID, lightModeID;
+        private string tenderEXTERNALN, dateStartDef;
+        private int lightModeID;
         public string[] regums, typeTures, typePublications;
         public Dictionary<int, string> listTenderCategor;
         public SelectList listRegums, listTures, listServices, listPublications;
         DateTime date = DateTime.Now;
         public DataTender()
         {
+
             lots = new List<Lots>() { new Lots() };
             tenderName = $"({competitiveListViewModel.Id}) Перевозка по маршруту: «‎{competitiveListViewModel.Route}». " +
                                      $"Дата подачи/выгрузки: «‎{competitiveListViewModel.ToDate}/{competitiveListViewModel.ToDateRaw}». " +
@@ -158,7 +145,9 @@ namespace Corum.Models.ViewModels.Tender
             listRegums = new SelectList(regums);
 
             subCompanyName = competitiveListViewModel.PayerName;
-            subCompanyId = (subCompanyName != competitiveListViewModel.PayerName) ? 0 : Convert.ToInt64(allAppSettings["subCompanyId"]);
+            var subCompanyIdn = listBalanceKeepers.Find((x) => x.BalanceKeeper.Contains(subCompanyName)).subCompanyId;
+            subCompanyId = (subCompanyIdn == null) ? 10 : Convert.ToInt64(subCompanyIdn);
+
             typeTures = new string[] { "Тендер RFx", "Аукцион/Редукцион" };
             listTures = new SelectList(typeTures);
 
@@ -180,6 +169,36 @@ namespace Corum.Models.ViewModels.Tender
         }
 
 
+        public void InitializedAfterDeserialized()
+        {
+            typeTrure = this.formDeserializedJSON.TypeTure;
+            mode = (typeTures[0].Contains(typeTrure)) ? 1 : 2;
+
+            budget = Convert.ToDouble(this.formDeserializedJSON.Budget);
+
+            typePublic = this.formDeserializedJSON.TypePublic;
+            kind = (typePublications[0].Contains(typePublic)) ? 1 : 2;
+
+            industryName = this.formDeserializedJSON.IndustryName;
+            industryId = listTenderServices.ToList().Find((x) => x.industryName.Contains(industryName)).industryId;
+
+            dateStart = this.formDeserializedJSON.DateStart;
+            dateEnd = this.formDeserializedJSON.DateEnd;
+
+            this.lots[0].lotName = this.formDeserializedJSON.LotName;
+            lotName = this.lots[0].lotName;
+
+            lots[0].items = new List<Items>();
+            foreach(var item in this.formDeserializedJSON.JqxGridNmc)
+            {
+                Items items = new Items();
+                items.qty = Convert.ToDouble(item.Value.qty);
+                items.nmcId = Convert.ToInt64(listSpecificationNames.ToList().Find((x)=>x.SpecName.Contains(item.Value.nmcName)).nmcTestId);
+                items.itemExternalN = listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).SpecCode.ToString();
+                lots[0].items.Add(items);
+            }
+        }
+
         [Display(Name = "Наименование тендера")]
         [Required(ErrorMessage = "Введите название тендера")]
         [StringLength(300, ErrorMessage = "Максимальная длина поля не больше 300 символов")]
@@ -188,23 +207,7 @@ namespace Corum.Models.ViewModels.Tender
 
         [Display(Name = "Категория тендера")]
         public string industryName { get; set; }  // Название категории тендера
-        public long industryId
-        {
-            get
-            {
-                foreach (var items in listTenderCategor)
-                {
-                    if (items.Value.Contains(industryName))
-                        return items.Key;
-                }
-                return 0;
-            }
-
-            set
-            {
-                industryID = value;
-            }
-        }  //Id категории тендера (тип  данных long) 
+        public long industryId { get; set; }  //Id категории тендера (тип  данных long) 
 
 
 
@@ -251,34 +254,13 @@ namespace Corum.Models.ViewModels.Tender
 
         [Display(Name = "Тип тура")]
         public string typeTrure { get; set; }  // Название типа тура
-        public int mode
-        {
-            get
-            {
-                return (typeTrure != "Тендер RFx") ? 2 : 1;
-            }
-            set
-            {
-                modeID = value;
-            }
-
-        } // тип тура (необязательное поле, тип int, 1 - Rfx, 2 - аукцион/редукцион, 3 -регистрация закупки, по умолчанию - 1)
+        public int mode { get; set; }   // тип тура (необязательное поле, тип int, 1 - Rfx, 2 - аукцион/редукцион, 3 -регистрация закупки, по умолчанию - 1)
 
 
 
         [Display(Name = "Тип публикации")]
         public string typePublic { get; set; }  // Название типа публикации
-        public int kind
-        {
-            get
-            {
-                return (typePublic != "Открытый") ? 2 : 1;
-            }
-            set
-            {
-                kindID = value;
-            }
-        } // тип публикации (необязательное поле, тип int, 1 - открытая, 2 - закрытая,по умолчанию - 1)
+        public int kind { get; set; } // тип публикации (необязательное поле, тип int, 1 - открытая, 2 - закрытая,по умолчанию - 1)
 
 
         [Display(Name = "Дата создания тендера")]
@@ -294,21 +276,22 @@ namespace Corum.Models.ViewModels.Tender
         [Display(Name = "Наименование лота")]
         [Required(ErrorMessage = "Введите наименование лота")]
         [StringLength(100, ErrorMessage = "Максимальная длина поля не больше 100 символов")]
-        public string lotName            // наименование лота (тип  данных string, максимальная длина 100 символов) (необязательное поле)
+        public string lotName
         {
             get
             {
                 return this.lots[0].lotName;
             }
-            set { this.lots[0].lotName = value; }
-        }  
+            set
+            {
+                this.lots[0].lotName = value;
+            }
+
+        }  // наименование лота (тип  данных string, максимальная длина 100 символов) (необязательное поле)
+
 
 
         public List<Lots> lots { get; set; }  // массив лотов тендера (обязательное поле при необлегченном режиме)
-
-
-
-
 
         [Display(Name = "Режим подачи тендера")]
         public string regume { get; set; }  // Название режима подачи тендера

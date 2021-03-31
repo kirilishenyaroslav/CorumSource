@@ -53,5 +53,21 @@ namespace Corum.DAL
             }
             return specList;
         }
+
+        public List<Corum.Models.Tender.BalanceKeepers> GetBalanceKeepers()
+        {
+            List<Corum.Models.Tender.BalanceKeepers> balanceKeepList = new List<Models.Tender.BalanceKeepers>();
+            var balanceNamesList = db.BalanceKeepers.ToList();
+            foreach (var item in balanceNamesList)
+            {
+                Corum.Models.Tender.BalanceKeepers balanceKeepNames = new Models.Tender.BalanceKeepers();
+                balanceKeepNames.Id = item.Id;
+                balanceKeepNames.BalanceKeeper = item.BalanceKeeper;
+                balanceKeepNames.subCompanyId = item.subCompanyId;
+
+                balanceKeepList.Add(balanceKeepNames);
+            }
+            return balanceKeepList;
+        }
     }
 }

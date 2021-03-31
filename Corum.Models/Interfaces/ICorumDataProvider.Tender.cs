@@ -11,5 +11,6 @@ namespace Corum.Models
     {
         List<TenderServices> GetTenderServices();
         List<SpecificationNames> GetSpecificationNames();
+        List<BalanceKeepers> GetBalanceKeepers();
     }
 }

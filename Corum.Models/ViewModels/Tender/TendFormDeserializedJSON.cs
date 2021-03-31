@@ -27,7 +27,7 @@ namespace Corum.Models.ViewModels.Tender
     public class JqxGrid
     {
         public string nmcName { get; set; }
-        public string unitName { get; set; }
+        //public string unitName { get; set; }
         public string qty { get; set; }
     }
 }

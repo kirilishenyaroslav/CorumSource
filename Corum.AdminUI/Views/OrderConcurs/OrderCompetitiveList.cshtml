@@ -682,7 +682,7 @@
                                 datafields:
                                     [
                                         { name: 'nmcName', type: 'string' },
-                                        { name: 'unitName', type: 'string' },
+                                        //{ name: 'unitName', type: 'string' },
                                         { name: 'qty', type: 'string' }
                                     ]
                             };
@@ -701,7 +701,7 @@
 
                                     columns: [
                                         {
-                                            text: 'Наименование позиции', datafield: 'nmcName', width: 500, columntype: 'combobox',
+                                            text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'combobox',
                                             createeditor: function (row, column, editor) {
                                                 // assign a new data source to the combobox.
                                                 var data = [""];
@@ -715,19 +715,19 @@
                                                 editor.jqxComboBox({ autoDropDownHeight: false, source: data, promptText: "Сделайте выбор:" });
                                             }
                                         },
-                                        {
-                                            text: 'Ед.изм.', datafield: 'unitName', width: 150, columntype: 'combobox',
-                                            createeditor: function (row, column, editor) {
-                                                // assign a new data source to the combobox.
-                                                var list = [
-                                                    "", "послуга"
-                                                ];
-                                                editor.jqxComboBox({ autoDropDownHeight: true, source: list, promptText: "Сделайте выбор:" });
-                                            },
-                                            cellvaluechanging: function (row, column, columntype, oldvalue, newvalue) {
-                                                // return the old value, if the new value is empty.
-                                                if (newvalue == "") return oldvalue;
-                                            } },
+                                        //{
+                                        //    text: 'Ед.изм.', datafield: 'unitName', width: 150, columntype: 'combobox',
+                                        //    createeditor: function (row, column, editor) {
+                                        //        // assign a new data source to the combobox.
+                                        //        var list = [
+                                        //            "", "послуга"
+                                        //        ];
+                                        //        editor.jqxComboBox({ autoDropDownHeight: true, source: list, promptText: "Сделайте выбор:" });
+                                        //    },
+                                        //    cellvaluechanging: function (row, column, columntype, oldvalue, newvalue) {
+                                        //        // return the old value, if the new value is empty.
+                                        //        if (newvalue == "") return oldvalue;
+                                        //    } },
                                         {
                                             text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
                                         }
@@ -767,7 +767,7 @@
                                         if ($("#grid").jqxGrid('getcellvalue', i, 'nmcName') != "")
                                         {
                                             row["nmcName"] = $("#grid").jqxGrid('getcellvalue', i, 'nmcName');
-                                            row["unitName"] = $("#grid").jqxGrid('getcellvalue', i, 'unitName');
+                                            //row["unitName"] = $("#grid").jqxGrid('getcellvalue', i, 'unitName');
                                             row["qty"] = $("#grid").jqxGrid('getcellvalue', i, 'qty');
                                             valuesGridData[i] = row;
                                         }

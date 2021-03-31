@@ -13,6 +13,7 @@ using System.Collections;
 using System.Linq;
 using System.Configuration;
 using System.Collections.Specialized;
+using System.Web.Script.Serialization;
 
 namespace CorumAdminUI.Controllers
 {
@@ -38,15 +39,19 @@ namespace CorumAdminUI.Controllers
             };
             return View(model);
         }
-        [HttpGet]
-        public ActionResult Tabs()
-        {
-            return View();
-        }
+        
 
         [HttpPost]
         public ActionResult SendNotificationTender(string ListItemsModelTenderForm)
         {
+            try
+            {
+                TendFormDeserializedJSON tendFormDeserializedJSON = JsonSerializer.Deserialize<TendFormDeserializedJSON>(ListItemsModelTenderForm);
+            }
+            catch (Exception e)
+            {
+            }
+
             NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
             BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
             //new PostApiTender().GetCallAsync(clientbase, tenderForma);

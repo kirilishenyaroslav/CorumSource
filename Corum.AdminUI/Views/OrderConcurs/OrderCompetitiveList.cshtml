@@ -703,11 +703,11 @@
                                 var row = {};
                                 return row;
                             }
-                            for (var i = 0; i < 20; i++) {
-                                var row = generaterow(i);
-                                industryName =
-                                data[i] = row;
-                            }
+                            //for (var i = 0; i < 1; i++) {
+                            //    var row = generaterow(i);
+                            //    industryName =
+                            //    data[i] = row;
+                            //}
                             var source =
                             {
                                 localdata: data,
@@ -717,7 +717,26 @@
                                         { name: 'nmcName', type: 'string' },
                                         //{ name: 'unitName', type: 'string' },
                                         { name: 'qty', type: 'string' }
-                                    ]
+                                    ],
+                                addrow: function (rowid, rowdata, position, commit) {
+                                    // synchronize with the server - send insert command
+                                    // call commit with parameter true if the synchronization with the server is successful 
+                                    //and with parameter false if the synchronization failed.
+                                    // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
+                                    commit(true);
+                                },
+                                deleterow: function (rowid, commit) {
+                                    // synchronize with the server - send delete command
+                                    // call commit with parameter true if the synchronization with the server is successful 
+                                    //and with parameter false if the synchronization failed.
+                                    commit(true);
+                                },
+                                updaterow: function (rowid, newdata, commit) {
+                                    // synchronize with the server - send update command
+                                    // call commit with parameter true if the synchronization with the server is successful 
+                                    // and with parameter false if the synchronization failed.
+                                    commit(true);
+                                }
                             };
 
                             var dataAdapter = new $.jqx.dataAdapter(source);
@@ -727,14 +746,43 @@
                                 {
                                     width: 750,
                                     height: 330,
-                                    theme:'orange',
+                                    theme: 'orange',
+                                    showtoolbar: true,
                                     source: dataAdapter,
                                     autorowheight: true,
                                     pageable: true,
                                     pagermode: 'simple',
-                                    selectionmode: 'singlecell',
+                                    selectionmode: 'multiplerows',
                                     editable: true,
-
+                                    rendertoolbar: function (toolbar) {
+                                        var me = this;
+                                        var container = $("<div style='margin: 5px;'></div>");
+                                        toolbar.append(container);
+                                        container.append('<input id="addrowbutton" type="button" value="Добавить" />');
+                                        
+                                        container.append('<input style="margin-left: 5px;" id="deleterowbutton" type="button" value="Удалить" />');
+                                        
+                                        $("#addrowbutton").jqxButton();
+                                       
+                                        $("#deleterowbutton").jqxButton();
+                                       
+                                        
+                                        // create new row.
+                                        $("#addrowbutton").on('click', function () {
+                                            var datarow = generaterow();
+                                            var commit = $("#grid").jqxGrid('addrow', null, datarow);
+                                        });
+                                        
+                                        // delete row.
+                                        $("#deleterowbutton").on('click', function () {
+                                            var selectedrowindex = $("#grid").jqxGrid('getselectedrowindex');
+                                            var rowscount = $("#grid").jqxGrid('getdatainformation').rowscount;
+                                            if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
+                                                var id = $("#grid").jqxGrid('getrowid', selectedrowindex);
+                                                var commit = $("#grid").jqxGrid('deleterow', id);
+                                            }
+                                        });
+                                    },
                                     columns: [
                                         {
                                             text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',

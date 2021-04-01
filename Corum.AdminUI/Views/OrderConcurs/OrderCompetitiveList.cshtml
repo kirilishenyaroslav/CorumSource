@@ -664,6 +664,38 @@
                     open: function(event, ui) {
                         InitFilterDropDowns();
                         $(document).ready(function () {
+
+                            var dataTend383 = [];
+                            var dataTend384 = [];
+                            var dataTend385 = [];
+                            var dataTend54 = [];
+                            @foreach (var item in Model.specificationNames)
+                            {
+                                switch (item.industryId.ToString())
+                                {
+                                    case "383":
+                                        {
+                                            @:dataTend383.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            break;
+                                        }
+                                        case "384":
+                                        {
+                                            @:dataTend384.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            break;
+                                        }
+                                        case "385":
+                                        {
+                                            @:dataTend385.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            break;
+                                        }
+                                        case "54":
+                                        {
+                                            @:dataTend54.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            break;
+                                        }
+                                    default:break;
+                                }
+                            }
                             // prepare the data
                             var data = {};
 
@@ -673,6 +705,7 @@
                             }
                             for (var i = 0; i < 20; i++) {
                                 var row = generaterow(i);
+                                industryName =
                                 data[i] = row;
                             }
                             var source =
@@ -686,7 +719,9 @@
                                         { name: 'qty', type: 'string' }
                                     ]
                             };
+
                             var dataAdapter = new $.jqx.dataAdapter(source);
+
                             // initialize jqxGrid
                             $("#grid").jqxGrid(
                                 {
@@ -696,43 +731,111 @@
                                     source: dataAdapter,
                                     autorowheight: true,
                                     pageable: true,
+                                    pagermode: 'simple',
                                     selectionmode: 'singlecell',
                                     editable: true,
 
                                     columns: [
                                         {
-                                            text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'combobox',
-                                            createeditor: function (row, column, editor) {
-                                                // assign a new data source to the combobox.
-                                                var data = [""];
-                                                var list = @Html.Raw(Json.Encode(Model.specificationNames));  // Конвертация набора номенклатур в JSON формат
-                                                for (var i = 0; i < list.length; i++)
-                                                {
-                                                    var item = list[i];
-                                                    data.push(item['SpecName']);
-                                                }
-
-                                                editor.jqxComboBox({ autoDropDownHeight: false, source: data, promptText: "Сделайте выбор:" });
+                                            text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
+                                            createeditor: function (row, column, editor)
+                                            {
+                                                    editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383});
                                             }
                                         },
-                                        //{
-                                        //    text: 'Ед.изм.', datafield: 'unitName', width: 150, columntype: 'combobox',
-                                        //    createeditor: function (row, column, editor) {
-                                        //        // assign a new data source to the combobox.
-                                        //        var list = [
-                                        //            "", "послуга"
-                                        //        ];
-                                        //        editor.jqxComboBox({ autoDropDownHeight: true, source: list, promptText: "Сделайте выбор:" });
-                                        //    },
-                                        //    cellvaluechanging: function (row, column, columntype, oldvalue, newvalue) {
-                                        //        // return the old value, if the new value is empty.
-                                        //        if (newvalue == "") return oldvalue;
-                                        //    } },
+
                                         {
                                             text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
                                         }
                                              ]
                                 });
+
+                            // events
+                            var dataTend = [];
+                            @foreach (var item in Model.tenderServices)
+                            {
+                                @:dataTend.push("@item.industryName.Trim(' ')");
+                            }
+
+                            $("#IndustryName").on('change', function (e) {
+                                var industryName = $("#IndustryName").val();
+                                switch (industryName)
+                                {
+                                    case dataTend[0]: {
+                                        //alert(dataTend[0]);
+                                        $("#grid").jqxGrid({
+                                            columns: [
+                                                {
+                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
+                                                    createeditor: function (row, column, editor)
+                                                    {
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383 });
+                                                    }
+                                                },
+
+                                                {
+                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
+                                                }
+                                            ] }); break;
+                                    }
+                                    case dataTend[1]: {
+                                        //alert(dataTend[1]);
+                                        $("#grid").jqxGrid({
+                                            columns: [
+                                                {
+                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
+                                                    createeditor: function (row, column, editor)
+                                                    {
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend384 });
+                                                    }
+                                                },
+
+                                                {
+                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
+                                                }
+                                            ] }); break;
+                                    }
+                                    case dataTend[2]: {
+                                        //alert(dataTend[2]);
+                                        $("#grid").jqxGrid({
+                                            columns: [
+                                                {
+                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
+                                                    createeditor: function (row, column, editor)
+                                                    {
+                                                          editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend385 });
+                                                    }
+                                                },
+
+                                                {
+                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
+                                                }
+                                            ] }); break;
+                                    }
+                                    case dataTend[3]: {
+                                        //alert(dataTend[3]);
+                                        $("#grid").jqxGrid({
+                                            columns: [
+                                                {
+                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
+                                                    createeditor: function (row, column, editor)
+                                                    {
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend54 });
+                                                    }
+                                                },
+
+                                                {
+                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
+                                                }
+                                            ] }); break;
+                                    }
+                                    default: {
+                                        //alert('Default');
+                                        break;
+                                    }
+                                }
+
+                            });
                         });
                     },
                     close: function(event, ui) {
@@ -741,7 +844,7 @@
                     create: function(event, ui) {
                         $("#disable_all").addClass("disable_all");
                     },
-                    beforeClose: function(event, ui) {
+                    beforeCToStringStringStringse: function(event, ui) {
                         $("#disable_all").removeClass("disable_all");
                     },
                     buttons:
@@ -773,7 +876,7 @@
                                         }
                                     }
                                 }
-                                
+
 
                                 var tenderName = $('#TenderName').val();
                                 var tenderAuthorName = $('#TenderAuthorName').val();
@@ -809,7 +912,7 @@
 
                                 $.post('@Url.Action("SendNotificationTender", "OrderConcurs")',
                                     {
-                                        ListItemsModelTenderForm: modelTenderFormJSON                                       
+                                        ListItemsModelTenderForm: modelTenderFormJSON
                                     },
                                     function(data) {
                                         alert('Уведомление отправлено');

@@ -647,7 +647,7 @@
         });
 
 
-        // Модульное окно при нажатии на кнопку "Тендер"
+        // Модальное окно при нажатии на кнопку "Тендер"
         function SendNotification(orderId) {
 
             $('#partialModul')
@@ -656,13 +656,14 @@
                     autoOpen: false,
                     width: 800,
                     top: 50,
-                    height: 525,
                     resizable: false,
                     tags: true,
                     title: "Запрос на тендер",
                     modal: true,
                     open: function(event, ui) {
                         InitFilterDropDowns();
+
+                        FormInputErrorChecking(); // Метод валидации полей формы тендера
                         $(document).ready(function () {
 
                             var dataTend383 = [];
@@ -703,11 +704,7 @@
                                 var row = {};
                                 return row;
                             }
-                            //for (var i = 0; i < 1; i++) {
-                            //    var row = generaterow(i);
-                            //    industryName =
-                            //    data[i] = row;
-                            //}
+                            
                             var source =
                             {
                                 localdata: data,
@@ -720,20 +717,20 @@
                                     ],
                                 addrow: function (rowid, rowdata, position, commit) {
                                     // synchronize with the server - send insert command
-                                    // call commit with parameter true if the synchronization with the server is successful 
+                                    // call commit with parameter true if the synchronization with the server is successful
                                     //and with parameter false if the synchronization failed.
                                     // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
                                     commit(true);
                                 },
                                 deleterow: function (rowid, commit) {
                                     // synchronize with the server - send delete command
-                                    // call commit with parameter true if the synchronization with the server is successful 
+                                    // call commit with parameter true if the synchronization with the server is successful
                                     //and with parameter false if the synchronization failed.
                                     commit(true);
                                 },
                                 updaterow: function (rowid, newdata, commit) {
                                     // synchronize with the server - send update command
-                                    // call commit with parameter true if the synchronization with the server is successful 
+                                    // call commit with parameter true if the synchronization with the server is successful
                                     // and with parameter false if the synchronization failed.
                                     commit(true);
                                 }
@@ -745,8 +742,8 @@
                             $("#grid").jqxGrid(
                                 {
                                     width: 750,
-                                    height: 330,
                                     theme: 'orange',
+                                    height: 345,
                                     showtoolbar: true,
                                     source: dataAdapter,
                                     autorowheight: true,
@@ -759,20 +756,20 @@
                                         var container = $("<div style='margin: 5px;'></div>");
                                         toolbar.append(container);
                                         container.append('<input id="addrowbutton" type="button" value="Добавить" />');
-                                        
+
                                         container.append('<input style="margin-left: 5px;" id="deleterowbutton" type="button" value="Удалить" />');
-                                        
+
                                         $("#addrowbutton").jqxButton();
-                                       
+
                                         $("#deleterowbutton").jqxButton();
-                                       
-                                        
+
+
                                         // create new row.
                                         $("#addrowbutton").on('click', function () {
                                             var datarow = generaterow();
                                             var commit = $("#grid").jqxGrid('addrow', null, datarow);
                                         });
-                                        
+
                                         // delete row.
                                         $("#deleterowbutton").on('click', function () {
                                             var selectedrowindex = $("#grid").jqxGrid('getselectedrowindex');
@@ -884,6 +881,7 @@
                                 }
 
                             });
+
                         });
                     },
                     close: function(event, ui) {
@@ -908,9 +906,10 @@
                         {
                             text: "Отправить",
                             "class": 'btn btn-primary',
-                            click: function() {
+                            click: function () {
+
                                 var valuesGridData = {};
-                                for (var i = 0; i < 20; i++)
+                                for (var i = 0; i < 30; i++)
                                 {
                                     var row = {};
                                     if ($("#grid").jqxGrid('getcellvalue', i, 'nmcName') != null)
@@ -956,23 +955,181 @@
                                     "JqxGridNmc": valuesGridData
                                 };
                                 var modelTenderFormJSON = JSON.stringify(modelTenderForm);
+                                
+                                if (formValidationAccessAttributes.accessTenderName != false && formValidationAccessAttributes.accessTenderNameStringLength != false &&
+                                    formValidationAccessAttributes.accessLotName != false && formValidationAccessAttributes.accessLotNameStringLength != false &&
+                                    formValidationAccessAttributes.accessBudget != false && formValidationAccessAttributes.accessDataStart != false &&
+                                    formValidationAccessAttributes.accessDataEnd != false)
+                                {
+                                    $.post('@Url.Action("SendNotificationTender", "OrderConcurs")',
+                                        {
+                                            ListItemsModelTenderForm: modelTenderFormJSON
+                                        },
+                                        function () {
+                                            alert('Запрос на тендер успешно отправлен!');
+                                        });
 
-
-                                $.post('@Url.Action("SendNotificationTender", "OrderConcurs")',
+                                    $(this).dialog("close");
+                                }
+                                else
+                                {
+                                    if (!formValidationAccessAttributes.accessDataEnd)
                                     {
-                                        ListItemsModelTenderForm: modelTenderFormJSON
-                                    },
-                                    function(data) {
-                                        alert('Уведомление отправлено');
-                                    });
-
-                                $(this).dialog("close");
+                                        var elDataEnd = document.getElementById('erroreMessageTenderDataEnd');
+                                        elDataEnd.style.display = "initial";
+                                    }
+                                    alert('Заполните правильно поля формы.');
+                                }
                             }
                         }
                     ]
                 });
             $('#partialModul').dialog('open');
             return;
+        }
+
+        // Атрибуты допуска валидации полей тендера на подачу формы
+        var formValidationAccessAttributes = {  
+            accessTenderName: true,
+            accessTenderNameStringLength: true,
+            accessLotName: true,
+            accessLotNameStringLength: true,
+            accessBudget: true,
+            accessDataStart: true,
+            accessDataEnd: false
+        };
+
+        function FormInputErrorChecking()
+        {
+            // Валидация поля "Наименование тендера"
+            var tendName = document.getElementById('TenderName');
+            var el = document.getElementById('erroreMessageTenderName');
+            var elStLen = document.getElementById('erroreMessageTenderNameStringLenght300');
+
+            function DisplayErrorTendName() {
+                var valueTend = $("#TenderName").val();
+
+                if (valueTend.length == 0) {
+                    el.style.display = "initial";
+                    elStLen.style.display = "none";
+                    formValidationAccessAttributes.accessTenderName = false;
+                    formValidationAccessAttributes.accessTenderNameStringLength = true;
+                }
+                else if (valueTend.length >= 300) {
+                    el.style.display = "none";
+                    elStLen.style.display = "initial";
+                    formValidationAccessAttributes.accessTenderName = true;
+                    formValidationAccessAttributes.accessTenderNameStringLength = false;
+                }
+                else {
+                    el.style.display = "none";
+                    elStLen.style.display = "none";
+                    formValidationAccessAttributes.accessTenderName = true;
+                    formValidationAccessAttributes.accessTenderNameStringLength = true;
+                }
+            }
+            tendName.onkeyup = tendName.oninput = DisplayErrorTendName;
+            tendName.oncut = function () {
+                setTimeout(DisplayErrorTendName, 0);
+            }
+
+            // Валидация поля "Наименование лота"
+            var lotName = document.getElementById('LotName');
+            var elLot = document.getElementById('erroreMessagelotName');
+            var elStLenLot = document.getElementById('erroreMessagelotNameStringLength');
+
+            function DisplayErrorlotName() {
+                var valueTendLot = $("#LotName").val();
+
+                if (valueTendLot.length == 0) {
+                    elLot.style.display = "initial";
+                    elStLenLot.style.display = "none";
+                    formValidationAccessAttributes.accessLotName = false;
+                    formValidationAccessAttributes.accessLotNameStringLength = true;
+                }
+                else if (valueTendLot.length >= 100) {
+                    elLot.style.display = "none";
+                    elStLenLot.style.display = "initial";
+                    formValidationAccessAttributes.accessLotName = true;
+                    formValidationAccessAttributes.accessLotNameStringLength = false;
+                }
+                else {
+                    elLot.style.display = "none";
+                    elStLenLot.style.display = "none";
+                    formValidationAccessAttributes.accessLotName = true;
+                    formValidationAccessAttributes.accessLotNameStringLength = true;
+                }
+            }
+            lotName.onkeyup = lotName.oninput = DisplayErrorlotName;
+            lotName.oncut = function () {
+                setTimeout(DisplayErrorlotName, 0);
+            }
+
+             // Валидация поля "Бюджет тендера"
+            var budgatData = document.getElementById('Budget');
+            var elbudget = document.getElementById('erroreMessageTenderBudget');
+            
+
+            function DisplayErrorBudget() {
+                var valueBudget = $("#Budget").val();
+
+                if (valueBudget.length == 0) {
+                    elbudget.style.display = "initial";
+                    formValidationAccessAttributes.accessBudget = false;
+                }
+                else {
+                    elbudget.style.display = "none";
+                    formValidationAccessAttributes.accessBudget = true;
+                }
+            }
+            budgatData.onkeyup = budgatData.oninput = DisplayErrorBudget;
+            budgatData.oncut = function () {
+                setTimeout(DisplayErrorBudget, 0);
+            }
+
+            // Валидация поля "Дата создания тендера"
+            var dataStart = document.getElementById('DateStart');
+            var elDataStart = document.getElementById('erroreMessageTenderDataStart');
+
+
+            function DisplayErrorDataStart() {
+                var valueDataStart = $("#DateStart").val();
+
+                if (valueDataStart.length == 0) {
+                    elDataStart.style.display = "initial";
+                    formValidationAccessAttributes.accessDataStart = false;
+                }
+                else {
+                    elDataStart.style.display = "none";
+                    formValidationAccessAttributes.accessDataStart = true;
+                }
+            }
+            dataStart.onkeyup = dataStart.oninput = DisplayErrorDataStart;
+            dataStart.oncut = function () {
+                setTimeout(DisplayErrorDataStart, 0);
+            }
+
+            // Валидация поля "Дата окончания приема предложений"
+            var dataEnd = document.getElementById('DateEnd');
+            var elDataEnd = document.getElementById('erroreMessageTenderDataEnd');
+
+
+            function DisplayErrorDataEnd() {
+                var valueDataEnd = $("#DateEnd").val();
+
+                if (valueDataEnd.length == 0) {
+                    elDataEnd.style.display = "initial";
+                    formValidationAccessAttributes.accessDataEnd = false;
+                }
+                else {
+                    elDataEnd.style.display = "none";
+                    formValidationAccessAttributes.accessDataEnd = true;
+                }
+            }
+            dataEnd.onkeyup = dataEnd.oninput = DisplayErrorDataEnd;
+            dataEnd.oncut = function () {
+                setTimeout(DisplayErrorDataEnd, 0);
+            }
         }
     </script>
 }

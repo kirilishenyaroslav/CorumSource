@@ -200,9 +200,15 @@ namespace Corum.Models.ViewModels.Tender
         }
 
         [Display(Name = "Наименование тендера")]
-        [Required(ErrorMessage = "Введите название тендера")]
-        [StringLength(300, ErrorMessage = "Максимальная длина поля не больше 300 символов")]
         public string tenderName { get; set; }   //наименование тендера (тип данных string, максимальная длина 300 символов)
+
+
+        [Display(Name = "Введите наименование тендера")]
+        public string errorMessageTenderName { get; set; }   //ошибка при наименовании тендера
+
+        [Display(Name = "Максимальная длина поля не больше 300 символов")]
+        public string errorMessageTenderNameStringLength { get; set; }   //ошибка при превышении количества литералов в поле "Наименование тендера" более 300 символов
+
 
 
         [Display(Name = "Категория тендера")]
@@ -212,8 +218,12 @@ namespace Corum.Models.ViewModels.Tender
 
 
         [Display(Name = "Бюджет тендера")]
-        [Required(ErrorMessage = "Введите целое или вещественное число")]
         public double budget { get; set; }  //бюджет тендера (тип  данных double) (необязательное поле)
+
+        [Display(Name = "Введите целое или вещественное число")]
+        public string errorMessageTenderBudget { get; set; }   //ошибка ввода данных в поле "Бюджет тендера"
+
+
 
 
         [Display(Name = "Автор тендера")]
@@ -265,17 +275,20 @@ namespace Corum.Models.ViewModels.Tender
 
         [Display(Name = "Дата создания тендера")]
         public string dateStart { get; set; } // дата начала приема предложений (необязательное  поле,  тип данных string, дата в формате ISO 8601)
+        [Display(Name = "Введите дату в формате дд.мм.гггг --:--")]
+        public string errorMessageTenderDataStart { get; set; }   //ошибка ввода даты создания в поле "Дата создания тендера"
+
 
 
         [Display(Name = "Дата окончания приёма предложений")]
-        [Required(ErrorMessage = "Введите дату в формате дд.мм.гггг --:--")]
         public string dateEnd { get; set; }  // дата конца приема предложений (необязательное поле, тип данных string, дата в формате ISO 8601)
-
+        [Display(Name = "Введите дату в формате дд.мм.гггг --:--")]
+        public string errorMessageTenderDataEnd { get; set; }   //ошибка ввода даты окончания тендера в поле "Дата окончания приема предложений"
 
 
         [Display(Name = "Наименование лота")]
-        [Required(ErrorMessage = "Введите наименование лота")]
-        [StringLength(100, ErrorMessage = "Максимальная длина поля не больше 100 символов")]
+        //[Required(ErrorMessage = "Введите наименование лота")]
+        //[StringLength(100, ErrorMessage = "Максимальная длина поля не больше 100 символов")]
         public string lotName
         {
             get
@@ -288,6 +301,14 @@ namespace Corum.Models.ViewModels.Tender
             }
 
         }  // наименование лота (тип  данных string, максимальная длина 100 символов) (необязательное поле)
+
+        [Display(Name = "Введите наименование лота")]
+        public string errorMessagelotName { get; set; }   //ошибка при наименовании лота
+
+        [Display(Name = "Максимальная длина поля не больше 100 символов")]
+        public string errorMessagelotNameStringLength { get; set; }   //ошибка при превышении количества литералов в поле "Наименование лота" более 100 символов
+
+
 
 
 

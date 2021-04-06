@@ -24,6 +24,7 @@
                                 @Html.LabelFor(model => model.data.tenderName, htmlAttributes: new { @class = "control-label" })
 
                                 <div class="form-control-container full-width-select">
+                                    <div id="messenger"></div>
                                     @Html.TextAreaFor(model => model.data.tenderName,
                                      new
                                      {
@@ -32,12 +33,13 @@
                                          type = "text",
                                          rows = "5"
                                      })
-                                    @Html.ValidationMessageFor(model => model.data.tenderName, "", new { @class = "text-danger" })
+                                    @Html.LabelFor(model => model.data.errorMessageTenderName, htmlAttributes: new { id = "erroreMessageTenderName", @class = "control-label messenger", @style = "display: none" })
+                                    @Html.LabelFor(model => model.data.errorMessageTenderNameStringLength, htmlAttributes: new { id = "erroreMessageTenderNameStringLenght300", @class = "control-label messenger", @style = "display: none" })
                                 </div>
                             </div>
                         </div>
                     </div>
-
+                   
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group" style="margin-left:20px;">
@@ -83,7 +85,7 @@
                             <div class="form-group" style="margin-left:20px;">
                                 @Html.LabelFor(model => model.data.budget, htmlAttributes: new { @class = "control-label" })
                                 @Html.EditorFor(model => model.data.budget, new { htmlAttributes = new { id = "Budget", @class = "form-control", type = "number", min = "0", autocomplete = "off" } })
-                                @Html.ValidationMessageFor(model => model.data.budget, "", new { @class = "text-danger" })
+                                @Html.LabelFor(model => model.data.errorMessageTenderBudget, htmlAttributes: new { id = "erroreMessageTenderBudget", @class = "control-label messenger", @style = "display: none" })
                             </div>
                         </div>
                     </div>
@@ -108,13 +110,14 @@
                             <div class="form-group" style="margin-left:20px;">
                                 @Html.LabelFor(model => model.data.dateStart, htmlAttributes: new { @class = "control-label" })
                                 @Html.EditorFor(model => model.data.dateStart, new { htmlAttributes = new { id = "DateStart", @class = "form-control", type = "datetime-local", autocomplete = "off" } })
+                                @Html.LabelFor(model => model.data.errorMessageTenderDataStart, htmlAttributes: new { id = "erroreMessageTenderDataStart", @class = "control-label messenger", @style = "display: none" })
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="form-group" style="margin-left:20px;">
                                 @Html.LabelFor(model => model.data.dateEnd, htmlAttributes: new { @class = "control-label" })
                                 @Html.EditorFor(model => model.data.dateEnd, new { htmlAttributes = new { id = "DateEnd", @class = "form-control", type = "datetime-local", autocomplete = "off" } })
-                                @Html.ValidationMessageFor(model => model.data.dateEnd, "", new { @class = "text-danger" })
+                                @Html.LabelFor(model => model.data.errorMessageTenderDataEnd, htmlAttributes: new { id = "erroreMessageTenderDataEnd", @class = "control-label messenger", @style = "display: none" })
                             </div>
                         </div>
                     </div>
@@ -123,7 +126,8 @@
                             <div class="form-group" style="margin-left:20px;">
                                 @Html.LabelFor(model => model.data.lotName, htmlAttributes: new { @class = "control-label" })
                                 @Html.EditorFor(model => model.data.lotName, new { htmlAttributes = new { id = "LotName", @class = "form-control", autocomplete = "off" } })
-                                @Html.ValidationMessageFor(model => model.data.lotName, "", new { @class = "text-danger" })
+                                @Html.LabelFor(model => model.data.errorMessagelotName, htmlAttributes: new { id = "erroreMessagelotName", @class = "control-label messenger", @style = "display: none" })
+                                @Html.LabelFor(model => model.data.errorMessagelotNameStringLength, htmlAttributes: new { id = "erroreMessagelotNameStringLength", @class = "control-label messenger", @style = "display: none" })
                             </div>
                         </div>
 
@@ -131,7 +135,7 @@
                 </div>
                 <div id="tabs-3" role="tabpanel">
                     <div class="row">
-                        <div id="grid" class="col-md-12" style="max-height:340px; margin: 0 10px 0 10px;">
+                        <div id="grid" class="col-md-12" style="max-height:350px; margin: 0 10px 0 10px;">
                         </div>
                     </div>
                 </div>

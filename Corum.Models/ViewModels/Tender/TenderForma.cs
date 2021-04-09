@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
+using System.Collections;
 using System.Configuration;
 using System.Globalization;
 using System.Linq;
@@ -18,9 +19,10 @@ namespace Corum.Models.ViewModels.Tender
         public DataTender data { get; set; }
         public TenderForma()
         { }
-        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers) : base(competitiveListViewModel, listTenderServices, listBalanceKeepers)
+        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, OrderTruckTransport orderTruckTransport) : base(competitiveListViewModel, listTenderServices, listBalanceKeepers, orderTruckTransport)
         {
             this.competitiveListViewModel = competitiveListViewModel;
+            this.orderTruckTransport = orderTruckTransport;
             data = new DataTender();
         }
 
@@ -33,11 +35,71 @@ namespace Corum.Models.ViewModels.Tender
         }
     }
 
+    public class PropValues : TenderParamsDefaults   // Ручная установка значений атрибутов
+    {
+        public string WEIGHT { get; set; }
+        public string ROUTE { get; set; }
+        public string CARGO_NAME { get; set; }
+        public string DOWNLOADDATEREQUIRED { get; set; }
+        public string UNLOADINGDATEREQUIRED { get; set; }
+        public string REQUIRED_NUMBER_OF_CARS { get; set; }
+        public string SPECIALCONDITIONS { get; set; }
+        public string ADDLOADPOINT { get; set; }
+        public string ADDUNLOADINGPOINT { get; set; }
+    }
+
+    public class PropAliasValues : TenderParamsDefaults  // Установка значений атрибутов через площадку Aps tender
+    {
+        public string WEIGHT { get; set; }
+        public string ROUTE { get; set; }
+        public string CARGO_NAME { get; set; }
+        public string DOWNLOADDATEREQUIRED { get; set; }
+        public string UNLOADINGDATEREQUIRED { get; set; }
+        public string REQUIRED_NUMBER_OF_CARS { get; set; }
+        public string SPECIALCONDITIONS { get; set; }
+        public string ADDLOADPOINT { get; set; }
+        public string ADDUNLOADINGPOINT { get; set; }
+    }
 
     public class Items : TenderParamsDefaults  //Класс описывающий позицию лота (обязательное поле)
     {
         private string itemNAME, itemNOTE, itemEXTERNALN;
+        private Dictionary<string, string> keyValuePairs { get; set; }
         public long nmcId { get; set; } // код номенклатуры (тип  данных long) 
+        public Items()
+        {
+            //this.propValues = new List<PropValues>()      !!!!! При ручной установке атрибутов необходимо раскомментировать данный блок кода  !!!!!
+            //{
+            //    new PropValues()
+            //    {
+            //        WEIGHT = competitiveListViewModel.Weight,
+            //        ROUTE = competitiveListViewModel.Route,
+            //        CARGO_NAME = competitiveListViewModel.TruckDescription,
+            //        DOWNLOADDATEREQUIRED = competitiveListViewModel.FromDateRaw,
+            //        UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw,
+            //        REQUIRED_NUMBER_OF_CARS = competitiveListViewModel.CarNumber.ToString(),
+            //        SPECIALCONDITIONS = "Основная информация в заявке",
+            //        ADDLOADPOINT = "Дополнительная точка загрузки отсутствует",
+            //        ADDUNLOADINGPOINT = "Дополнительная точка выгрузки отсутствует"
+            //    }
+            //};
+
+            this.propAliasValues = new List<PropAliasValues>()   // !!!!! При автоматической установке атрибутов необходимо раскомментировать данный блок кода!!!!!
+            {
+                  new PropAliasValues()
+                  {
+                      WEIGHT = competitiveListViewModel.Weight,
+                      ROUTE = competitiveListViewModel.Route,
+                      CARGO_NAME = competitiveListViewModel.TruckDescription,
+                      DOWNLOADDATEREQUIRED = competitiveListViewModel.FromDateRaw,
+                      UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw,
+                      REQUIRED_NUMBER_OF_CARS = competitiveListViewModel.CarNumber.ToString(),
+                      SPECIALCONDITIONS = "Основная информация в заявке",
+                      ADDLOADPOINT = "Дополнительная точка загрузки отсутствует",
+                      ADDUNLOADINGPOINT = "Дополнительная точка выгрузки отсутствует"
+                  }
+            };
+        }
         public string itemName  // уточнение для текущего тура (тип  данных string, максимальнаядлина 300 символов) (необязательное поле)
         {
             get
@@ -73,7 +135,8 @@ namespace Corum.Models.ViewModels.Tender
             }
         }
         //public List<PropValues> propValues { get; set; }  // массив значений атрибутов item (необязательное поле)
-        //public List<PropAliasValues> propAliasValues { get; set; }  // массив значений словарных атрибутов (необязательное поле)
+
+        public List<PropAliasValues> propAliasValues { get; set; }  // массив значений словарных атрибутов (необязательное поле)
 
         //public long detailId { get; set; }  // код места поставки (тип  данных long) (необязательное поле)
     }
@@ -94,26 +157,24 @@ namespace Corum.Models.ViewModels.Tender
 
         public Lots()
         {
-            //var bud = this.formDeserializedJSON.Budget;
             this.lotName = "Лот №1";
             //props = new string[]
             //{
-            //    //"Наименование груза","Вес, т","Упаковка","Габариты","Дата подачи"
-            //    //,
-            //    //"Дата выгрузки","Маршрут","Расстояние, км","Требуемое кол-во автомобилей","Тип заявки (плановая/срочная)"
+            //    "WEIGHT"
+            //    //"Маршрут","Особые условия","Доп.точки выгрузки","Доп.точки загрузки",
+            //    //"Наименование груза","Дата загрузки требуемая","Дата выгрузки требуемая","Требуемое кол-во автомобилей"
             //};
             propAliases = new string[]
             {
-                    //"CARGO_NAME",
-                    //"WEIGHT",
-                    //"PACKAGE",
-                    //"DIMENSIONS",
-                    //"APPLICATION_DATE",
-                    //"UPLOAD_DATE",
+                    //"WEIGHT"
                     //"ROUTE",
-                    //"DISTANCE",
-                    //"REQUIRED_NUMBER_OF_CARS",
-                    //"APPLICATION_TYPE"
+                    //"SPECIALCONDITIONS",
+                    //"ADDUNLOADINGPOINT",
+                    //"ADDLOADPOINT",
+                    //"CARGO_NAME",
+                    //"DOWNLOADDATEREQUIRED",
+                    //"UNLOADINGDATEREQUIRED",
+                    //"REQUIRED_NUMBER_OF_CARS"
             };
 
         }
@@ -134,9 +195,23 @@ namespace Corum.Models.ViewModels.Tender
         {
 
             lots = new List<Lots>() { new Lots() };
-            tenderName = $"({competitiveListViewModel.Id}) Перевозка по маршруту: «‎{competitiveListViewModel.Route}». " +
-                                     $"Дата подачи/выгрузки: «‎{competitiveListViewModel.ToDate}/{competitiveListViewModel.ToDateRaw}». " +
-                       $"Наименование груза: «‎{competitiveListViewModel.TruckDescription}».";
+            switch (competitiveListViewModel.tripTypeName)
+            {
+                case "Международная":
+                    {
+                        tenderName = $"({competitiveListViewModel.Id}) {competitiveListViewModel.ShipperCountryName}, {competitiveListViewModel.CityFrom} ({orderTruckTransport.Shipper})" +
+                                     $" - ‎{competitiveListViewModel.ConsigneeCountryName}, {competitiveListViewModel.CityTo}  ({orderTruckTransport.Consignee}), " +
+                       $"{competitiveListViewModel.Weight}тн., погрузка {competitiveListViewModel.FromDate}";
+                        break;
+                    }
+                default:
+                    {
+                        tenderName = $"({competitiveListViewModel.Id}) {competitiveListViewModel.CityFrom} ({orderTruckTransport.Shipper})" +
+                                     $" - ‎{competitiveListViewModel.CityTo}  ({orderTruckTransport.Consignee}), груз - " +
+                       $"{competitiveListViewModel.Weight}тн., дата погрузки {competitiveListViewModel.FromDate}";
+                        break;
+                    }
+            }
             tenderAuthorName = "Литовченко С.В.";
             tenderAuthorId = (tenderAuthorName != "Литовченко С.В.") ? 0 : Convert.ToInt64(allAppSettings["tenderAuthorId"]);
             companyName = "ООО «КОРУМ ГРУПП»";
@@ -189,13 +264,21 @@ namespace Corum.Models.ViewModels.Tender
             lotName = this.lots[0].lotName;
 
             lots[0].items = new List<Items>();
-            foreach(var item in this.formDeserializedJSON.JqxGridNmc)
+            foreach (var item in this.formDeserializedJSON.JqxGridNmc)
             {
-                Items items = new Items();
-                items.qty = Convert.ToDouble(item.Value.qty);
-                items.nmcId = Convert.ToInt64(listSpecificationNames.ToList().Find((x)=>x.SpecName.Contains(item.Value.nmcName)).nmcTestId);
-                items.itemExternalN = listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).SpecCode.ToString();
-                lots[0].items.Add(items);
+                try
+                {
+                    Items items = new Items();
+                    items.qty = Convert.ToDouble(item.Value.qty);
+                    items.nmcId = Convert.ToInt64(listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).nmcTestId);
+                    items.itemExternalN = listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).SpecCode.ToString();
+
+                    lots[0].items.Add(items);
+                }
+                catch (Exception e)
+                {
+
+                }
             }
         }
 

@@ -1114,6 +1114,10 @@
       <Project>{22de9ae1-494d-449e-9727-f756244e8be5}</Project>
       <Name>Corum.Common</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Corum.DAL\Corum.DAL.csproj">
+      <Project>{253c3cf1-79c8-4e0e-a39b-468635d92bb9}</Project>
+      <Name>Corum.DAL</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Corum.Models\Corum.VModels.csproj">
       <Project>{20e83c6c-365a-4c8a-9a6f-cde667029a17}</Project>
       <Name>Corum.VModels</Name>

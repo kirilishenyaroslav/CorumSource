@@ -6,6 +6,7 @@ using System.Web;
 using System.Web.Mvc;
 using System.Net;
 using Corum.Models;
+using CorumAdminUI;
 using Corum.Models.ViewModels;
 using Corum.Models.ViewModels.Orders;
 using CorumAdminUI.Helpers;
@@ -21,6 +22,7 @@ using Newtonsoft.Json;
 
 namespace CorumAdminUI.Controllers
 {
+
     [Authorize]
     public partial class OrdersController : CorumBaseController
     {
@@ -86,9 +88,9 @@ namespace CorumAdminUI.Controllers
                  && (!navInfo.UseOrderEndDateFilter)
                  && (!navInfo.UseFinalStatusFilter)
                  && (!navInfo.UseOrderProjectFilter)
-                 /* && (!navInfo.UseOrderPayerFilter)
-                  && (!navInfo.UseOrderOrgFromFilter)
-                  && (!navInfo.UseOrderOrgToFilter)*/)
+                  /* && (!navInfo.UseOrderPayerFilter)
+                   && (!navInfo.UseOrderOrgFromFilter)
+                   && (!navInfo.UseOrderOrgToFilter)*/)
             {
                 navInfo.UseOrderDateFilter = true;
 
@@ -596,7 +598,7 @@ namespace CorumAdminUI.Controllers
 
             }
 
-              if (!string.IsNullOrEmpty(navInfo.FilterOrderProjectId))
+            if (!string.IsNullOrEmpty(navInfo.FilterOrderProjectId))
             {
                 string[] idList = navInfo.FilterOrderProjectId.Split(new char[] { ',' });
                 string FilterOrderProjectCode = "";
@@ -1352,9 +1354,9 @@ namespace CorumAdminUI.Controllers
             OrderTypeModel.OrderExecuter = OrderTypeFullInfo.DefaultExecuterId ?? "0";
             OrderTypeModel.OrderExecuterName = OrderTypeFullInfo.DefaultExecuterName;
 
-            OrderTypeModel.RouteId = 0; 
+            OrderTypeModel.RouteId = 0;
             OrderTypeModel.TotalDistanceLenght = "0,00";
-                       
+
 
             var userfullInfo = context.getUser(this.userId);
 
@@ -1373,6 +1375,8 @@ namespace CorumAdminUI.Controllers
             return RedirectToAction("OrdersBase", "Orders");
 
         }
+
+
 
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult UpdateOrder(long Id)
@@ -1634,34 +1638,34 @@ namespace CorumAdminUI.Controllers
 
                 if (ProjectList.Count() > 0)
                 {
-                     string ProjectNum = "";
-                     string MultiProjectId = "";
+                    string ProjectNum = "";
+                    string MultiProjectId = "";
 
-                        foreach (var i in ProjectList)
+                    foreach (var i in ProjectList)
+                    {
+                        if (ProjectNum.Length > 0)
                         {
-                            if (ProjectNum.Length > 0)
-                            {
-                                ProjectNum += ",";
-                            }
-                            if (MultiProjectId.Length > 0)
-                            {
-                                MultiProjectId += ",";
-                            }
-
-                            if (i.ProjectId > 0)
-                            {
-                                ProjectNum = string.Concat(ProjectNum, context.GetProjectById(i.ProjectId).Code);
-                                MultiProjectId = string.Concat(MultiProjectId, i.ProjectId.ToString());
-
-                            }
-                            else
-                            {
-                                break;
-                            }
+                            ProjectNum += ",";
                         }
-                        OrderTypeModel.ProjectNum = ProjectNum;
-                        OrderTypeModel.MultiProjectId = MultiProjectId;
+                        if (MultiProjectId.Length > 0)
+                        {
+                            MultiProjectId += ",";
+                        }
+
+                        if (i.ProjectId > 0)
+                        {
+                            ProjectNum = string.Concat(ProjectNum, context.GetProjectById(i.ProjectId).Code);
+                            MultiProjectId = string.Concat(MultiProjectId, i.ProjectId.ToString());
+
+                        }
+                        else
+                        {
+                            break;
+                        }
                     }
+                    OrderTypeModel.ProjectNum = ProjectNum;
+                    OrderTypeModel.MultiProjectId = MultiProjectId;
+                }
             }
 
             return View(OrderTypeModel);
@@ -4471,7 +4475,7 @@ namespace CorumAdminUI.Controllers
             jsonGroupItems.Total = totalRecords;
             return jsonGroupItems;
         }
-                
+
 
         //[OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult FactCars(OrderCarsNavigationInfo navInfo)
@@ -4515,7 +4519,7 @@ namespace CorumAdminUI.Controllers
               && (!navInfo.UseDriverCardInfoFilter)
               && (!navInfo.UseDriverContactInfoFilter)
               && (!navInfo.UseCommentsFilter)
-              
+
               && (!navInfo.UseStatusFilter)
               && (!navInfo.UseOrderCreatorFilter)
               && (!navInfo.UseOrderTypeFilter)
@@ -4542,16 +4546,16 @@ namespace CorumAdminUI.Controllers
                 navInfo.FilterOrderEndDateEnd = DateTime.Now.AddDays(1).ToString("dd.MM.yyyy");
                 navInfo.FilterOrderEndDateEndRaw = DateTimeConvertClass.getString(DateTime.Now.AddDays(1));
 
-              //  navInfo.UseFinalStatusFilter = true;
-               // navInfo.FilterFinalStatus = false;
+                //  navInfo.UseFinalStatusFilter = true;
+                // navInfo.FilterFinalStatus = false;
 
-              //  navInfo.UseFactShipperFilter = true;
-               // navInfo.UseFactConsigneeFilter = true;
+                //  navInfo.UseFactShipperFilter = true;
+                // navInfo.UseFactConsigneeFilter = true;
             }
 
             bool _UseCarModelInfoFilter = navInfo.UseCarModelInfoFilter;
             string _FilterCarModelInfoName = "";
-             if (!string.IsNullOrEmpty(navInfo.FilterCarModelInfoFilter))
+            if (!string.IsNullOrEmpty(navInfo.FilterCarModelInfoFilter))
             {
                 string[] idList = navInfo.FilterCarModelInfoFilter.Split(new char[] { ',' });
                 if (idList.Length > 0)
@@ -4565,8 +4569,8 @@ namespace CorumAdminUI.Controllers
                         }
                         if (Convert.ToInt32(i) > 0)
                         {
-                           
-                             FilterCarModelInfoName = string.Concat(FilterCarModelInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.CarModelInfo);
+
+                            FilterCarModelInfoName = string.Concat(FilterCarModelInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.CarModelInfo);
                         }
                         else
                         {
@@ -4584,7 +4588,7 @@ namespace CorumAdminUI.Controllers
 
             bool _UseCarRegNumFilter = navInfo.UseCarRegNumFilter;
             string _FilterCarRegNumName = "";
-             if (!string.IsNullOrEmpty(navInfo.FilterCarRegNumFilter))
+            if (!string.IsNullOrEmpty(navInfo.FilterCarRegNumFilter))
             {
                 string[] idList = navInfo.FilterCarRegNumFilter.Split(new char[] { ',' });
                 if (idList.Length > 0)
@@ -4598,8 +4602,8 @@ namespace CorumAdminUI.Controllers
                         }
                         if (Convert.ToInt32(i) > 0)
                         {
-                           
-                             FilterCarRegNumName = string.Concat(FilterCarRegNumName, context.getUsedCarInfo(Convert.ToInt32(i))?.CarRegNum);
+
+                            FilterCarRegNumName = string.Concat(FilterCarRegNumName, context.getUsedCarInfo(Convert.ToInt32(i))?.CarRegNum);
                         }
                         else
                         {
@@ -4614,10 +4618,10 @@ namespace CorumAdminUI.Controllers
                     _UseCarModelInfoFilter = false;
                 }
             }
-             
+
             bool _UseCarCapacityFilter = navInfo.UseCarCapacityFilter;
             string _FilterCarCapacityName = "";
-             if (!string.IsNullOrEmpty(navInfo.FilterCarCapacityFilter))
+            if (!string.IsNullOrEmpty(navInfo.FilterCarCapacityFilter))
             {
                 string[] idList = navInfo.FilterCarCapacityFilter.Split(new char[] { ',' });
                 if (idList.Length > 0)
@@ -4631,8 +4635,8 @@ namespace CorumAdminUI.Controllers
                         }
                         if (Convert.ToInt32(i) > 0)
                         {
-                           
-                             FilterCarCapacityName = string.Concat(FilterCarCapacityName, context.getUsedCarInfo(Convert.ToInt32(i))?.CarCapacity);
+
+                            FilterCarCapacityName = string.Concat(FilterCarCapacityName, context.getUsedCarInfo(Convert.ToInt32(i))?.CarCapacity);
                         }
                         else
                         {
@@ -4648,10 +4652,10 @@ namespace CorumAdminUI.Controllers
                 }
             }
 
-             
+
             bool _UseCarDriverInfoFilter = navInfo.UseCarDriverInfoFilter;
             string _FilterCarDriverInfoName = "";
-             if (!string.IsNullOrEmpty(navInfo.FilterCarDriverInfoFilter))
+            if (!string.IsNullOrEmpty(navInfo.FilterCarDriverInfoFilter))
             {
                 string[] idList = navInfo.FilterCarDriverInfoFilter.Split(new char[] { ',' });
                 if (idList.Length > 0)
@@ -4665,8 +4669,8 @@ namespace CorumAdminUI.Controllers
                         }
                         if (Convert.ToInt32(i) > 0)
                         {
-                           
-                             FilterCarDriverInfoName = string.Concat(FilterCarDriverInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.CarDriverInfo);
+
+                            FilterCarDriverInfoName = string.Concat(FilterCarDriverInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.CarDriverInfo);
                         }
                         else
                         {
@@ -4685,7 +4689,7 @@ namespace CorumAdminUI.Controllers
 
             bool _UseDriverContactInfoFilter = navInfo.UseDriverContactInfoFilter;
             string _FilterDriverContactInfoName = "";
-             if (!string.IsNullOrEmpty(navInfo.FilterDriverContactInfoFilter))
+            if (!string.IsNullOrEmpty(navInfo.FilterDriverContactInfoFilter))
             {
                 string[] idList = navInfo.FilterDriverContactInfoFilter.Split(new char[] { ',' });
                 if (idList.Length > 0)
@@ -4699,8 +4703,8 @@ namespace CorumAdminUI.Controllers
                         }
                         if (Convert.ToInt32(i) > 0)
                         {
-                           
-                             FilterDriverContactInfoName = string.Concat(FilterDriverContactInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.DriverContactInfo);
+
+                            FilterDriverContactInfoName = string.Concat(FilterDriverContactInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.DriverContactInfo);
                         }
                         else
                         {
@@ -4716,9 +4720,9 @@ namespace CorumAdminUI.Controllers
                 }
             }
 
-                bool _UseDriverCardInfoFilter = navInfo.UseDriverCardInfoFilter;
+            bool _UseDriverCardInfoFilter = navInfo.UseDriverCardInfoFilter;
             string _FilterDriverCardInfoName = "";
-             if (!string.IsNullOrEmpty(navInfo.FilterDriverCardInfoFilter))
+            if (!string.IsNullOrEmpty(navInfo.FilterDriverCardInfoFilter))
             {
                 string[] idList = navInfo.FilterDriverCardInfoFilter.Split(new char[] { ',' });
                 if (idList.Length > 0)
@@ -4732,8 +4736,8 @@ namespace CorumAdminUI.Controllers
                         }
                         if (Convert.ToInt32(i) > 0)
                         {
-                           
-                             FilterDriverCardInfoName = string.Concat(FilterDriverCardInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.DriverCardInfo);
+
+                            FilterDriverCardInfoName = string.Concat(FilterDriverCardInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.DriverCardInfo);
                         }
                         else
                         {
@@ -4764,8 +4768,8 @@ namespace CorumAdminUI.Controllers
                             FilterCommentsName += ",";
                         }
                         if (Convert.ToInt32(i) > 0)
-                        {                           
-                             FilterCommentsName = string.Concat(FilterCommentsName, context.getUsedCarInfo(Convert.ToInt32(i))?.Comments);
+                        {
+                            FilterCommentsName = string.Concat(FilterCommentsName, context.getUsedCarInfo(Convert.ToInt32(i))?.Comments);
                         }
                         else
                         {
@@ -4783,7 +4787,7 @@ namespace CorumAdminUI.Controllers
 
             bool _UseContractInfoFilter = navInfo.UseContractInfoFilter;
             string _FilterContractInfoName = "";
-             if (!string.IsNullOrEmpty(navInfo.FilterContractInfoFilter))
+            if (!string.IsNullOrEmpty(navInfo.FilterContractInfoFilter))
             {
                 string[] idList = navInfo.FilterContractInfoFilter.Split(new char[] { ',' });
                 if (idList.Length > 0)
@@ -4797,8 +4801,8 @@ namespace CorumAdminUI.Controllers
                         }
                         if (Convert.ToInt32(i) > 0)
                         {
-                           
-                             FilterContractInfoName = string.Concat(FilterContractInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.ContractInfo);
+
+                            FilterContractInfoName = string.Concat(FilterContractInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.ContractInfo);
                         }
                         else
                         {
@@ -4814,9 +4818,9 @@ namespace CorumAdminUI.Controllers
                 }
             }
 
-                 bool _UseCarrierInfoFilter = navInfo.UseCarrierInfoFilter;
+            bool _UseCarrierInfoFilter = navInfo.UseCarrierInfoFilter;
             string _FilterCarrierInfoName = "";
-             if (!string.IsNullOrEmpty(navInfo.FilterCarrierInfoFilter))
+            if (!string.IsNullOrEmpty(navInfo.FilterCarrierInfoFilter))
             {
                 string[] idList = navInfo.FilterCarrierInfoFilter.Split(new char[] { ',' });
                 if (idList.Length > 0)
@@ -4830,8 +4834,8 @@ namespace CorumAdminUI.Controllers
                         }
                         if (Convert.ToInt32(i) > 0)
                         {
-                           
-                             FilterCarrierInfoName = string.Concat(FilterCarrierInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.CarrierInfo);
+
+                            FilterCarrierInfoName = string.Concat(FilterCarrierInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.CarrierInfo);
                         }
                         else
                         {
@@ -4847,7 +4851,7 @@ namespace CorumAdminUI.Controllers
                 }
             }
 
-              if (!string.IsNullOrEmpty(navInfo.FilterStatusId))
+            if (!string.IsNullOrEmpty(navInfo.FilterStatusId))
             {
                 string[] idList = navInfo.FilterStatusId.Split(new char[] { ',' });
                 if ((idList.Length == 1) && (Convert.ToInt32(idList[0]) == 0))
@@ -4876,7 +4880,7 @@ namespace CorumAdminUI.Controllers
 
             factCarsFilter.UseOrderExDateFilter = navInfo.UseOrderExDateFilter;
             factCarsFilter.UseOrderEndDateFilter = navInfo.UseOrderEndDateFilter;
-            
+
             factCarsFilter.FilterFactShipperBeg = string.IsNullOrEmpty(navInfo.FilterFactShipperBegRaw)
                 ? DateTime.Now.AddDays(-7)
                 : DateTimeConvertClass.getDateTime(navInfo.FilterFactShipperBegRaw);
@@ -4917,7 +4921,7 @@ namespace CorumAdminUI.Controllers
             factCarsFilter.FilterCarrierInfoFilter = _FilterCarrierInfoName;
             factCarsFilter.FilterContractInfoFilter = _FilterContractInfoName;
             factCarsFilter.FilterCarModelInfoFilter = _FilterCarModelInfoName;
-                
+
             factCarsFilter.FilterCarRegNumFilter = _FilterCarRegNumName;
             factCarsFilter.FilterCarCapacityFilter = _FilterCarCapacityName;
             factCarsFilter.FilterCarDriverInfoFilter = _FilterCarDriverInfoName;
@@ -4969,7 +4973,7 @@ namespace CorumAdminUI.Controllers
 
                 FilterExpeditorIdFilter = navInfo.FilterExpeditorIdFilter,
                 UseExpeditorIdFilter = navInfo.UseExpeditorIdFilter,
-                
+
                 FilterContractExpBkInfoFilter = navInfo.FilterContractExpBkInfoFilter,
                 UseContractExpBkInfoFilter = navInfo.UseContractExpBkInfoFilter,
 
@@ -4981,19 +4985,19 @@ namespace CorumAdminUI.Controllers
 
                 FilterCarModelInfoFilter = navInfo.FilterCarModelInfoFilter,
                 UseCarModelInfoFilter = navInfo.UseCarModelInfoFilter,
-                
+
                 FilterCarRegNumFilter = navInfo.FilterCarRegNumFilter,
                 UseCarRegNumFilter = navInfo.UseCarRegNumFilter,
 
                 FilterCarCapacityFilter = navInfo.FilterCarCapacityFilter,
                 UseCarCapacityFilter = navInfo.UseCarCapacityFilter,
-            
+
                 FilterCarDriverInfoFilter = navInfo.FilterCarDriverInfoFilter,
                 UseCarDriverInfoFilter = navInfo.UseCarDriverInfoFilter,
 
                 FilterDriverCardInfoFilter = navInfo.FilterDriverCardInfoFilter,
                 UseDriverCardInfoFilter = navInfo.UseDriverCardInfoFilter,
-                
+
                 FilterDriverContactInfoFilter = navInfo.FilterDriverContactInfoFilter,
                 UseDriverContactInfoFilter = navInfo.UseDriverContactInfoFilter,
 
@@ -5001,33 +5005,33 @@ namespace CorumAdminUI.Controllers
                 UseCommentsFilter = navInfo.UseCommentsFilter,
                 ////
                 FilterOrderExecuterId = navInfo.FilterOrderExecuterId,
-            UseOrderExecuterFilter = navInfo.UseOrderExecuterFilter,
-            FilterStatusId = navInfo.FilterStatusId,
-            UseStatusFilter = navInfo.UseStatusFilter,
-            FilterOrderCreatorId = navInfo.FilterOrderCreatorId,
-            UseOrderCreatorFilter = navInfo.UseOrderCreatorFilter,
-            FilterOrderTypeId = navInfo.FilterOrderTypeId,
-            UseOrderTypeFilter = navInfo.UseOrderTypeFilter,
+                UseOrderExecuterFilter = navInfo.UseOrderExecuterFilter,
+                FilterStatusId = navInfo.FilterStatusId,
+                UseStatusFilter = navInfo.UseStatusFilter,
+                FilterOrderCreatorId = navInfo.FilterOrderCreatorId,
+                UseOrderCreatorFilter = navInfo.UseOrderCreatorFilter,
+                FilterOrderTypeId = navInfo.FilterOrderTypeId,
+                UseOrderTypeFilter = navInfo.UseOrderTypeFilter,
 
-            FilterTripTypeId = navInfo.FilterTripTypeId,
-            UseTripTypeFilter = navInfo.UseTripTypeFilter,
-            FilterOrderClientId = navInfo.FilterOrderClientId,
-            UseOrderClientFilter = navInfo.UseOrderClientFilter,
+                FilterTripTypeId = navInfo.FilterTripTypeId,
+                UseTripTypeFilter = navInfo.UseTripTypeFilter,
+                FilterOrderClientId = navInfo.FilterOrderClientId,
+                UseOrderClientFilter = navInfo.UseOrderClientFilter,
 
-            FilterOrderPriority = navInfo.FilterOrderPriority,
-            UseOrderPriorityFilter = navInfo.UseOrderPriorityFilter,
+                FilterOrderPriority = navInfo.FilterOrderPriority,
+                UseOrderPriorityFilter = navInfo.UseOrderPriorityFilter,
 
-            UseFinalStatusFilter = navInfo.UseFinalStatusFilter,
-            FilterFinalStatus = navInfo.FilterFinalStatus,
-            UseOrderProjectFilter = navInfo.UseOrderProjectFilter,
-            FilterOrderProjectId = navInfo.FilterOrderProjectId,
+                UseFinalStatusFilter = navInfo.UseFinalStatusFilter,
+                FilterFinalStatus = navInfo.FilterFinalStatus,
+                UseOrderProjectFilter = navInfo.UseOrderProjectFilter,
+                FilterOrderProjectId = navInfo.FilterOrderProjectId,
 
-            FilterOrderPayerId = navInfo.FilterOrderPayerId,
-            UseOrderPayerFilter = navInfo.UseOrderPayerFilter,
-            FilterOrderOrgFromId = navInfo.FilterOrderOrgFromId,
-            UseOrderOrgFromFilter = navInfo.UseOrderOrgFromFilter,
-            FilterOrderOrgToId = navInfo.FilterOrderOrgToId,
-            UseOrderOrgToFilter = navInfo.UseOrderOrgToFilter                                         
+                FilterOrderPayerId = navInfo.FilterOrderPayerId,
+                UseOrderPayerFilter = navInfo.UseOrderPayerFilter,
+                FilterOrderOrgFromId = navInfo.FilterOrderOrgFromId,
+                UseOrderOrgFromFilter = navInfo.UseOrderOrgFromFilter,
+                FilterOrderOrgToId = navInfo.FilterOrderOrgToId,
+                UseOrderOrgToFilter = navInfo.UseOrderOrgToFilter
             };
             // var carList = context.getFactCars(Id);
 
@@ -5062,7 +5066,7 @@ namespace CorumAdminUI.Controllers
             model.FilterOrderDateBegRaw = string.IsNullOrEmpty(navInfo.FilterOrderDateBeg) ? DateTimeConvertClass.getString(DateTime.Now.AddDays(-7)) : navInfo.FilterOrderDateBegRaw;
             model.FilterOrderDateEnd = string.IsNullOrEmpty(navInfo.FilterOrderDateEnd) ? DateTime.Now.AddDays(1).ToString("dd.MM.yyyy") : navInfo.FilterOrderDateEnd;
             model.FilterOrderDateEndRaw = string.IsNullOrEmpty(navInfo.FilterOrderDateEnd) ? DateTimeConvertClass.getString(DateTime.Now.AddDays(1)) : navInfo.FilterOrderDateEndRaw;
-            
+
             if (!string.IsNullOrEmpty(navInfo.FilterOrderIdFilter))
             {
                 string[] idList = navInfo.FilterOrderIdFilter.Split(new char[] { ',' });
@@ -5091,7 +5095,7 @@ namespace CorumAdminUI.Controllers
                 }
             }
 
-                 if (!string.IsNullOrEmpty(navInfo.FilterExpeditorIdFilter))
+            if (!string.IsNullOrEmpty(navInfo.FilterExpeditorIdFilter))
             {
                 string[] idList = navInfo.FilterExpeditorIdFilter.Split(new char[] { ',' });
                 if (idList.Length > 0)
@@ -5103,8 +5107,8 @@ namespace CorumAdminUI.Controllers
                         {
                             FilterOrderExpeditorName += ",";
                         }
-                        if (Convert.ToInt32(i) > 0)                            
-                        FilterOrderExpeditorName = string.Concat(FilterOrderExpeditorName, context.getExpeditors(Convert.ToInt32(i))?.CarrierName);
+                        if (Convert.ToInt32(i) > 0)
+                            FilterOrderExpeditorName = string.Concat(FilterOrderExpeditorName, context.getExpeditors(Convert.ToInt32(i))?.CarrierName);
                         else
                         {
                             model.UseExpeditorIdFilter = false;
@@ -5119,7 +5123,7 @@ namespace CorumAdminUI.Controllers
                 }
             }
 
-                         if (!string.IsNullOrEmpty(navInfo.FilterContractExpBkInfoFilter))
+            if (!string.IsNullOrEmpty(navInfo.FilterContractExpBkInfoFilter))
             {
                 string[] idList = navInfo.FilterContractExpBkInfoFilter.Split(new char[] { ',' });
                 if (idList.Length > 0)
@@ -5133,8 +5137,8 @@ namespace CorumAdminUI.Controllers
                         }
                         if (Convert.ToInt32(i) > 0)
                         {
-                           var text =  context.getContracts(Convert.ToInt32(i))?.ContractNumber + " от " +  context.getContracts(Convert.ToInt32(i))?.ContractDate + " (с " +
-                                    context.getContracts(Convert.ToInt32(i))?.DateBeg + " по " +  context.getContracts(Convert.ToInt32(i))?.DateEnd + " ) ";
+                            var text = context.getContracts(Convert.ToInt32(i))?.ContractNumber + " от " + context.getContracts(Convert.ToInt32(i))?.ContractDate + " (с " +
+                                     context.getContracts(Convert.ToInt32(i))?.DateBeg + " по " + context.getContracts(Convert.ToInt32(i))?.DateEnd + " ) ";
                             FilterContractExpBkInfoName = string.Concat(FilterContractExpBkInfoName, text);
                         }
                         else
@@ -5151,7 +5155,7 @@ namespace CorumAdminUI.Controllers
                 }
             }
 
-           if (!string.IsNullOrEmpty(navInfo.FilterCarrierInfoFilter))
+            if (!string.IsNullOrEmpty(navInfo.FilterCarrierInfoFilter))
             {
                 string[] idList = navInfo.FilterCarrierInfoFilter.Split(new char[] { ',' });
                 if (idList.Length > 0)
@@ -5165,8 +5169,8 @@ namespace CorumAdminUI.Controllers
                         }
                         if (Convert.ToInt32(i) > 0)
                         {
-                           
-                             FilterCarrierInfoName = string.Concat(FilterCarrierInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.CarrierInfo);
+
+                            FilterCarrierInfoName = string.Concat(FilterCarrierInfoName, context.getUsedCarInfo(Convert.ToInt32(i))?.CarrierInfo);
                         }
                         else
                         {
@@ -5190,7 +5194,7 @@ namespace CorumAdminUI.Controllers
 
             model.FilterCarCapacityName = _FilterCarCapacityName;
             model.UseCarCapacityFilter = _UseCarCapacityFilter;
-                                               
+
             model.FilterCarDriverInfoName = _FilterCarDriverInfoName;
             model.UseCarDriverInfoFilter = _UseCarDriverInfoFilter;
 
@@ -5201,23 +5205,23 @@ namespace CorumAdminUI.Controllers
             model.UseDriverCardInfoFilter = _UseDriverCardInfoFilter;
 
             model.FilterCommentsName = _FilterCommentsName;
-            model.UseCommentsFilter = _UseCommentsFilter; 
+            model.UseCommentsFilter = _UseCommentsFilter;
 
             model.FilterContractInfoName = _FilterContractInfoName;
-            model.UseContractInfoFilter = _UseContractInfoFilter; 
+            model.UseContractInfoFilter = _UseContractInfoFilter;
 
-              model.FilterCarrierInfoName = _FilterCarrierInfoName;
-            model.UseCarrierInfoFilter = _UseCarrierInfoFilter; 
-            
+            model.FilterCarrierInfoName = _FilterCarrierInfoName;
+            model.UseCarrierInfoFilter = _UseCarrierInfoFilter;
 
-                if ((!model.AcceptDate) && (!model.ExecuteDate))
+
+            if ((!model.AcceptDate) && (!model.ExecuteDate))
             {
                 model.DriftDate = true;
                 model.AcceptDate = true;
                 model.ExecuteDate = true;
 
             }
-                 if (!string.IsNullOrEmpty(navInfo.FilterStatusId))
+            if (!string.IsNullOrEmpty(navInfo.FilterStatusId))
             {
                 string[] idList = navInfo.FilterStatusId.Split(new char[] { ',' });
                 if (idList.Length > 0)
@@ -5427,7 +5431,7 @@ namespace CorumAdminUI.Controllers
             carList.PlanShipperDate = context.GetStartDate(carList.OrderListInfo.Id, carList.OrderListInfo.OrderType).ToString("dd.MM.yyyy");
             carList.PlanShipperTime = context.GetStartDate(carList.OrderListInfo.Id, carList.OrderListInfo.OrderType).ToString("HH:mm");
             carList.PlanConsigneeDate = context.GetFinishDate(carList.OrderListInfo.Id, carList.OrderListInfo.OrderType).ToString("dd.MM.yyyy");
-            carList.PlanConsigneeTime = context.GetFinishDate(carList.OrderListInfo.Id, carList.OrderListInfo.OrderType).ToString("HH:mm");            
+            carList.PlanConsigneeTime = context.GetFinishDate(carList.OrderListInfo.Id, carList.OrderListInfo.OrderType).ToString("HH:mm");
 
             return View(carList);
         }
@@ -5629,7 +5633,7 @@ namespace CorumAdminUI.Controllers
         }
 
 
-         [HttpGet]
+        [HttpGet]
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult GetDriverContactInfoFilter(string searchTerm, int pageSize, int pageNum, long? Id)
         {
@@ -5692,7 +5696,7 @@ namespace CorumAdminUI.Controllers
         }
 
 
-         [HttpGet]
+        [HttpGet]
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult GetContractExpInfo(string searchTerm, int pageSize, int pageNum, long? Id)
         {
@@ -5707,7 +5711,7 @@ namespace CorumAdminUI.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
         }
-           [HttpGet]
+        [HttpGet]
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult GetCarrierInfoFilter(string searchTerm, int pageSize, int pageNum, long? Id)
         {
@@ -5723,7 +5727,7 @@ namespace CorumAdminUI.Controllers
             };
         }
 
-            private static Select2PagedResult GetCarrierFilterVmToSelect2Format(IEnumerable<OrderUsedCarViewModel> groupItems, int totalRecords)
+        private static Select2PagedResult GetCarrierFilterVmToSelect2Format(IEnumerable<OrderUsedCarViewModel> groupItems, int totalRecords)
         {
             var jsonGroupItems = new Select2PagedResult { Results = new List<Select2Result>() };
             foreach (var groupItem in groupItems)
@@ -5738,7 +5742,7 @@ namespace CorumAdminUI.Controllers
             return jsonGroupItems;
         }
 
-         [HttpGet]
+        [HttpGet]
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult GetContractExpBkInfo2(string searchTerm, int pageSize, int pageNum, long? Id)
         {
@@ -5753,7 +5757,7 @@ namespace CorumAdminUI.Controllers
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
         }
-         
+
 
         private static Select2PagedResult GetContractsFilterVmToSelect2Format(IEnumerable<OrderUsedCarViewModel> groupItems, int totalRecords)
         {
@@ -5769,7 +5773,7 @@ namespace CorumAdminUI.Controllers
             jsonGroupItems.Total = totalRecords;
             return jsonGroupItems;
         }
-        
+
         [HttpGet]
         public ActionResult GetOrderProjects(long orderId, string searchTerm, int pageSize, int pageNum)
         {
@@ -5785,7 +5789,7 @@ namespace CorumAdminUI.Controllers
             };
         }
 
-         private static Select2PagedResult OrderProjectsVmToSelect2Format(IEnumerable<ProjectTypeViewModel> groupItems, int totalRecords)
+        private static Select2PagedResult OrderProjectsVmToSelect2Format(IEnumerable<ProjectTypeViewModel> groupItems, int totalRecords)
         {
             var jsonGroupItems = new Select2PagedResult { Results = new List<Select2Result>() };
             foreach (var groupItem in groupItems)
@@ -5804,15 +5808,15 @@ namespace CorumAdminUI.Controllers
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult TruckReport(OrdersNavigationInfo navInfo)
         {
-               //обрабатываем данные фильтров
-            if (string.IsNullOrEmpty(navInfo.FilterOrderTypeId)) { navInfo.UseOrderTypeFilter = false; }          
-           
+            //обрабатываем данные фильтров
+            if (string.IsNullOrEmpty(navInfo.FilterOrderTypeId)) { navInfo.UseOrderTypeFilter = false; }
+
             if (navInfo.FilterOrderDate == null)
             {
                 navInfo.FilterOrderDate = DateTime.Now.ToString("dd.MM.yyyy");
                 navInfo.FilterOrderDateRaw = DateTimeConvertClass.getString(DateTime.Now);
-            }                     
-          
+            }
+
 
             string FilterOrderTypeNames = "";
             if (!string.IsNullOrEmpty(navInfo.FilterOrderTypeId))
@@ -5830,7 +5834,7 @@ namespace CorumAdminUI.Controllers
                 }
             }
 
-            String IdTree = Guid.NewGuid().ToString();  
+            String IdTree = Guid.NewGuid().ToString();
 
             List<TruckViewModel> TruckInfo = null;
             var TruckTree = context.getTruckReport(
@@ -5841,7 +5845,7 @@ namespace CorumAdminUI.Controllers
                 string.IsNullOrEmpty(navInfo.FilterOrderDateRaw)
                     ? DateTime.Now
                     : DateTimeConvertClass.getDateTime(navInfo.FilterOrderDateRaw),
-                navInfo.UseOrderDateFilter, 
+                navInfo.UseOrderDateFilter,
                 IdTree,
                 ref TruckInfo);
 
@@ -5854,31 +5858,31 @@ namespace CorumAdminUI.Controllers
                     context.getAvailableOrderTypes(this.isAdmin ? null : this.userId, true)
                         .Where(x => x.IsActive == true).OrderBy(o => o.Id).ToList(),
                 context = context,
-              
+
                 FilterOrderTypeId = navInfo.FilterOrderTypeId,
                 FilterOrderTypeName = FilterOrderTypeNames,
-                UseOrderTypeFilter = navInfo.UseOrderTypeFilter,  
-                IdTree = IdTree                   
+                UseOrderTypeFilter = navInfo.UseOrderTypeFilter,
+                IdTree = IdTree
             };
-                     
+
             var model = new OrdersReportsNavigationResult
             {
                 JSONData = JsonConvert.SerializeObject(modelTruckReport.DisplayValues),
-                TruckReport = modelTruckReport              
-            };                       
+                TruckReport = modelTruckReport
+            };
 
             Session[IdTree] = modelTruckReport;
 
             //получаем типы заявок
-           // var orderTypes = model.BaseReport.DisplayValues.Select(o => o.OrderType).Distinct().ToList();                    
-          
+            // var orderTypes = model.BaseReport.DisplayValues.Select(o => o.OrderType).Distinct().ToList();                    
+
             model.FilterOrderDate = string.IsNullOrEmpty(navInfo.FilterOrderDate) ? DateTime.Now.ToString("dd.MM.yyyy") : navInfo.FilterOrderDate;
             model.FilterOrderDateRaw = string.IsNullOrEmpty(navInfo.FilterOrderDate) ? DateTimeConvertClass.getString(DateTime.Now) : navInfo.FilterOrderDateRaw;
-           
+
             model.FilterOrderTypeId = navInfo.FilterOrderTypeId;
             model.FilterOrderTypeName = FilterOrderTypeNames;
             model.UseOrderTypeFilter = navInfo.UseOrderTypeFilter;
-            
+
             if (!string.IsNullOrEmpty(navInfo.FilterOrderTypeId))
             {
                 string[] idList = navInfo.FilterOrderTypeId.Split(new char[] { ',' });
@@ -5899,13 +5903,13 @@ namespace CorumAdminUI.Controllers
             model.UseOrderTypeFilter = navInfo.UseOrderTypeFilter;
 
             return View(model);
-           
+
         }
 
         [HttpGet]
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult TruckReportDetails(/*int? OrgId,*/ DateTime? ReportDate, bool UseOrderTypeFilter, int? FilterOrderTypeId, string IdTree, int? IdGroup, string Id)
-        {            
+        {
             OrdersNavigationInfo navInfo = new OrdersNavigationInfo();
             String Address = "", OrgName = "";
             var modelTruckReport2 = (Session[IdTree] as OrdersNavigationResult<TruckViewModel>);
@@ -5914,7 +5918,7 @@ namespace CorumAdminUI.Controllers
             {
                 var TruckInfo = modelTruckReport2.DataDisplayValues.ToList();
                 modelTruckReport3 = new OrdersNavigationResult<TruckViewModel>(navInfo, userId)
-                {                   
+                {
                     DisplayValues = context.getTruckReportDetails2(TruckInfo,
                     IdGroup ?? 0,
                     Id)
@@ -5922,18 +5926,18 @@ namespace CorumAdminUI.Controllers
                 OrgName = context.getTruckReportTitle(TruckInfo,
                IdGroup ?? 0, Id, ref Address);
 
-                 var model = new OrdersReportsNavigationResult
-            {
-                TruckReportDetail = modelTruckReport3,
-                OrgName = OrgName,
-                OrgId = 0,
-                ReportDate = ReportDate ?? DateTime.Now,
-                Address = Address,
-                IdGroup = IdGroup ?? 0,
-                Id = Id,
-                IdTree = IdTree
-            };
-            return View(model);
+                var model = new OrdersReportsNavigationResult
+                {
+                    TruckReportDetail = modelTruckReport3,
+                    OrgName = OrgName,
+                    OrgId = 0,
+                    ReportDate = ReportDate ?? DateTime.Now,
+                    Address = Address,
+                    IdGroup = IdGroup ?? 0,
+                    Id = Id,
+                    IdTree = IdTree
+                };
+                return View(model);
             }
             else
             {
@@ -5942,39 +5946,45 @@ namespace CorumAdminUI.Controllers
                 navInfo.FilterOrderDateRaw = ReportDate.Value.ToString("dd.MM.yyyy");
 
                 navInfo.UseOrderDateFilter = true;
-                return RedirectToAction( "TruckReport", new RouteValueDictionary( 
-    new { controller = "Orders", action = "TruckReport", UseOrderTypeFilter =  navInfo.UseOrderTypeFilter,
-        FilterOrderTypeId =  navInfo.FilterOrderTypeId, FilterOrderDateRaw =  navInfo.FilterOrderDateRaw,
-        UseOrderDateFilter = navInfo.UseOrderDateFilter} ) );
-               // return RedirectToAction("TruckReport", "Orders", new { navInfo = navInfo });
+                return RedirectToAction("TruckReport", new RouteValueDictionary(
+    new
+    {
+        controller = "Orders",
+        action = "TruckReport",
+        UseOrderTypeFilter = navInfo.UseOrderTypeFilter,
+        FilterOrderTypeId = navInfo.FilterOrderTypeId,
+        FilterOrderDateRaw = navInfo.FilterOrderDateRaw,
+        UseOrderDateFilter = navInfo.UseOrderDateFilter
+    }));
+                // return RedirectToAction("TruckReport", "Orders", new { navInfo = navInfo });
             }
 
-           
 
 
-         /*    var modelTruckReport = new OrdersNavigationResult<TruckReportViewModel>(navInfo, userId)
-            {
-                isTransport = true,
-                DisplayValues = context.getTruckReportDetails(
-                    userId,
-                    this.isAdmin, 
-                    OrgId ?? 0,
-                    ReportDate ??  DateTime.Now,
-                    IdGroup ?? 0, 
-                    Id), 
-                             
-            };
-            var Address = "";
-            var TruckReport = modelTruckReport.DisplayValues.FirstOrDefault();        
-            if (TruckReport != null)  
-             Address = TruckReport.isShipper
-                    ? context.GetShipperAddress(TruckReport.OrderId)
-                    : context.GetConsigneeAddress(TruckReport.OrderId);
-            
-    */
+
+            /*    var modelTruckReport = new OrdersNavigationResult<TruckReportViewModel>(navInfo, userId)
+               {
+                   isTransport = true,
+                   DisplayValues = context.getTruckReportDetails(
+                       userId,
+                       this.isAdmin, 
+                       OrgId ?? 0,
+                       ReportDate ??  DateTime.Now,
+                       IdGroup ?? 0, 
+                       Id), 
+
+               };
+               var Address = "";
+               var TruckReport = modelTruckReport.DisplayValues.FirstOrDefault();        
+               if (TruckReport != null)  
+                Address = TruckReport.isShipper
+                       ? context.GetShipperAddress(TruckReport.OrderId)
+                       : context.GetConsigneeAddress(TruckReport.OrderId);
+
+       */
 
 
-             //carList);
+            //carList);
         }
     }
 }

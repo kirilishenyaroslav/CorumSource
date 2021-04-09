@@ -10,7 +10,6 @@ using Corum.DAL.Helpers;
 using System.Data.SqlClient;
 using System.Data;
 using System.Data.Entity;
-using Corum.DAL.Entity;
 using System.Globalization;
 
 
@@ -21,7 +20,7 @@ namespace Corum.DAL
 
         public List<Corum.Models.Tender.TenderServices> GetTenderServices()
         {
-            List<Corum.Models.Tender.TenderServices> services = new List<Models.Tender.TenderServices>();
+            List<TenderServices> services = new List<Models.Tender.TenderServices>();
             var tenderList = db.TenderServices.ToList();
             foreach (var item in tenderList)
             {
@@ -35,7 +34,7 @@ namespace Corum.DAL
             return services;
         }
 
-        public List<Corum.Models.Tender.SpecificationNames> GetSpecificationNames()
+        public List<SpecificationNames> GetSpecificationNames()
         {
             List<Corum.Models.Tender.SpecificationNames> specList = new List<Models.Tender.SpecificationNames>();
             var specNamesList = db.SpecificationNames.ToList();
@@ -54,7 +53,7 @@ namespace Corum.DAL
             return specList;
         }
 
-        public List<Corum.Models.Tender.BalanceKeepers> GetBalanceKeepers()
+        public List<BalanceKeepers> GetBalanceKeepers()
         {
             List<Corum.Models.Tender.BalanceKeepers> balanceKeepList = new List<Models.Tender.BalanceKeepers>();
             var balanceNamesList = db.BalanceKeepers.ToList();
@@ -68,6 +67,45 @@ namespace Corum.DAL
                 balanceKeepList.Add(balanceKeepNames);
             }
             return balanceKeepList;
+        }
+
+        public OrderTruckTransport GetOrderTruckTransport(long orderId)
+        {
+            var orderTruckData = db.OrderTruckTransport.Where(x => x.OrderId == orderId).OrderByDescending(x => x.Id).FirstOrDefault();
+
+            return new OrderTruckTransport()
+            {
+                Id = orderTruckData.Id,
+                OrderId = orderTruckData.OrderId,
+                BoxingDescription = orderTruckData.BoxingDescription,
+                Consignee = orderTruckData.Consignee,
+                ConsigneeAdress = orderTruckData.ConsigneeAdress,
+                ConsigneeCity = orderTruckData.ConsigneeCity,
+                ConsigneeContactPerson = orderTruckData.ConsigneeContactPerson,
+                ConsigneeContactPersonPhone = orderTruckData.ConsigneeContactPersonPhone,
+                ConsigneeCountryId = orderTruckData.ConsigneeCountryId,
+                ConsigneeId = orderTruckData.ConsigneeId,
+                DimenssionH = orderTruckData.DimenssionH,
+                DimenssionL = orderTruckData.DimenssionL,
+                DimenssionW = orderTruckData.DimenssionW,
+                FromShipperDatetime = orderTruckData.FromShipperDatetime,
+                LoadingTypeId = orderTruckData.LoadingTypeId,
+                Shipper = orderTruckData.Shipper,
+                ShipperAdress = orderTruckData.ShipperAdress,
+                ShipperCity = orderTruckData.ShipperCity,
+                ShipperContactPerson = orderTruckData.ShipperContactPerson,
+                ShipperContactPersonPhone = orderTruckData.ShipperContactPersonPhone,
+                ShipperCountryId = orderTruckData.ShipperCountryId,
+                ShipperId = orderTruckData.ShipperId,
+                ToConsigneeDatetime = orderTruckData.ToConsigneeDatetime,
+                TripType = orderTruckData.TripType,
+                TruckDescription = orderTruckData.TruckDescription,
+                TruckTypeId = orderTruckData.TruckTypeId,
+                UnloadingTypeId = orderTruckData.UnloadingTypeId,
+                VehicleTypeId = orderTruckData.VehicleTypeId,
+                Volume = orderTruckData.Volume,
+                Weight = orderTruckData.Weight               
+            };
         }
     }
 }

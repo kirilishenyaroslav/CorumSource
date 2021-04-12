@@ -83,18 +83,18 @@ namespace Corum.Models.ViewModels.Tender
             //        ADDUNLOADINGPOINT = "Дополнительная точка выгрузки отсутствует"
             //    }
             //};
-
+            string route = $"[{ competitiveListViewModel.ShipperCountryName}]|({ orderTruckTransport.Shipper}) - [‎{competitiveListViewModel.ConsigneeCountryName}]|{orderTruckTransport.Consignee}";  // Ограничение в количестве символов! Строка не должна быть слишком длинной! Иначе возинкнет ошибка запроса на тендер.
             this.propAliasValues = new List<PropAliasValues>()   // !!!!! При автоматической установке атрибутов необходимо раскомментировать данный блок кода!!!!!
             {
                   new PropAliasValues()
                   {
-                      WEIGHT = competitiveListViewModel.Weight,
-                      ROUTE = competitiveListViewModel.Route,
+                      WEIGHT = competitiveListViewModel.Weight+", тн",
+                      ROUTE = route,
                       CARGO_NAME = competitiveListViewModel.TruckDescription,
                       DOWNLOADDATEREQUIRED = competitiveListViewModel.FromDateRaw,
                       UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw,
                       REQUIRED_NUMBER_OF_CARS = competitiveListViewModel.CarNumber.ToString(),
-                      SPECIALCONDITIONS = "Основная информация в заявке",
+                      SPECIALCONDITIONS = competitiveListViewModel.VehicleTypeName,
                       ADDLOADPOINT = "Дополнительная точка загрузки отсутствует",
                       ADDUNLOADINGPOINT = "Дополнительная точка выгрузки отсутствует"
                   }

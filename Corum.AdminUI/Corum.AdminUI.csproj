@@ -1,5 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.Default.props')" />
   <Import Project="..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props" Condition="Exists('..\packages\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.1.0.0\build\Microsoft.CodeDom.Providers.DotNetCompilerPlatform.props')" />
   <Import Project="..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props" Condition="Exists('..\packages\Microsoft.Net.Compilers.1.0.0\build\Microsoft.Net.Compilers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
@@ -15,7 +16,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CorumAdminUI</RootNamespace>
     <AssemblyName>CorumAdminUI</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <PrecompileRazorFiles>true</PrecompileRazorFiles>
     <UseIISExpress>true</UseIISExpress>
@@ -28,6 +29,8 @@
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
     <Use64BitIISExpress />
+    <TargetFrameworkProfile />
+    <TypeScriptToolsVersion>4.0</TypeScriptToolsVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <DebugSymbols>true</DebugSymbols>
@@ -78,18 +81,34 @@
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web.DynamicData" />
     <Reference Include="System.Web.Entity" />
     <Reference Include="System.Web.ApplicationServices" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Web" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Abstractions" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.Helpers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Mvc, Version=5.2.7.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.7\lib\net45\System.Web.Mvc.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.7\lib\net45\System.Web.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Web.Routing" />
+    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.7\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Web.Services" />
@@ -102,33 +121,10 @@
     </Reference>
     <Reference Include="System.Net.Http.WebRequest">
     </Reference>
-    <Reference Include="System.Web.Helpers, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.Helpers.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.Mvc, Version=5.2.3.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Mvc.5.2.3\lib\net45\System.Web.Mvc.dll</HintPath>
-    </Reference>
     <Reference Include="System.Web.Optimization">
       <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
     </Reference>
-    <Reference Include="System.Web.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.Razor.3.2.3\lib\net45\System.Web.Razor.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Deployment, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Deployment.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Web.WebPages.Razor, Version=3.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <Private>True</Private>
-      <HintPath>..\packages\Microsoft.AspNet.WebPages.3.2.3\lib\net45\System.Web.WebPages.Razor.dll</HintPath>
-    </Reference>
+    <Reference Include="System.Xml.Linq" />
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <HintPath>..\packages\WebActivatorEx.2.0.3\lib\net40\WebActivatorEx.dll</HintPath>
       <Private>True</Private>
@@ -193,6 +189,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Views\TabsController.cs" />
     <Content Include="App_Code\NavBarActiveLink.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -278,6 +275,7 @@
     <Content Include="Content\select2-spinner.gif" />
     <Content Include="Content\select2.png" />
     <Content Include="Content\select2x2.png" />
+    <Content Include="Content\Tender\TableTender.css" />
     <Content Include="Content\themes\base\accordion.css" />
     <Content Include="Content\themes\base\all.css" />
     <Content Include="Content\themes\base\autocomplete.css" />
@@ -477,176 +475,6 @@
     <Content Include="Content\img\login\bg_tl.jpg" />
     <Content Include="Content\img\login\logo_login.png" />
     <Content Include="Content\img\login\tl_icon.jpg" />
-    <Content Include="Content\JQWidgets\images\backgroundTop.png" />
-    <Content Include="Content\JQWidgets\images\backImage.png" />
-    <Content Include="Content\JQWidgets\images\bg_black.png" />
-    <Content Include="Content\JQWidgets\images\bg_blackhover.png" />
-    <Content Include="Content\JQWidgets\images\bg_blackhover_horizontal.png" />
-    <Content Include="Content\JQWidgets\images\bg_blackpressed.png" />
-    <Content Include="Content\JQWidgets\images\bg_blackpressed_horizontal.png" />
-    <Content Include="Content\JQWidgets\images\bg_black_horizontal.png" />
-    <Content Include="Content\JQWidgets\images\bg_blueenergy.png" />
-    <Content Include="Content\JQWidgets\images\bg_darkblue.png" />
-    <Content Include="Content\JQWidgets\images\bg_darkbluehover.png" />
-    <Content Include="Content\JQWidgets\images\bg_darkbluepressed.png" />
-    <Content Include="Content\JQWidgets\images\blackbackground.png" />
-    <Content Include="Content\JQWidgets\images\black_gradient.png" />
-    <Content Include="Content\JQWidgets\images\check_black.png" />
-    <Content Include="Content\JQWidgets\images\check_blue.png" />
-    <Content Include="Content\JQWidgets\images\check_blue_indeterminate.png" />
-    <Content Include="Content\JQWidgets\images\check_disabled.png" />
-    <Content Include="Content\JQWidgets\images\check_indeterminate_black.png" />
-    <Content Include="Content\JQWidgets\images\check_indeterminate_disabled.png" />
-    <Content Include="Content\JQWidgets\images\check_indeterminate_white.png" />
-    <Content Include="Content\JQWidgets\images\check_lightblue.png" />
-    <Content Include="Content\JQWidgets\images\check_lightblue_indeterminate.png" />
-    <Content Include="Content\JQWidgets\images\check_white.png" />
-    <Content Include="Content\JQWidgets\images\close.png" />
-    <Content Include="Content\JQWidgets\images\close_black.png" />
-    <Content Include="Content\JQWidgets\images\close_blue.png" />
-    <Content Include="Content\JQWidgets\images\close_white.png" />
-    <Content Include="Content\JQWidgets\images\colorpicker\bar-hue.png" />
-    <Content Include="Content\JQWidgets\images\colorpicker\bar-saturation.png" />
-    <Content Include="Content\JQWidgets\images\colorpicker\map-hue.png" />
-    <Content Include="Content\JQWidgets\images\colorpicker\map-saturation-overlay.png" />
-    <Content Include="Content\JQWidgets\images\colorpicker\map-saturation.png" />
-    <Content Include="Content\JQWidgets\images\colorpicker\ReadMe.txt" />
-    <Content Include="Content\JQWidgets\images\crosshair-white.png" />
-    <Content Include="Content\JQWidgets\images\crosshair.png" />
-    <Content Include="Content\JQWidgets\images\darkred_gradient.png" />
-    <Content Include="Content\JQWidgets\images\drag.png" />
-    <Content Include="Content\JQWidgets\images\dragcancel.png" />
-    <Content Include="Content\JQWidgets\images\error.png" />
-    <Content Include="Content\JQWidgets\images\filter.png" />
-    <Content Include="Content\JQWidgets\images\html_editor.png" />
-    <Content Include="Content\JQWidgets\images\html_editor_white.png" />
-    <Content Include="Content\JQWidgets\images\icon-calendar-white.png" />
-    <Content Include="Content\JQWidgets\images\icon-calendar.png" />
-    <Content Include="Content\JQWidgets\images\icon-cancel-white.png" />
-    <Content Include="Content\JQWidgets\images\icon-cancel.png" />
-    <Content Include="Content\JQWidgets\images\icon-delete-white.png" />
-    <Content Include="Content\JQWidgets\images\icon-delete.png" />
-    <Content Include="Content\JQWidgets\images\icon-down-blue.png" />
-    <Content Include="Content\JQWidgets\images\icon-down-transparent.png" />
-    <Content Include="Content\JQWidgets\images\icon-down-white.png" />
-    <Content Include="Content\JQWidgets\images\icon-down.png" />
-    <Content Include="Content\JQWidgets\images\icon-edit-white.png" />
-    <Content Include="Content\JQWidgets\images\icon-edit.png" />
-    <Content Include="Content\JQWidgets\images\icon-first-blue.png" />
-    <Content Include="Content\JQWidgets\images\icon-first-transparent.png" />
-    <Content Include="Content\JQWidgets\images\icon-first-white.png" />
-    <Content Include="Content\JQWidgets\images\icon-first.png" />
-    <Content Include="Content\JQWidgets\images\icon-last-blue.png" />
-    <Content Include="Content\JQWidgets\images\icon-last-transparent.png" />
-    <Content Include="Content\JQWidgets\images\icon-last-white.png" />
-    <Content Include="Content\JQWidgets\images\icon-last.png" />
-    <Content Include="Content\JQWidgets\images\icon-left-blue.png" />
-    <Content Include="Content\JQWidgets\images\icon-left-transparent.png" />
-    <Content Include="Content\JQWidgets\images\icon-left-white.png" />
-    <Content Include="Content\JQWidgets\images\icon-left.png" />
-    <Content Include="Content\JQWidgets\images\icon-menu-minimized-white.png" />
-    <Content Include="Content\JQWidgets\images\icon-menu-minimized.png" />
-    <Content Include="Content\JQWidgets\images\icon-right-blue.png" />
-    <Content Include="Content\JQWidgets\images\icon-right-transparent.png" />
-    <Content Include="Content\JQWidgets\images\icon-right-white.png" />
-    <Content Include="Content\JQWidgets\images\icon-right.png" />
-    <Content Include="Content\JQWidgets\images\icon-save-white.png" />
-    <Content Include="Content\JQWidgets\images\icon-save.png" />
-    <Content Include="Content\JQWidgets\images\icon-showpassword-white.png" />
-    <Content Include="Content\JQWidgets\images\icon-showpassword.png" />
-    <Content Include="Content\JQWidgets\images\icon-up-blue.png" />
-    <Content Include="Content\JQWidgets\images\icon-up-transparent.png" />
-    <Content Include="Content\JQWidgets\images\icon-up-white.png" />
-    <Content Include="Content\JQWidgets\images\icon-up.png" />
-    <Content Include="Content\JQWidgets\images\info.png" />
-    <Content Include="Content\JQWidgets\images\loader.gif" />
-    <Content Include="Content\JQWidgets\images\mail.png" />
-    <Content Include="Content\JQWidgets\images\menubutton.png" />
-    <Content Include="Content\JQWidgets\images\metro-icon-down-white.png" />
-    <Content Include="Content\JQWidgets\images\metro-icon-down.png" />
-    <Content Include="Content\JQWidgets\images\metro-icon-first-white.png" />
-    <Content Include="Content\JQWidgets\images\metro-icon-first.png" />
-    <Content Include="Content\JQWidgets\images\metro-icon-last-white.png" />
-    <Content Include="Content\JQWidgets\images\metro-icon-last.png" />
-    <Content Include="Content\JQWidgets\images\metro-icon-left-white.png" />
-    <Content Include="Content\JQWidgets\images\metro-icon-left.png" />
-    <Content Include="Content\JQWidgets\images\metro-icon-right - Copy.png" />
-    <Content Include="Content\JQWidgets\images\metro-icon-right-white.png" />
-    <Content Include="Content\JQWidgets\images\metro-icon-right.png" />
-    <Content Include="Content\JQWidgets\images\metro-icon-up-white.png" />
-    <Content Include="Content\JQWidgets\images\metro-icon-up.png" />
-    <Content Include="Content\JQWidgets\images\multi-arrow.gif" />
-    <Content Include="Content\JQWidgets\images\office-icon-down.png" />
-    <Content Include="Content\JQWidgets\images\office-icon-first.png" />
-    <Content Include="Content\JQWidgets\images\office-icon-last.png" />
-    <Content Include="Content\JQWidgets\images\office-icon-left.png" />
-    <Content Include="Content\JQWidgets\images\office-icon-right.png" />
-    <Content Include="Content\JQWidgets\images\office-icon-up.png" />
-    <Content Include="Content\JQWidgets\images\plus.png" />
-    <Content Include="Content\JQWidgets\images\plus_white.png" />
-    <Content Include="Content\JQWidgets\images\pointer.png" />
-    <Content Include="Content\JQWidgets\images\rangebar_classic.png" />
-    <Content Include="Content\JQWidgets\images\rangebar_darkblue.png" />
-    <Content Include="Content\JQWidgets\images\rangebar_shinyblack.png" />
-    <Content Include="Content\JQWidgets\images\rangebar_summer.png" />
-    <Content Include="Content\JQWidgets\images\red_arrow_down.png" />
-    <Content Include="Content\JQWidgets\images\red_arrow_up.png" />
-    <Content Include="Content\JQWidgets\images\red_gradient.png" />
-    <Content Include="Content\JQWidgets\images\roundbg_check_black.png" />
-    <Content Include="Content\JQWidgets\images\roundbg_check_disabled.png" />
-    <Content Include="Content\JQWidgets\images\roundbg_check_indeterminate.png" />
-    <Content Include="Content\JQWidgets\images\roundbg_check_white.png" />
-    <Content Include="Content\JQWidgets\images\roundbg_classic_hover.png" />
-    <Content Include="Content\JQWidgets\images\roundbg_classic_normal.png" />
-    <Content Include="Content\JQWidgets\images\roundbg_disabled.png" />
-    <Content Include="Content\JQWidgets\images\search.png" />
-    <Content Include="Content\JQWidgets\images\search_white.png" />
-    <Content Include="Content\JQWidgets\images\sortasc.png" />
-    <Content Include="Content\JQWidgets\images\sortascbutton.png" />
-    <Content Include="Content\JQWidgets\images\sortdesc.png" />
-    <Content Include="Content\JQWidgets\images\sortdescbutton.png" />
-    <Content Include="Content\JQWidgets\images\sortremove.png" />
-    <Content Include="Content\JQWidgets\images\star.png" />
-    <Content Include="Content\JQWidgets\images\star_disabled.png" />
-    <Content Include="Content\JQWidgets\images\star_hover.png" />
-    <Content Include="Content\JQWidgets\images\success.png" />
-    <Content Include="Content\JQWidgets\images\tick.png" />
-    <Content Include="Content\JQWidgets\images\time.png" />
-    <Content Include="Content\JQWidgets\images\track_classic.png" />
-    <Content Include="Content\JQWidgets\images\track_darkblue.png" />
-    <Content Include="Content\JQWidgets\images\track_shinyblack.png" />
-    <Content Include="Content\JQWidgets\images\track_summer.png" />
-    <Content Include="Content\JQWidgets\images\warning.png" />
-    <Content Include="Content\JQWidgets\images\wp_check_indeterminate_white.png" />
-    <Content Include="Content\JQWidgets\images\wp_check_white.png" />
-    <Content Include="Content\JQWidgets\jqx.android.css" />
-    <Content Include="Content\JQWidgets\jqx.arctic.css" />
-    <Content Include="Content\JQWidgets\jqx.base.css" />
-    <Content Include="Content\JQWidgets\jqx.black.css" />
-    <Content Include="Content\JQWidgets\jqx.blackberry.css" />
-    <Content Include="Content\JQWidgets\jqx.bootstrap.css" />
-    <Content Include="Content\JQWidgets\jqx.classic.css" />
-    <Content Include="Content\JQWidgets\jqx.darkblue.css" />
-    <Content Include="Content\JQWidgets\jqx.energyblue.css" />
-    <Content Include="Content\JQWidgets\jqx.fresh.css" />
-    <Content Include="Content\JQWidgets\jqx.highcontrast.css" />
-    <Content Include="Content\JQWidgets\jqx.metro.css" />
-    <Content Include="Content\JQWidgets\jqx.metrodark.css" />
-    <Content Include="Content\JQWidgets\jqx.mobile.css" />
-    <Content Include="Content\JQWidgets\jqx.office.css" />
-    <Content Include="Content\JQWidgets\jqx.orange.css" />
-    <Content Include="Content\JQWidgets\jqx.shinyblack.css" />
-    <Content Include="Content\JQWidgets\jqx.summer.css" />
-    <Content Include="Content\JQWidgets\jqx.ui-darkness.css" />
-    <Content Include="Content\JQWidgets\jqx.ui-le-frog.css" />
-    <Content Include="Content\JQWidgets\jqx.ui-lightness.css" />
-    <Content Include="Content\JQWidgets\jqx.ui-overcast.css" />
-    <Content Include="Content\JQWidgets\jqx.ui-redmond.css" />
-    <Content Include="Content\JQWidgets\jqx.ui-smoothness.css" />
-    <Content Include="Content\JQWidgets\jqx.ui-start.css" />
-    <Content Include="Content\JQWidgets\jqx.ui-sunny.css" />
-    <Content Include="Content\JQWidgets\jqx.web.css" />
-    <Content Include="Content\JQWidgets\jqx.windowsphone.css" />
     <Content Include="Content\jqx.nms.css" />
     <Content Include="Content\select2.css" />
     <Content Include="Content\toastr.css" />
@@ -1264,9 +1092,16 @@
     <Content Include="Views\Reports\BucketDocuments.cshtml" />
     <Content Include="Views\Reports\ViewBucketDocument.cshtml" />
     <Content Include="Views\Reports\_restAddItemToBasketByBarcode.cshtml" />
+    <Content Include="Views\OrderConcurs\_PartialModul.cshtml" />
+    <Content Include="Views\OrderConcurs\Tabs.cshtml" />
+    <Content Include="Views\TabsTend\TabsTend.cshtml" />
+    <Content Include="Views\TabsTend\TabsTender.cshtml" />
+    <Content Include="Views\TabsTend\Index.cshtml" />
+    <Content Include="Views\OrderConcurs\_restReportAddItemToBasket2.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\JQWidgets\images\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
@@ -1278,6 +1113,10 @@
     <ProjectReference Include="..\Corum.Common\Corum.Common.csproj">
       <Project>{22de9ae1-494d-449e-9727-f756244e8be5}</Project>
       <Name>Corum.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Corum.DAL\Corum.DAL.csproj">
+      <Project>{253c3cf1-79c8-4e0e-a39b-468635d92bb9}</Project>
+      <Name>Corum.DAL</Name>
     </ProjectReference>
     <ProjectReference Include="..\Corum.Models\Corum.VModels.csproj">
       <Project>{20e83c6c-365a-4c8a-9a6f-cde667029a17}</Project>
@@ -1300,6 +1139,9 @@
   <ItemGroup>
     <WCFMetadata Include="Service References\" />
   </ItemGroup>
+  <ItemGroup>
+    <Service Include="{4A0DDDB5-7A95-4FBF-97CC-616D07737A77}" />
+  </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
@@ -1312,6 +1154,7 @@
     <Optimize>true</Optimize>
   </PropertyGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
+  <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets" Condition="Exists('$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\TypeScript\Microsoft.TypeScript.targets')" />
   <Import Project="$(VSToolsPath)\WebApplications\Microsoft.WebApplication.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v10.0\WebApplications\Microsoft.WebApplication.targets" Condition="false" />
   <!--<Import Project="$(SolutionDir)\packages\RazorGenerator.MsBuild.2.4.1\build\RazorGenerator.MsBuild.targets" />-->

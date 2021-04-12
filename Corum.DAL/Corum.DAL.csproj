@@ -65,6 +65,7 @@
     <Compile Include="EFCorumDataProvider\EFCorumDataProvider.RestReport.cs" />
     <Compile Include="EFCorumDataProvider\EFCorumDataProvider.Roles.cs" />
     <Compile Include="EFCorumDataProvider\EFCorumDataProvider.Orders.cs" />
+    <Compile Include="EFCorumDataProvider\EFCorumDataProvider.Tender.cs" />
     <Compile Include="EFCorumDataProvider\EFCorumDataProvider.Users.cs" />
     <Compile Include="EFCorumDataProvider\EFCorumDataProvider.Settings.cs" />
     <Compile Include="EFCorumDataProvider\EFBaseCorumDataProvider.cs" />
@@ -396,6 +397,9 @@
       <DependentUpon>Corum.tt</DependentUpon>
     </Compile>
     <Compile Include="Entity\SpecificationTypes.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Entity\TenderServices.cs">
       <DependentUpon>Corum.tt</DependentUpon>
     </Compile>
     <Compile Include="Entity\UserMessages.cs">

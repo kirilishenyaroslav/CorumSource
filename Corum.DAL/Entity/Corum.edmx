@@ -68,6 +68,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BalanceKeeper" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="subCompanyId" Type="int" />
         </EntityType>
         <EntityType Name="BucketDocumentRows">
           <Key>
@@ -984,6 +985,9 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SpecCode" Type="int" Nullable="false" />
           <Property Name="SpecName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="nmcTestId" Type="int" />
+          <Property Name="nmcWorkId" Type="int" />
+          <Property Name="industryId" Type="int" />
         </EntityType>
         <EntityType Name="SpecificationTypes">
           <Key>
@@ -991,6 +995,14 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SpecificationType" Type="nvarchar" MaxLength="256" />
+        </EntityType>
+        <EntityType Name="TenderServices">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" Nullable="false" />
+          <Property Name="industryName" Type="nchar" MaxLength="150" Nullable="false" />
+          <Property Name="industryId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="UserMessages">
           <Key>
@@ -1026,7 +1038,7 @@
           <Property Name="PageSize" Type="int" Nullable="false" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
-        <Association Name="FK__OrdersBas__Proje__73501C2F">
+        <Association Name="FK__OrdersBas__Proje__1446FBA6">
           <End Role="Projects" Type="Self.Projects" Multiplicity="0..1" />
           <End Role="OrdersBase" Type="Self.OrdersBase" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1038,7 +1050,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__038683F8">
+        <Association Name="FK__Projects__Projec__5AD97420">
           <End Role="Centers" Type="Self.Centers" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1050,7 +1062,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__047AA831">
+        <Association Name="FK__Projects__Projec__5BCD9859">
           <End Role="ProjectTypes" Type="Self.ProjectTypes" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -3384,18 +3396,19 @@
           <EntitySet Name="RouteTypes" EntityType="Self.RouteTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpecificationNames" EntityType="Self.SpecificationNames" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpecificationTypes" EntityType="Self.SpecificationTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="TenderServices" EntityType="Self.TenderServices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserMessages" EntityType="Self.UserMessages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserSettings" EntityType="Self.UserSettings" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__OrdersBas__Proje__73501C2F" Association="Self.FK__OrdersBas__Proje__73501C2F">
+          <AssociationSet Name="FK__OrdersBas__Proje__1446FBA6" Association="Self.FK__OrdersBas__Proje__1446FBA6">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="OrdersBase" EntitySet="OrdersBase" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__038683F8" Association="Self.FK__Projects__Projec__038683F8">
+          <AssociationSet Name="FK__Projects__Projec__5AD97420" Association="Self.FK__Projects__Projec__5AD97420">
             <End Role="Centers" EntitySet="Centers" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__047AA831" Association="Self.FK__Projects__Projec__047AA831">
+          <AssociationSet Name="FK__Projects__Projec__5BCD9859" Association="Self.FK__Projects__Projec__5BCD9859">
             <End Role="ProjectTypes" EntitySet="ProjectTypes" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
@@ -5069,6 +5082,7 @@
           </FunctionImport>
           <EntitySet Name="BucketDocumentRows" EntityType="CorumModel.BucketDocumentRows" />
           <EntitySet Name="BucketDocuments" EntityType="CorumModel.BucketDocuments" />
+          <EntitySet Name="TenderServices" EntityType="CorumModel.TenderServices" />
           </EntityContainer>
         <ComplexType Name="SelectFieldsOfStuctureForImport_Result">
           <Property Type="String" Name="ColumnName" Nullable="true" />
@@ -5545,6 +5559,7 @@
           <Property Name="BalanceKeeper" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="Contracts" Relationship="CorumModel.FK_Contracts_BalanceKeepers" FromRole="BalanceKeepers" ToRole="Contracts" />
           <NavigationProperty Name="OrdersBase" Relationship="CorumModel.FK_OrdersBase_BalanceKeepers" FromRole="BalanceKeepers" ToRole="OrdersBase" />
+          <Property Name="subCompanyId" Type="Int32" />
         </EntityType>
         <EntityType Name="Centers">
           <Key>
@@ -6406,6 +6421,9 @@
           <Property Name="SpecCode" Type="Int32" Nullable="false" />
           <Property Name="SpecName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <NavigationProperty Name="ContractSpecifications" Relationship="CorumModel.FK_Specifications_Names" FromRole="SpecificationNames" ToRole="ContractSpecifications" />
+          <Property Name="nmcTestId" Type="Int32" />
+          <Property Name="nmcWorkId" Type="Int32" />
+          <Property Name="industryId" Type="Int32" />
         </EntityType>
         <EntityType Name="Projects">
           <Key>
@@ -8582,6 +8600,14 @@
           <Property Name="DocNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="CreatedBy" Type="String" Nullable="false" MaxLength="128" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="TenderServices">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" />
+          <Property Name="industryName" Type="String" Nullable="false" MaxLength="150" FixedLength="true" Unicode="true" />
+          <Property Name="industryId" Type="Int32" Nullable="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -9040,6 +9066,7 @@
           <EntitySetMapping Name="BalanceKeepers">
             <EntityTypeMapping TypeName="CorumModel.BalanceKeepers">
               <MappingFragment StoreEntitySet="BalanceKeepers">
+                <ScalarProperty Name="subCompanyId" ColumnName="subCompanyId" />
                 <ScalarProperty Name="BalanceKeeper" ColumnName="BalanceKeeper" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
@@ -9578,6 +9605,9 @@
           <EntitySetMapping Name="SpecificationNames">
             <EntityTypeMapping TypeName="CorumModel.SpecificationNames">
               <MappingFragment StoreEntitySet="SpecificationNames">
+                <ScalarProperty Name="industryId" ColumnName="industryId" />
+                <ScalarProperty Name="nmcWorkId" ColumnName="nmcWorkId" />
+                <ScalarProperty Name="nmcTestId" ColumnName="nmcTestId" />
                 <ScalarProperty Name="SpecName" ColumnName="SpecName" />
                 <ScalarProperty Name="SpecCode" ColumnName="SpecCode" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -10621,6 +10651,15 @@
                 <ScalarProperty Name="DocNumber" ColumnName="DocNumber" />
                 <ScalarProperty Name="DocDate" ColumnName="DocDate" />
                 <ScalarProperty Name="IdBucketDocument" ColumnName="IdBucketDocument" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TenderServices">
+            <EntityTypeMapping TypeName="CorumModel.TenderServices">
+              <MappingFragment StoreEntitySet="TenderServices">
+                <ScalarProperty Name="industryId" ColumnName="industryId" />
+                <ScalarProperty Name="industryName" ColumnName="industryName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

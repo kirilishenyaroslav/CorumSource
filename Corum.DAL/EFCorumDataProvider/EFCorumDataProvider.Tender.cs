@@ -104,7 +104,7 @@ namespace Corum.DAL
                 UnloadingTypeId = orderTruckData.UnloadingTypeId,
                 VehicleTypeId = orderTruckData.VehicleTypeId,
                 Volume = orderTruckData.Volume,
-                Weight = orderTruckData.Weight               
+                Weight = orderTruckData.Weight
             };
         }
     }

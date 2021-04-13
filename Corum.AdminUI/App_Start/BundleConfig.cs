@@ -3,7 +3,7 @@
 namespace BarnivannAdminUI
 {
     public class BundleConfig
-    {        
+    {
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
@@ -32,7 +32,7 @@ namespace BarnivannAdminUI
                         "~/Scripts/activeonly.widget.js",
                         "~/Scripts/unhandledonly.widget.js",
                         "~/Scripts/corum.js"));
-            
+
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
@@ -133,7 +133,7 @@ namespace BarnivannAdminUI
                 .Include("~/scripts/tinymce/tinymce.js")
                 .Include("~/scripts/tinymce/tinymce.min.js"));
 
-            
+
             bundles.Add(
                 new StyleBundle("~/Content/JQWidgetsCss")
                 .Include("~/Content/jqwidgets/jqx.base.css")
@@ -145,7 +145,7 @@ namespace BarnivannAdminUI
             BundleTable.EnableOptimizations = true;
 #if DEBUG
             BundleTable.EnableOptimizations = false;
-            
+
 #endif
 
 

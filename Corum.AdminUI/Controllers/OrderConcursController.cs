@@ -24,12 +24,12 @@ namespace CorumAdminUI.Controllers
     public partial class OrderConcursController : CorumBaseController
     {
         static long OrderID;
-        
+
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult OrderCompetitiveList(OrderNavigationInfo navInfo)
         {
             OrderID = navInfo.OrderId;
-            
+
             var model = new OrderNavigationResult<OrderCompetitiveListViewModel>(navInfo, userId)
             {
                 DisplayValues = context.getOrderCompetitiveList(userId, navInfo.OrderId),

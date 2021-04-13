@@ -118,6 +118,9 @@
     <Compile Include="Interfaces\ICorumDataProvider.Main.cs" />
     <Compile Include="Interfaces\IReportRenderer.cs" />
     <Compile Include="Navigation\NavigationModels.cs" />
+    <Compile Include="Tender\BalanceKeepers.cs" />
+    <Compile Include="Tender\OrderTruckTransport.cs" />
+    <Compile Include="Tender\SpecificationNames.cs" />
     <Compile Include="Tender\TenderServices.cs" />
     <Compile Include="Toastr\ToastMessage.cs" />
     <Compile Include="Toastr\Toastr.cs" />
@@ -195,6 +198,7 @@
     <Compile Include="ViewModels\Tender\PostApiTender.cs" />
     <Compile Include="ViewModels\Tender\TenderForma.cs" />
     <Compile Include="ViewModels\Tender\TenderParamsDefaults.cs" />
+    <Compile Include="ViewModels\Tender\TendFormDeserializedJSON.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />

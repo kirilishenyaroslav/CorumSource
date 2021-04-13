@@ -112,7 +112,7 @@
                                             Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-1)
                                         </a>
                                     </th>
- }
+                                }
                                 else
                                 {
                                     <th rowspan="2" class="grid-header centered_column" style="display: none;">
@@ -125,7 +125,7 @@
                                             Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-1)
                                         </a>
                                     </th>
-}
+                                }
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                 {
                                     <th rowspan="2" class="grid-header centered_column">
@@ -138,7 +138,7 @@
                                             Стоимость одного автомобиля, грн.<br>без НДС (согласно КП-2)
                                         </a>
                                     </th>
- }
+                                }
                                 else
                                 {
                                     <th rowspan="2" class="grid-header centered_column" style="display: none;">
@@ -151,7 +151,7 @@
                                             Стоимость одного<br>автомобиля, грн.<br>без НДС (согласно КП-2)
                                         </a>
                                     </th>
-}
+                                }
 
 
                                 <th rowspan="2" class="grid-header centered_column">
@@ -248,26 +248,26 @@
                                     <th class="grid-header centered_column">
                                         8
                                     </th>
- }
+                                }
                                 else
                                 {
                                     <th class="grid-header centered_column" style="display:none;">
                                         8
                                     </th>
-}
+                                }
 
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                 {
                                     <th class="grid-header centered_column">
                                         9
                                     </th>
- }
+                                }
                                 else
                                 {
                                     <th class="grid-header centered_column" style="display:none;">
                                         9
                                     </th>
-}
+                                }
 
                                 <th class="grid-header centered_column">
                                     10
@@ -329,20 +329,20 @@
                                     @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
                                     {
                                         <td class="grid-cell rigth_column"> @item.CarCost7 </td>
- }
+                                    }
                                     else
                                     {
                                         <td class="grid-cell rigth_column" style="display:none;"> @item.CarCost7 </td>
-}
+                                    }
 
                                     @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                     {
                                         <td class="grid-cell rigth_column"> @item.CarCost </td>
- }
+                                    }
                                     else
                                     {
                                         <td class="grid-cell rigth_column" style="display:none;"> @item.CarCost </td>
-}
+                                    }
                                     <td class="grid-cell rigth_column"> @item.DaysDelaySteps </td>
                                     <td class="grid-cell rigth_column"> @item.DelayEffect </td>
 
@@ -397,7 +397,7 @@
                                             </a>}
                                     </td>
                                 </tr>
-}
+                            }
                         </tbody>
                     </table>
 
@@ -643,12 +643,11 @@
         $(document).ready(function() {
             InitFilterMultipleDropDowns();
             GetSpecification(1);
-
-
+            $("#tabs").tabs();
         });
 
 
-        // Модульное окно при нажатии на кнопку "Тендер"
+        // Модальное окно при нажатии на кнопку "Тендер"
         function SendNotification(orderId) {
 
             $('#partialModul')
@@ -659,10 +658,231 @@
                     top: 50,
                     resizable: false,
                     tags: true,
-                    title: "Запрос на облегченный тендер",
+                    title: "Запрос на тендер",
                     modal: true,
                     open: function(event, ui) {
                         InitFilterDropDowns();
+
+                        FormInputErrorChecking(); // Метод валидации полей формы тендера
+                        $(document).ready(function () {
+
+                            var dataTend383 = [];
+                            var dataTend384 = [];
+                            var dataTend385 = [];
+                            var dataTend54 = [];
+                            @foreach (var item in Model.specificationNames)
+                            {
+                                switch (item.industryId.ToString())
+                                {
+                                    case "383":
+                                        {
+                                            @:dataTend383.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            break;
+                                        }
+                                        case "384":
+                                        {
+                                            @:dataTend384.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            break;
+                                        }
+                                        case "385":
+                                        {
+                                            @:dataTend385.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            break;
+                                        }
+                                        case "54":
+                                        {
+                                            @:dataTend54.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            break;
+                                        }
+                                    default:break;
+                                }
+                            }
+                            // prepare the data
+                            var data = {};
+
+                            var generaterow = function (i) {
+                                var row = {};
+                                return row;
+                            }
+
+                            var source =
+                            {
+                                localdata: data,
+                                datatype: "local",
+                                datafields:
+                                    [
+                                        { name: 'nmcName', type: 'string' },
+                                        //{ name: 'unitName', type: 'string' },
+                                        { name: 'qty', type: 'string' }
+                                    ],
+                                addrow: function (rowid, rowdata, position, commit) {
+                                    // synchronize with the server - send insert command
+                                    // call commit with parameter true if the synchronization with the server is successful
+                                    //and with parameter false if the synchronization failed.
+                                    // you can pass additional argument to the commit callback which represents the new ID if it is generated from a DB.
+                                    commit(true);
+                                },
+                                deleterow: function (rowid, commit) {
+                                    // synchronize with the server - send delete command
+                                    // call commit with parameter true if the synchronization with the server is successful
+                                    //and with parameter false if the synchronization failed.
+                                    commit(true);
+                                },
+                                updaterow: function (rowid, newdata, commit) {
+                                    // synchronize with the server - send update command
+                                    // call commit with parameter true if the synchronization with the server is successful
+                                    // and with parameter false if the synchronization failed.
+                                    commit(true);
+                                }
+                            };
+
+                            var dataAdapter = new $.jqx.dataAdapter(source);
+
+                            // initialize jqxGrid
+                            $("#grid").jqxGrid(
+                                {
+                                    width: 750,
+                                    theme: 'orange',
+                                    height: 345,
+                                    showtoolbar: true,
+                                    source: dataAdapter,
+                                    autorowheight: true,
+                                    pageable: true,
+                                    pagermode: 'simple',
+                                    selectionmode: 'multiplerows',
+                                    editable: true,
+                                    rendertoolbar: function (toolbar) {
+                                        var me = this;
+                                        var container = $("<div style='margin: 5px;'></div>");
+                                        toolbar.append(container);
+                                        container.append('<input id="addrowbutton" type="button" value="Добавить" />');
+
+                                        container.append('<input style="margin-left: 5px;" id="deleterowbutton" type="button" value="Удалить" />');
+
+                                        $("#addrowbutton").jqxButton();
+
+                                        $("#deleterowbutton").jqxButton();
+
+
+                                        // create new row.
+                                        $("#addrowbutton").on('click', function () {
+                                            var datarow = generaterow();
+                                            var commit = $("#grid").jqxGrid('addrow', null, datarow);
+                                        });
+
+                                        // delete row.
+                                        $("#deleterowbutton").on('click', function () {
+                                            var selectedrowindex = $("#grid").jqxGrid('getselectedrowindex');
+                                            var rowscount = $("#grid").jqxGrid('getdatainformation').rowscount;
+                                            if (selectedrowindex >= 0 && selectedrowindex < rowscount) {
+                                                var id = $("#grid").jqxGrid('getrowid', selectedrowindex);
+                                                var commit = $("#grid").jqxGrid('deleterow', id);
+                                            }
+                                        });
+                                    },
+                                    columns: [
+                                        {
+                                            text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
+                                            createeditor: function (row, column, editor)
+                                            {
+                                                    editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383});
+                                            }
+                                        },
+
+                                        {
+                                            text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
+                                        }
+                                             ]
+                                });
+
+                            // events
+                            var dataTend = [];
+                            @foreach (var item in Model.tenderServices)
+                            {
+                                @:dataTend.push("@item.industryName.Trim(' ')");
+                            }
+
+                            $("#IndustryName").on('change', function (e) {
+                                var industryName = $("#IndustryName").val();
+                                switch (industryName)
+                                {
+                                    case dataTend[0]: {
+                                        //alert(dataTend[0]);
+                                        $("#grid").jqxGrid({
+                                            columns: [
+                                                {
+                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
+                                                    createeditor: function (row, column, editor)
+                                                    {
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383 });
+                                                    }
+                                                },
+
+                                                {
+                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
+                                                }
+                                            ] }); break;
+                                    }
+                                    case dataTend[1]: {
+                                        //alert(dataTend[1]);
+                                        $("#grid").jqxGrid({
+                                            columns: [
+                                                {
+                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
+                                                    createeditor: function (row, column, editor)
+                                                    {
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend384 });
+                                                    }
+                                                },
+
+                                                {
+                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
+                                                }
+                                            ] }); break;
+                                    }
+                                    case dataTend[2]: {
+                                        //alert(dataTend[2]);
+                                        $("#grid").jqxGrid({
+                                            columns: [
+                                                {
+                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
+                                                    createeditor: function (row, column, editor)
+                                                    {
+                                                          editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend385 });
+                                                    }
+                                                },
+
+                                                {
+                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
+                                                }
+                                            ] }); break;
+                                    }
+                                    case dataTend[3]: {
+                                        //alert(dataTend[3]);
+                                        $("#grid").jqxGrid({
+                                            columns: [
+                                                {
+                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
+                                                    createeditor: function (row, column, editor)
+                                                    {
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend54 });
+                                                    }
+                                                },
+
+                                                {
+                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
+                                                }
+                                            ] }); break;
+                                    }
+                                    default: {
+                                        //alert('Default');
+                                        break;
+                                    }
+                                }
+
+                            });
+
+                        });
                     },
                     close: function(event, ui) {
                         $(this).dialog('destroy');
@@ -670,12 +890,246 @@
                     create: function(event, ui) {
                         $("#disable_all").addClass("disable_all");
                     },
-                    beforeClose: function(event, ui) {
+                    beforeCToStringStringStringse: function(event, ui) {
                         $("#disable_all").removeClass("disable_all");
-                    }
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-outline',
+                            click: function() {
+
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Отправить",
+                            "class": 'btn btn-primary',
+                            click: function () {
+
+                                var valuesGridData = {};
+                                for (var i = 0; i < 30; i++)
+                                {
+                                    var row = {};
+                                    if ($("#grid").jqxGrid('getcellvalue', i, 'nmcName') != null)
+                                    {
+                                        if ($("#grid").jqxGrid('getcellvalue', i, 'nmcName') != "")
+                                        {
+                                            row["nmcName"] = $("#grid").jqxGrid('getcellvalue', i, 'nmcName');
+                                            //row["unitName"] = $("#grid").jqxGrid('getcellvalue', i, 'unitName');
+                                            row["qty"] = $("#grid").jqxGrid('getcellvalue', i, 'qty');
+                                            valuesGridData[i] = row;
+                                        }
+                                    }
+                                }
+
+
+                                var tenderName = $('#TenderName').val();
+                                var tenderAuthorName = $('#TenderAuthorName').val();
+                                var companyName = $('#CompanyName').val();
+                                var subCompanyName = $('#SubCompanyName').val();
+                                var depName = $('#DepName').val();
+                                var typeTure = $('#TypeTure').val();
+                                var budget = $('#Budget').val();
+                                var typePublic = $('#TypePublic').val();
+                                var industryName = $('#IndustryName').val();
+                                var dateStart = $('#DateStart').val();
+                                var dateEnd = $('#DateEnd').val();
+                                var lotName = $('#LotName').val();
+
+                                var modelTenderForm =
+                                {
+                                    "TenderName": tenderName,
+                                    "TenderAuthorName": tenderAuthorName,
+                                    "CompanyName": companyName,
+                                    "SubCompanyName": subCompanyName,
+                                    "DepName": depName,
+                                    "TypeTure": typeTure,
+                                    "Budget": budget,
+                                    "TypePublic": typePublic,
+                                    "IndustryName": industryName,
+                                    "DateStart": dateStart,
+                                    "DateEnd": dateEnd,
+                                    "LotName": lotName,
+                                    "JqxGridNmc": valuesGridData
+                                };
+                                var modelTenderFormJSON = JSON.stringify(modelTenderForm);
+
+                                if (formValidationAccessAttributes.accessTenderName != false && formValidationAccessAttributes.accessTenderNameStringLength != false &&
+                                    formValidationAccessAttributes.accessLotName != false && formValidationAccessAttributes.accessLotNameStringLength != false &&
+                                    formValidationAccessAttributes.accessBudget != false && formValidationAccessAttributes.accessDataStart != false &&
+                                    formValidationAccessAttributes.accessDataEnd != false)
+                                {
+                                    $.post('@Url.Action("SendNotificationTender", "OrderConcurs")',
+                                        {
+                                            ListItemsModelTenderForm: modelTenderFormJSON
+                                        },
+                                        function () {
+                                            alert('Запрос на тендер успешно отправлен!');
+                                        });
+
+                                    $(this).dialog("close");
+                                }
+                                else
+                                {
+                                    if (!formValidationAccessAttributes.accessDataEnd)
+                                    {
+                                        var elDataEnd = document.getElementById('erroreMessageTenderDataEnd');
+                                        elDataEnd.style.display = "initial";
+                                    }
+                                    alert('Заполните правильно поля формы.');
+                                }
+                            }
+                        }
+                    ]
                 });
             $('#partialModul').dialog('open');
             return;
+        }
+
+        // Атрибуты допуска валидации полей тендера на подачу формы
+        var formValidationAccessAttributes = {
+            accessTenderName: true,
+            accessTenderNameStringLength: true,
+            accessLotName: true,
+            accessLotNameStringLength: true,
+            accessBudget: true,
+            accessDataStart: true,
+            accessDataEnd: false
+        };
+
+        function FormInputErrorChecking()
+        {
+            // Валидация поля "Наименование тендера"
+            var tendName = document.getElementById('TenderName');
+            var el = document.getElementById('erroreMessageTenderName');
+            var elStLen = document.getElementById('erroreMessageTenderNameStringLenght300');
+
+            function DisplayErrorTendName() {
+                var valueTend = $("#TenderName").val();
+
+                if (valueTend.length == 0) {
+                    el.style.display = "initial";
+                    elStLen.style.display = "none";
+                    formValidationAccessAttributes.accessTenderName = false;
+                    formValidationAccessAttributes.accessTenderNameStringLength = true;
+                }
+                else if (valueTend.length >= 300) {
+                    el.style.display = "none";
+                    elStLen.style.display = "initial";
+                    formValidationAccessAttributes.accessTenderName = true;
+                    formValidationAccessAttributes.accessTenderNameStringLength = false;
+                }
+                else {
+                    el.style.display = "none";
+                    elStLen.style.display = "none";
+                    formValidationAccessAttributes.accessTenderName = true;
+                    formValidationAccessAttributes.accessTenderNameStringLength = true;
+                }
+            }
+            tendName.onkeyup = tendName.oninput = DisplayErrorTendName;
+            tendName.oncut = function () {
+                setTimeout(DisplayErrorTendName, 0);
+            }
+
+            // Валидация поля "Наименование лота"
+            var lotName = document.getElementById('LotName');
+            var elLot = document.getElementById('erroreMessagelotName');
+            var elStLenLot = document.getElementById('erroreMessagelotNameStringLength');
+
+            function DisplayErrorlotName() {
+                var valueTendLot = $("#LotName").val();
+
+                if (valueTendLot.length == 0) {
+                    elLot.style.display = "initial";
+                    elStLenLot.style.display = "none";
+                    formValidationAccessAttributes.accessLotName = false;
+                    formValidationAccessAttributes.accessLotNameStringLength = true;
+                }
+                else if (valueTendLot.length >= 100) {
+                    elLot.style.display = "none";
+                    elStLenLot.style.display = "initial";
+                    formValidationAccessAttributes.accessLotName = true;
+                    formValidationAccessAttributes.accessLotNameStringLength = false;
+                }
+                else {
+                    elLot.style.display = "none";
+                    elStLenLot.style.display = "none";
+                    formValidationAccessAttributes.accessLotName = true;
+                    formValidationAccessAttributes.accessLotNameStringLength = true;
+                }
+            }
+            lotName.onkeyup = lotName.oninput = DisplayErrorlotName;
+            lotName.oncut = function () {
+                setTimeout(DisplayErrorlotName, 0);
+            }
+
+             // Валидация поля "Бюджет тендера"
+            var budgatData = document.getElementById('Budget');
+            var elbudget = document.getElementById('erroreMessageTenderBudget');
+
+
+            function DisplayErrorBudget() {
+                var valueBudget = $("#Budget").val();
+
+                if (valueBudget.length == 0) {
+                    elbudget.style.display = "initial";
+                    formValidationAccessAttributes.accessBudget = false;
+                }
+                else {
+                    elbudget.style.display = "none";
+                    formValidationAccessAttributes.accessBudget = true;
+                }
+            }
+            budgatData.onkeyup = budgatData.oninput = DisplayErrorBudget;
+            budgatData.oncut = function () {
+                setTimeout(DisplayErrorBudget, 0);
+            }
+
+            // Валидация поля "Дата создания тендера"
+            var dataStart = document.getElementById('DateStart');
+            var elDataStart = document.getElementById('erroreMessageTenderDataStart');
+
+
+            function DisplayErrorDataStart() {
+                var valueDataStart = $("#DateStart").val();
+
+                if (valueDataStart.length == 0) {
+                    elDataStart.style.display = "initial";
+                    formValidationAccessAttributes.accessDataStart = false;
+                }
+                else {
+                    elDataStart.style.display = "none";
+                    formValidationAccessAttributes.accessDataStart = true;
+                }
+            }
+            dataStart.onkeyup = dataStart.oninput = DisplayErrorDataStart;
+            dataStart.oncut = function () {
+                setTimeout(DisplayErrorDataStart, 0);
+            }
+
+            // Валидация поля "Дата окончания приема предложений"
+            var dataEnd = document.getElementById('DateEnd');
+            var elDataEnd = document.getElementById('erroreMessageTenderDataEnd');
+
+
+            function DisplayErrorDataEnd() {
+                var valueDataEnd = $("#DateEnd").val();
+
+                if (valueDataEnd.length == 0) {
+                    elDataEnd.style.display = "initial";
+                    formValidationAccessAttributes.accessDataEnd = false;
+                }
+                else {
+                    elDataEnd.style.display = "none";
+                    formValidationAccessAttributes.accessDataEnd = true;
+                }
+            }
+            dataEnd.onkeyup = dataEnd.oninput = DisplayErrorDataEnd;
+            dataEnd.oncut = function () {
+                setTimeout(DisplayErrorDataEnd, 0);
+            }
         }
     </script>
 }

@@ -15,18 +15,43 @@ namespace Corum.Models.ViewModels.Tender
         protected NameValueCollection allAppSettings;
         protected static CompetitiveListViewModel competitiveList;
         protected static List<TenderServices> listTender;
+        protected static List<BalanceKeepers> listBalance;
+        protected static TendFormDeserializedJSON FormDeserializedJSON;
+        protected static List<SpecificationNames> SpecificationNames;
+        protected static OrderTruckTransport OrderTruckTransport;
+
         protected CompetitiveListViewModel competitiveListViewModel;
         protected List<TenderServices> listTenderServices;
-        protected TenderParamsDefaults(CompetitiveListViewModel CompetitiveListViewModel, List<TenderServices> listTenderServices)
+        protected List<BalanceKeepers> listBalanceKeepers;
+        protected TendFormDeserializedJSON formDeserializedJSON;
+        protected List<SpecificationNames> listSpecificationNames;
+        protected OrderTruckTransport orderTruckTransport;
+        protected TenderParamsDefaults(CompetitiveListViewModel CompetitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, OrderTruckTransport orderTruckTransport)
         {
             competitiveList = CompetitiveListViewModel;
             listTender = listTenderServices;
+            listBalance = listBalanceKeepers;
+            OrderTruckTransport = orderTruckTransport;
+        }
+
+        protected TenderParamsDefaults(CompetitiveListViewModel CompetitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, TendFormDeserializedJSON tendFormDeserializedJSON, List<SpecificationNames> specificationNames)
+        {
+            competitiveList = CompetitiveListViewModel;
+            listTender = listTenderServices;
+            listBalance = listBalanceKeepers;
+            FormDeserializedJSON = tendFormDeserializedJSON;
+            SpecificationNames = specificationNames;
         }
         protected TenderParamsDefaults()
         {
             this.competitiveListViewModel = competitiveList;
             this.listTenderServices = listTender;
+            this.listBalanceKeepers = listBalance;
             allAppSettings = ConfigurationManager.AppSettings;
+            this.formDeserializedJSON = new TendFormDeserializedJSON();
+            this.formDeserializedJSON = FormDeserializedJSON;
+            this.listSpecificationNames = SpecificationNames;
+            this.orderTruckTransport = OrderTruckTransport;
         }
     }
 }

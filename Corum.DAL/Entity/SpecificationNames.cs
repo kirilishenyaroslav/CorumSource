@@ -23,6 +23,9 @@ namespace Corum.DAL.Entity
         public int Id { get; set; }
         public int SpecCode { get; set; }
         public string SpecName { get; set; }
+        public Nullable<int> nmcTestId { get; set; }
+        public Nullable<int> nmcWorkId { get; set; }
+        public Nullable<int> industryId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<ContractSpecifications> ContractSpecifications { get; set; }

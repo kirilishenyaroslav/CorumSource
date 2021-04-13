@@ -1,198 +1,146 @@
 ﻿@model Corum.Models.ViewModels.Tender.TenderForma
 @using System.Globalization;
 
+
 <link type="text/css" rel="stylesheet" href="~/Content/Tender/TableTender.css" />
 
 
-<div id="partialModul" class="row" style="display: none; margin:auto;">
-
+<div id="partialModul" class="row modal-custom" style="display: none; margin:auto;">
     @using (Html.BeginForm("SendNotificationTender", "OrderConcurs", FormMethod.Post))
     {
         <div class="row">
-            <div class="col-md-12">
-                <div class="form-group" style="margin-left:20px;">
-                    @Html.LabelFor(model => model.data.tenderName, htmlAttributes: new { @class = "control-label" })
+            <div class="col-md-12" id="tabs" role="tabpanel">
+                <div class="row col-md-12" style="margin-left:10px; margin-bottom:15px;">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li><a href="#tabs-1" role="tab">Основные параметры тендера</a></li>
+                        <li><a href="#tabs-2" role="tab">Параметры APS</a></li>
+                        <li><a href="#tabs-3" role="tab">Лот</a></li>
+                    </ul>
+                </div>
+                <div id="tabs-1" role="tabpanel" class="active filter-tab-pane tab-pane row">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="form-group" style="margin-left:20px;">
+                                @Html.LabelFor(model => model.data.tenderName, htmlAttributes: new { @class = "control-label" })
 
-                    <div class="form-control-container full-width-select">
-                        @Html.TextAreaFor(model => model.data.tenderName,
-                         new
-                         {
-                             @class = "form-control textarea",
-                             type = "text"
-                         })
-                        @Html.ValidationMessageFor(model => model.data.tenderName, "", new { @class = "text-danger" })
+                                <div class="form-control-container full-width-select">
+                                    <div id="messenger"></div>
+                                    @Html.TextAreaFor(model => model.data.tenderName,
+                                     new
+                                     {
+                                         id = "TenderName",
+                                         @class = "form-control textarea",
+                                         type = "text",
+                                         rows = "3"
+                                     })
+                                    @Html.LabelFor(model => model.data.errorMessageTenderName, htmlAttributes: new { id = "erroreMessageTenderName", @class = "control-label messenger", @style = "display: none" })
+                                    @Html.LabelFor(model => model.data.errorMessageTenderNameStringLength, htmlAttributes: new { id = "erroreMessageTenderNameStringLenght300", @class = "control-label messenger", @style = "display: none" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-left:20px;">
+                                @Html.LabelFor(model => model.data.tenderAuthorName, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.data.tenderAuthorName, new { htmlAttributes = new { id = "TenderAuthorName", @class = "form-control", @readonly = "readonly", autocomplete = "off" } })
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-left:20px;">
+                                @Html.LabelFor(model => model.data.companyName, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.data.companyName, new { htmlAttributes = new { id = "CompanyName", @class = "form-control", @readonly = "readonly", autocomplete = "off" } })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-left:20px;">
+                                @Html.LabelFor(model => model.data.subCompanyName, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.data.subCompanyName, new { htmlAttributes = new { id = "SubCompanyName", @class = "form-control", @readonly = "readonly", autocomplete = "off" } })
+                                @Html.ValidationMessageFor(model => model.data.subCompanyName, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-left:20px;">
+                                @Html.LabelFor(model => model.data.depName, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.data.depName, new { htmlAttributes = new { id = "DepName", @class = "form-control", @readonly = "readonly", autocomplete = "off" } })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="tabs-2" role="tabpanel">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-left:20px;">
+                                @Html.LabelFor(model => model.data.typeTrure, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.data.typeTrure, Model.data.listTures as SelectList, new { id = "TypeTure", @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-left:20px;">
+                                @Html.LabelFor(model => model.data.budget, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.data.budget, new { htmlAttributes = new { id = "Budget", @class = "form-control", type = "number", min = "0", autocomplete = "off" } })
+                                @Html.LabelFor(model => model.data.errorMessageTenderBudget, htmlAttributes: new { id = "erroreMessageTenderBudget", @class = "control-label messenger", @style = "display: none" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-left:20px;">
+                                @Html.LabelFor(model => model.data.typePublic, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.data.typePublic, Model.data.listPublications as SelectList, new { id = "TypePublic", @class = "form-control" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-left:20px;">
+                                @Html.LabelFor(model => model.data.industryName, htmlAttributes: new { @class = "control-label" })
+                                @Html.DropDownListFor(model => model.data.industryName, Model.data.listServices as SelectList, new { id = "IndustryName", @class = "form-control" })
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-left:20px;">
+                                @Html.LabelFor(model => model.data.dateStart, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.data.dateStart, new { htmlAttributes = new { id = "DateStart", @class = "form-control", type = "datetime-local", autocomplete = "off" } })
+                                @Html.LabelFor(model => model.data.errorMessageTenderDataStart, htmlAttributes: new { id = "erroreMessageTenderDataStart", @class = "control-label messenger", @style = "display: none" })
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-left:20px;">
+                                @Html.LabelFor(model => model.data.dateEnd, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.data.dateEnd, new { htmlAttributes = new { id = "DateEnd", @class = "form-control", type = "datetime-local", autocomplete = "off" } })
+                                @Html.LabelFor(model => model.data.errorMessageTenderDataEnd, htmlAttributes: new { id = "erroreMessageTenderDataEnd", @class = "control-label messenger", @style = "display: none" })
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group" style="margin-left:20px;">
+                                @Html.LabelFor(model => model.data.lotName, htmlAttributes: new { @class = "control-label" })
+                                @Html.EditorFor(model => model.data.lotName, new { htmlAttributes = new { id = "LotName", @class = "form-control", autocomplete = "off" } })
+                                @Html.LabelFor(model => model.data.errorMessagelotName, htmlAttributes: new { id = "erroreMessagelotName", @class = "control-label messenger", @style = "display: none" })
+                                @Html.LabelFor(model => model.data.errorMessagelotNameStringLength, htmlAttributes: new { id = "erroreMessagelotNameStringLength", @class = "control-label messenger", @style = "display: none" })
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div id="tabs-3" role="tabpanel">
+                    <div class="row">
+                        <div id="grid" class="col-md-12" style="max-height:350px; margin: 0 10px 0 10px;">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group" style="margin-left:20px;">
-                    @Html.LabelFor(model => model.data.tenderAuthorName, htmlAttributes: new { @class = "control-label" })
-                    @Html.EditorFor(model => model.data.tenderAuthorName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", autocomplete = "off" } })
-                </div>
-            </div>
-
-
-            <div class="col-md-6">
-                <div class="form-group" style="margin-left:20px;">
-                    @Html.LabelFor(model => model.data.budget, htmlAttributes: new { @class = "control-label" })
-                    @Html.EditorFor(model => model.data.budget, new { htmlAttributes = new { @class = "form-control", type = "number", min = "0", autocomplete = "off" } })
-                    @Html.ValidationMessageFor(model => model.data.budget, "", new { @class = "text-danger" })
-                </div>
-            </div>
-        </div>
-
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group" style="margin-left:20px;">
-                    @Html.LabelFor(model => model.data.companyName, htmlAttributes: new { @class = "control-label" })
-                    @Html.EditorFor(model => model.data.companyName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", autocomplete = "off" } })
-                </div>
-            </div>
-
-
-            <div class="col-md-6">
-                <div class="form-group" style="margin-left:20px;">
-                    @Html.LabelFor(model => model.data.companyName, htmlAttributes: new { @class = "control-label" })
-                    @Html.DropDownListFor(model => model.data.regume, Model.data.listRegums as SelectList, new { @class = "form-control" })
-                </div>
-            </div>
-        </div>
-
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group" style="margin-left:20px;">
-                    @Html.LabelFor(model => model.data.subCompanyName, htmlAttributes: new { @class = "control-label" })
-                    @Html.EditorFor(model => model.data.subCompanyName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", autocomplete = "off" } })
-                    @Html.ValidationMessageFor(model => model.data.subCompanyName, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-
-            <div class="col-md-6">
-                <div class="form-group" style="margin-left:20px;">
-                    @Html.LabelFor(model => model.data.typeTrure, htmlAttributes: new { @class = "control-label" })
-                    @Html.DropDownListFor(model => model.data.typeTrure, Model.data.listTures as SelectList, new { @class = "form-control" })
-                </div>
-            </div>
-        </div>
-
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group" style="margin-left:20px;">
-                    @Html.LabelFor(model => model.data.depName, htmlAttributes: new { @class = "control-label" })
-                    @Html.EditorFor(model => model.data.depName, new { htmlAttributes = new { @class = "form-control", @readonly = "readonly", autocomplete = "off" } })
-                </div>
-            </div>
-
-
-            <div class="col-md-6">
-                <div class="form-group" style="margin-left:20px;">
-                    @Html.LabelFor(model => model.data.industryName, htmlAttributes: new { @class = "control-label" })
-                    @Html.DropDownListFor(model => model.data.industryName, Model.data.listServices as SelectList, new { @class = "form-control" })
-                </div>
-            </div>
-        </div>
-
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group" style="margin-left:20px;">
-                    @Html.LabelFor(model => model.data.dateStart, htmlAttributes: new { @class = "control-label" })
-                    @Html.EditorFor(model => model.data.dateStart, new { htmlAttributes = new { @class = "form-control", type = "datetime-local", autocomplete = "off" } })
-                </div>
-            </div>
-
-
-            <div class="col-md-6">
-                <div class="form-group" style="margin-left:20px;">
-                    @Html.LabelFor(model => model.data.typePublic, htmlAttributes: new { @class = "control-label" })
-                    @Html.DropDownListFor(model => model.data.typePublic, Model.data.listPublications as SelectList, new { @class = "form-control" })
-                </div>
-            </div>
-        </div>
-
-
-        <div class="row">
-            <div class="col-md-6">
-                <div class="form-group" style="margin-left:20px;">
-                    @Html.LabelFor(model => model.data.dateEnd, htmlAttributes: new { @class = "control-label" })
-                    @Html.EditorFor(model => model.data.dateEnd, new { htmlAttributes = new { @class = "form-control", type = "datetime-local", autocomplete = "off" } })
-                    @Html.ValidationMessageFor(model => model.data.dateEnd, "", new { @class = "text-danger" })
-                </div>
-            </div>
-
-            <div class="col-md-6">
-                <div class="form-group" style="margin-left:20px;">
-
-                </div>
-            </div>
-        </div>
-
-
-        @*<div class="form-group row">
-                <label class="col-md-4" style="font-weight: normal !important;">
-                    Наименование лота
-                </label>
-                <div class="col-md-8">
-                    @Html.TextBox("lotName", "Лот №1", new
-               {
-                   @class = "form-control",
-                   @disabled = "disabled",
-                   type = "text"
-               })
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-md-4" style="font-weight: normal !important;">
-                    Номенклатура
-                </label>
-                <div class="col-md-8">
-                    @{SelectList listnmcs = new SelectList(nmcs); }
-                    @Html.DropDownList("nmcName", listnmcs as SelectList, new
-               {
-                   @class = "form-control",
-                   @disabled = "disabled"
-               })
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-md-4" style="font-weight: normal !important;">
-                    Единица измерения
-                </label>
-                <div class="col-md-8">
-                    @{SelectList listUnitNames = new SelectList(unitNames); }
-                    @Html.DropDownList("unitName", listUnitNames as SelectList, new
-               {
-                   @class = "form-control",
-                   @disabled = "disabled"
-               })
-                </div>
-            </div>
-
-            <div class="form-group row">
-                <label class="col-md-4" style="font-weight: normal !important;">
-                    Количество
-                </label>
-                <div class="col-md-8">
-                    <input class="form-control" disabled="disabled" type="number" min="1" value="1" name="qty" />
-                </div>
-            </div>*@
-
-
-        <div style="float:right;">
-            <button class="btn btn-default" onclick="$('#partialModul').dialog('close');" type="reset" name="action" value="">Отмена</button>
-            <button class="btn btn-success" type="submit" name="action" value="">Отправить</button>
-        </div>
-
     }
 </div>
 

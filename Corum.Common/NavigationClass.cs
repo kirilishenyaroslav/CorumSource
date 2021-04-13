@@ -240,8 +240,11 @@ namespace Corum.Models
     {
         public UserViewModel userInfo;
         public TenderForma tenderForma;
+        public OrderTruckTransport orderTruckData;
 
         public List<TenderServices> tenderServices { get; set; }
+        public List<SpecificationNames> specificationNames { get; set; }
+        public List<BalanceKeepers> balanceKeepers { get; set; }
         public OrderBaseViewModel orderInfo { get; set; }
 
         public CompetitiveListViewModel CompetitiveListInfo { get; set; }

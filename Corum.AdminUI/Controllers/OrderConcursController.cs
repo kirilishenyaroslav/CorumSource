@@ -13,6 +13,9 @@ using System.Collections;
 using System.Linq;
 using System.Configuration;
 using System.Collections.Specialized;
+using System.Web.Script.Serialization;
+using CorumAdminUI;
+
 
 namespace CorumAdminUI.Controllers
 {
@@ -21,10 +24,12 @@ namespace CorumAdminUI.Controllers
     public partial class OrderConcursController : CorumBaseController
     {
         static long OrderID;
+
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult OrderCompetitiveList(OrderNavigationInfo navInfo)
         {
             OrderID = navInfo.OrderId;
+
             var model = new OrderNavigationResult<OrderCompetitiveListViewModel>(navInfo, userId)
             {
                 DisplayValues = context.getOrderCompetitiveList(userId, navInfo.OrderId),
@@ -33,16 +38,27 @@ namespace CorumAdminUI.Controllers
                 orderInfo = context.getOrder(navInfo.OrderId),
                 currentStatus = context.getCurrentStatusForList(navInfo.OrderId),
                 tenderServices = context.GetTenderServices(),
-                tenderForma = new TenderForma(context.getCompetitiveListInfo(navInfo.OrderId), context.GetTenderServices())
+                specificationNames = context.GetSpecificationNames(),
+                orderTruckData = context.GetOrderTruckTransport(navInfo.OrderId),
+                tenderForma = new TenderForma(context.getCompetitiveListInfo(navInfo.OrderId), context.GetTenderServices(), context.GetBalanceKeepers(), context.GetOrderTruckTransport(navInfo.OrderId))
             };
             return View(model);
         }
 
 
-
         [HttpPost]
-        public ActionResult SendNotificationTender(TenderForma tenderForma)
+        public ActionResult SendNotificationTender(string ListItemsModelTenderForm)
         {
+
+            TenderForma tenderForma = null;
+            try
+            {
+                TendFormDeserializedJSON tendFormDeserializedJSON = JsonSerializer.Deserialize<TendFormDeserializedJSON>(ListItemsModelTenderForm);
+                tenderForma = new TenderForma(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(), tendFormDeserializedJSON, context.GetSpecificationNames());
+                tenderForma.data.InitializedAfterDeserialized();
+            }
+            catch { }
+
             NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
             BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
             new PostApiTender().GetCallAsync(clientbase, tenderForma);

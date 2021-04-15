@@ -231,7 +231,7 @@ namespace Corum.Models.ViewModels.Tender
             listTenderCategor = new Dictionary<int, string>();
             foreach (var item in listTenderServices.ToList())
             {
-                listTenderCategor[item.industryId] = item.industryName;
+                listTenderCategor[item.industryId_Test] = item.industryName;
             }
             listServices = new SelectList(listTenderCategor.Values);
             dateStartDef = date.ToString("yyyy-MM-dd'T'HH:mm");
@@ -255,7 +255,7 @@ namespace Corum.Models.ViewModels.Tender
             kind = (typePublications[0].Contains(typePublic)) ? 1 : 2;
 
             industryName = this.formDeserializedJSON.IndustryName;
-            industryId = listTenderServices.ToList().Find((x) => x.industryName.Contains(industryName)).industryId;
+            industryId = listTenderServices.ToList().Find((x) => x.industryName.Contains(industryName)).industryId_Test;
 
             dateStart = this.formDeserializedJSON.DateStart;
             dateEnd = this.formDeserializedJSON.DateEnd;

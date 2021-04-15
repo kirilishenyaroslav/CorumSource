@@ -988,6 +988,7 @@
           <Property Name="nmcTestId" Type="int" />
           <Property Name="nmcWorkId" Type="int" />
           <Property Name="industryId" Type="int" />
+          <Property Name="industryId_Test" Type="int" />
         </EntityType>
         <EntityType Name="SpecificationTypes">
           <Key>
@@ -1003,6 +1004,7 @@
           <Property Name="Id" Type="int" Nullable="false" />
           <Property Name="industryName" Type="nchar" MaxLength="150" Nullable="false" />
           <Property Name="industryId" Type="int" Nullable="false" />
+          <Property Name="industryId_Test" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="UserMessages">
           <Key>
@@ -6424,6 +6426,7 @@
           <Property Name="nmcTestId" Type="Int32" />
           <Property Name="nmcWorkId" Type="Int32" />
           <Property Name="industryId" Type="Int32" />
+          <Property Name="industryId_Test" Type="Int32" />
         </EntityType>
         <EntityType Name="Projects">
           <Key>
@@ -8607,6 +8610,7 @@
           <Property Name="Id" Type="Int32" Nullable="false" />
           <Property Name="industryName" Type="String" Nullable="false" MaxLength="150" FixedLength="true" Unicode="true" />
           <Property Name="industryId" Type="Int32" Nullable="false" />
+          <Property Name="industryId_Test" Type="Int32" Nullable="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -9605,6 +9609,7 @@
           <EntitySetMapping Name="SpecificationNames">
             <EntityTypeMapping TypeName="CorumModel.SpecificationNames">
               <MappingFragment StoreEntitySet="SpecificationNames">
+                <ScalarProperty Name="industryId_Test" ColumnName="industryId_Test" />
                 <ScalarProperty Name="industryId" ColumnName="industryId" />
                 <ScalarProperty Name="nmcWorkId" ColumnName="nmcWorkId" />
                 <ScalarProperty Name="nmcTestId" ColumnName="nmcTestId" />
@@ -10657,6 +10662,7 @@
           <EntitySetMapping Name="TenderServices">
             <EntityTypeMapping TypeName="CorumModel.TenderServices">
               <MappingFragment StoreEntitySet="TenderServices">
+                <ScalarProperty Name="industryId_Test" ColumnName="industryId_Test" />
                 <ScalarProperty Name="industryId" ColumnName="industryId" />
                 <ScalarProperty Name="industryName" ColumnName="industryName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

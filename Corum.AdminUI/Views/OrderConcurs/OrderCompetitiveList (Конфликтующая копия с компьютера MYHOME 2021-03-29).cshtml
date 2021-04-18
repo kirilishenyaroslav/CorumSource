@@ -6,7 +6,6 @@
 @{ ViewBag.Title = "Работа с конкурентным листом";
     Layout = "~/Views/Shared/_Layout.cshtml"; }
 
-
 <style type="text/css">
     #jqxgridAddConcurs .jqx-grid-cell-pinned, #jqxgridAddConcurs .jqx-grid-column-header {
         background-color: #f7b662;
@@ -21,7 +20,7 @@
 </style>
 
 @Html.Partial("_PartialModul", Model.tenderForma)
-
+@Html.Partial("_restReportAddItemToBasket2")
 
 @helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
 {
@@ -656,55 +655,55 @@
                     autoOpen: false,
                     width: 800,
                     top: 50,
+                    height: 525,
                     resizable: false,
                     tags: true,
                     title: "Запрос на тендер",
                     modal: true,
                     open: function(event, ui) {
                         InitFilterDropDowns();
-
-                        FormInputErrorChecking(); // Метод валидации полей формы тендера
                         $(document).ready(function () {
-
-                            var dataTend383 = [];
-                            var dataTend384 = [];
-                            var dataTend385 = [];
-                            var dataTend50 = [];
-                            @foreach (var item in Model.specificationNames)
-                            {
-                                switch (item.industryId_Test.ToString())
-                                {
-                                    case "383":
-                                        {
-                                            @:dataTend383.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
-                                            break;
-                                        }
-                                        case "384":
-                                        {
-                                            @:dataTend384.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
-                                            break;
-                                        }
-                                        case "385":
-                                        {
-                                            @:dataTend385.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
-                                            break;
-                                        }
-                                        case "50":
-                                        {
-                                            @:dataTend50.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
-                                            break;
-                                        }
-                                    default:break;
-                                }
-                            }
                             // prepare the data
                             var data = {};
+                            var nmcNames =
+                                [
+                                    "3.1.1. Послуги перевезення вантажів довгоміри - Тягачі з бортовими напівпричепами та бортові автомобілі (Q =от 5 до 20тн.) З тентом і без",
+                                    "4.1.2. Послуги самоскида (Q = 16-35тн.)",
+                                    "5.2.4. Послуги автовишки (висота підйому 40м):",
+                                    "2.2.1.  Послуги пасс.перевозок автобусами місткістю від 16 до 22 місць",
+                                    "1.1.1 Послуги перевзеннь ПВ по Україні"
+                                ];
+                            var unitNames =
+                                [
+                                    "послуга", "послуга", "послуга", "послуга", "послуга"
+                                ];
+                            var qties =
+                                [
+                                    "1","2","1","3","1"
+                                ];
+                            var nmcIds =
+                                [
+                                    "351","371","385","363","388"
+                                ];
 
+                            //var generaterow = function (i) {
+                            //    var row = {};
+                            //    var nmcindex = Math.floor(Math.random() * nmcNames.length);
+                            //    row["nmcName"] = nmcNames[Math.floor(Math.random() * nmcNames.length)];
+                            //    row["unitName"] = unitNames[Math.floor(Math.random() * unitNames.length)];
+                            //    row["qty"] = parseFloat(qties[nmcindex]);
+                            //    row["nmcId"] = parseFloat(nmcIds[nmcindex]);
+                            //    return row;
+                            //}
                             var generaterow = function (i) {
                                 var row = {};
+                                row["nmcName"] = sessionStorage.getItem('nmcValues');
                                 return row;
                             }
-                            
+                            //for (var i = 0; i < 5; i++) {
+                            //    var row = generaterow(i);
+                            //    data[i] = row;
+                            //}
                             var source =
                             {
                                 localdata: data,
@@ -712,8 +711,9 @@
                                 datafields:
                                     [
                                         { name: 'nmcName', type: 'string' },
-                                        //{ name: 'unitName', type: 'string' },
-                                        { name: 'qty', type: 'string' }
+                                        { name: 'unitName', type: 'string' },
+                                        { name: 'qty', type: 'number' },
+                                        { name: 'nmcId', type: 'number' }
                                     ],
                                 addrow: function (rowid, rowdata, position, commit) {
                                     // synchronize with the server - send insert command
@@ -727,45 +727,34 @@
                                     // call commit with parameter true if the synchronization with the server is successful
                                     //and with parameter false if the synchronization failed.
                                     commit(true);
-                                },
-                                updaterow: function (rowid, newdata, commit) {
-                                    // synchronize with the server - send update command
-                                    // call commit with parameter true if the synchronization with the server is successful
-                                    // and with parameter false if the synchronization failed.
-                                    commit(true);
                                 }
                             };
-
                             var dataAdapter = new $.jqx.dataAdapter(source);
-
                             // initialize jqxGrid
                             $("#grid").jqxGrid(
                                 {
                                     width: 750,
-                                    theme: 'orange',
-                                    height: 345,
-                                    showtoolbar: true,
+                                    height: 340,
+                                    theme:'orange',
                                     source: dataAdapter,
-                                    autorowheight: true,
-                                    pageable: true,
-                                    pagermode: 'simple',
-                                    selectionmode: 'multiplerows',
-                                    editable: true,
+                                    showtoolbar: true,
                                     rendertoolbar: function (toolbar) {
                                         var me = this;
                                         var container = $("<div style='margin: 5px;'></div>");
                                         toolbar.append(container);
                                         container.append('<input id="addrowbutton" type="button" value="Добавить" />');
-
                                         container.append('<input style="margin-left: 5px;" id="deleterowbutton" type="button" value="Удалить" />');
-
                                         $("#addrowbutton").jqxButton();
-
                                         $("#deleterowbutton").jqxButton();
-
 
                                         // create new row.
                                         $("#addrowbutton").on('click', function () {
+                                            ShowDialogItemSettings();
+                                            //var generaterow = function (i) {
+                                            //    var row = {};
+                                            //    row["nmcName"] = sessionStorage.getItem('nmcValues');                             
+                                            //    return row;
+                                            //}
                                             var datarow = generaterow();
                                             var commit = $("#grid").jqxGrid('addrow', null, datarow);
                                         });
@@ -781,107 +770,12 @@
                                         });
                                     },
                                     columns: [
-                                        {
-                                            text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
-                                            createeditor: function (row, column, editor)
-                                            {
-                                                    editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend50});
-                                            }
-                                        },
-
-                                        {
-                                            text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
-                                        }
+                                        { text: 'Наименование позиции', datafield: 'nmcName', width: 475 },
+                                        { text: 'Ед.изм.', datafield: 'unitName', width: 75 },
+                                        { text: 'Количество', datafield: 'qty', width: 100 },
+                                        { text: 'Код номенк.', datafield: 'nmcId', width: 100, cellsalign: 'left' }
                                              ]
                                 });
-
-                            // events
-                            var dataTend = [];
-                            @foreach (var item in Model.tenderServices)
-                            {
-                                @:dataTend.push("@item.industryName.Trim(' ')");
-                            }
-
-                            $("#IndustryName").on('change', function (e) {
-                                var industryName = $("#IndustryName").val();
-                                switch (industryName)
-                                {
-                                    case dataTend[0]: {
-                                        //alert(dataTend[0]);
-                                        $("#grid").jqxGrid({
-                                            columns: [
-                                                {
-                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
-                                                    createeditor: function (row, column, editor)
-                                                    {
-                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend50 });
-                                                    }
-                                                },
-
-                                                {
-                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
-                                                }
-                                            ] }); break;
-                                    }
-                                    case dataTend[1]: {
-                                        //alert(dataTend[1]);
-                                        $("#grid").jqxGrid({
-                                            columns: [
-                                                {
-                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
-                                                    createeditor: function (row, column, editor)
-                                                    {
-                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend384 });
-                                                    }
-                                                },
-
-                                                {
-                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
-                                                }
-                                            ] }); break;
-                                    }
-                                    case dataTend[2]: {
-                                        //alert(dataTend[2]);
-                                        $("#grid").jqxGrid({
-                                            columns: [
-                                                {
-                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
-                                                    createeditor: function (row, column, editor)
-                                                    {
-                                                          editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend385 });
-                                                    }
-                                                },
-
-                                                {
-                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
-                                                }
-                                            ] }); break;
-                                    }
-                                    case dataTend[3]: {
-                                        //alert(dataTend[3]);
-                                        $("#grid").jqxGrid({
-                                            columns: [
-                                                {
-                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
-                                                    createeditor: function (row, column, editor)
-                                                    {
-                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383 });
-                                                    }
-                                                },
-
-                                                {
-                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
-                                                }
-                                            ] }); break;
-                                    }
-                                    default: {
-                                        //alert('Default');
-                                        break;
-                                    }
-                                }
-
-                            });
-
                         });
                     },
                     close: function(event, ui) {
@@ -890,246 +784,128 @@
                     create: function(event, ui) {
                         $("#disable_all").addClass("disable_all");
                     },
-                    beforeCToStringStringStringse: function(event, ui) {
+                    beforeClose: function(event, ui) {
                         $("#disable_all").removeClass("disable_all");
-                    },
-                    buttons:
-                    [
-                        {
-                            text: "Отмена",
-                            "class": 'cancel-btn btn btn-outline',
-                            click: function() {
-
-                                $(this).dialog("close");
-                            }
-                        },
-                        {
-                            text: "Отправить",
-                            "class": 'btn btn-primary',
-                            click: function () {
-
-                                var valuesGridData = {};
-                                for (var i = 0; i < 30; i++)
-                                {
-                                    var row = {};
-                                    if ($("#grid").jqxGrid('getcellvalue', i, 'nmcName') != null)
-                                    {
-                                        if ($("#grid").jqxGrid('getcellvalue', i, 'nmcName') != "")
-                                        {
-                                            row["nmcName"] = $("#grid").jqxGrid('getcellvalue', i, 'nmcName');
-                                            //row["unitName"] = $("#grid").jqxGrid('getcellvalue', i, 'unitName');
-                                            row["qty"] = $("#grid").jqxGrid('getcellvalue', i, 'qty');
-                                            valuesGridData[i] = row;
-                                        }
-                                    }
-                                }
-
-
-                                var tenderName = $('#TenderName').val();
-                                var tenderAuthorName = $('#TenderAuthorName').val();
-                                var companyName = $('#CompanyName').val();
-                                var subCompanyName = $('#SubCompanyName').val();
-                                var depName = $('#DepName').val();
-                                var typeTure = $('#TypeTure').val();
-                                var budget = $('#Budget').val();
-                                var typePublic = $('#TypePublic').val();
-                                var industryName = $('#IndustryName').val();
-                                var dateStart = $('#DateStart').val();
-                                var dateEnd = $('#DateEnd').val();
-                                var lotName = $('#LotName').val();
-
-                                var modelTenderForm =
-                                {
-                                    "TenderName": tenderName,
-                                    "TenderAuthorName": tenderAuthorName,
-                                    "CompanyName": companyName,
-                                    "SubCompanyName": subCompanyName,
-                                    "DepName": depName,
-                                    "TypeTure": typeTure,
-                                    "Budget": budget,
-                                    "TypePublic": typePublic,
-                                    "IndustryName": industryName,
-                                    "DateStart": dateStart,
-                                    "DateEnd": dateEnd,
-                                    "LotName": lotName,
-                                    "JqxGridNmc": valuesGridData
-                                };
-                                var modelTenderFormJSON = JSON.stringify(modelTenderForm);
-                                
-                                if (formValidationAccessAttributes.accessTenderName != false && formValidationAccessAttributes.accessTenderNameStringLength != false &&
-                                    formValidationAccessAttributes.accessLotName != false && formValidationAccessAttributes.accessLotNameStringLength != false &&
-                                    formValidationAccessAttributes.accessBudget != false && formValidationAccessAttributes.accessDataStart != false &&
-                                    formValidationAccessAttributes.accessDataEnd != false)
-                                {
-                                    $.post('@Url.Action("SendNotificationTender", "OrderConcurs")',
-                                        {
-                                            ListItemsModelTenderForm: modelTenderFormJSON
-                                        },
-                                        function () {
-                                            alert('Запрос на тендер успешно отправлен!');
-                                        });
-
-                                    $(this).dialog("close");
-                                }
-                                else
-                                {
-                                    if (!formValidationAccessAttributes.accessDataEnd)
-                                    {
-                                        var elDataEnd = document.getElementById('erroreMessageTenderDataEnd');
-                                        elDataEnd.style.display = "initial";
-                                    }
-                                    alert('Заполните правильно поля формы.');
-                                }
-                            }
-                        }
-                    ]
+                    }
                 });
             $('#partialModul').dialog('open');
             return;
         }
 
-        // Атрибуты допуска валидации полей тендера на подачу формы
-        var formValidationAccessAttributes = {  
-            accessTenderName: true,
-            accessTenderNameStringLength: true,
-            accessLotName: true,
-            accessLotNameStringLength: true,
-            accessBudget: true,
-            accessDataStart: true,
-            accessDataEnd: false
-        };
-
-        function FormInputErrorChecking()
-        {
-            // Валидация поля "Наименование тендера"
-            var tendName = document.getElementById('TenderName');
-            var el = document.getElementById('erroreMessageTenderName');
-            var elStLen = document.getElementById('erroreMessageTenderNameStringLenght300');
-
-            function DisplayErrorTendName() {
-                var valueTend = $("#TenderName").val();
-
-                if (valueTend.length == 0) {
-                    el.style.display = "initial";
-                    elStLen.style.display = "none";
-                    formValidationAccessAttributes.accessTenderName = false;
-                    formValidationAccessAttributes.accessTenderNameStringLength = true;
-                }
-                else if (valueTend.length >= 300) {
-                    el.style.display = "none";
-                    elStLen.style.display = "initial";
-                    formValidationAccessAttributes.accessTenderName = true;
-                    formValidationAccessAttributes.accessTenderNameStringLength = false;
-                }
-                else {
-                    el.style.display = "none";
-                    elStLen.style.display = "none";
-                    formValidationAccessAttributes.accessTenderName = true;
-                    formValidationAccessAttributes.accessTenderNameStringLength = true;
-                }
-            }
-            tendName.onkeyup = tendName.oninput = DisplayErrorTendName;
-            tendName.oncut = function () {
-                setTimeout(DisplayErrorTendName, 0);
-            }
-
-            // Валидация поля "Наименование лота"
-            var lotName = document.getElementById('LotName');
-            var elLot = document.getElementById('erroreMessagelotName');
-            var elStLenLot = document.getElementById('erroreMessagelotNameStringLength');
-
-            function DisplayErrorlotName() {
-                var valueTendLot = $("#LotName").val();
-
-                if (valueTendLot.length == 0) {
-                    elLot.style.display = "initial";
-                    elStLenLot.style.display = "none";
-                    formValidationAccessAttributes.accessLotName = false;
-                    formValidationAccessAttributes.accessLotNameStringLength = true;
-                }
-                else if (valueTendLot.length >= 100) {
-                    elLot.style.display = "none";
-                    elStLenLot.style.display = "initial";
-                    formValidationAccessAttributes.accessLotName = true;
-                    formValidationAccessAttributes.accessLotNameStringLength = false;
-                }
-                else {
-                    elLot.style.display = "none";
-                    elStLenLot.style.display = "none";
-                    formValidationAccessAttributes.accessLotName = true;
-                    formValidationAccessAttributes.accessLotNameStringLength = true;
-                }
-            }
-            lotName.onkeyup = lotName.oninput = DisplayErrorlotName;
-            lotName.oncut = function () {
-                setTimeout(DisplayErrorlotName, 0);
-            }
-
-             // Валидация поля "Бюджет тендера"
-            var budgatData = document.getElementById('Budget');
-            var elbudget = document.getElementById('erroreMessageTenderBudget');
-            
-
-            function DisplayErrorBudget() {
-                var valueBudget = $("#Budget").val();
-
-                if (valueBudget.length == 0) {
-                    elbudget.style.display = "initial";
-                    formValidationAccessAttributes.accessBudget = false;
-                }
-                else {
-                    elbudget.style.display = "none";
-                    formValidationAccessAttributes.accessBudget = true;
-                }
-            }
-            budgatData.onkeyup = budgatData.oninput = DisplayErrorBudget;
-            budgatData.oncut = function () {
-                setTimeout(DisplayErrorBudget, 0);
-            }
-
-            // Валидация поля "Дата создания тендера"
-            var dataStart = document.getElementById('DateStart');
-            var elDataStart = document.getElementById('erroreMessageTenderDataStart');
 
 
-            function DisplayErrorDataStart() {
-                var valueDataStart = $("#DateStart").val();
+        // Модальное окно при нажатии на кнопку "Добавить"
+        function ShowDialogItemSettings() {
+            $('#additemtobasket')
+                .dialog({
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 600,
+                    resizable: false,
+                    title: "Параметры добавления остатка в корзину",
+                    modal: true,
+                    position: {
+                        my: "top",
+                        at: "top+100",
+                        of: ".container-fluid"
+                    },
+                    open: function (event, ui) {
 
-                if (valueDataStart.length == 0) {
-                    elDataStart.style.display = "initial";
-                    formValidationAccessAttributes.accessDataStart = false;
-                }
-                else {
-                    elDataStart.style.display = "none";
-                    formValidationAccessAttributes.accessDataStart = true;
-                }
-            }
-            dataStart.onkeyup = dataStart.oninput = DisplayErrorDataStart;
-            dataStart.oncut = function () {
-                setTimeout(DisplayErrorDataStart, 0);
-            }
-
-            // Валидация поля "Дата окончания приема предложений"
-            var dataEnd = document.getElementById('DateEnd');
-            var elDataEnd = document.getElementById('erroreMessageTenderDataEnd');
+                        //$("#Comments").innerHTML = "";
+                        //$("#StorageCode").val("");
+                        //$("#Count").val("1");
+                        //$("#innerPartyKey").html(InnerPartyKey);
+                        //$("#Storage").html(Storage);
+                        //$("#Product").html(Product);
+                        //$("#Shifr").html(Shifr);
+                        //$("#Shifr_MDM").html(Shifr_MDM);
+                        //$("#BacodeConsignment").html(BacodeConsignment);
+                        //$("#BacodeProduct").html(BacodeProduct);
+                        //$("#BalanceKeeper").html(BalanceKeeper);
+                        //$("#Weight").html(Weight);
 
 
-            function DisplayErrorDataEnd() {
-                var valueDataEnd = $("#DateEnd").val();
+                    },
+                    close: function (event, ui) {
+                        $(this).dialog('destroy');
+                    },
+                    create: function (event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function (event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                        [
+                            {
+                                text: "Отмена",
+                                "class": 'cancel-btn btn btn-outline',
+                                click: function () {
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Добавить",
+                                "class": 'btn btn-primary',
+                                click: function () {
+                                    sessionStorage.user = JSON.stringify({ name: "John" });
+                                    let nmcValues = JSON.parse(sessionStorage.user);
 
-                if (valueDataEnd.length == 0) {
-                    elDataEnd.style.display = "initial";
-                    formValidationAccessAttributes.accessDataEnd = false;
-                }
-                else {
-                    elDataEnd.style.display = "none";
-                    formValidationAccessAttributes.accessDataEnd = true;
-                }
-            }
-            dataEnd.onkeyup = dataEnd.oninput = DisplayErrorDataEnd;
-            dataEnd.oncut = function () {
-                setTimeout(DisplayErrorDataEnd, 0);
-            }
+                                    //if (nmcValues === null || nmcValues === undefined) {
+                                    //    nmcValues = [];
+                                    //}
+
+                                    //var theSameProduct = nmcValues.find((element) => {
+                                    //    if (element.InnerPartyKey === InnerPartyKey) {
+
+                                    //        let w = element.Weight;
+                                    //        if (typeof element.Weight === 'string' || element.Weight instanceof String) {
+                                    //            w = parseFloat(element.Weight.replace(',', '.'));
+                                    //        }
+                                    //        let c = element.Count;
+                                    //        if (typeof element.Count === 'string' || element.Count instanceof String) {
+                                    //            c = parseFloat(element.Count.replace(',', '.'));
+                                    //        }
+
+                                    //        element.Count = c + 1;
+                                    //        element.TotalWeight = w * (c + 1);
+
+                                    //        return true;
+                                    //    }
+                                    //});
+
+                                    //if (theSameProduct === null || theSameProduct === undefined) {
+                                    //    let newBuckekItem = new Object();
+
+                                    //    //newBuckekItem.InnerPartyKey = InnerPartyKey;
+                                    //    //newBuckekItem.Storage = Storage;
+                                    //    //newBuckekItem.Product = Product;
+                                    //    //newBuckekItem.Shifr = Shifr;
+                                    //    //newBuckekItem.Shifr_MDM = Shifr_MDM;
+                                    //    //newBuckekItem.BacodeConsignment = BacodeConsignment;
+                                    //    //newBuckekItem.BacodeProduct = BacodeProduct;
+                                    //    //newBuckekItem.BalanceKeeper = BalanceKeeper;
+                                    //    //newBuckekItem.Weight = Weight;
+                                    //    //newBuckekItem.Count = $("#Count").val();
+                                    //    //newBuckekItem.Comments = $("#comments").val();
+                                    //    //newBuckekItem.StorageCode = $("#StorageCode").val();
+                                    //    //let w = parseFloat(newBuckekItem.Weight.replace(',', '.'));
+                                    //    //let c = parseFloat(newBuckekItem.Count.replace(',', '.'));
+                                    //    //newBuckekItem.TotalWeight = w * c;
+                                    //    //nmcValues.push(newBuckekItem);
+                                    //}
+
+                                    sessionStorage.setItem('nmcValues', JSON.stringify(nmcValues));
+                                    //$('.basketCount').html(nmcValues.length);
+                                    $(this).dialog("close");
+                                }
+                            }
+                        ]
+                });
+
+            $('#additemtobasket').dialog('open');
+
+            return;
         }
     </script>
 }

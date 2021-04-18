@@ -79,7 +79,7 @@
         <EntityTypeShape EntityType="CorumModel.CarCarryCapacity" Width="1.5" PointX="26.875" PointY="14.875" />
         <EntityTypeShape EntityType="CorumModel.RouteIntervalType" Width="1.5" PointX="19.375" PointY="4.875" />
         <EntityTypeShape EntityType="CorumModel.SpecificationTypes" Width="1.5" PointX="32" PointY="20.625" />
-        <EntityTypeShape EntityType="CorumModel.SpecificationNames" Width="1.5" PointX="7.375" PointY="4.75" />
+        <EntityTypeShape EntityType="CorumModel.SpecificationNames" Width="1.5" PointX="7.625" PointY="4.125" IsExpanded="true" />
         <EntityTypeShape EntityType="CorumModel.Projects" Width="1.5" PointX="25.5" PointY="3.125" />
         <AssociationConnector Association="CorumModel.FK_ProjectsCFO" />
         <AssociationConnector Association="CorumModel.FK_ProjectType" />

@@ -19,7 +19,7 @@ using CorumAdminUI;
 
 namespace CorumAdminUI.Controllers
 {
-
+   
     [Authorize]
     public partial class OrderConcursController : CorumBaseController
     {
@@ -49,7 +49,7 @@ namespace CorumAdminUI.Controllers
         [HttpPost]
         public ActionResult SendNotificationTender(string ListItemsModelTenderForm)
         {
-
+            
             TenderForma tenderForma = null;
             try
             {

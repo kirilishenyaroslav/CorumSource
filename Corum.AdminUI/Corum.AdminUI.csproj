@@ -16,7 +16,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CorumAdminUI</RootNamespace>
     <AssemblyName>CorumAdminUI</AssemblyName>
-    <TargetFrameworkVersion>v4.5.1</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <MvcBuildViews>false</MvcBuildViews>
     <PrecompileRazorFiles>true</PrecompileRazorFiles>
     <UseIISExpress>true</UseIISExpress>

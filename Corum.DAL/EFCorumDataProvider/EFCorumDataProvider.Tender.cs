@@ -28,7 +28,7 @@ namespace Corum.DAL
                 tender.Id = item.Id;
                 tender.industryName = item.industryName;
                 tender.industryId = item.industryId;
-
+                tender.industryId_Test = item.industryId_Test;
                 services.Add(tender);
             }
             return services;
@@ -47,7 +47,7 @@ namespace Corum.DAL
                 specNames.nmcTestId = item.nmcTestId;
                 specNames.nmcWorkId = item.nmcWorkId;
                 specNames.industryId = item.industryId;
-
+                specNames.industryId_Test = item.industryId_Test;
                 specList.Add(specNames);
             }
             return specList;

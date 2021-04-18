@@ -16,5 +16,6 @@ namespace Corum.Models.Tender
         public int? nmcTestId { get; set; }
         public int? nmcWorkId { get; set; }
         public int? industryId { get; set; }
+        public int? industryId_Test { get; set; }
     }
 }

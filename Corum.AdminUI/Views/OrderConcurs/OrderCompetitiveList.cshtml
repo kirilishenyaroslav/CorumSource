@@ -669,10 +669,10 @@
                             var dataTend383 = [];
                             var dataTend384 = [];
                             var dataTend385 = [];
-                            var dataTend54 = [];
+                            var dataTend50 = [];
                             @foreach (var item in Model.specificationNames)
                             {
-                                switch (item.industryId.ToString())
+                                switch (item.industryId_Test.ToString())
                                 {
                                     case "383":
                                         {
@@ -689,9 +689,9 @@
                                             @:dataTend385.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
-                                        case "54":
+                                        case "50":
                                         {
-                                            @:dataTend54.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            @:dataTend50.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
                                     default:break;
@@ -785,7 +785,7 @@
                                             text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
                                             createeditor: function (row, column, editor)
                                             {
-                                                    editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383});
+                                                    editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend50});
                                             }
                                         },
 
@@ -814,7 +814,7 @@
                                                     text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
                                                     createeditor: function (row, column, editor)
                                                     {
-                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383 });
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend50 });
                                                     }
                                                 },
 
@@ -865,7 +865,7 @@
                                                     text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
                                                     createeditor: function (row, column, editor)
                                                     {
-                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend54 });
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383 });
                                                     }
                                                 },
 

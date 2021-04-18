@@ -17,5 +17,6 @@ namespace Corum.DAL.Entity
         public int Id { get; set; }
         public string industryName { get; set; }
         public int industryId { get; set; }
+        public int industryId_Test { get; set; }
     }
 }

@@ -669,7 +669,7 @@
                             var dataTend383 = [];
                             var dataTend384 = [];
                             var dataTend385 = [];
-                            var dataTend50 = [];
+                            var dataTend42 = [];
                             @foreach (var item in Model.specificationNames)
                             {
                                 switch (item.industryId_Test.ToString())
@@ -689,9 +689,9 @@
                                             @:dataTend385.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
-                                        case "50":
+                                        case "42":
                                         {
-                                            @:dataTend50.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            @:dataTend42.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
                                     default:break;
@@ -785,7 +785,7 @@
                                             text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
                                             createeditor: function (row, column, editor)
                                             {
-                                                    editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend50});
+                                                    editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend42});
                                             }
                                         },
 
@@ -814,7 +814,7 @@
                                                     text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
                                                     createeditor: function (row, column, editor)
                                                     {
-                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend50 });
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend42 });
                                                     }
                                                 },
 

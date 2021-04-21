@@ -663,6 +663,7 @@
                     open: function(event, ui) {
                         InitFilterDropDowns();
 
+                        CreateJqxGrid();
                         FormInputErrorChecking(); // Метод валидации полей формы тендера
                         $(document).ready(function () {
 
@@ -899,7 +900,7 @@
                             text: "Отмена",
                             "class": 'cancel-btn btn btn-outline',
                             click: function() {
-
+                                DeleteJqxGrid();
                                 $(this).dialog("close");
                             }
                         },
@@ -909,7 +910,8 @@
                             click: function () {
 
                                 var valuesGridData = {};
-                                for (var i = 0; i < 30; i++)
+                                var countGridRows = $("#grid").jqxGrid('getdisplayrows');
+                                for (var i = 0; i < countGridRows.length; i++)
                                 {
                                     var row = {};
                                     if ($("#grid").jqxGrid('getcellvalue', i, 'nmcName') != null)
@@ -955,6 +957,7 @@
                                     "JqxGridNmc": valuesGridData
                                 };
                                 var modelTenderFormJSON = JSON.stringify(modelTenderForm);
+                                DeleteJqxGrid();
                                 
                                 if (formValidationAccessAttributes.accessTenderName != false && formValidationAccessAttributes.accessTenderNameStringLength != false &&
                                     formValidationAccessAttributes.accessLotName != false && formValidationAccessAttributes.accessLotNameStringLength != false &&
@@ -1130,6 +1133,31 @@
             dataEnd.oncut = function () {
                 setTimeout(DisplayErrorDataEnd, 0);
             }
+        }
+
+        // Динамическое создание JqxGrid
+        function CreateJqxGrid()
+        {
+            var rootTab3 = document.getElementById('tabs-3');
+
+            var div = document.createElement("div");
+            div.id = "jqx1";
+            div.className = "row";
+            var divInner = document.createElement("div");
+            divInner.id = "grid";
+            divInner.className = "col-md-12";
+            divInner.style.maxHeight = "350px";
+            divInner.style.margin = "0 10px 0 10px";
+            div.appendChild(divInner);
+
+            rootTab3.appendChild(div);
+        }
+
+        // Динамическое удаление JqxGrid
+        function DeleteJqxGrid() {
+            var rootTab3 = document.getElementById('tabs-3');
+            var child = document.getElementById('jqx1');
+            rootTab3.removeChild(child);          
         }
     </script>
 }

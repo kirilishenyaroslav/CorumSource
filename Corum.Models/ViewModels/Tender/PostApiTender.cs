@@ -30,12 +30,12 @@ namespace Corum.Models.ViewModels.Tender
                         baseresponse.ResponseMessage = await baseresponse.response.Content.ReadAsStringAsync();
                         baseresponse.StatusCode = (int)baseresponse.response.StatusCode;
                         string content = string.Empty;
-                        using (StreamReader stream = new StreamReader(baseresponse.response.Content.ReadAsStreamAsync().Result, System.Text.Encoding.GetEncoding(Encoding.UTF8.WebName)))
-                        {
-                            content = stream.ReadToEnd();
-                            string path = @"C:\Users\Work\Dropbox\Стажировка\Corum project\CorumSource\Corum.AdminUI\bin\client-server_Api.json";
-                            File.WriteAllText(path, content);
-                        }
+                        //using (StreamReader stream = new StreamReader(baseresponse.response.Content.ReadAsStreamAsync().Result, System.Text.Encoding.GetEncoding(Encoding.UTF8.WebName)))
+                        //{
+                        //    content = stream.ReadToEnd();
+                        //    string path = @"C:\Users\Work\Dropbox\Стажировка\Corum project\CorumSource\Corum.AdminUI\bin\client-server_Api.json";
+                        //    File.WriteAllText(path, content);
+                        //}
                         count = 10;
                     }
                     else

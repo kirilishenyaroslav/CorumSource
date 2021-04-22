@@ -58,6 +58,7 @@ namespace CorumAdminUI.Controllers
                 tenderForma.data.InitializedAfterDeserialized();
             }
             catch { }
+            
 
             NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
             BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);

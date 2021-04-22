@@ -34,9 +34,9 @@ namespace Corum.Models.ViewModels.Tender
                         using (StreamReader stream = new StreamReader(baseresponse.response.Content.ReadAsStreamAsync().Result, System.Text.Encoding.GetEncoding(Encoding.UTF8.WebName)))
                         {
                             content = stream.ReadToEnd();
-                            //Debug.WriteLine(content);
-                            //string path = @"C:\Users\Work\Dropbox\Стажировка\Corum project\CorumSource\Corum.AdminUI\bin\client-server_Api.json";
-                            //File.WriteAllText(path, content);
+                            Debug.WriteLine(content);
+                            string path = @"C:\Users\Work\Dropbox\Стажировка\Corum project\CorumSource\Corum.AdminUI\bin\client-server_Api.json";
+                            File.WriteAllText(path, content);
                         }
                         count = 10;
                     }

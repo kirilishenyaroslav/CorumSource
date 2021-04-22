@@ -14,5 +14,6 @@ namespace Corum.Models
         List<SpecificationNames> GetSpecificationNames();
         List<BalanceKeepers> GetBalanceKeepers();
         OrderTruckTransport GetOrderTruckTransport(long orderId);
+        List<Countries> GetCountries();
     }
 }

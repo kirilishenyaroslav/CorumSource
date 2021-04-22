@@ -54,7 +54,7 @@ namespace CorumAdminUI.Controllers
             try
             {
                 TendFormDeserializedJSON tendFormDeserializedJSON = JsonSerializer.Deserialize<TendFormDeserializedJSON>(ListItemsModelTenderForm);
-                tenderForma = new TenderForma(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(), tendFormDeserializedJSON, context.GetSpecificationNames());
+                tenderForma = new TenderForma(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(), tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries());
                 tenderForma.data.InitializedAfterDeserialized();
             }
             catch { }

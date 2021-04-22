@@ -16,6 +16,7 @@ namespace Corum.Models.ViewModels.Tender
         protected static CompetitiveListViewModel competitiveList;
         protected static List<TenderServices> listTender;
         protected static List<BalanceKeepers> listBalance;
+        protected static List<Countries> listCountries;
         protected static TendFormDeserializedJSON FormDeserializedJSON;
         protected static List<SpecificationNames> SpecificationNames;
         protected static OrderTruckTransport OrderTruckTransport;
@@ -26,6 +27,7 @@ namespace Corum.Models.ViewModels.Tender
         protected TendFormDeserializedJSON formDeserializedJSON;
         protected List<SpecificationNames> listSpecificationNames;
         protected OrderTruckTransport orderTruckTransport;
+        protected List<Countries> listCountriesNames;
         protected TenderParamsDefaults(CompetitiveListViewModel CompetitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, OrderTruckTransport orderTruckTransport)
         {
             competitiveList = CompetitiveListViewModel;
@@ -34,13 +36,14 @@ namespace Corum.Models.ViewModels.Tender
             OrderTruckTransport = orderTruckTransport;
         }
 
-        protected TenderParamsDefaults(CompetitiveListViewModel CompetitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, TendFormDeserializedJSON tendFormDeserializedJSON, List<SpecificationNames> specificationNames)
+        protected TenderParamsDefaults(CompetitiveListViewModel CompetitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, TendFormDeserializedJSON tendFormDeserializedJSON, List<SpecificationNames> specificationNames, List<Countries> countries)
         {
             competitiveList = CompetitiveListViewModel;
             listTender = listTenderServices;
             listBalance = listBalanceKeepers;
             FormDeserializedJSON = tendFormDeserializedJSON;
             SpecificationNames = specificationNames;
+            listCountries = countries;
         }
         protected TenderParamsDefaults()
         {
@@ -52,6 +55,7 @@ namespace Corum.Models.ViewModels.Tender
             this.formDeserializedJSON = FormDeserializedJSON;
             this.listSpecificationNames = SpecificationNames;
             this.orderTruckTransport = OrderTruckTransport;
+            this.listCountriesNames = listCountries;
         }
     }
 }

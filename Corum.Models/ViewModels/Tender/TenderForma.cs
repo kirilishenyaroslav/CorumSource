@@ -26,12 +26,13 @@ namespace Corum.Models.ViewModels.Tender
             data = new DataTender();
         }
 
-        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, TendFormDeserializedJSON formDeserializedJSON, List<SpecificationNames> specificationNames) : base(competitiveListViewModel, listTenderServices, listBalanceKeepers, formDeserializedJSON, specificationNames)
+        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, TendFormDeserializedJSON formDeserializedJSON, List<SpecificationNames> specificationNames, List<Countries> countries) : base(competitiveListViewModel, listTenderServices, listBalanceKeepers, formDeserializedJSON, specificationNames, countries)
         {
             this.competitiveListViewModel = competitiveListViewModel;
             data = new DataTender();
             this.formDeserializedJSON = formDeserializedJSON;
             this.listSpecificationNames = specificationNames;
+            this.listCountriesNames = countries;
         }
     }
 
@@ -83,20 +84,27 @@ namespace Corum.Models.ViewModels.Tender
             //        ADDUNLOADINGPOINT = "Дополнительная точка выгрузки отсутствует"
             //    }
             //};
-            string route = $"[{ competitiveListViewModel.ShipperCountryName}]|({ orderTruckTransport.Shipper}) - [‎{competitiveListViewModel.ConsigneeCountryName}]|{orderTruckTransport.Consignee}";  // Ограничение в количестве символов! Строка не должна быть слишком длинной! Иначе возинкнет ошибка запроса на тендер.
+            var countryShortNameShipper = listCountriesNames.Find(x => x.Code == orderTruckTransport.ShipperCountryId).alpha2;
+            var countryShortNameConseegnee = listCountriesNames.Find(x => x.Code == orderTruckTransport.ConsigneeCountryId).alpha2;
+
+            string route = $"[{ competitiveListViewModel.ShipperCountryName}]|({ orderTruckTransport.Shipper}) - [‎{competitiveListViewModel.ConsigneeCountryName}]|({orderTruckTransport.Consignee})".Trim();  // Ограничение в количестве символов! Строка не должна быть слишком длинной! Иначе возинкнет ошибка запроса на тендер.
+            if (route.Length > 100)
+            {
+                route = ($"[{ countryShortNameShipper}]|({ orderTruckTransport.Shipper})-[‎{countryShortNameConseegnee}]|({orderTruckTransport.Consignee})".Trim().Length <= 100)? $"[{ countryShortNameShipper}]|({ orderTruckTransport.Shipper})-[‎{countryShortNameConseegnee}]|({orderTruckTransport.Consignee})".Trim() : $"[{ competitiveListViewModel.ShipperCountryName}] - [‎{competitiveListViewModel.ConsigneeCountryName}]";
+            }
             this.propAliasValues = new List<PropAliasValues>()   // !!!!! При автоматической установке атрибутов необходимо раскомментировать данный блок кода!!!!!
             {
                   new PropAliasValues()
                   {
                       WEIGHT = competitiveListViewModel.Weight+", тн",
-                      ROUTE = route,
+                      ROUTE = route,   // Максимальное значение 100 символов
                       CARGO_NAME = competitiveListViewModel.TruckDescription,
                       DOWNLOADDATEREQUIRED = competitiveListViewModel.FromDateRaw,
                       UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw,
                       REQUIRED_NUMBER_OF_CARS = competitiveListViewModel.CarNumber.ToString(),
                       SPECIALCONDITIONS = competitiveListViewModel.VehicleTypeName,
-                      ADDLOADPOINT = "Дополнительная точка загрузки отсутствует",
-                      ADDUNLOADINGPOINT = "Дополнительная точка выгрузки отсутствует"
+                      ADDLOADPOINT = "_______________",
+                      ADDUNLOADINGPOINT = "________________"
                   }
             };
         }

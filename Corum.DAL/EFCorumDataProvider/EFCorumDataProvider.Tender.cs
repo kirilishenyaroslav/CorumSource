@@ -53,6 +53,25 @@ namespace Corum.DAL
             return specList;
         }
 
+        public List<Countries> GetCountries()
+        {
+            List<Corum.Models.Tender.Countries> countriesList = new List<Models.Tender.Countries>();
+            var countriesNamesList = db.Countries.ToList();
+            foreach (var item in countriesNamesList)
+            {
+                Corum.Models.Tender.Countries countriesNames = new Models.Tender.Countries();
+                countriesNames.Code = item.Сode;
+                countriesNames.alpha2 = item.alpha2;
+                countriesNames.alpha3 = item.alpha3;
+                countriesNames.Fullname = item.Fullname;
+                countriesNames.IsDefault = item.IsDefault;
+                countriesNames.Name = item.Name;
+
+                countriesList.Add(countriesNames);
+            }
+            return countriesList;
+        }
+
         public List<BalanceKeepers> GetBalanceKeepers()
         {
             List<Corum.Models.Tender.BalanceKeepers> balanceKeepList = new List<Models.Tender.BalanceKeepers>();

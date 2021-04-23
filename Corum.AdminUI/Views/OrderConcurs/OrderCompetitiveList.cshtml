@@ -671,6 +671,7 @@
                             var dataTend384 = [];
                             var dataTend385 = [];
                             var dataTend42 = [];
+                            var dataTend57 = [];
                             @foreach (var item in Model.specificationNames)
                             {
                                 switch (item.industryId_Test.ToString())
@@ -695,6 +696,11 @@
                                             @:dataTend42.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
+                                        case "57":
+                                        {
+                                            @:dataTend57.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            break;
+                                        }
                                     default:break;
                                 }
                             }
@@ -705,7 +711,7 @@
                                 var row = {};
                                 return row;
                             }
-                            
+
                             var source =
                             {
                                 localdata: data,
@@ -875,6 +881,23 @@
                                                 }
                                             ] }); break;
                                     }
+                                    case dataTend[4]: {
+                                        //alert(dataTend[3]);
+                                        $("#grid").jqxGrid({
+                                            columns: [
+                                                {
+                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
+                                                    createeditor: function (row, column, editor) {
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend57 });
+                                                    }
+                                                },
+
+                                                {
+                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
+                                                }
+                                            ]
+                                        }); break;
+                                    }
                                     default: {
                                         //alert('Default');
                                         break;
@@ -958,7 +981,7 @@
                                 };
                                 var modelTenderFormJSON = JSON.stringify(modelTenderForm);
                                 DeleteJqxGrid();
-                                
+
                                 if (formValidationAccessAttributes.accessTenderName != false && formValidationAccessAttributes.accessTenderNameStringLength != false &&
                                     formValidationAccessAttributes.accessLotName != false && formValidationAccessAttributes.accessLotNameStringLength != false &&
                                     formValidationAccessAttributes.accessBudget != false && formValidationAccessAttributes.accessDataStart != false &&
@@ -992,7 +1015,7 @@
         }
 
         // Атрибуты допуска валидации полей тендера на подачу формы
-        var formValidationAccessAttributes = {  
+        var formValidationAccessAttributes = {
             accessTenderName: true,
             accessTenderNameStringLength: true,
             accessLotName: true,
@@ -1071,7 +1094,7 @@
              // Валидация поля "Бюджет тендера"
             var budgatData = document.getElementById('Budget');
             var elbudget = document.getElementById('erroreMessageTenderBudget');
-            
+
 
             function DisplayErrorBudget() {
                 var valueBudget = $("#Budget").val();
@@ -1157,7 +1180,7 @@
         function DeleteJqxGrid() {
             var rootTab3 = document.getElementById('tabs-3');
             var child = document.getElementById('jqx1');
-            rootTab3.removeChild(child);          
+            rootTab3.removeChild(child);
         }
     </script>
 }

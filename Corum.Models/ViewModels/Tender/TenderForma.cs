@@ -47,6 +47,8 @@ namespace Corum.Models.ViewModels.Tender
         public string SPECIALCONDITIONS { get; set; }
         public string ADDLOADPOINT { get; set; }
         public string ADDUNLOADINGPOINT { get; set; }
+        public string DOWNLOAD_ADDRESS { get; set; }
+        public string UNLOADING_ADDRESS { get; set; }
     }
 
     public class PropAliasValues : TenderParamsDefaults  // Установка значений атрибутов через площадку Aps tender
@@ -60,6 +62,8 @@ namespace Corum.Models.ViewModels.Tender
         public string SPECIALCONDITIONS { get; set; }
         public string ADDLOADPOINT { get; set; }
         public string ADDUNLOADINGPOINT { get; set; }
+        public string DOWNLOAD_ADDRESS { get; set; }
+        public string UNLOADING_ADDRESS { get; set; }
     }
 
     public class Items : TenderParamsDefaults  //Класс описывающий позицию лота (обязательное поле)
@@ -104,7 +108,9 @@ namespace Corum.Models.ViewModels.Tender
                       REQUIRED_NUMBER_OF_CARS = competitiveListViewModel.CarNumber.ToString(),
                       SPECIALCONDITIONS = competitiveListViewModel.VehicleTypeName,
                       ADDLOADPOINT = "_______________",
-                      ADDUNLOADINGPOINT = "________________"
+                      ADDUNLOADINGPOINT = "________________",
+                      DOWNLOAD_ADDRESS = orderTruckTransport.ShipperAdress,
+                      UNLOADING_ADDRESS = orderTruckTransport.ConsigneeAdress
                   }
             };
         }
@@ -170,7 +176,7 @@ namespace Corum.Models.ViewModels.Tender
             //{
             //    "WEIGHT"
             //    //"Маршрут","Особые условия","Доп.точки выгрузки","Доп.точки загрузки",
-            //    //"Наименование груза","Дата загрузки требуемая","Дата выгрузки требуемая","Требуемое кол-во автомобилей"
+            //    //"Наименование груза","Дата загрузки требуемая","Дата выгрузки требуемая","Требуемое кол-во автомобилей", "Адрес загрузки", "Адрес выгрузки"
             //};
             propAliases = new string[]
             {
@@ -182,7 +188,9 @@ namespace Corum.Models.ViewModels.Tender
                     //"CARGO_NAME",
                     //"DOWNLOADDATEREQUIRED",
                     //"UNLOADINGDATEREQUIRED",
-                    //"REQUIRED_NUMBER_OF_CARS"
+                    //"REQUIRED_NUMBER_OF_CARS",
+                    //"DOWNLOAD_ADDRESS",
+                    //"UNLOADING_ADDRESS"
             };
 
         }

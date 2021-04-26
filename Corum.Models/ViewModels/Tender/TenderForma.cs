@@ -26,13 +26,14 @@ namespace Corum.Models.ViewModels.Tender
             data = new DataTender();
         }
 
-        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, TendFormDeserializedJSON formDeserializedJSON, List<SpecificationNames> specificationNames, List<Countries> countries) : base(competitiveListViewModel, listTenderServices, listBalanceKeepers, formDeserializedJSON, specificationNames, countries)
+        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, TendFormDeserializedJSON formDeserializedJSON, List<SpecificationNames> specificationNames, List<Countries> countries, OrderTruckTransport orderTruckTransport) : base(competitiveListViewModel, listTenderServices, listBalanceKeepers, formDeserializedJSON, specificationNames, countries, orderTruckTransport)
         {
             this.competitiveListViewModel = competitiveListViewModel;
             data = new DataTender();
             this.formDeserializedJSON = formDeserializedJSON;
             this.listSpecificationNames = specificationNames;
             this.listCountriesNames = countries;
+            this.orderTruckTransport = orderTruckTransport;
         }
     }
 

@@ -47,23 +47,23 @@ namespace CorumAdminUI.Controllers
 
 
         [HttpPost]
-        public ActionResult SendNotificationTender(string ListItemsModelTenderForm)
+        public ActionResult SendNotificationTender(TenderSumOrderId tenderSumOrder)
         {
-            
+
             TenderForma tenderForma = null;
             try
             {
-                TendFormDeserializedJSON tendFormDeserializedJSON = JsonSerializer.Deserialize<TendFormDeserializedJSON>(ListItemsModelTenderForm);
-                tenderForma = new TenderForma(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(), tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries());
+                TendFormDeserializedJSON tendFormDeserializedJSON = tenderSumOrder.ListItemsModelTenderForm;
+                OrderID = Convert.ToInt64(tenderSumOrder.OrderId);
+
+                tenderForma = new TenderForma(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(), tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID));
                 tenderForma.data.InitializedAfterDeserialized();
             }
             catch { }
-            
 
             NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
             BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
-            new PostApiTender().GetCallAsync(clientbase, tenderForma);
-            return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderID });
+            return Json(new PostApiTender().GetCallAsync(clientbase, tenderForma).Result.ResponseMessage);
         }
 
 

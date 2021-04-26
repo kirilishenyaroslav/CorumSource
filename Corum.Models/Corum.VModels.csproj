@@ -199,6 +199,7 @@
     <Compile Include="ViewModels\Tender\PostApiTender.cs" />
     <Compile Include="ViewModels\Tender\TenderForma.cs" />
     <Compile Include="ViewModels\Tender\TenderParamsDefaults.cs" />
+    <Compile Include="ViewModels\Tender\TenderSumOrderId.cs" />
     <Compile Include="ViewModels\Tender\TendFormDeserializedJSON.cs" />
   </ItemGroup>
   <ItemGroup>

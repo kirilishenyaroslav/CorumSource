@@ -36,7 +36,7 @@ namespace Corum.Models.ViewModels.Tender
             OrderTruckTransport = orderTruckTransport;
         }
 
-        protected TenderParamsDefaults(CompetitiveListViewModel CompetitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, TendFormDeserializedJSON tendFormDeserializedJSON, List<SpecificationNames> specificationNames, List<Countries> countries)
+        protected TenderParamsDefaults(CompetitiveListViewModel CompetitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, TendFormDeserializedJSON tendFormDeserializedJSON, List<SpecificationNames> specificationNames, List<Countries> countries, OrderTruckTransport orderTruckTransport)
         {
             competitiveList = CompetitiveListViewModel;
             listTender = listTenderServices;
@@ -44,6 +44,7 @@ namespace Corum.Models.ViewModels.Tender
             FormDeserializedJSON = tendFormDeserializedJSON;
             SpecificationNames = specificationNames;
             listCountries = countries;
+            OrderTruckTransport = orderTruckTransport;
         }
         protected TenderParamsDefaults()
         {

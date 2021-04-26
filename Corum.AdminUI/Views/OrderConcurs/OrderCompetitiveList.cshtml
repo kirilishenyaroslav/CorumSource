@@ -671,6 +671,7 @@
                             var dataTend384 = [];
                             var dataTend385 = [];
                             var dataTend42 = [];
+                            var dataTend57 = [];
                             @foreach (var item in Model.specificationNames)
                             {
                                 switch (item.industryId_Test.ToString())
@@ -695,6 +696,11 @@
                                             @:dataTend42.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
+                                        case "57":
+                                        {
+                                            @:dataTend57.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            break;
+                                        }
                                     default:break;
                                 }
                             }
@@ -705,7 +711,7 @@
                                 var row = {};
                                 return row;
                             }
-                            
+
                             var source =
                             {
                                 localdata: data,
@@ -875,6 +881,23 @@
                                                 }
                                             ] }); break;
                                     }
+                                    case dataTend[4]: {
+                                        //alert(dataTend[3]);
+                                        $("#grid").jqxGrid({
+                                            columns: [
+                                                {
+                                                    text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
+                                                    createeditor: function (row, column, editor) {
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend57 });
+                                                    }
+                                                },
+
+                                                {
+                                                    text: 'Количество', datafield: 'qty', width: 100, columntype: 'string',
+                                                }
+                                            ]
+                                        }); break;
+                                    }
                                     default: {
                                         //alert('Default');
                                         break;
@@ -895,83 +918,98 @@
                         $("#disable_all").removeClass("disable_all");
                     },
                     buttons:
-                    [
-                        {
-                            text: "Отмена",
-                            "class": 'cancel-btn btn btn-outline',
-                            click: function() {
-                                DeleteJqxGrid();
-                                $(this).dialog("close");
-                            }
-                        },
-                        {
-                            text: "Отправить",
-                            "class": 'btn btn-primary',
-                            click: function () {
+                        [
+                            {
+                                text: "Отмена",
+                                "class": 'cancel-btn btn btn-outline',
+                                click: function () {
+                                    DeleteJqxGrid();
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Отправить",
+                                "class": 'btn btn-primary',
+                                click: function () {
 
-                                var valuesGridData = {};
-                                var countGridRows = $("#grid").jqxGrid('getdisplayrows');
-                                for (var i = 0; i < countGridRows.length; i++)
-                                {
-                                    var row = {};
-                                    if ($("#grid").jqxGrid('getcellvalue', i, 'nmcName') != null)
-                                    {
-                                        if ($("#grid").jqxGrid('getcellvalue', i, 'nmcName') != "")
-                                        {
-                                            row["nmcName"] = $("#grid").jqxGrid('getcellvalue', i, 'nmcName');
-                                            //row["unitName"] = $("#grid").jqxGrid('getcellvalue', i, 'unitName');
-                                            row["qty"] = $("#grid").jqxGrid('getcellvalue', i, 'qty');
-                                            valuesGridData[i] = row;
+                                    var valuesGridData = {};
+                                    var countGridRows = $("#grid").jqxGrid('getdisplayrows');
+                                    for (var i = 0; i < countGridRows.length; i++) {
+                                        var row = {};
+                                        if ($("#grid").jqxGrid('getcellvalue', i, 'nmcName') != null) {
+                                            if ($("#grid").jqxGrid('getcellvalue', i, 'nmcName') != "") {
+                                                row["nmcName"] = $("#grid").jqxGrid('getcellvalue', i, 'nmcName');
+                                                //row["unitName"] = $("#grid").jqxGrid('getcellvalue', i, 'unitName');
+                                                row["qty"] = $("#grid").jqxGrid('getcellvalue', i, 'qty');
+                                                valuesGridData[i] = row;
+                                            }
                                         }
                                     }
-                                }
 
 
-                                var tenderName = $('#TenderName').val();
-                                var tenderAuthorName = $('#TenderAuthorName').val();
-                                var companyName = $('#CompanyName').val();
-                                var subCompanyName = $('#SubCompanyName').val();
-                                var depName = $('#DepName').val();
-                                var typeTure = $('#TypeTure').val();
-                                var budget = $('#Budget').val();
-                                var typePublic = $('#TypePublic').val();
-                                var industryName = $('#IndustryName').val();
-                                var dateStart = $('#DateStart').val();
-                                var dateEnd = $('#DateEnd').val();
-                                var lotName = $('#LotName').val();
+                                    var tenderName = $('#TenderName').val();
+                                    var tenderAuthorName = $('#TenderAuthorName').val();
+                                    var companyName = $('#CompanyName').val();
+                                    var subCompanyName = $('#SubCompanyName').val();
+                                    var depName = $('#DepName').val();
+                                    var typeTure = $('#TypeTure').val();
+                                    var budget = $('#Budget').val();
+                                    var typePublic = $('#TypePublic').val();
+                                    var industryName = $('#IndustryName').val();
+                                    var dateStart = $('#DateStart').val();
+                                    var dateEnd = $('#DateEnd').val();
+                                    var lotName = $('#LotName').val();
+                                    var orderId = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.Id.ToString()));
 
-                                var modelTenderForm =
-                                {
-                                    "TenderName": tenderName,
-                                    "TenderAuthorName": tenderAuthorName,
-                                    "CompanyName": companyName,
-                                    "SubCompanyName": subCompanyName,
-                                    "DepName": depName,
-                                    "TypeTure": typeTure,
-                                    "Budget": budget,
-                                    "TypePublic": typePublic,
-                                    "IndustryName": industryName,
-                                    "DateStart": dateStart,
-                                    "DateEnd": dateEnd,
-                                    "LotName": lotName,
-                                    "JqxGridNmc": valuesGridData
+                                    var TendFormDeserializedJSON =
+                                        {
+                                            ListItemsModelTenderForm: {
+                                                    "TenderName": tenderName,
+                                                    "TenderAuthorName": tenderAuthorName,
+                                                    "CompanyName": companyName,
+                                                    "SubCompanyName": subCompanyName,
+                                                    "DepName": depName,
+                                                    "TypeTure": typeTure,
+                                                    "Budget": budget,
+                                                    "TypePublic": typePublic,
+                                                    "IndustryName": industryName,
+                                                    "DateStart": dateStart,
+                                                    "DateEnd": dateEnd,
+                                                    "LotName": lotName,
+                                                    "JqxGridNmc": valuesGridData
+                                        },
+                                        OrderId: orderId
                                 };
-                                var modelTenderFormJSON = JSON.stringify(modelTenderForm);
+                                var tenderSumOrder = JSON.stringify(TendFormDeserializedJSON);
                                 DeleteJqxGrid();
-                                
+
                                 if (formValidationAccessAttributes.accessTenderName != false && formValidationAccessAttributes.accessTenderNameStringLength != false &&
                                     formValidationAccessAttributes.accessLotName != false && formValidationAccessAttributes.accessLotNameStringLength != false &&
                                     formValidationAccessAttributes.accessBudget != false && formValidationAccessAttributes.accessDataStart != false &&
                                     formValidationAccessAttributes.accessDataEnd != false)
                                 {
-                                    $.post('@Url.Action("SendNotificationTender", "OrderConcurs")',
-                                        {
-                                            ListItemsModelTenderForm: modelTenderFormJSON
+                                    $.ajax({
+                                        type: "POST",
+                                        async: true,
+                                        url: "/OrderConcurs/SendNotificationTender",
+                                        data: tenderSumOrder,
+                                        dataType: "json",
+                                        contentType: 'application/json; charset=utf-8',
+                                        success: function (data) {
+                                            var dataJS = JSON.parse(data);
+                                            console.log(data);
+                                            
+                                            if (dataJS.success != false) {
+                                                alert('Запрос на тендер успешно создан!');
+                                            }
+                                            else {
+                                                alert('Запрос на тендер не создан!');
+                                            }
                                         },
-                                        function () {
-                                            alert('Запрос на тендер успешно отправлен!');
-                                        });
-
+                                        error: function () {
+                                            alert("Error occured!!")
+                                        }
+                                    });
                                     $(this).dialog("close");
                                 }
                                 else
@@ -992,7 +1030,7 @@
         }
 
         // Атрибуты допуска валидации полей тендера на подачу формы
-        var formValidationAccessAttributes = {  
+        var formValidationAccessAttributes = {
             accessTenderName: true,
             accessTenderNameStringLength: true,
             accessLotName: true,
@@ -1071,7 +1109,7 @@
              // Валидация поля "Бюджет тендера"
             var budgatData = document.getElementById('Budget');
             var elbudget = document.getElementById('erroreMessageTenderBudget');
-            
+
 
             function DisplayErrorBudget() {
                 var valueBudget = $("#Budget").val();
@@ -1157,7 +1195,7 @@
         function DeleteJqxGrid() {
             var rootTab3 = document.getElementById('tabs-3');
             var child = document.getElementById('jqx1');
-            rootTab3.removeChild(child);          
+            rootTab3.removeChild(child);
         }
     </script>
 }

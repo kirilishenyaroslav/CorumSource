@@ -59,7 +59,10 @@ namespace CorumAdminUI.Controllers
                 tenderForma = new TenderForma(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(), tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID));
                 tenderForma.data.InitializedAfterDeserialized();
             }
-            catch { }
+            catch (Exception e)
+            {
+            
+            }
 
             NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
             BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);

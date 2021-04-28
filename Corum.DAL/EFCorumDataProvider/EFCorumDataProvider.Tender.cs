@@ -82,6 +82,7 @@ namespace Corum.DAL
                 balanceKeepNames.Id = item.Id;
                 balanceKeepNames.BalanceKeeper = item.BalanceKeeper;
                 balanceKeepNames.subCompanyId = item.subCompanyId;
+                balanceKeepNames.subCompanyId_Test = item.subCompanyId_Test;
 
                 balanceKeepList.Add(balanceKeepNames);
             }

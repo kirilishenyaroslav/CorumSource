@@ -24,6 +24,7 @@ namespace Corum.DAL.Entity
         public int Id { get; set; }
         public string BalanceKeeper { get; set; }
         public Nullable<int> subCompanyId { get; set; }
+        public Nullable<int> subCompanyId_Test { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Contracts> Contracts { get; set; }

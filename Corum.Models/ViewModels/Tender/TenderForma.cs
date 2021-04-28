@@ -237,7 +237,7 @@ namespace Corum.Models.ViewModels.Tender
             listRegums = new SelectList(regums);
 
             subCompanyName = competitiveListViewModel.PayerName;
-            var subCompanyIdn = listBalanceKeepers.Find((x) => x.BalanceKeeper.Contains(subCompanyName)).subCompanyId;
+            var subCompanyIdn = listBalanceKeepers.Find((x) => x.BalanceKeeper.Contains(subCompanyName)).subCompanyId_Test;
             subCompanyId = (subCompanyIdn == null) ? 10 : Convert.ToInt64(subCompanyIdn);
 
             typeTures = new string[] { "Тендер RFx", "Аукцион/Редукцион" };

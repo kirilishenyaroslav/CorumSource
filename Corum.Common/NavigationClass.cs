@@ -247,6 +247,8 @@ namespace Corum.Models
         public List<BalanceKeepers> balanceKeepers { get; set; }
         public List<Countries> countries { get; set; }
         public OrderBaseViewModel orderInfo { get; set; }
+        public IList<OrderAdditionalRoutePointModel> RoutePointsLoadInfo { get; set; }
+        public IList<OrderAdditionalRoutePointModel> RoutePointsUnloadInfo { get; set; }
 
         public CompetitiveListViewModel CompetitiveListInfo { get; set; }
 

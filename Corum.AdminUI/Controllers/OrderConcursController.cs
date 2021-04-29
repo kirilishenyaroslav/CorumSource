@@ -56,10 +56,15 @@ namespace CorumAdminUI.Controllers
                 TendFormDeserializedJSON tendFormDeserializedJSON = tenderSumOrder.ListItemsModelTenderForm;
                 OrderID = Convert.ToInt64(tenderSumOrder.OrderId);
 
-                tenderForma = new TenderForma(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(), tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID));
+                tenderForma = new TenderForma(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(),
+                               tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID), 
+                               context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList());
                 tenderForma.data.InitializedAfterDeserialized();
             }
-            catch { }
+            catch (Exception e)
+            {
+            
+            }
 
             NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
             BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);

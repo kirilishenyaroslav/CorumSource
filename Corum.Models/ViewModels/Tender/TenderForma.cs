@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel.DataAnnotations;
+using Corum.Models.ViewModels.Orders;
 using System.Collections;
 using System.Configuration;
 using System.Globalization;
@@ -26,7 +27,8 @@ namespace Corum.Models.ViewModels.Tender
             data = new DataTender();
         }
 
-        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, TendFormDeserializedJSON formDeserializedJSON, List<SpecificationNames> specificationNames, List<Countries> countries, OrderTruckTransport orderTruckTransport) : base(competitiveListViewModel, listTenderServices, listBalanceKeepers, formDeserializedJSON, specificationNames, countries, orderTruckTransport)
+        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, TendFormDeserializedJSON formDeserializedJSON, List<SpecificationNames> specificationNames, List<Countries> countries,
+            OrderTruckTransport orderTruckTransport, IList<OrderAdditionalRoutePointModel> routePointsLoadInfo, IList<OrderAdditionalRoutePointModel> routePointsUnloadInfo) : base(competitiveListViewModel, listTenderServices, listBalanceKeepers, formDeserializedJSON, specificationNames, countries, orderTruckTransport, routePointsLoadInfo, routePointsUnloadInfo)
         {
             this.competitiveListViewModel = competitiveListViewModel;
             data = new DataTender();
@@ -34,6 +36,8 @@ namespace Corum.Models.ViewModels.Tender
             this.listSpecificationNames = specificationNames;
             this.listCountriesNames = countries;
             this.orderTruckTransport = orderTruckTransport;
+            this.routePointsLoadinfo = routePointsLoadInfo;
+            this.routePointsUnloadinfo = routePointsUnloadInfo;
         }
     }
 
@@ -91,11 +95,33 @@ namespace Corum.Models.ViewModels.Tender
             //};
             var countryShortNameShipper = listCountriesNames.Find(x => x.Code == orderTruckTransport.ShipperCountryId).alpha2;
             var countryShortNameConseegnee = listCountriesNames.Find(x => x.Code == orderTruckTransport.ConsigneeCountryId).alpha2;
+            var countryShortNameAddLoadPoint = "";
+            var countryShortNameAddUnLoadPoint = "";
+            try
+            {
+                countryShortNameAddLoadPoint = listCountriesNames.Find(x => x.Name == routePointsLoadinfo[0].CountryPoint).alpha2;
+                countryShortNameAddUnLoadPoint = listCountriesNames.Find(x => x.Name == routePointsUnloadinfo[0].CountryPoint).alpha2;
+            }
+            catch 
+            {
+                countryShortNameAddLoadPoint = "";
+                countryShortNameAddUnLoadPoint = "";
+            }
 
             string route = $"[{ competitiveListViewModel.ShipperCountryName}]|({ orderTruckTransport.Shipper}) - [‎{competitiveListViewModel.ConsigneeCountryName}]|({orderTruckTransport.Consignee})".Trim();  // Ограничение в количестве символов! Строка не должна быть слишком длинной! Иначе возинкнет ошибка запроса на тендер.
             if (route.Length > 100)
             {
-                route = ($"[{ countryShortNameShipper}]|({ orderTruckTransport.Shipper})-[‎{countryShortNameConseegnee}]|({orderTruckTransport.Consignee})".Trim().Length <= 100)? $"[{ countryShortNameShipper}]|({ orderTruckTransport.Shipper})-[‎{countryShortNameConseegnee}]|({orderTruckTransport.Consignee})".Trim() : $"[{ competitiveListViewModel.ShipperCountryName}] - [‎{competitiveListViewModel.ConsigneeCountryName}]";
+                route = ($"[{ countryShortNameShipper}]|({ orderTruckTransport.Shipper})-[‎{countryShortNameConseegnee}]|({orderTruckTransport.Consignee})".Trim().Length <= 100) ? $"[{ countryShortNameShipper}]|({ orderTruckTransport.Shipper})-[‎{countryShortNameConseegnee}]|({orderTruckTransport.Consignee})".Trim() : $"[{ competitiveListViewModel.ShipperCountryName}] - [‎{competitiveListViewModel.ConsigneeCountryName}]";
+            }
+            string addLoadPoint = $"[{countryShortNameAddLoadPoint}]|({routePointsLoadinfo[0].NamePoint}-{routePointsLoadinfo[0].CityAddress})".Trim();
+            if (addLoadPoint.Length > 100)
+            {
+                addLoadPoint = ($"[{countryShortNameAddLoadPoint}]|({routePointsLoadinfo[0].NamePoint}-{routePointsLoadinfo[0].CityPoint})".Trim().Length <= 100)? $"[{countryShortNameAddLoadPoint}]|({routePointsLoadinfo[0].NamePoint}-{routePointsLoadinfo[0].CityPoint})".Trim() : $"[{countryShortNameAddLoadPoint}]|({routePointsLoadinfo[0].NamePoint})".Trim();
+            }
+            string addUnLoadPoint = $"[{countryShortNameAddUnLoadPoint}]|({routePointsUnloadinfo[0].NamePoint}-{routePointsUnloadinfo[0].CityAddress})".Trim();
+            if (addUnLoadPoint.Length > 100)
+            {
+                addUnLoadPoint = ($"[{countryShortNameAddUnLoadPoint}]|({routePointsUnloadinfo[0].NamePoint}-{routePointsUnloadinfo[0].CityPoint})".Trim().Length <= 100) ? $"[{countryShortNameAddUnLoadPoint}]|({routePointsUnloadinfo[0].NamePoint}-{routePointsUnloadinfo[0].CityPoint})".Trim() : $"[{countryShortNameAddUnLoadPoint}]|({routePointsUnloadinfo[0].NamePoint})".Trim();
             }
             this.propAliasValues = new List<PropAliasValues>()   // !!!!! При автоматической установке атрибутов необходимо раскомментировать данный блок кода!!!!!
             {
@@ -108,8 +134,8 @@ namespace Corum.Models.ViewModels.Tender
                       UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw,
                       REQUIRED_NUMBER_OF_CARS = competitiveListViewModel.CarNumber.ToString(),
                       SPECIALCONDITIONS = competitiveListViewModel.VehicleTypeName,
-                      ADDLOADPOINT = "_______________",
-                      ADDUNLOADINGPOINT = "________________",
+                      ADDLOADPOINT = addLoadPoint,
+                      ADDUNLOADINGPOINT = addUnLoadPoint,
                       DOWNLOAD_ADDRESS = orderTruckTransport.ShipperAdress,
                       UNLOADING_ADDRESS = orderTruckTransport.ConsigneeAdress
                   }
@@ -237,7 +263,7 @@ namespace Corum.Models.ViewModels.Tender
             listRegums = new SelectList(regums);
 
             subCompanyName = competitiveListViewModel.PayerName;
-            var subCompanyIdn = listBalanceKeepers.Find((x) => x.BalanceKeeper.Contains(subCompanyName)).subCompanyId;
+            var subCompanyIdn = listBalanceKeepers.Find((x) => x.BalanceKeeper.Contains(subCompanyName)).subCompanyId_Test;
             subCompanyId = (subCompanyIdn == null) ? 10 : Convert.ToInt64(subCompanyIdn);
 
             typeTures = new string[] { "Тендер RFx", "Аукцион/Редукцион" };

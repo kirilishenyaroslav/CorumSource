@@ -12,5 +12,6 @@ namespace Corum.Models.Tender
         public int Id { get; set; }
         public string BalanceKeeper { get; set; }
         public Nullable<int> subCompanyId { get; set; }
+        public Nullable<int> subCompanyId_Test { get; set; }
     }
 }

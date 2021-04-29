@@ -69,6 +69,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BalanceKeeper" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="subCompanyId" Type="int" />
+          <Property Name="subCompanyId_Test" Type="int" />
         </EntityType>
         <EntityType Name="BucketDocumentRows">
           <Key>
@@ -5547,6 +5548,7 @@
           <NavigationProperty Name="Contracts" Relationship="CorumModel.FK_Contracts_BalanceKeepers" FromRole="BalanceKeepers" ToRole="Contracts" />
           <NavigationProperty Name="OrdersBase" Relationship="CorumModel.FK_OrdersBase_BalanceKeepers" FromRole="BalanceKeepers" ToRole="OrdersBase" />
           <Property Name="subCompanyId" Type="Int32" />
+          <Property Name="subCompanyId_Test" Type="Int32" />
         </EntityType>
         <EntityType Name="Centers">
           <Key>
@@ -9055,6 +9057,7 @@
           <EntitySetMapping Name="BalanceKeepers">
             <EntityTypeMapping TypeName="CorumModel.BalanceKeepers">
               <MappingFragment StoreEntitySet="BalanceKeepers">
+                <ScalarProperty Name="subCompanyId_Test" ColumnName="subCompanyId_Test" />
                 <ScalarProperty Name="subCompanyId" ColumnName="subCompanyId" />
                 <ScalarProperty Name="BalanceKeeper" ColumnName="BalanceKeeper" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

@@ -681,27 +681,27 @@
                                             @:dataTend383.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
-                                        case "384":
+                                    case "384":
                                         {
                                             @:dataTend384.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
-                                        case "385":
+                                    case "385":
                                         {
                                             @:dataTend385.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
-                                        case "42":
+                                    case "42":
                                         {
                                             @:dataTend42.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
-                                        case "57":
+                                    case "57":
                                         {
                                             @:dataTend57.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
-                                    default:break;
+                                    default: break;
                                 }
                             }
                             // prepare the data
@@ -981,7 +981,7 @@
                                         OrderId: orderId
                                 };
                                 var tenderSumOrder = JSON.stringify(TendFormDeserializedJSON);
-                                
+
 
                                 if (formValidationAccessAttributes.accessTenderName != false && formValidationAccessAttributes.accessTenderNameStringLength != false &&
                                     formValidationAccessAttributes.accessLotName != false && formValidationAccessAttributes.accessLotNameStringLength != false &&
@@ -998,7 +998,7 @@
                                         success: function (data) {
                                             var dataJS = JSON.parse(data);
                                             console.log(data);
-                                            
+
                                             if (dataJS.success != false) {
                                                 alert('Запрос на тендер успешно создан!');
                                             }
@@ -1137,8 +1137,10 @@
 
             function DisplayErrorDataStart() {
                 var valueDataStart = $("#DateStart").val();
-
-                if (valueDataStart.length != 16) {
+                var pattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2}[T]{1}[0-9]{2}[:]{1}[0-9]{2}$/;
+                var regex = new RegExp(pattern);
+                if (!regex.test(valueDataStart))
+                { 
                     elDataStart.style.display = "initial";
                     formValidationAccessAttributes.accessDataStart = false;
                 }
@@ -1159,8 +1161,9 @@
 
             function DisplayErrorDataEnd() {
                 var valueDataEnd = $("#DateEnd").val();
-
-                if (valueDataEnd.length != 16) {
+                var pattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2}[T]{1}[0-9]{2}[:]{1}[0-9]{2}$/;
+                var regex = new RegExp(pattern);
+                if (!regex.test(valueDataEnd)) {
                     elDataEnd.style.display = "initial";
                     formValidationAccessAttributes.accessDataEnd = false;
                 }

@@ -1138,7 +1138,7 @@
             function DisplayErrorDataStart() {
                 var valueDataStart = $("#DateStart").val();
 
-                if (valueDataStart.length == 0) {
+                if (valueDataStart.length != 16) {
                     elDataStart.style.display = "initial";
                     formValidationAccessAttributes.accessDataStart = false;
                 }
@@ -1160,7 +1160,7 @@
             function DisplayErrorDataEnd() {
                 var valueDataEnd = $("#DateEnd").val();
 
-                if (valueDataEnd.length == 0) {
+                if (valueDataEnd.length != 16) {
                     elDataEnd.style.display = "initial";
                     formValidationAccessAttributes.accessDataEnd = false;
                 }

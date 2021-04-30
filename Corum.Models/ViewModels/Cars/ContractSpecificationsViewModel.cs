@@ -237,6 +237,9 @@ namespace Corum.Models.ViewModels.Cars
         [Required(ErrorMessage = "Введите наименование услуги")]
         [Display(Name = "Наименование услуги")]
         public string SpecName { get; set; }
+        public int? nmcTestId { get; set; }
+        public int? nmcWorkId { get; set; }
+        public int? industryId { get; set; }
     }
 
     public class SpecificationTypesViewModel

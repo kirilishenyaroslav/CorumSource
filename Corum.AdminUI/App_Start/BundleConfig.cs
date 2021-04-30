@@ -3,15 +3,18 @@
 namespace BarnivannAdminUI
 {
     public class BundleConfig
-    {        
+    {
         public static void RegisterBundles(BundleCollection bundles)
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js",
-                        "~/Scripts/jquery.stickytableheaders.js"));
+                        "~/Scripts/jquery.stickytableheaders.js")
+                .Include("~/Scripts/demos.js")
+                );
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryUI").Include(
-                        "~/Scripts/jquery-ui-{version}.js"));
+                        "~/Scripts/jquery-ui-{version}.js")
+                );
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryval").Include(
                         "~/Scripts/jquery.validate*"));
@@ -29,7 +32,7 @@ namespace BarnivannAdminUI
                         "~/Scripts/activeonly.widget.js",
                         "~/Scripts/unhandledonly.widget.js",
                         "~/Scripts/corum.js"));
-            
+
             bundles.Add(new ScriptBundle("~/bundles/modernizr").Include(
                         "~/Scripts/modernizr-*"));
 
@@ -92,6 +95,7 @@ namespace BarnivannAdminUI
                 .Include("~/scripts/jqwidgets/jqxdata.js")
                 .Include("~/scripts/jqwidgets/jqxbuttons.js")
                 .Include("~/scripts/jqwidgets/jqxscrollbar.js")
+                .Include("~/scripts/jqwidgets/jqxdatatable.js")
                 .Include("~/scripts/jqwidgets/jqxmenu.js")
                 .Include("~/scripts/jqwidgets/jqxlistbox.js")
                 .Include("~/scripts/jqwidgets/jqxgrid.js")
@@ -100,12 +104,14 @@ namespace BarnivannAdminUI
                 .Include("~/scripts/jqwidgets/jqxgrid.filter.js")
                 .Include("~/scripts/jqwidgets/jqxgrid.sort.js")
                 .Include("~/scripts/jqwidgets/jqxgrid.pager.js")
+                .Include("~/scripts/jqwidgets/jqxgrid.edit.js")
                 .Include("~/scripts/jqwidgets/jqxgrid.grouping.js")
                 .Include("~/scripts/jqwidgets/jqxcheckbox.js")
                 .Include("~/scripts/jqwidgets/jqxdatatable.js")
                 .Include("~/scripts/jqwidgets/jqxlistbox.js")
                 .Include("~/scripts/jqwidgets/jqxdropdownlist.js")
                 .Include("~/scripts/jqwidgets/jqxtreegrid.js")
+                .Include("~/scripts/jqwidgets/jqxtooltip.js")
                 .Include("~/scripts/jqwidgets/jqxcalendar.js")
                 .Include("~/scripts/jqwidgets/jqxdatetimeinput.js")
                 .Include("~/scripts/jqwidgets/jqxslider.js")
@@ -127,7 +133,7 @@ namespace BarnivannAdminUI
                 .Include("~/scripts/tinymce/tinymce.js")
                 .Include("~/scripts/tinymce/tinymce.min.js"));
 
-            
+
             bundles.Add(
                 new StyleBundle("~/Content/JQWidgetsCss")
                 .Include("~/Content/jqwidgets/jqx.base.css")
@@ -139,7 +145,7 @@ namespace BarnivannAdminUI
             BundleTable.EnableOptimizations = true;
 #if DEBUG
             BundleTable.EnableOptimizations = false;
-            
+
 #endif
 
 

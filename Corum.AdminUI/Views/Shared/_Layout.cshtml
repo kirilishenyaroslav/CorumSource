@@ -8,13 +8,12 @@
     @Styles.Render("~/Content/css")
     @Styles.Render("~/Content/ui_css")
     @Styles.Render("~/Content/JQWidgetsCss")
-    
     @Scripts.Render("~/bundles/modernizr")
     @Scripts.Render("~/bundles/grathVis")
-     
-	@RenderSection("head_scripts", required: false)
-    
-	<link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,400italic,600italic,600,700,700italic,800,800italic' rel='stylesheet' type='text/css'>	
+
+    @RenderSection("head_scripts", required: false)
+
+    <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,300italic,300,400italic,600italic,600,700,700italic,800,800italic' rel='stylesheet' type='text/css'>
     <meta name="description" content="Corum" />
 </head>
 <body>
@@ -35,8 +34,8 @@
                         </a>
                     </div>
                     <div class="navbar-collapse collapse">
-                            @{ Html.RenderAction("MainMenu", "Access"); }    
-                            @Html.Partial("_Toastr")
+                        @{ Html.RenderAction("MainMenu", "Access"); }
+                        @Html.Partial("_Toastr")
                     </div>
                 </div>
             </div>

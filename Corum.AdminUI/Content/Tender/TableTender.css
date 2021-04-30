@@ -1,0 +1,10 @@
+﻿.textarea {
+    min-height: 110px; /* Высота поля в пикселах */
+    /*resize: none;*/ /* Запрещаем изменять размер */
+}
+.messenger {
+    text-align: center;
+    display: none;
+    color: #f00;
+    margin: 15px 0;
+}

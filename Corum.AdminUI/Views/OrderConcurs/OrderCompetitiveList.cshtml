@@ -923,8 +923,8 @@
                                 text: "Отмена",
                                 "class": 'cancel-btn btn btn-outline',
                                 click: function () {
-                                    DeleteJqxGrid();
                                     $(this).dialog("close");
+                                    DeleteJqxGrid();
                                 }
                             },
                             {
@@ -981,7 +981,7 @@
                                         OrderId: orderId
                                 };
                                 var tenderSumOrder = JSON.stringify(TendFormDeserializedJSON);
-                                DeleteJqxGrid();
+                                
 
                                 if (formValidationAccessAttributes.accessTenderName != false && formValidationAccessAttributes.accessTenderNameStringLength != false &&
                                     formValidationAccessAttributes.accessLotName != false && formValidationAccessAttributes.accessLotNameStringLength != false &&
@@ -1010,6 +1010,7 @@
                                             alert("Error occured!!")
                                         }
                                     });
+                                    DeleteJqxGrid();
                                     $(this).dialog("close");
                                 }
                                 else
@@ -1019,6 +1020,7 @@
                                         var elDataEnd = document.getElementById('erroreMessageTenderDataEnd');
                                         elDataEnd.style.display = "initial";
                                     }
+
                                     alert('Заполните правильно поля формы.');
                                 }
                             }
@@ -1037,7 +1039,7 @@
             accessLotNameStringLength: true,
             accessBudget: true,
             accessDataStart: true,
-            accessDataEnd: false
+            accessDataEnd: true
         };
 
         function FormInputErrorChecking()

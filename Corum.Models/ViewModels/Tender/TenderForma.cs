@@ -133,21 +133,26 @@ namespace Corum.Models.ViewModels.Tender
                 addLoadPoint = "Отсутствует дополнительная точка загрузки";
                 addUnLoadPoint = "Отсутствует дополнительная точка выгрузки";
             }
+            string cargoName = (competitiveListViewModel.TruckDescription.Trim().Length <= 100) ? competitiveListViewModel.TruckDescription.Trim(): competitiveListViewModel.TruckDescription.Trim().Remove(100);
+            string specCondition = (competitiveListViewModel.VehicleTypeName.Trim().Length <= 100) ? competitiveListViewModel.VehicleTypeName.Trim() : competitiveListViewModel.VehicleTypeName.Trim().Remove(100);
+            string downloadAddress = (orderTruckTransport.ShipperAdress.Trim().Length <= 100) ? orderTruckTransport.ShipperAdress.Trim() : orderTruckTransport.ShipperAdress.Trim().Remove(100);
+            string unloadAddress = (orderTruckTransport.ConsigneeAdress.Trim().Length <= 100) ? orderTruckTransport.ConsigneeAdress.Trim() : orderTruckTransport.ConsigneeAdress.Trim().Remove(100);
+            
             this.propAliasValues = new List<PropAliasValues>()   // !!!!! При автоматической установке атрибутов необходимо раскомментировать данный блок кода!!!!!
             {
                   new PropAliasValues()
                   {
                       WEIGHT = competitiveListViewModel.Weight+", тн",
                       ROUTE = route,   // Максимальное значение 100 символов
-                      CARGO_NAME = competitiveListViewModel.TruckDescription,
+                      CARGO_NAME = cargoName,
                       DOWNLOADDATEREQUIRED = competitiveListViewModel.FromDateRaw,
                       UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw,
                       REQUIRED_NUMBER_OF_CARS = competitiveListViewModel.CarNumber.ToString(),
-                      SPECIALCONDITIONS = competitiveListViewModel.VehicleTypeName,
+                      SPECIALCONDITIONS = specCondition,
                       ADDLOADPOINT = addLoadPoint,
                       ADDUNLOADINGPOINT = addUnLoadPoint,
-                      DOWNLOAD_ADDRESS = orderTruckTransport.ShipperAdress,
-                      UNLOADING_ADDRESS = orderTruckTransport.ConsigneeAdress
+                      DOWNLOAD_ADDRESS = downloadAddress,
+                      UNLOADING_ADDRESS = unloadAddress
                   }
             };
         }
@@ -238,7 +243,7 @@ namespace Corum.Models.ViewModels.Tender
 
     public class DataTender : TenderParamsDefaults// Тело data из формы тендера
     {
-        private string tenderEXTERNALN, dateStartDef;
+        private string tenderEXTERNALN, dateStartDef, dateEndDef;
         private int lightModeID;
         public string[] regums, typeTures, typePublications;
         public Dictionary<int, string> listTenderCategor;
@@ -288,7 +293,9 @@ namespace Corum.Models.ViewModels.Tender
             }
             listServices = new SelectList(listTenderCategor.Values);
             dateStartDef = date.ToString("yyyy-MM-dd'T'HH:mm");
+            dateEndDef = date.AddDays(10).ToString("yyyy-MM-dd'T'HH:mm");
             dateStart = dateStartDef;
+            dateEnd = dateEndDef;
 
             typePublications = new string[] { "Открытый", "Закрытый" };
             listPublications = new SelectList(typePublications);

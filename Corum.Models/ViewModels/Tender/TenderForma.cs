@@ -420,6 +420,8 @@ namespace Corum.Models.ViewModels.Tender
         public string dateStart { get; set; } // дата начала приема предложений (необязательное  поле,  тип данных string, дата в формате ISO 8601)
         [Display(Name = "Введите дату в формате дд.мм.гггг --:--")]
         public string errorMessageTenderDataStart { get; set; }   //ошибка ввода даты создания в поле "Дата создания тендера"
+        [Display(Name = "Некорректная дата")]
+        public string UncorrectMessageTenderDataStart { get; set; }   //ошибка ввода даты окончания тендера в поле "Дата окончания приема предложений"
 
 
 
@@ -427,6 +429,8 @@ namespace Corum.Models.ViewModels.Tender
         public string dateEnd { get; set; }  // дата конца приема предложений (необязательное поле, тип данных string, дата в формате ISO 8601)
         [Display(Name = "Введите дату в формате дд.мм.гггг --:--")]
         public string errorMessageTenderDataEnd { get; set; }   //ошибка ввода даты окончания тендера в поле "Дата окончания приема предложений"
+        [Display(Name = "Некорректная дата")]
+        public string UncorrectMessageTenderDataEnd { get; set; }   //ошибка ввода даты окончания тендера в поле "Дата окончания приема предложений"
 
 
         [Display(Name = "Наименование лота")]

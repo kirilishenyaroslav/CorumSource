@@ -111,6 +111,7 @@
                                 @Html.LabelFor(model => model.data.dateStart, htmlAttributes: new { @class = "control-label" })
                                 @Html.EditorFor(model => model.data.dateStart, new { htmlAttributes = new { id = "DateStart", @class = "form-control", type = "datetime-local", autocomplete = "off" } })
                                 @Html.LabelFor(model => model.data.errorMessageTenderDataStart, htmlAttributes: new { id = "erroreMessageTenderDataStart", @class = "control-label messenger", @style = "display: none" })
+                                @Html.LabelFor(model => model.data.UncorrectMessageTenderDataStart, htmlAttributes: new { id = "uncorrectMessageTenderDataStart", @class = "control-label messenger", @style = "display: none" })
                             </div>
                         </div>
                         <div class="col-md-6">
@@ -118,6 +119,7 @@
                                 @Html.LabelFor(model => model.data.dateEnd, htmlAttributes: new { @class = "control-label" })
                                 @Html.EditorFor(model => model.data.dateEnd, new { htmlAttributes = new { id = "DateEnd", @class = "form-control", type = "datetime-local", autocomplete = "off" } })
                                 @Html.LabelFor(model => model.data.errorMessageTenderDataEnd, htmlAttributes: new { id = "erroreMessageTenderDataEnd", @class = "control-label messenger", @style = "display: none" })
+                                @Html.LabelFor(model => model.data.UncorrectMessageTenderDataEnd, htmlAttributes: new { id = "uncorrectMessageTenderDataEnd", @class = "control-label messenger", @style = "display: none" })
                             </div>
                         </div>
                     </div>

@@ -1015,12 +1015,6 @@
                                 }
                                 else
                                 {
-                                    if (!formValidationAccessAttributes.accessDataEnd)
-                                    {
-                                        var elDataEnd = document.getElementById('erroreMessageTenderDataEnd');
-                                        elDataEnd.style.display = "initial";
-                                    }
-
                                     alert('Заполните правильно поля формы.');
                                 }
                             }
@@ -1133,18 +1127,37 @@
             // Валидация поля "Дата создания тендера"
             var dataStart = document.getElementById('DateStart');
             var elDataStart = document.getElementById('erroreMessageTenderDataStart');
-
-
+            var uncorrectDataStart = document.getElementById('uncorrectMessageTenderDataStart');
+            var valueDataStartCorrect = $("#DateStart").val();
             function DisplayErrorDataStart() {
+                var dateNow = new Date;
                 var valueDataStart = $("#DateStart").val();
+                var dateModalForm = new Date(Date.parse(valueDataStart));
+                dateModalForm.setHours(dateModalForm.getHours() + 3);
                 var pattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2}[T]{1}[0-9]{2}[:]{1}[0-9]{2}$/;
                 var regex = new RegExp(pattern);
                 if (!regex.test(valueDataStart))
-                { 
+                {
                     elDataStart.style.display = "initial";
                     formValidationAccessAttributes.accessDataStart = false;
                 }
+                else if (dateModalForm.getTime() < dateNow.getTime())
+                {
+                    uncorrectDataStart.style.display = "initial";
+                    formValidationAccessAttributes.accessDataStart = false;
+                }
                 else {
+                    if (dateModalForm.getTime() > new Date(Date.parse(valueDateEndCorrect)).getTime()) {
+                        uncorrectDataEnd.style.display = "initial";
+                        formValidationAccessAttributes.accessDataEnd = false;
+                    }
+                    else if (dateModalForm.getTime() < new Date(Date.parse(valueDateEndCorrect)).getTime())
+                    {
+                        uncorrectDataEnd.style.display = "none";
+                        formValidationAccessAttributes.accessDataEnd = true;
+                    }
+                    valueDataStartCorrect = valueDataStart;
+                    uncorrectDataStart.style.display = "none";
                     elDataStart.style.display = "none";
                     formValidationAccessAttributes.accessDataStart = true;
                 }
@@ -1157,17 +1170,26 @@
             // Валидация поля "Дата окончания приема предложений"
             var dataEnd = document.getElementById('DateEnd');
             var elDataEnd = document.getElementById('erroreMessageTenderDataEnd');
-
-
+            var uncorrectDataEnd = document.getElementById('uncorrectMessageTenderDataEnd');
+            var valueDateEndCorrect = $("#DateEnd").val();
             function DisplayErrorDataEnd() {
+                var dateModalFormStart = new Date(Date.parse(valueDataStartCorrect));
+                dateModalFormStart.setHours(dateModalFormStart.getHours() + 3);
                 var valueDataEnd = $("#DateEnd").val();
+                var dateModalFormEnd = new Date(Date.parse(valueDataEnd));
                 var pattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2}[T]{1}[0-9]{2}[:]{1}[0-9]{2}$/;
                 var regex = new RegExp(pattern);
                 if (!regex.test(valueDataEnd)) {
                     elDataEnd.style.display = "initial";
                     formValidationAccessAttributes.accessDataEnd = false;
                 }
+                else if (dateModalFormStart.getTime() > dateModalFormEnd.getTime()) {
+                    uncorrectDataEnd.style.display = "initial";
+                    formValidationAccessAttributes.accessDataEnd = false;
+                }
                 else {
+                    valueDateEndCorrect = valueDataEnd;
+                    uncorrectDataEnd.style.display = "none";
                     elDataEnd.style.display = "none";
                     formValidationAccessAttributes.accessDataEnd = true;
                 }

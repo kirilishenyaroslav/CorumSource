@@ -278,7 +278,7 @@ namespace Corum.Models.ViewModels.Tender
             listRegums = new SelectList(regums);
 
             subCompanyName = competitiveListViewModel.PayerName;
-            var subCompanyIdn = listBalanceKeepers.Find((x) => x.BalanceKeeper.Contains(subCompanyName)).subCompanyId_Test;
+            var subCompanyIdn = listBalanceKeepers.Find((x) => x.BalanceKeeper.Contains(subCompanyName)).subCompanyId;
             subCompanyId = (subCompanyIdn == null) ? 10 : Convert.ToInt64(subCompanyIdn);
 
             typeTures = new string[] { "Тендер RFx", "Аукцион/Редукцион" };
@@ -289,7 +289,7 @@ namespace Corum.Models.ViewModels.Tender
             listTenderCategor = new Dictionary<int, string>();
             foreach (var item in listTenderServices.ToList())
             {
-                listTenderCategor[item.industryId_Test] = item.industryName;
+                listTenderCategor[item.industryId] = item.industryName;
             }
             listServices = new SelectList(listTenderCategor.Values);
             dateStartDef = date.ToString("yyyy-MM-dd'T'HH:mm");
@@ -315,7 +315,7 @@ namespace Corum.Models.ViewModels.Tender
             kind = (typePublications[0].Contains(typePublic)) ? 1 : 2;
 
             industryName = this.formDeserializedJSON.IndustryName;
-            industryId = listTenderServices.ToList().Find((x) => x.industryName.Contains(industryName)).industryId_Test;
+            industryId = listTenderServices.ToList().Find((x) => x.industryName.Contains(industryName)).industryId;
 
             dateStart = this.formDeserializedJSON.DateStart;
             dateEnd = this.formDeserializedJSON.DateEnd;
@@ -330,7 +330,7 @@ namespace Corum.Models.ViewModels.Tender
                 {
                     Items items = new Items();
                     items.qty = Convert.ToDouble(item.Value.qty);
-                    items.nmcId = Convert.ToInt64(listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).nmcTestId);
+                    items.nmcId = Convert.ToInt64(listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).nmcWorkId);
                     items.itemExternalN = listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).SpecCode.ToString();
 
                     lots[0].items.Add(items);

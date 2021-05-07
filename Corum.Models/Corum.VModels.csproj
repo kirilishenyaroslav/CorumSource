@@ -121,6 +121,7 @@
     <Compile Include="Tender\BalanceKeepers.cs" />
     <Compile Include="Tender\Countries.cs" />
     <Compile Include="Tender\OrderTruckTransport.cs" />
+    <Compile Include="Tender\RegisterTenders.cs" />
     <Compile Include="Tender\SpecificationNames.cs" />
     <Compile Include="Tender\TenderServices.cs" />
     <Compile Include="Toastr\ToastMessage.cs" />
@@ -197,6 +198,7 @@
     <Compile Include="ViewModels\Orders\TruckTypeViewModel.cs" />
     <Compile Include="ViewModels\Customers\OrganizationViewModel.cs" />
     <Compile Include="ViewModels\Tender\PostApiTender.cs" />
+    <Compile Include="ViewModels\Tender\RequestJSONDeserializedToModel.cs" />
     <Compile Include="ViewModels\Tender\TenderForma.cs" />
     <Compile Include="ViewModels\Tender\TenderParamsDefaults.cs" />
     <Compile Include="ViewModels\Tender\TenderSumOrderId.cs" />

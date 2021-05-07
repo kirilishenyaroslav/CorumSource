@@ -15,11 +15,11 @@ using System.Configuration;
 using System.Collections.Specialized;
 using System.Web.Script.Serialization;
 using CorumAdminUI;
-
+using Newtonsoft.Json;
 
 namespace CorumAdminUI.Controllers
 {
-   
+
     [Authorize]
     public partial class OrderConcursController : CorumBaseController
     {
@@ -57,18 +57,34 @@ namespace CorumAdminUI.Controllers
                 OrderID = Convert.ToInt64(tenderSumOrder.OrderId);
 
                 tenderForma = new TenderForma(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(),
-                               tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID), 
+                               tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID),
                                context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList());
                 tenderForma.data.InitializedAfterDeserialized();
             }
             catch (Exception e)
             {
-            
+
             }
 
             NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
             BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
-            return Json(new PostApiTender().GetCallAsync(clientbase, tenderForma).Result.ResponseMessage);
+            var response = new PostApiTender().GetCallAsync(clientbase, tenderForma).Result.ResponseMessage;
+            try
+            {
+                RequestJSONDeserializedToModel myDeserializedClass = JsonConvert.DeserializeObject<RequestJSONDeserializedToModel>(response);
+                RegisterTenders registerTenders = new RegisterTenders()
+                {
+                    OrderId = OrderID,
+                    TenderUuid = System.Guid.Parse(myDeserializedClass.data.tenderUuid)
+                };
+                context.AddNewDataTender(registerTenders);
+            }
+            catch (Exception e)
+            {
+
+            }
+
+            return Json(response);
         }
 
 

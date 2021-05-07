@@ -354,6 +354,9 @@
     <Compile Include="Entity\ProjectTypes.cs">
       <DependentUpon>Corum.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entity\RegisterTenders.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entity\RestsSnapshot.cs">
       <DependentUpon>Corum.tt</DependentUpon>
     </Compile>

@@ -97,6 +97,7 @@ namespace Corum.DAL.Entity
         public virtual DbSet<BucketDocumentRows> BucketDocumentRows { get; set; }
         public virtual DbSet<BucketDocuments> BucketDocuments { get; set; }
         public virtual DbSet<TenderServices> TenderServices { get; set; }
+        public virtual DbSet<RegisterTenders> RegisterTenders { get; set; }
     
         public virtual ObjectResult<SelectFieldsOfStuctureForImport_Result> SelectFieldsOfStuctureForImport(Nullable<bool> isRests)
         {

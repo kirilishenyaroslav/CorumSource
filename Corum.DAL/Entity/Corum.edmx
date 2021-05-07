@@ -859,6 +859,14 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
         </EntityType>
+        <EntityType Name="RegisterTenders">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderId" Type="bigint" Nullable="false" />
+          <Property Name="TenderUuid" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
         <EntityType Name="RestsSnapshot">
           <Key>
             <PropertyRef Name="idrow" />
@@ -3374,6 +3382,7 @@
           <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Projects" EntityType="Self.Projects" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProjectTypes" EntityType="Self.ProjectTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RegisterTenders" EntityType="Self.RegisterTenders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RestsSnapshot" EntityType="Self.RestsSnapshot" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoleGroups" EntityType="Self.RoleGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoleGroupsRole" EntityType="Self.RoleGroupsRole" Schema="dbo" store:Type="Tables" />
@@ -5071,6 +5080,7 @@
           <EntitySet Name="BucketDocumentRows" EntityType="CorumModel.BucketDocumentRows" />
           <EntitySet Name="BucketDocuments" EntityType="CorumModel.BucketDocuments" />
           <EntitySet Name="TenderServices" EntityType="CorumModel.TenderServices" />
+          <EntitySet Name="RegisterTenders" EntityType="CorumModel.RegisterTenders" />
           </EntityContainer>
         <ComplexType Name="SelectFieldsOfStuctureForImport_Result">
           <Property Type="String" Name="ColumnName" Nullable="true" />
@@ -8599,6 +8609,14 @@
           <Property Name="industryId" Type="Int32" Nullable="false" />
           <Property Name="industryId_Test" Type="Int32" Nullable="false" />
         </EntityType>
+        <EntityType Name="RegisterTenders">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderId" Type="Int64" Nullable="false" />
+          <Property Name="TenderUuid" Type="Guid" Nullable="false" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10652,6 +10670,15 @@
                 <ScalarProperty Name="industryId_Test" ColumnName="industryId_Test" />
                 <ScalarProperty Name="industryId" ColumnName="industryId" />
                 <ScalarProperty Name="industryName" ColumnName="industryName" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RegisterTenders">
+            <EntityTypeMapping TypeName="CorumModel.RegisterTenders">
+              <MappingFragment StoreEntitySet="RegisterTenders">
+                <ScalarProperty Name="TenderUuid" ColumnName="TenderUuid" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

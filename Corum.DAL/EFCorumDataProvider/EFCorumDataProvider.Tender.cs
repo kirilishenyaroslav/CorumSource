@@ -127,5 +127,22 @@ namespace Corum.DAL
                 Weight = orderTruckData.Weight
             };
         }
+
+        public void AddNewDataTender(RegisterTenders model)
+        {
+            try
+            {
+                db.RegisterTenders.Add(new Entity.RegisterTenders()
+                {
+                    OrderId = model.OrderId,
+                    TenderUuid = model.TenderUuid
+                });
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            { 
+            
+            }
+        }
     }
 }

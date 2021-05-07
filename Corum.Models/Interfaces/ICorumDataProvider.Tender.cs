@@ -15,5 +15,6 @@ namespace Corum.Models
         List<BalanceKeepers> GetBalanceKeepers();
         OrderTruckTransport GetOrderTruckTransport(long orderId);
         List<Countries> GetCountries();
+        void AddNewDataTender(RegisterTenders model);
     }
 }

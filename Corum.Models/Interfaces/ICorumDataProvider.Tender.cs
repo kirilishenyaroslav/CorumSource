@@ -16,5 +16,6 @@ namespace Corum.Models
         OrderTruckTransport GetOrderTruckTransport(long orderId);
         List<Countries> GetCountries();
         void AddNewDataTender(RegisterTenders model);
+        bool IsRegisterTendersExist(long orderId, bool isMultipleTenders);
     }
 }

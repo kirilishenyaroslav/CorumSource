@@ -65,26 +65,33 @@ namespace CorumAdminUI.Controllers
             {
 
             }
-
             NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
-            BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
-            var response = new PostApiTender().GetCallAsync(clientbase, tenderForma).Result.ResponseMessage;
-            try
+            var appsett = allAppSettings["SwitchToMultipleTenders"];
+            if (context.IsRegisterTendersExist(OrderID, Boolean.Parse(appsett)))
             {
-                RequestJSONDeserializedToModel myDeserializedClass = JsonConvert.DeserializeObject<RequestJSONDeserializedToModel>(response);
-                RegisterTenders registerTenders = new RegisterTenders()
+                BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
+                var response = new PostApiTender().GetCallAsync(clientbase, tenderForma).Result.ResponseMessage;
+                try
                 {
-                    OrderId = OrderID,
-                    TenderUuid = System.Guid.Parse(myDeserializedClass.data.tenderUuid)
-                };
-                context.AddNewDataTender(registerTenders);
+                    RequestJSONDeserializedToModel myDeserializedClass = JsonConvert.DeserializeObject<RequestJSONDeserializedToModel>(response);
+                    RegisterTenders registerTenders = new RegisterTenders()
+                    {
+                        OrderId = OrderID,
+                        TenderUuid = System.Guid.Parse(myDeserializedClass.data.tenderUuid)
+                    };
+                    context.AddNewDataTender(registerTenders);
+                }
+                catch (Exception e)
+                {
+
+                }
+
+                return Json(response);
             }
-            catch (Exception e)
+            else
             {
-
+                return Json("{\"success\":false,\"isLoadMultiple\":false}");
             }
-
-            return Json(response);
         }
 
 

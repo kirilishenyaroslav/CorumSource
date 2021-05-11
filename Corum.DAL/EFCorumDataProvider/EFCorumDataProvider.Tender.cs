@@ -89,6 +89,10 @@ namespace Corum.DAL
             return balanceKeepList;
         }
 
+        public bool IsRegisterTendersExist(long orderId, bool isMultipleTenders)
+        {
+            return (db.RegisterTenders.Count(x => x.OrderId == orderId) != 0) ? isMultipleTenders : true;
+        }
         public OrderTruckTransport GetOrderTruckTransport(long orderId)
         {
             var orderTruckData = db.OrderTruckTransport.Where(x => x.OrderId == orderId).OrderByDescending(x => x.Id).FirstOrDefault();
@@ -140,8 +144,8 @@ namespace Corum.DAL
                 db.SaveChanges();
             }
             catch (Exception e)
-            { 
-            
+            {
+
             }
         }
     }

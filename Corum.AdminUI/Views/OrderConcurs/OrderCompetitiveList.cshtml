@@ -1002,6 +1002,9 @@
                                             if (dataJS.success != false) {
                                                 alert('Запрос на тендер успешно создан!');
                                             }
+                                            else if (!dataJS.success && !dataJS.isLoadMultiple) {
+                                                alert('Тендер для этой заявки уже создан!');
+                                            }
                                             else {
                                                 alert('Запрос на тендер не создан!');
                                             }

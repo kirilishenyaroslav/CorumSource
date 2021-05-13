@@ -139,7 +139,25 @@ namespace Corum.DAL
                 db.RegisterTenders.Add(new Entity.RegisterTenders()
                 {
                     OrderId = model.OrderId,
-                    TenderUuid = model.TenderUuid
+                    TenderUuid = model.TenderUuid,
+                    dateEnd = model.dateEnd,
+                    dateStart = model.dateStart,
+                    industryId = model.industryId,
+                    industryName = model.industryName,
+                    mode = model.mode,
+                    process = model.process,
+                    stageMode = model.stageMode,
+                    stageNumber = model.stageNumber,
+                    subCompanyId = model.subCompanyId,
+                    subCompanyName = model.subCompanyName,
+                    tenderNumber = model.tenderNumber,
+                    downloadAddress = model.downloadAddress,
+                    unloadAddress = model.unloadAddress,
+                    downloadDataRequired = model.downloadDataRequired,
+                    unloadDataRequired = model.unloadDataRequired,
+                    routeOrder = model.routeOrder,
+                    cargoName = model.cargoName,
+                    lotState = model.lotState
                 });
                 db.SaveChanges();
             }

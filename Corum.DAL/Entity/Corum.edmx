@@ -865,7 +865,25 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="OrderId" Type="bigint" Nullable="false" />
+          <Property Name="tenderNumber" Type="int" Nullable="false" />
+          <Property Name="subCompanyId" Type="int" Nullable="false" />
+          <Property Name="subCompanyName" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="industryId" Type="int" Nullable="false" />
+          <Property Name="industryName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="dateStart" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="dateEnd" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="mode" Type="tinyint" Nullable="false" />
+          <Property Name="stageMode" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="stageNumber" Type="tinyint" Nullable="false" />
           <Property Name="TenderUuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="process" Type="tinyint" Nullable="false" />
+          <Property Name="downloadAddress" Type="nvarchar" MaxLength="400" Nullable="false" />
+          <Property Name="unloadAddress" Type="nvarchar" MaxLength="400" Nullable="false" />
+          <Property Name="downloadDataRequired" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="unloadDataRequired" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="routeOrder" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="cargoName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="lotState" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="RestsSnapshot">
           <Key>
@@ -2459,18 +2477,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_Specifications_Names">
-          <End Role="SpecificationNames" Type="Self.SpecificationNames" Multiplicity="1" />
-          <End Role="ContractSpecifications" Type="Self.ContractSpecifications" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="SpecificationNames">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="ContractSpecifications">
-              <PropertyRef Name="NameId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_Specifications_RouteIntervalType">
           <End Role="RouteIntervalType" Type="Self.RouteIntervalType" Multiplicity="0..1" />
           <End Role="ContractSpecifications" Type="Self.ContractSpecifications" Multiplicity="*" />
@@ -3851,10 +3857,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_Specifications_CarCarryCapacity" Association="Self.FK_Specifications_CarCarryCapacity">
             <End Role="CarCarryCapacity" EntitySet="CarCarryCapacity" />
-            <End Role="ContractSpecifications" EntitySet="ContractSpecifications" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Specifications_Names" Association="Self.FK_Specifications_Names">
-            <End Role="SpecificationNames" EntitySet="SpecificationNames" />
             <End Role="ContractSpecifications" EntitySet="ContractSpecifications" />
           </AssociationSet>
           <AssociationSet Name="FK_Specifications_RouteIntervalType" Association="Self.FK_Specifications_RouteIntervalType">
@@ -8616,6 +8618,24 @@
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="OrderId" Type="Int64" Nullable="false" />
           <Property Name="TenderUuid" Type="Guid" Nullable="false" />
+          <Property Name="tenderNumber" Type="Int32" Nullable="false" />
+          <Property Name="subCompanyId" Type="Int32" Nullable="false" />
+          <Property Name="subCompanyName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="industryId" Type="Int32" Nullable="false" />
+          <Property Name="industryName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="dateStart" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="dateEnd" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="mode" Type="Byte" Nullable="false" />
+          <Property Name="stageMode" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="stageNumber" Type="Byte" Nullable="false" />
+          <Property Name="process" Type="Byte" Nullable="false" />
+          <Property Name="downloadAddress" Type="String" Nullable="false" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="unloadAddress" Type="String" Nullable="false" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="downloadDataRequired" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="unloadDataRequired" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="routeOrder" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cargoName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="lotState" Type="Int32" Nullable="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -10677,6 +10697,24 @@
           <EntitySetMapping Name="RegisterTenders">
             <EntityTypeMapping TypeName="CorumModel.RegisterTenders">
               <MappingFragment StoreEntitySet="RegisterTenders">
+                <ScalarProperty Name="lotState" ColumnName="lotState" />
+                <ScalarProperty Name="cargoName" ColumnName="cargoName" />
+                <ScalarProperty Name="routeOrder" ColumnName="routeOrder" />
+                <ScalarProperty Name="unloadDataRequired" ColumnName="unloadDataRequired" />
+                <ScalarProperty Name="downloadDataRequired" ColumnName="downloadDataRequired" />
+                <ScalarProperty Name="unloadAddress" ColumnName="unloadAddress" />
+                <ScalarProperty Name="downloadAddress" ColumnName="downloadAddress" />
+                <ScalarProperty Name="process" ColumnName="process" />
+                <ScalarProperty Name="stageNumber" ColumnName="stageNumber" />
+                <ScalarProperty Name="stageMode" ColumnName="stageMode" />
+                <ScalarProperty Name="mode" ColumnName="mode" />
+                <ScalarProperty Name="dateEnd" ColumnName="dateEnd" />
+                <ScalarProperty Name="dateStart" ColumnName="dateStart" />
+                <ScalarProperty Name="industryName" ColumnName="industryName" />
+                <ScalarProperty Name="industryId" ColumnName="industryId" />
+                <ScalarProperty Name="subCompanyName" ColumnName="subCompanyName" />
+                <ScalarProperty Name="subCompanyId" ColumnName="subCompanyId" />
+                <ScalarProperty Name="tenderNumber" ColumnName="tenderNumber" />
                 <ScalarProperty Name="TenderUuid" ColumnName="TenderUuid" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

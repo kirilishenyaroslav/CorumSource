@@ -49,7 +49,7 @@ namespace CorumAdminUI.Controllers
         [HttpPost]
         public ActionResult SendNotificationTender(TenderSumOrderId tenderSumOrder)
         {
-
+            Dictionary<string, string> otherParams = new Dictionary<string, string>();
             TenderForma tenderForma = null;
             try
             {
@@ -60,6 +60,7 @@ namespace CorumAdminUI.Controllers
                                tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID),
                                context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList());
                 tenderForma.data.InitializedAfterDeserialized();
+                otherParams = tenderForma.otherParams;
             }
             catch (Exception e)
             {
@@ -77,7 +78,25 @@ namespace CorumAdminUI.Controllers
                     RegisterTenders registerTenders = new RegisterTenders()
                     {
                         OrderId = OrderID,
-                        TenderUuid = System.Guid.Parse(myDeserializedClass.data.tenderUuid)
+                        TenderUuid = System.Guid.Parse(myDeserializedClass.data.tenderUuid),
+                        tenderNumber = Convert.ToInt32(myDeserializedClass.data.tenderNumber),
+                        industryId = myDeserializedClass.data.industryId,
+                        industryName = myDeserializedClass.data.industryName,
+                        dateStart = myDeserializedClass.data.dateStart,
+                        dateEnd = myDeserializedClass.data.dateEnd,
+                        mode = (byte)myDeserializedClass.data.mode,
+                        process = Convert.ToByte(myDeserializedClass.data.process),
+                        stageMode = myDeserializedClass.data.stageMode,
+                        stageNumber = (byte)myDeserializedClass.data.stageNumber,
+                        subCompanyId = myDeserializedClass.data.subCompanyId,
+                        subCompanyName = myDeserializedClass.data.subCompanyName,
+                        downloadAddress = otherParams["DOWNLOAD_ADDRESS"],
+                        unloadAddress = otherParams["UNLOADING_ADDRESS"],
+                        downloadDataRequired = DateTime.Parse(otherParams["DOWNLOADDATEREQUIRED"]),
+                        unloadDataRequired = DateTime.Parse(otherParams["UNLOADINGDATEREQUIRED"]),
+                        routeOrder = otherParams["ROUTE"],
+                        cargoName = otherParams["CARGO_NAME"],
+                        lotState = myDeserializedClass.data.lots[0].lotState
                     };
                     context.AddNewDataTender(registerTenders);
                 }

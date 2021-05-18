@@ -24,7 +24,6 @@ namespace CorumAdminUI.Controllers
     public partial class OrderConcursController : CorumBaseController
     {
         static long OrderID;
-
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult OrderCompetitiveList(OrderNavigationInfo navInfo)
         {
@@ -43,74 +42,6 @@ namespace CorumAdminUI.Controllers
                 tenderForma = new TenderForma(context.getCompetitiveListInfo(navInfo.OrderId), context.GetTenderServices(), context.GetBalanceKeepers(), context.GetOrderTruckTransport(navInfo.OrderId))
             };
             return View(model);
-        }
-
-
-        [HttpPost]
-        public ActionResult SendNotificationTender(TenderSumOrderId tenderSumOrder)
-        {
-            Dictionary<string, string> otherParams = new Dictionary<string, string>();
-            TenderForma tenderForma = null;
-            try
-            {
-                TendFormDeserializedJSON tendFormDeserializedJSON = tenderSumOrder.ListItemsModelTenderForm;
-                OrderID = Convert.ToInt64(tenderSumOrder.OrderId);
-
-                tenderForma = new TenderForma(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(),
-                               tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID),
-                               context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList());
-                tenderForma.data.InitializedAfterDeserialized();
-                otherParams = tenderForma.otherParams;
-            }
-            catch (Exception e)
-            {
-
-            }
-            NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
-            var appsett = allAppSettings["SwitchToMultipleTenders"];
-            if (context.IsRegisterTendersExist(OrderID, Boolean.Parse(appsett)))
-            {
-                BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
-                var response = new PostApiTender().GetCallAsync(clientbase, tenderForma).Result.ResponseMessage;
-                try
-                {
-                    RequestJSONDeserializedToModel myDeserializedClass = JsonConvert.DeserializeObject<RequestJSONDeserializedToModel>(response);
-                    RegisterTenders registerTenders = new RegisterTenders()
-                    {
-                        OrderId = OrderID,
-                        TenderUuid = System.Guid.Parse(myDeserializedClass.data.tenderUuid),
-                        tenderNumber = Convert.ToInt32(myDeserializedClass.data.tenderNumber),
-                        industryId = myDeserializedClass.data.industryId,
-                        industryName = myDeserializedClass.data.industryName,
-                        dateStart = myDeserializedClass.data.dateStart,
-                        dateEnd = myDeserializedClass.data.dateEnd,
-                        mode = (byte)myDeserializedClass.data.mode,
-                        process = Convert.ToByte(myDeserializedClass.data.process),
-                        stageMode = myDeserializedClass.data.stageMode,
-                        stageNumber = (byte)myDeserializedClass.data.stageNumber,
-                        subCompanyId = myDeserializedClass.data.subCompanyId,
-                        subCompanyName = myDeserializedClass.data.subCompanyName,
-                        downloadAddress = otherParams["DOWNLOAD_ADDRESS"],
-                        unloadAddress = otherParams["UNLOADING_ADDRESS"],
-                        downloadDataRequired = DateTime.Parse(otherParams["DOWNLOADDATEREQUIRED"]),
-                        unloadDataRequired = DateTime.Parse(otherParams["UNLOADINGDATEREQUIRED"]),
-                        routeOrder = otherParams["ROUTE"],
-                        cargoName = otherParams["CARGO_NAME"],
-                        lotState = myDeserializedClass.data.lots[0].lotState
-                    };
-                    context.AddNewDataTender(registerTenders);
-                }
-                catch (Exception e)
-                {
-
-                }
-
-                return Json(response);
-            }
-            else
-            {
-                return Json("{\"success\":false,\"isLoadMultiple\":false}");
-            }
         }
 
 

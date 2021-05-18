@@ -189,6 +189,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\OrderTenderController.cs" />
     <Compile Include="Views\TabsController.cs" />
     <Content Include="App_Code\NavBarActiveLink.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -1094,10 +1095,8 @@
     <Content Include="Views\Reports\_restAddItemToBasketByBarcode.cshtml" />
     <Content Include="Views\OrderConcurs\_PartialModul.cshtml" />
     <Content Include="Views\OrderConcurs\Tabs.cshtml" />
-    <Content Include="Views\TabsTend\TabsTend.cshtml" />
-    <Content Include="Views\TabsTend\TabsTender.cshtml" />
-    <Content Include="Views\TabsTend\Index.cshtml" />
     <Content Include="Views\OrderConcurs\_restReportAddItemToBasket2.cshtml" />
+    <Content Include="Views\OrderTender\TenderReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

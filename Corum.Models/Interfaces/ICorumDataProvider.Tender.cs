@@ -17,5 +17,6 @@ namespace Corum.Models
         List<Countries> GetCountries();
         void AddNewDataTender(RegisterTenders model);
         bool IsRegisterTendersExist(long orderId, bool isMultipleTenders);
+        List<RegisterTenders> GetRegisterTenders();
     }
 }

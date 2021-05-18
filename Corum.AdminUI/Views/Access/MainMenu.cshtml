@@ -71,6 +71,7 @@
                                                                                                                              },  htmlAttributes: null) </li>
             <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 26) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестр общих заявок", "OrdersBase", "Orders")</li>
             <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 18) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестр транспортных заявок", "Orders", "Orders")</li>
+            <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 37) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Реестр тендеров", "TenderReport", "OrderTender")</li>
             <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 19) ? "style=\"display:list-item\"" : "style=\"display:none\"")>  @Html.ActionLink("Калькулятор поездки", "TripCalculator", "Settings")</li>
             <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 20) ? "style=\"display:list-item\"" : "style=\"display:none\"")> @Html.ActionLink("Автопарк", "CarOwners", "Cars") </li>
             <li @Html.Raw(@Model.MenuItems.Any(r => r.Id == 29) ? "style=\"display:list-item\"" : "style=\"display:none\"")> @Html.ActionLink("Договора транспортно-экпедиторских услуг", "Contracts", "Cars", new { IsMainMenu = true.ToString().ToLower(), IsForwarder = true.ToString().ToLower() }, null) </li>

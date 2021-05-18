@@ -1,0 +1,49 @@
+﻿@model List<RegisterTenders>
+@using Corum.Models.Tender;
+@{
+    ViewBag.Title = "Реестр тендеров";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="table-header col-md-12" style="margin-top: 20px; margin-left:5px; font-size: 11px;">
+    <table table table-striped table-bordered no-footer grid-table" style="height: 100%;">
+        <thead>
+            <tr>
+                <th class="grid-header centered_column">№ заявки</th>
+                <th class="grid-header centered_column">Категория тендера</th>
+                <th class="grid-header centered_column">Город погрузки/Грузоотправитель</th>
+                <th class="grid-header centered_column">Город выгрузки/Грузополучатель</th>
+                <th class="grid-header centered_column">Дата погрузки автомобиля</th>
+                <th class="grid-header centered_column">Дата:время начала тендера</th>
+                <th class="grid-header centered_column">Дата:время окончания тендера</th>
+                <th class="grid-header centered_column">Статус тендера</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td class="grid-cell rigth_column">@item.OrderId</td>
+                <td class="grid-cell rigth_column">@item.industryName</td>
+                <td class="grid-cell rigth_column">@item.downloadAddress</td>
+                <td class="grid-cell rigth_column">@item.unloadAddress</td>
+                <td class="grid-cell rigth_column">@item.downloadDataRequired</td>
+                <td class="grid-cell rigth_column">@item.dateStart</td>
+                <td class="grid-cell rigth_column">@item.dateEnd</td>
+                <td class="grid-cell rigth_column">@item.stageNumber</td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+
+
+        });
+    </script>
+}
+

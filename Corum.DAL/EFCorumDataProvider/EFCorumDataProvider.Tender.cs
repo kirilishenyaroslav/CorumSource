@@ -88,6 +88,38 @@ namespace Corum.DAL
             }
             return balanceKeepList;
         }
+        public List<RegisterTenders> GetRegisterTenders()
+        {
+            List<Corum.Models.Tender.RegisterTenders> registerTenders = new List<Corum.Models.Tender.RegisterTenders>();
+            var registerTendersList = db.RegisterTenders.ToList();
+            foreach (var item in registerTendersList)
+            {
+                Corum.Models.Tender.RegisterTenders register = new Corum.Models.Tender.RegisterTenders();
+                register.cargoName = item.cargoName;
+                register.dateEnd = item.dateEnd;
+                register.dateStart = item.dateStart;
+                register.downloadAddress = item.downloadAddress;
+                register.downloadDataRequired = item.downloadDataRequired;
+                register.Id = item.Id;
+                register.industryId = item.industryId;
+                register.industryName = item.industryName;
+                register.lotState = item.lotState;
+                register.mode = item.mode;
+                register.OrderId = item.OrderId;
+                register.process = item.process;
+                register.routeOrder = item.routeOrder;
+                register.stageMode = item.stageMode;
+                register.stageNumber = item.stageNumber;
+                register.subCompanyId = item.subCompanyId;
+                register.subCompanyName = item.subCompanyName;
+                register.tenderNumber = item.tenderNumber;
+                register.TenderUuid = item.TenderUuid;
+                register.unloadAddress = item.unloadAddress;
+                register.unloadDataRequired = item.unloadDataRequired;
+                registerTenders.Add(register);
+            }
+            return registerTenders;
+        }
 
         public bool IsRegisterTendersExist(long orderId, bool isMultipleTenders)
         {

@@ -884,6 +884,8 @@
           <Property Name="routeOrder" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="cargoName" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="lotState" Type="int" Nullable="false" />
+          <Property Name="processValue" Type="nvarchar" MaxLength="100" />
+          <Property Name="resultsTender" Type="nvarchar" MaxLength="1000" />
         </EntityType>
         <EntityType Name="RestsSnapshot">
           <Key>
@@ -1023,6 +1025,13 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SpecificationType" Type="nvarchar" MaxLength="256" />
+        </EntityType>
+        <EntityType Name="StatusTenders">
+          <Key>
+            <PropertyRef Name="statusID" />
+          </Key>
+          <Property Name="statusID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="processValue" Type="nvarchar" MaxLength="100" Nullable="false" />
         </EntityType>
         <EntityType Name="TenderServices">
           <Key>
@@ -2477,6 +2486,18 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_Specifications_Names">
+          <End Role="SpecificationNames" Type="Self.SpecificationNames" Multiplicity="1" />
+          <End Role="ContractSpecifications" Type="Self.ContractSpecifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SpecificationNames">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ContractSpecifications">
+              <PropertyRef Name="NameId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Specifications_RouteIntervalType">
           <End Role="RouteIntervalType" Type="Self.RouteIntervalType" Multiplicity="0..1" />
           <End Role="ContractSpecifications" Type="Self.ContractSpecifications" Multiplicity="*" />
@@ -3399,6 +3420,7 @@
           <EntitySet Name="RouteTypes" EntityType="Self.RouteTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpecificationNames" EntityType="Self.SpecificationNames" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpecificationTypes" EntityType="Self.SpecificationTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StatusTenders" EntityType="Self.StatusTenders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TenderServices" EntityType="Self.TenderServices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserMessages" EntityType="Self.UserMessages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
@@ -3857,6 +3879,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_Specifications_CarCarryCapacity" Association="Self.FK_Specifications_CarCarryCapacity">
             <End Role="CarCarryCapacity" EntitySet="CarCarryCapacity" />
+            <End Role="ContractSpecifications" EntitySet="ContractSpecifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Specifications_Names" Association="Self.FK_Specifications_Names">
+            <End Role="SpecificationNames" EntitySet="SpecificationNames" />
             <End Role="ContractSpecifications" EntitySet="ContractSpecifications" />
           </AssociationSet>
           <AssociationSet Name="FK_Specifications_RouteIntervalType" Association="Self.FK_Specifications_RouteIntervalType">
@@ -5083,6 +5109,7 @@
           <EntitySet Name="BucketDocuments" EntityType="CorumModel.BucketDocuments" />
           <EntitySet Name="TenderServices" EntityType="CorumModel.TenderServices" />
           <EntitySet Name="RegisterTenders" EntityType="CorumModel.RegisterTenders" />
+          <EntitySet Name="StatusTenders" EntityType="CorumModel.StatusTenders" />
           </EntityContainer>
         <ComplexType Name="SelectFieldsOfStuctureForImport_Result">
           <Property Type="String" Name="ColumnName" Nullable="true" />
@@ -8636,6 +8663,15 @@
           <Property Name="routeOrder" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="cargoName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="lotState" Type="Int32" Nullable="false" />
+          <Property Name="processValue" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="resultsTender" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="StatusTenders">
+          <Key>
+            <PropertyRef Name="statusID" />
+          </Key>
+          <Property Name="statusID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="processValue" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -10697,6 +10733,8 @@
           <EntitySetMapping Name="RegisterTenders">
             <EntityTypeMapping TypeName="CorumModel.RegisterTenders">
               <MappingFragment StoreEntitySet="RegisterTenders">
+                <ScalarProperty Name="resultsTender" ColumnName="resultsTender" />
+                <ScalarProperty Name="processValue" ColumnName="processValue" />
                 <ScalarProperty Name="lotState" ColumnName="lotState" />
                 <ScalarProperty Name="cargoName" ColumnName="cargoName" />
                 <ScalarProperty Name="routeOrder" ColumnName="routeOrder" />
@@ -10718,6 +10756,14 @@
                 <ScalarProperty Name="TenderUuid" ColumnName="TenderUuid" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StatusTenders">
+            <EntityTypeMapping TypeName="CorumModel.StatusTenders">
+              <MappingFragment StoreEntitySet="StatusTenders">
+                <ScalarProperty Name="processValue" ColumnName="processValue" />
+                <ScalarProperty Name="statusID" ColumnName="statusID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

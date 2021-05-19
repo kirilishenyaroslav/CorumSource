@@ -18,5 +18,6 @@ namespace Corum.Models
         void AddNewDataTender(RegisterTenders model);
         bool IsRegisterTendersExist(long orderId, bool isMultipleTenders);
         List<RegisterTenders> GetRegisterTenders();
+        Dictionary<int, string> GetStatusTenders();
     }
 }

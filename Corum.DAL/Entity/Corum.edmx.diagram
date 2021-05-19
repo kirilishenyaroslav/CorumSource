@@ -199,6 +199,7 @@
         <EntityTypeShape EntityType="CorumModel.BucketDocuments" Width="1.5" PointX="0.5" PointY="10.625" />
         <EntityTypeShape EntityType="CorumModel.TenderServices" Width="1.5" PointX="7.375" PointY="7.75" />
         <EntityTypeShape EntityType="CorumModel.RegisterTenders" Width="1.5" PointX="7.375" PointY="10.75" />
+        <EntityTypeShape EntityType="CorumModel.StatusTenders" Width="1.5" PointX="3.375" PointY="16.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

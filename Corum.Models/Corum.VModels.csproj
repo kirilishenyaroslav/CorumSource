@@ -123,6 +123,7 @@
     <Compile Include="Tender\OrderTruckTransport.cs" />
     <Compile Include="Tender\RegisterTenders.cs" />
     <Compile Include="Tender\SpecificationNames.cs" />
+    <Compile Include="Tender\StatusTenders.cs" />
     <Compile Include="Tender\TenderServices.cs" />
     <Compile Include="Toastr\ToastMessage.cs" />
     <Compile Include="Toastr\Toastr.cs" />

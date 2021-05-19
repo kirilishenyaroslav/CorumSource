@@ -8,17 +8,14 @@
     <div class="row">
         <div class="col-md-12">
             <h3 class="centered_column" style="margin-top: 35px;">Реестр тендеров</h3>
-            <div>
-                @Html.ActionLink("Реестр транспортных заявок", "Orders", "Orders", null, new { @class = "btn btn-primary", @style = "margin-bottom:10px" })
-            </div>
             <div id="dataTable" style="margin-top:15px;"></div>
         </div>
     </div>
 </div>
 
-    @section scripts
+@section scripts
 {
-        <script>
+    <script>
         $(document).ready(function () {
             $(document).ready(function () {
                 var dataModel = [];
@@ -38,7 +35,8 @@
                         { name: 'downloadDataRequired', type: 'date' },
                         { name: 'dateStart', type: 'date' },
                         { name: 'dateEnd', type: 'date' },
-                        { name: 'stageNumber', type: 'string' },
+                        { name: 'processValue', type: 'string' },
+                        { name: 'TenderUuid', type: 'string' }
                     ]
                 };
                 var registryTenderAdapter = new $.jqx.dataAdapter(source);
@@ -49,7 +47,6 @@
                     localdata: dataModel,
                     dataType: "local",
                     dataFields: [
-                        { name: 'Id', type: 'number' },
                         { name: 'tenderNumber', type: 'string' },
                         { name: 'routeOrder', type: 'string' },
                         { name: 'cargoName', type: 'string' },
@@ -58,28 +55,32 @@
                         { name: 'unloadDataRequired', type: 'date' },
                         { name: 'stageMode', type: 'string' },
                         { name: 'stageNumber', type: 'string' },
-                        { name: 'process', type: 'string' }
+                        { name: 'resultsTender', type: 'string' },
+                        { name: 'TenderUuid', type: 'string' }
                     ]
                 };
                 var ordersDataAdapter = new $.jqx.dataAdapter(registrySource, { autoBind: true });
                 orders = ordersDataAdapter.records;
                 var nestedTables = new Array();
+
                 // create nested DataTable.
                 var initRowDetails = function (id, row, element, rowinfo) {
                     element.append($("<div class='col-md-12' style='margin: 2px 10px 2px 2px;'></div>"));
+                    rowinfo.detailsHeight = 280;  // Change height nested table
                     var nestedDataTable = $(element.children()[0]);
                     var filterGroup = new $.jqx.filter();
-                    var filter_or_operator = 1;
-                    var filterValue = id;
+                    var filterValue = row.TenderUuid;
                     var filterCondition = 'equal';
                     var filter = filterGroup.createfilter('stringfilter', filterValue, filterCondition);
-                    // fill the orders depending on the id.
+
+                    // fill the orders depending on the TenderUuid.
                     var ordersbyid = [];
                     for (var m = 0; m < orders.length; m++) {
-                        var result = filter.evaluate(orders[m]["Id"]-1);
+                        var result = filter.evaluate(orders[m]["TenderUuid"]);
                         if (result)
                             ordersbyid.push(orders[m]);
                     }
+
                     var ordersSource = {
                         localdata: ordersbyid,
                         dataType: "local",
@@ -92,37 +93,36 @@
                             { name: 'unloadDataRequired', type: 'date' },
                             { name: 'stageMode', type: 'string' },
                             { name: 'stageNumber', type: 'string' },
-                            { name: 'process', type: 'string' }
-                        ],
-                        id: 'Id',
-
+                            { name: 'resultsTender', type: 'string' }
+                        ]
                     }
+
                     if (nestedDataTable != null) {
                         var nestedDataTableAdapter = new $.jqx.dataAdapter(ordersSource);
                         nestedDataTable.jqxDataTable({
                             width: '105%',
                             theme: 'orange',
-                            autorowheight: true,
-                            source: registryTenderAdapter,
-                            columnsheight: 60,
+                            autoRowHeight: true,
+                            columnsHeight: 60,
                             columnsresize: true,
+                            editable: true,
                             source: nestedDataTableAdapter,
                             columns: [
-                                { text: '№ тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'tenderNumber', width: '5%' },
-                                { text: 'Маршрут', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'routeOrder', width: '15%' },
-                                { text: 'Наименование груза', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'cargoName', width: '13%' },
-                                { text: 'Заказчик', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'subCompanyName', width: '15%' },
-                                { text: 'Дата погрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadDataRequired', cellsFormat: 'f', width: '10%' },
-                                { text: 'Дата выгрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'unloadDataRequired', cellsFormat: 'f', width: '10%' },
-                                { text: 'Тип тендера:Тендер(RFx), Аукцион/Редукцион', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'stageMode', width: '13%' },
-                                { text: 'Номер тура:/1/2', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'stageNumber', width: '7%' },
-                                { text: 'Результаты тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'process', width: '7%' }
+                                { text: '№ тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'tenderNumber', width: '5%' },
+                                { text: 'Маршрут', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'routeOrder', width: '12%' },
+                                { text: 'Наименование груза', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, autoRowHeight: true, dataField: 'cargoName', width: '12%' },
+                                { text: 'Заказчик', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'subCompanyName', width: '11%' },
+                                { text: 'Дата погрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'downloadDataRequired', cellsFormat: 'f', width: '10%' },
+                                { text: 'Дата выгрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'unloadDataRequired', cellsFormat: 'f', width: '9%' },
+                                { text: 'Тип тендера:Тендер(RFx), Аукцион/Редукцион', renderer: columnsrenderer, editable: false, cellsrenderer: cellsrenderer, dataField: 'stageMode', width: '9%' },
+                                { text: 'Номер тура:/1/2', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'stageNumber', width: '7%' },
+                                { text: 'Результаты тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: true, dataField: 'resultsTender', width: '25%' }
                             ]
                         });
-                        // store the nested Data Tables and use the Employee ID as a key.
-                        nestedTables[id] = nestedDataTable;
                     }
                 }
+
+                
                 // Alignment headers text and columns text
                 var cellsrenderer = function (row, column, value) {
                     return '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' +value + '</div>';
@@ -131,39 +131,69 @@
                     return '<div style="white-space: normal; text-align: center; margin-top: 10px; color:black">' + value + '</div>';
                 }
 
+
                 // Link to Order
                 var linkOrder = function (row, column, value) {
                     var link = 'http://localhost:14589/Orders/UpdateOrder/' + value;
                     return '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' + '<a href="'+link+'"target="_blank">'+value +'</a>'+ '</div>';
                 }
+
+                // Initialize buttonOrderConcurs
+                var buttonOrderConcurs = function (row, column, value)
+                {
+                    var orders = registryTenderAdapter.records;
+                    var filterGroup = new $.jqx.filter();
+                    var filterValue = value;
+                    var filterCondition = 'equal';
+                    var filter = filterGroup.createfilter('stringfilter', filterValue, filterCondition);
+
+                    // fill the orders depending on the TenderUuid.
+                    var valueOrder;;
+                    for (var m = 0; m < orders.length; m++) {
+                        var result = filter.evaluate(orders[m]["TenderUuid"]);
+                        if (result)
+                            valueOrder = orders[m]["OrderId"];
+                    }
+                    var link = 'http://localhost:14589/OrderConcurs/OrderCompetitiveList?OrderId=' + valueOrder;
+                    return "<div><button style='display: initial; margin-bottom:10px;' class='btn btn-primary'>" + '<a href="' + link + '"target="_blank" style="color: white">' + 'Конк.лист' + '</a>'+"</button></div>";
+                }
+
+                
                 // create jqxDataTable.
                 $("#dataTable").jqxDataTable(
                     {
                         width: '100%',
+                        altRows: false,
                         theme: 'orange',
                         autorowheight: true,
                         source: registryTenderAdapter,
                         pageable: true,
                         pageSize: 8,
                         rowDetails: true,
+                        selectionMode: 'singleRow',
                         sortable: true,
                         columnsheight: 55,
                         columnsresize: true,
+                        rowDetails: true,
                         initRowDetails: initRowDetails,
                         columns: [
-                            { text: '№ заявки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsrenderer: linkOrder, dataField: 'OrderId', width: '5%' },
-                            { text: 'Категория тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'industryName', width: '15%' },
-                            { text: 'Город погрузки/Грузоотправитель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadAddress', width: '15%' },
-                            { text: 'Город выгрузки/Грузополучатель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'unloadAddress', width: '15%' },
+                            { text: '№ заявки', editable: false, renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsrenderer: linkOrder, dataField: 'OrderId', width: '5%'},
+                            { text: 'Категория тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'industryName', width: '12%' },
+                            { text: 'Город погрузки/Грузоотправитель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadAddress', width: '17%' },
+                            { text: 'Город выгрузки/Грузополучатель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'unloadAddress', width: '17%' },
                             { text: 'Дата погрузки автомобиля', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadDataRequired', cellsFormat: 'f', width: '10%' },
-                            { text: 'Время начала тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateStart', cellsFormat: 'f', width: '13%' },
-                            { text: 'Время окончания тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateEnd', cellsFormat: 'f', width: '13%' },
-                            { text: 'Статус тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'stageNumber', width: '14%' }
+                            { text: 'Время начала тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateStart', cellsFormat: 'f', width: '10%' },
+                            { text: 'Время окончания тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateEnd', cellsFormat: 'f', width: '10%' },
+                            { text: 'Статус тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'processValue', width: '10%' },
+                            {
+                                text: 'Действия', renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsAlign: 'center', align: "center", columnType: 'none', editable: false, sortable: false, dataField: 'TenderUuid', cellsrenderer: buttonOrderConcurs, width: '9%'
+                            }
                         ]
                     });
+               
             });
 
         });
-        </script>
-    }
+    </script>
+}
 

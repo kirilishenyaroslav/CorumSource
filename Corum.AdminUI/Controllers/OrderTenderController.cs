@@ -80,7 +80,8 @@ namespace CorumAdminUI.Controllers
                         unloadDataRequired = DateTime.Parse(otherParams["UNLOADINGDATEREQUIRED"]),
                         routeOrder = otherParams["ROUTE"],
                         cargoName = otherParams["CARGO_NAME"],
-                        lotState = myDeserializedClass.data.lots[0].lotState
+                        lotState = myDeserializedClass.data.lots[0].lotState,
+                        resultsTender = null
                     };
                     context.AddNewDataTender(registerTenders);
                 }

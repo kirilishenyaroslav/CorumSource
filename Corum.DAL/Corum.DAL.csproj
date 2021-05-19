@@ -402,6 +402,9 @@
     <Compile Include="Entity\SpecificationTypes.cs">
       <DependentUpon>Corum.tt</DependentUpon>
     </Compile>
+    <Compile Include="Entity\StatusTenders.cs">
+      <DependentUpon>Corum.tt</DependentUpon>
+    </Compile>
     <Compile Include="Entity\TenderServices.cs">
       <DependentUpon>Corum.tt</DependentUpon>
     </Compile>

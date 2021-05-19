@@ -29,5 +29,7 @@ namespace Corum.Models.Tender
         public string routeOrder { get; set; }
         public string cargoName { get; set; }
         public int lotState { get; set; }
+        public string processValue { get; set; }
+        public string resultsTender { get; set; }
     }
 }

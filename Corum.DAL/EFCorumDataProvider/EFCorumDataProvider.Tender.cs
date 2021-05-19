@@ -92,6 +92,7 @@ namespace Corum.DAL
         {
             List<Corum.Models.Tender.RegisterTenders> registerTenders = new List<Corum.Models.Tender.RegisterTenders>();
             var registerTendersList = db.RegisterTenders.ToList();
+            //var statusValuesList = db.
             foreach (var item in registerTendersList)
             {
                 Corum.Models.Tender.RegisterTenders register = new Corum.Models.Tender.RegisterTenders();
@@ -116,9 +117,22 @@ namespace Corum.DAL
                 register.TenderUuid = item.TenderUuid;
                 register.unloadAddress = item.unloadAddress;
                 register.unloadDataRequired = item.unloadDataRequired;
+                register.processValue = item.processValue;
+                register.resultsTender = item.resultsTender;
                 registerTenders.Add(register);
             }
             return registerTenders;
+        }
+
+        public Dictionary<int, string> GetStatusTenders()
+        {
+            Dictionary<int, string> statusTenders = new Dictionary<int, string>();
+            var statusTendersList = db.StatusTenders.ToList();
+            foreach (var item in statusTendersList)
+            {
+                statusTenders[item.statusID] = item.processValue;
+            }
+            return statusTenders;
         }
 
         public bool IsRegisterTendersExist(long orderId, bool isMultipleTenders)
@@ -189,8 +203,10 @@ namespace Corum.DAL
                     unloadDataRequired = model.unloadDataRequired,
                     routeOrder = model.routeOrder,
                     cargoName = model.cargoName,
-                    lotState = model.lotState
-                });
+                    lotState = model.lotState,
+                    processValue = GetStatusTenders()[model.process],
+                    resultsTender = model.resultsTender
+            });
                 db.SaveChanges();
             }
             catch (Exception e)

@@ -81,7 +81,8 @@ namespace CorumAdminUI.Controllers
                         routeOrder = otherParams["ROUTE"],
                         cargoName = otherParams["CARGO_NAME"],
                         lotState = myDeserializedClass.data.lots[0].lotState,
-                        resultsTender = null
+                        resultsTender = null,
+                        tenderOwnerPath = myDeserializedClass.data.tenderOwnerPath
                     };
                     context.AddNewDataTender(registerTenders);
                 }

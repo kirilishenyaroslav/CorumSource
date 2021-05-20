@@ -119,6 +119,7 @@ namespace Corum.DAL
                 register.unloadDataRequired = item.unloadDataRequired;
                 register.processValue = item.processValue;
                 register.resultsTender = item.resultsTender;
+                register.tenderOwnerPath = item.tenderOwnerPath;
                 registerTenders.Add(register);
             }
             return registerTenders;
@@ -205,7 +206,8 @@ namespace Corum.DAL
                     cargoName = model.cargoName,
                     lotState = model.lotState,
                     processValue = GetStatusTenders()[model.process],
-                    resultsTender = model.resultsTender
+                    resultsTender = model.resultsTender,
+                    tenderOwnerPath = model.tenderOwnerPath
             });
                 db.SaveChanges();
             }

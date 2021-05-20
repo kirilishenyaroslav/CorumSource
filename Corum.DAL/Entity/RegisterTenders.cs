@@ -37,5 +37,6 @@ namespace Corum.DAL.Entity
         public int lotState { get; set; }
         public string processValue { get; set; }
         public string resultsTender { get; set; }
+        public string tenderOwnerPath { get; set; }
     }
 }

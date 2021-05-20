@@ -56,7 +56,8 @@
                         { name: 'stageMode', type: 'string' },
                         { name: 'stageNumber', type: 'string' },
                         { name: 'resultsTender', type: 'string' },
-                        { name: 'TenderUuid', type: 'string' }
+                        { name: 'TenderUuid', type: 'string' },
+                        { name: 'tenderOwnerPath', type: 'string' }
                     ]
                 };
                 var ordersDataAdapter = new $.jqx.dataAdapter(registrySource, { autoBind: true });
@@ -108,13 +109,13 @@
                             editable: true,
                             source: nestedDataTableAdapter,
                             columns: [
-                                { text: '№ тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'tenderNumber', width: '5%' },
-                                { text: 'Маршрут', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'routeOrder', width: '12%' },
+                                { text: '№ тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsrenderer: tenderLink, editable: false, dataField: 'tenderNumber', width: '5%' },
+                                { text: 'Маршрут', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'routeOrder', width: '10%' },
                                 { text: 'Наименование груза', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, autoRowHeight: true, dataField: 'cargoName', width: '12%' },
                                 { text: 'Заказчик', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'subCompanyName', width: '11%' },
-                                { text: 'Дата погрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'downloadDataRequired', cellsFormat: 'f', width: '10%' },
+                                { text: 'Дата погрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'downloadDataRequired', cellsFormat: 'f', width: '8%' },
                                 { text: 'Дата выгрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'unloadDataRequired', cellsFormat: 'f', width: '9%' },
-                                { text: 'Тип тендера:Тендер(RFx), Аукцион/Редукцион', renderer: columnsrenderer, editable: false, cellsrenderer: cellsrenderer, dataField: 'stageMode', width: '9%' },
+                                { text: 'Тип тендера:Тендер(RFx), Аукцион/Редукцион', renderer: columnsrenderer, editable: false, cellsrenderer: cellsrenderer, dataField: 'stageMode', width: '13%' },
                                 { text: 'Номер тура:/1/2', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'stageNumber', width: '7%' },
                                 { text: 'Результаты тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: true, dataField: 'resultsTender', width: '25%' }
                             ]
@@ -158,6 +159,26 @@
                     return "<div><button style='display: initial; margin-bottom:10px;' class='btn btn-primary'>" + '<a href="' + link + '"target="_blank" style="color: white">' + 'Конк.лист' + '</a>'+"</button></div>";
                 }
 
+                // Tender link to ApsTender
+                var tenderLink = function (row, colomn, value) {
+
+                    var orders = ordersDataAdapter.records;
+                    var filterGroup = new $.jqx.filter();
+                    var filterValue = value;
+                    var filterCondition = 'equal';
+                    var filter = filterGroup.createfilter('stringfilter', filterValue, filterCondition);
+
+                    // fill the orders depending on the tenderOwnerPath.
+                    var valueOrder;
+                    for (var m = 0; m < orders.length; m++) {
+                        var result = filter.evaluate(orders[m]["tenderNumber"]);
+                        if (result)
+                            valueOrder = orders[m]["tenderOwnerPath"];
+                    }
+                    var link = valueOrder;
+                    return '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' + '<a href="' + link + '"target="_blank">' + value + '</a>' + '</div>';
+                }
+
                 
                 // create jqxDataTable.
                 $("#dataTable").jqxDataTable(
@@ -166,6 +187,8 @@
                         altRows: false,
                         theme: 'orange',
                         autorowheight: true,
+                        filterable: true,
+                        filterMode: 'simple',
                         source: registryTenderAdapter,
                         pageable: true,
                         pageSize: 8,

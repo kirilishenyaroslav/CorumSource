@@ -107,6 +107,7 @@
                             columnsHeight: 60,
                             columnsresize: true,
                             editable: true,
+                            localization: getLocalization('ru'),
                             source: nestedDataTableAdapter,
                             columns: [
                                 { text: '№ тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsrenderer: tenderLink, editable: false, dataField: 'tenderNumber', width: '5%' },
@@ -123,7 +124,7 @@
                     }
                 }
 
-                
+
                 // Alignment headers text and columns text
                 var cellsrenderer = function (row, column, value) {
                     return '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' +value + '</div>';
@@ -179,7 +180,12 @@
                     return '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' + '<a href="' + link + '"target="_blank">' + value + '</a>' + '</div>';
                 }
 
-                
+                // Ru-ru datatime
+                var dateRu = function () {
+                    $("#dataTable").jqxDateTimeInput({ culture: 'ru-RU' });
+                }
+
+
                 // create jqxDataTable.
                 $("#dataTable").jqxDataTable(
                     {
@@ -198,13 +204,14 @@
                         columnsheight: 55,
                         columnsresize: true,
                         rowDetails: true,
+                        localization: getLocalization('ru'),
                         initRowDetails: initRowDetails,
                         columns: [
                             { text: '№ заявки', editable: false, renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsrenderer: linkOrder, dataField: 'OrderId', width: '5%'},
                             { text: 'Категория тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'industryName', width: '12%' },
                             { text: 'Город погрузки/Грузоотправитель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadAddress', width: '17%' },
                             { text: 'Город выгрузки/Грузополучатель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'unloadAddress', width: '17%' },
-                            { text: 'Дата погрузки автомобиля', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadDataRequired', cellsFormat: 'f', width: '10%' },
+                            { text: 'Дата погрузки автомобиля', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadDataRequired', cellsFormat: 'f', width: '10%'},
                             { text: 'Время начала тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateStart', cellsFormat: 'f', width: '10%' },
                             { text: 'Время окончания тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateEnd', cellsFormat: 'f', width: '10%' },
                             { text: 'Статус тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'processValue', width: '10%' },
@@ -213,7 +220,7 @@
                             }
                         ]
                     });
-               
+
             });
 
         });

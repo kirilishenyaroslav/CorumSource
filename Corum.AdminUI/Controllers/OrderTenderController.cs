@@ -59,6 +59,8 @@ namespace CorumAdminUI.Controllers
                 try
                 {
                     RequestJSONDeserializedToModel myDeserializedClass = JsonConvert.DeserializeObject<RequestJSONDeserializedToModel>(response);
+                    DateTime nowDateTime = DateTime.Now;
+                    TimeSpan timeSpan = myDeserializedClass.data.dateEnd - nowDateTime;
                     RegisterTenders registerTenders = new RegisterTenders()
                     {
                         OrderId = OrderID,
@@ -82,7 +84,8 @@ namespace CorumAdminUI.Controllers
                         cargoName = otherParams["CARGO_NAME"],
                         lotState = myDeserializedClass.data.lots[0].lotState,
                         resultsTender = null,
-                        tenderOwnerPath = myDeserializedClass.data.tenderOwnerPath
+                        tenderOwnerPath = myDeserializedClass.data.tenderOwnerPath,
+                        remainingTime = timeSpan.ToString()
                     };
                     context.AddNewDataTender(registerTenders);
                 }

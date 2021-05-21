@@ -430,7 +430,7 @@ namespace Corum.Models.ViewModels.Tender
         public int kind { get; set; } // тип публикации (необязательное поле, тип int, 1 - открытая, 2 - закрытая,по умолчанию - 1)
 
 
-        [Display(Name = "Дата создания тендера")]
+        [Display(Name = "Дата начала приема предложений ")]
         public string dateStart { get; set; } // дата начала приема предложений (необязательное  поле,  тип данных string, дата в формате ISO 8601)
         [Display(Name = "Введите дату в формате дд.мм.гггг --:--")]
         public string errorMessageTenderDataStart { get; set; }   //ошибка ввода даты создания в поле "Дата создания тендера"

@@ -17,8 +17,8 @@
                 },
 
                 months: {
-                    names: ["Январь", "Февраль", "Март", "Апрель", "Май", "Июнь", "Июль", "Август", "Сентябрь", "Октябрь", "Ноябрь", "Декабрь", ""],
-                    namesAbbr: ["янв", "фев", "мар", "апр", "май", "июн", "июл", "авг", "сен", "окт", "ноя", "дек", ""]
+                    names: ["Января", "Февраля", "Марта", "Апреля", "Мая", "Июня", "Июля", "Августа", "Сентября", "Октября", "Ноября", "Декабря", ""],
+                    namesAbbr: ["янв", "фев", "мар", "апр", "мая", "июн", "июл", "авг", "сен", "окт", "ноя", "дек", ""]
                 },
                 // AM and PM designators in one of these forms:
                 // The usual view, and the upper and lower case versions
@@ -35,7 +35,8 @@
                     T: "H:mm:ss",
                     f: "d MMMM yyyy 'г.' H:mm",
                     F: "d MMMM yyyy 'г.' H:mm:ss",
-                    Y: "MMMM yyyy"
+                    Y: "MMMM yyyy",
+                    P: "dd.MM.yyyy\nH:mm"
                 },
                 percentsymbol: "%",
                 currencysymbol: "$",
@@ -169,6 +170,9 @@
                 groupremovestring: "Remove from groups",
                 filterclearstring: "Clear",
                 filterstring: "Filter",
+                filtercancelstring: "Отмена",
+                filterapplystring: "Применить",
+                filtersearchstring: "Поиск",
                 filtershowrowstring: "Show rows where:",
                 filterorconditionstring: "Or",
                 filterandconditionstring: "And",
@@ -185,7 +189,11 @@
                 filterselectstring: "Select Filter",
                 loadtext: "Loading...",
                 clearstring: "Clear",
-                todaystring: "Today"
+                todaystring: "Today",
+                applystring: "Применить",
+                cancelstring: "Отмена",
+                searchstring: "Поиск"
+
             }
             break;
     }

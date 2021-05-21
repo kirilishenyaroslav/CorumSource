@@ -120,6 +120,7 @@ namespace Corum.DAL
                 register.processValue = item.processValue;
                 register.resultsTender = item.resultsTender;
                 register.tenderOwnerPath = item.tenderOwnerPath;
+                register.remainingTime = item.remainingTime;
                 registerTenders.Add(register);
             }
             return registerTenders;
@@ -181,6 +182,7 @@ namespace Corum.DAL
 
         public void AddNewDataTender(RegisterTenders model)
         {
+            var mainDataOrder = GetOrderTruckTransport(model.OrderId);
             try
             {
                 db.RegisterTenders.Add(new Entity.RegisterTenders()
@@ -203,18 +205,45 @@ namespace Corum.DAL
                     downloadDataRequired = model.downloadDataRequired,
                     unloadDataRequired = model.unloadDataRequired,
                     routeOrder = model.routeOrder,
-                    cargoName = model.cargoName,
+                    cargoName = $"{ model.cargoName }\nГруз: {mainDataOrder.Weight}тн.",
                     lotState = model.lotState,
                     processValue = GetStatusTenders()[model.process],
                     resultsTender = model.resultsTender,
-                    tenderOwnerPath = model.tenderOwnerPath
-            });
+                    tenderOwnerPath = model.tenderOwnerPath,
+                    remainingTime = RemainingCount(model.remainingTime)
+                });
                 db.SaveChanges();
             }
             catch (Exception e)
             {
 
             }
+        }
+
+        public string RemainingCount(string endDateTime)
+        {
+            string time = null;
+            TimeSpan timeSpan = TimeSpan.Parse(endDateTime);
+            try
+            {
+                double hours = 0d;
+                double minutes = 0d;
+                if (!(timeSpan.Ticks < 0))
+                {
+                    minutes = (Math.Round((timeSpan.TotalHours % 1) * 60, MidpointRounding.AwayFromZero) != 60)? Math.Round((timeSpan.TotalHours % 1) * 60, MidpointRounding.AwayFromZero): 0;
+                    hours = (Math.Round((timeSpan.TotalHours % 1) * 60, MidpointRounding.AwayFromZero) != 60) ? timeSpan.TotalHours - (timeSpan.TotalHours % 1) : (timeSpan.TotalHours - (timeSpan.TotalHours % 1)) + 1;
+                    time = $"{hours}ч : {minutes} м";
+                }
+                else
+                {
+                    time = "Завершен";
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+            return time;
         }
     }
 }

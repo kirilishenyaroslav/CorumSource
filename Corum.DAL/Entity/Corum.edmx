@@ -887,6 +887,7 @@
           <Property Name="processValue" Type="nvarchar" MaxLength="100" />
           <Property Name="resultsTender" Type="nvarchar" MaxLength="1000" />
           <Property Name="tenderOwnerPath" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="remainingTime" Type="nvarchar" MaxLength="100" Nullable="false" />
         </EntityType>
         <EntityType Name="RestsSnapshot">
           <Key>
@@ -8667,6 +8668,7 @@
           <Property Name="processValue" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="resultsTender" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
           <Property Name="tenderOwnerPath" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="remainingTime" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="StatusTenders">
           <Key>
@@ -10735,6 +10737,7 @@
           <EntitySetMapping Name="RegisterTenders">
             <EntityTypeMapping TypeName="CorumModel.RegisterTenders">
               <MappingFragment StoreEntitySet="RegisterTenders">
+                <ScalarProperty Name="remainingTime" ColumnName="remainingTime" />
                 <ScalarProperty Name="tenderOwnerPath" ColumnName="tenderOwnerPath" />
                 <ScalarProperty Name="resultsTender" ColumnName="resultsTender" />
                 <ScalarProperty Name="processValue" ColumnName="processValue" />

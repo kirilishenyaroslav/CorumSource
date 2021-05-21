@@ -36,7 +36,8 @@
                         { name: 'dateStart', type: 'date' },
                         { name: 'dateEnd', type: 'date' },
                         { name: 'processValue', type: 'string' },
-                        { name: 'TenderUuid', type: 'string' }
+                        { name: 'TenderUuid', type: 'string' },
+                        { name: 'remainingTime', type: 'string' }
                     ]
                 };
                 var registryTenderAdapter = new $.jqx.dataAdapter(source);
@@ -114,8 +115,8 @@
                                 { text: 'Маршрут', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'routeOrder', width: '10%' },
                                 { text: 'Наименование груза', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, autoRowHeight: true, dataField: 'cargoName', width: '12%' },
                                 { text: 'Заказчик', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'subCompanyName', width: '11%' },
-                                { text: 'Дата погрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'downloadDataRequired', cellsFormat: 'f', width: '8%' },
-                                { text: 'Дата выгрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'unloadDataRequired', cellsFormat: 'f', width: '9%' },
+                                { text: 'Дата погрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'downloadDataRequired', cellsFormat: 'P', width: '8%' },
+                                { text: 'Дата выгрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'unloadDataRequired', cellsFormat: 'P', width: '9%' },
                                 { text: 'Тип тендера:Тендер(RFx), Аукцион/Редукцион', renderer: columnsrenderer, editable: false, cellsrenderer: cellsrenderer, dataField: 'stageMode', width: '13%' },
                                 { text: 'Номер тура:/1/2', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'stageNumber', width: '7%' },
                                 { text: 'Результаты тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: true, dataField: 'resultsTender', width: '25%' }
@@ -161,7 +162,7 @@
                 }
 
                 // Tender link to ApsTender
-                var tenderLink = function (row, colomn, value) {
+                var tenderLink = function (row, column, value) {
 
                     var orders = ordersDataAdapter.records;
                     var filterGroup = new $.jqx.filter();
@@ -180,12 +181,6 @@
                     return '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' + '<a href="' + link + '"target="_blank">' + value + '</a>' + '</div>';
                 }
 
-                // Ru-ru datatime
-                var dateRu = function () {
-                    $("#dataTable").jqxDateTimeInput({ culture: 'ru-RU' });
-                }
-
-
                 // create jqxDataTable.
                 $("#dataTable").jqxDataTable(
                     {
@@ -194,7 +189,7 @@
                         theme: 'orange',
                         autorowheight: true,
                         filterable: true,
-                        filterMode: 'simple',
+                        filterMode: 'advanced',
                         source: registryTenderAdapter,
                         pageable: true,
                         pageSize: 8,
@@ -208,15 +203,16 @@
                         initRowDetails: initRowDetails,
                         columns: [
                             { text: '№ заявки', editable: false, renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsrenderer: linkOrder, dataField: 'OrderId', width: '5%'},
-                            { text: 'Категория тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'industryName', width: '12%' },
-                            { text: 'Город погрузки/Грузоотправитель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadAddress', width: '17%' },
-                            { text: 'Город выгрузки/Грузополучатель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'unloadAddress', width: '17%' },
-                            { text: 'Дата погрузки автомобиля', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadDataRequired', cellsFormat: 'f', width: '10%'},
-                            { text: 'Время начала тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateStart', cellsFormat: 'f', width: '10%' },
-                            { text: 'Время окончания тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateEnd', cellsFormat: 'f', width: '10%' },
-                            { text: 'Статус тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'processValue', width: '10%' },
+                            { text: 'Категория тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'industryName', width: '11%' },
+                            { text: 'Город погрузки/Грузоотправитель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadAddress', width: '14%' },
+                            { text: 'Город выгрузки/Грузополучатель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'unloadAddress', width: '14%' },
+                            { text: 'Дата погрузки автомобиля', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadDataRequired', cellsFormat: 'P', width: '10%'},
+                            { text: 'Дата начала тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateStart', cellsFormat: 'P', width: '10%' },
+                            { text: 'Дата окончания\nтендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateEnd', cellsFormat: 'P', width: '10%' },
+                            { text: 'До завершения\nосталось', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'remainingTime', width: '8%' },
+                            { text: 'Статус тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'processValue', width: '9%' },
                             {
-                                text: 'Действия', renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsAlign: 'center', align: "center", columnType: 'none', editable: false, sortable: false, dataField: 'TenderUuid', cellsrenderer: buttonOrderConcurs, width: '9%'
+                                text: 'Действия', renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsAlign: 'center', align: "center", columnType: 'none', editable: false, sortable: false, dataField: 'TenderUuid', filterable: false, cellsrenderer: buttonOrderConcurs, width: '9%'
                             }
                         ]
                     });

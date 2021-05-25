@@ -31,6 +31,20 @@ namespace CorumAdminUI.Controllers
         }
 
         [HttpPost]
+        public ActionResult ResultsTenderUpdate(TenderRegistryUpdate registryUpdate)
+        {
+            context.UpdateRegisterTenders(Convert.ToInt32(registryUpdate.tenderNumber), registryUpdate.resultsTender);
+            return Json("{\"success\":true");
+        }
+
+        [HttpPost]
+        public ActionResult RemainingTimeUpdate(RemainingTimeUpdate timeUpdate)
+        {
+            context.RemainingTime(timeUpdate.TimeList);
+            return Json("{\"success\":true");
+        }
+
+        [HttpPost]
         public ActionResult SendNotificationTender(TenderSumOrderId tenderSumOrder)
         {
             Dictionary<string, string> otherParams = new Dictionary<string, string>();

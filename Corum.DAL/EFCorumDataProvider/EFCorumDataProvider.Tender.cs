@@ -11,6 +11,7 @@ using System.Data.SqlClient;
 using System.Data;
 using System.Data.Entity;
 using System.Globalization;
+using Corum.Models.ViewModels.Tender;
 
 
 namespace Corum.DAL
@@ -91,7 +92,7 @@ namespace Corum.DAL
         public List<RegisterTenders> GetRegisterTenders()
         {
             List<Corum.Models.Tender.RegisterTenders> registerTenders = new List<Corum.Models.Tender.RegisterTenders>();
-            var registerTendersList = db.RegisterTenders.ToList();
+            var registerTendersList = db.RegisterTenders.OrderByDescending(x=>x.dateEnd).ToList();
             //var statusValuesList = db.
             foreach (var item in registerTendersList)
             {
@@ -220,6 +221,25 @@ namespace Corum.DAL
             }
         }
 
+        public void UpdateRegisterTenders(int tenderNumber, string results)
+        {
+            var tender = db.RegisterTenders.Where(x => x.tenderNumber == tenderNumber).OrderByDescending(x => x.Id).FirstOrDefault();
+            tender.resultsTender = results;
+
+            db.SaveChanges();
+        }
+
+        public void RemainingTime(Dictionary<string, Time> time)
+        {
+            foreach (var item in time.Values)
+            {
+                System.Guid tenderUuid = System.Guid.Parse(item.TenderUuid);
+                var tender = db.RegisterTenders.Where(x => x.TenderUuid == tenderUuid).OrderByDescending(x => x.Id).FirstOrDefault();
+                tender.remainingTime = item.remainingTime;
+                db.SaveChanges();
+            }
+        }
+
         public string RemainingCount(string endDateTime)
         {
             string time = null;
@@ -230,7 +250,7 @@ namespace Corum.DAL
                 double minutes = 0d;
                 if (!(timeSpan.Ticks < 0))
                 {
-                    minutes = (Math.Round((timeSpan.TotalHours % 1) * 60, MidpointRounding.AwayFromZero) != 60)? Math.Round((timeSpan.TotalHours % 1) * 60, MidpointRounding.AwayFromZero): 0;
+                    minutes = (Math.Round((timeSpan.TotalHours % 1) * 60, MidpointRounding.AwayFromZero) != 60) ? Math.Round((timeSpan.TotalHours % 1) * 60, MidpointRounding.AwayFromZero) : 0;
                     hours = (Math.Round((timeSpan.TotalHours % 1) * 60, MidpointRounding.AwayFromZero) != 60) ? timeSpan.TotalHours - (timeSpan.TotalHours % 1) : (timeSpan.TotalHours - (timeSpan.TotalHours % 1)) + 1;
                     time = $"{hours}ч : {minutes} м";
                 }

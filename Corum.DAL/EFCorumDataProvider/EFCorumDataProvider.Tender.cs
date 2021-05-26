@@ -92,7 +92,7 @@ namespace Corum.DAL
         public List<RegisterTenders> GetRegisterTenders()
         {
             List<Corum.Models.Tender.RegisterTenders> registerTenders = new List<Corum.Models.Tender.RegisterTenders>();
-            var registerTendersList = db.RegisterTenders.OrderByDescending(x=>x.dateEnd).ToList();
+            var registerTendersList = db.RegisterTenders.OrderByDescending(x => x.dateEnd).ToList();
             //var statusValuesList = db.
             foreach (var item in registerTendersList)
             {
@@ -231,12 +231,15 @@ namespace Corum.DAL
 
         public void RemainingTime(Dictionary<string, Time> time)
         {
-            foreach (var item in time.Values)
+            if (time != null)
             {
-                System.Guid tenderUuid = System.Guid.Parse(item.TenderUuid);
-                var tender = db.RegisterTenders.Where(x => x.TenderUuid == tenderUuid).OrderByDescending(x => x.Id).FirstOrDefault();
-                tender.remainingTime = item.remainingTime;
-                db.SaveChanges();
+                foreach (var item in time.Values)
+                {
+                    System.Guid tenderUuid = System.Guid.Parse(item.TenderUuid);
+                    var tender = db.RegisterTenders.Where(x => x.TenderUuid == tenderUuid).OrderByDescending(x => x.Id).FirstOrDefault();
+                    tender.remainingTime = item.remainingTime;
+                    db.SaveChanges();
+                }
             }
         }
 

@@ -6,6 +6,13 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
 using CorumAdminUI.Models;
+using Hangfire;
+using Hangfire.Dashboard;
+using Hangfire.SqlServer;
+using Hangfire.AspNet;
+using System.Collections.Generic;
+using System.Diagnostics;
+
 
 namespace BarnivannAdminUI
 {
@@ -54,6 +61,24 @@ namespace BarnivannAdminUI
             app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
 
             
+        }
+
+        private IEnumerable<IDisposable> GetHangfireServers()
+        {
+            GlobalConfiguration.Configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(@"Integrated Security=true;Initial Catalog=Corum.Prod-2021-01-30;Data Source=WORK;", new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                });
+
+            yield return new BackgroundJobServer(new BackgroundJobServerOptions { ServerName = $"{Environment.MachineName}:{Process.GetCurrentProcess().Id}:{AppDomain.CurrentDomain.Id}" });
         }
     }
 }

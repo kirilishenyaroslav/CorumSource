@@ -859,6 +859,36 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
         </EntityType>
+        <EntityType Name="RegisterTenders">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderId" Type="bigint" Nullable="false" />
+          <Property Name="tenderNumber" Type="int" Nullable="false" />
+          <Property Name="subCompanyId" Type="int" Nullable="false" />
+          <Property Name="subCompanyName" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="industryId" Type="int" Nullable="false" />
+          <Property Name="industryName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="dateStart" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="dateEnd" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="mode" Type="tinyint" Nullable="false" />
+          <Property Name="stageMode" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="stageNumber" Type="tinyint" Nullable="false" />
+          <Property Name="TenderUuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="process" Type="tinyint" Nullable="false" />
+          <Property Name="downloadAddress" Type="nvarchar" MaxLength="400" Nullable="false" />
+          <Property Name="unloadAddress" Type="nvarchar" MaxLength="400" Nullable="false" />
+          <Property Name="downloadDataRequired" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="unloadDataRequired" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="routeOrder" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="cargoName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="lotState" Type="int" Nullable="false" />
+          <Property Name="processValue" Type="nvarchar" MaxLength="100" />
+          <Property Name="resultsTender" Type="nvarchar" MaxLength="1000" />
+          <Property Name="tenderOwnerPath" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="remainingTime" Type="nvarchar" MaxLength="100" Nullable="false" />
+        </EntityType>
         <EntityType Name="RestsSnapshot">
           <Key>
             <PropertyRef Name="idrow" />
@@ -997,6 +1027,13 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SpecificationType" Type="nvarchar" MaxLength="256" />
+        </EntityType>
+        <EntityType Name="StatusTenders">
+          <Key>
+            <PropertyRef Name="statusID" />
+          </Key>
+          <Property Name="statusID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="processValue" Type="nvarchar" MaxLength="100" Nullable="false" />
         </EntityType>
         <EntityType Name="TenderServices">
           <Key>
@@ -3374,6 +3411,7 @@
           <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Projects" EntityType="Self.Projects" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProjectTypes" EntityType="Self.ProjectTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RegisterTenders" EntityType="Self.RegisterTenders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RestsSnapshot" EntityType="Self.RestsSnapshot" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoleGroups" EntityType="Self.RoleGroups" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoleGroupsRole" EntityType="Self.RoleGroupsRole" Schema="dbo" store:Type="Tables" />
@@ -3384,6 +3422,7 @@
           <EntitySet Name="RouteTypes" EntityType="Self.RouteTypes" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpecificationNames" EntityType="Self.SpecificationNames" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="SpecificationTypes" EntityType="Self.SpecificationTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="StatusTenders" EntityType="Self.StatusTenders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="TenderServices" EntityType="Self.TenderServices" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserMessages" EntityType="Self.UserMessages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
@@ -5071,6 +5110,8 @@
           <EntitySet Name="BucketDocumentRows" EntityType="CorumModel.BucketDocumentRows" />
           <EntitySet Name="BucketDocuments" EntityType="CorumModel.BucketDocuments" />
           <EntitySet Name="TenderServices" EntityType="CorumModel.TenderServices" />
+          <EntitySet Name="RegisterTenders" EntityType="CorumModel.RegisterTenders" />
+          <EntitySet Name="StatusTenders" EntityType="CorumModel.StatusTenders" />
           </EntityContainer>
         <ComplexType Name="SelectFieldsOfStuctureForImport_Result">
           <Property Type="String" Name="ColumnName" Nullable="true" />
@@ -8599,6 +8640,43 @@
           <Property Name="industryId" Type="Int32" Nullable="false" />
           <Property Name="industryId_Test" Type="Int32" Nullable="false" />
         </EntityType>
+        <EntityType Name="RegisterTenders">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderId" Type="Int64" Nullable="false" />
+          <Property Name="TenderUuid" Type="Guid" Nullable="false" />
+          <Property Name="tenderNumber" Type="Int32" Nullable="false" />
+          <Property Name="subCompanyId" Type="Int32" Nullable="false" />
+          <Property Name="subCompanyName" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="industryId" Type="Int32" Nullable="false" />
+          <Property Name="industryName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="dateStart" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="dateEnd" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="mode" Type="Byte" Nullable="false" />
+          <Property Name="stageMode" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="stageNumber" Type="Byte" Nullable="false" />
+          <Property Name="process" Type="Byte" Nullable="false" />
+          <Property Name="downloadAddress" Type="String" Nullable="false" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="unloadAddress" Type="String" Nullable="false" MaxLength="400" FixedLength="false" Unicode="true" />
+          <Property Name="downloadDataRequired" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="unloadDataRequired" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="routeOrder" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cargoName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="lotState" Type="Int32" Nullable="false" />
+          <Property Name="processValue" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="resultsTender" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="tenderOwnerPath" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="remainingTime" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="StatusTenders">
+          <Key>
+            <PropertyRef Name="statusID" />
+          </Key>
+          <Property Name="statusID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="processValue" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10653,6 +10731,45 @@
                 <ScalarProperty Name="industryId" ColumnName="industryId" />
                 <ScalarProperty Name="industryName" ColumnName="industryName" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RegisterTenders">
+            <EntityTypeMapping TypeName="CorumModel.RegisterTenders">
+              <MappingFragment StoreEntitySet="RegisterTenders">
+                <ScalarProperty Name="remainingTime" ColumnName="remainingTime" />
+                <ScalarProperty Name="tenderOwnerPath" ColumnName="tenderOwnerPath" />
+                <ScalarProperty Name="resultsTender" ColumnName="resultsTender" />
+                <ScalarProperty Name="processValue" ColumnName="processValue" />
+                <ScalarProperty Name="lotState" ColumnName="lotState" />
+                <ScalarProperty Name="cargoName" ColumnName="cargoName" />
+                <ScalarProperty Name="routeOrder" ColumnName="routeOrder" />
+                <ScalarProperty Name="unloadDataRequired" ColumnName="unloadDataRequired" />
+                <ScalarProperty Name="downloadDataRequired" ColumnName="downloadDataRequired" />
+                <ScalarProperty Name="unloadAddress" ColumnName="unloadAddress" />
+                <ScalarProperty Name="downloadAddress" ColumnName="downloadAddress" />
+                <ScalarProperty Name="process" ColumnName="process" />
+                <ScalarProperty Name="stageNumber" ColumnName="stageNumber" />
+                <ScalarProperty Name="stageMode" ColumnName="stageMode" />
+                <ScalarProperty Name="mode" ColumnName="mode" />
+                <ScalarProperty Name="dateEnd" ColumnName="dateEnd" />
+                <ScalarProperty Name="dateStart" ColumnName="dateStart" />
+                <ScalarProperty Name="industryName" ColumnName="industryName" />
+                <ScalarProperty Name="industryId" ColumnName="industryId" />
+                <ScalarProperty Name="subCompanyName" ColumnName="subCompanyName" />
+                <ScalarProperty Name="subCompanyId" ColumnName="subCompanyId" />
+                <ScalarProperty Name="tenderNumber" ColumnName="tenderNumber" />
+                <ScalarProperty Name="TenderUuid" ColumnName="TenderUuid" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StatusTenders">
+            <EntityTypeMapping TypeName="CorumModel.StatusTenders">
+              <MappingFragment StoreEntitySet="StatusTenders">
+                <ScalarProperty Name="processValue" ColumnName="processValue" />
+                <ScalarProperty Name="statusID" ColumnName="statusID" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

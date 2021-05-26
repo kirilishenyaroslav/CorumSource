@@ -8,9 +8,10 @@ namespace BarnivannAdminUI
         {
             bundles.Add(new ScriptBundle("~/bundles/jquery").Include(
                         "~/Scripts/jquery-{version}.js",
-                        "~/Scripts/jquery.stickytableheaders.js")
-                .Include("~/Scripts/demos.js")
-                );
+                        "~/Scripts/jquery.stickytableheaders.js",
+                        "~/Scripts/demos.js",
+                        "~/Scripts/localization.js"
+                        ));
 
             bundles.Add(new ScriptBundle("~/bundles/jqueryUI").Include(
                         "~/Scripts/jquery-ui-{version}.js")

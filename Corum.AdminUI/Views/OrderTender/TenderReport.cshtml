@@ -1,0 +1,308 @@
+﻿@model List<RegisterTenders>
+@using Corum.Models.Tender;
+@{
+    ViewBag.Title = "Реестр тендеров";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-12">
+            <h3 class="centered_column" style="margin-top: 35px;">Реестр тендеров</h3>
+            <div id="dataTable" style="margin-top:15px;"></div>
+        </div>
+    </div>
+</div>
+
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+            $(document).ready(function () {
+                var dataModel = [];
+                @foreach (var item in Model)
+                {
+                @:dataModel.push(@Html.Raw(Json.Encode(item)));
+                }
+             var source =
+             {
+                    localdata: dataModel,
+                    dataType: "local",
+                    dataFields: [
+                        { name: 'OrderId', type: 'string' },
+                        { name: 'industryName', type: 'string' },
+                        { name: 'downloadAddress', type: 'string' },
+                        { name: 'unloadAddress', type: 'string' },
+                        { name: 'downloadDataRequired', type: 'date' },
+                        { name: 'dateStart', type: 'date' },
+                        { name: 'dateEnd', type: 'date' },
+                        { name: 'processValue', type: 'string' },
+                        { name: 'TenderUuid', type: 'string' },
+                        { name: 'remainingTime', type: 'string' }
+                 ]
+                };
+                var registryTenderAdapter = new $.jqx.dataAdapter(source);
+
+                var registrySource =
+                {
+
+                    localdata: dataModel,
+                    dataType: "local",
+                    dataFields: [
+                        { name: 'tenderNumber', type: 'string' },
+                        { name: 'routeOrder', type: 'string' },
+                        { name: 'cargoName', type: 'string' },
+                        { name: 'subCompanyName', type: 'string' },
+                        { name: 'downloadDataRequired', type: 'date' },
+                        { name: 'unloadDataRequired', type: 'date' },
+                        { name: 'stageMode', type: 'string' },
+                        { name: 'stageNumber', type: 'string' },
+                        { name: 'resultsTender', type: 'string' },
+                        { name: 'TenderUuid', type: 'string' },
+                        { name: 'tenderOwnerPath', type: 'string' }
+                    ]
+                };
+                var ordersDataAdapter = new $.jqx.dataAdapter(registrySource, { autoBind: true });
+                orders = ordersDataAdapter.records;
+                var nestedTables = new Array();
+
+                // create nested DataTable.
+                var initRowDetails = function (id, row, element, rowinfo) {
+                    element.append($("<div class='col-md-12' style='margin: 2px 10px 2px 2px;'></div>"));
+                    rowinfo.detailsHeight = 300;  // Change height nested table
+                    var nestedDataTable = $(element.children()[0]);
+                    var filterGroup = new $.jqx.filter();
+                    var filterValue = row.TenderUuid;
+                    var filterCondition = 'equal';
+                    var filter = filterGroup.createfilter('stringfilter', filterValue, filterCondition);
+
+                    // fill the orders depending on the TenderUuid.
+                    var ordersbyid = [];
+                    for (var m = 0; m < orders.length; m++) {
+                        var result = filter.evaluate(orders[m]["TenderUuid"]);
+                        if (result)
+                            ordersbyid.push(orders[m]);
+                    }
+
+                    var ordersSource = {
+                        localdata: ordersbyid,
+                        dataType: "local",
+                        dataFields: [
+                            { name: 'tenderNumber', type: 'string' },
+                            { name: 'routeOrder', type: 'string' },
+                            { name: 'cargoName', type: 'string' },
+                            { name: 'subCompanyName', type: 'string' },
+                            { name: 'downloadDataRequired', type: 'date' },
+                            { name: 'unloadDataRequired', type: 'date' },
+                            { name: 'stageMode', type: 'string' },
+                            { name: 'stageNumber', type: 'string' },
+                            { name: 'resultsTender', type: 'string' }
+                        ]
+                    }
+
+                    if (nestedDataTable != null) {
+                        var nestedDataTableAdapter = new $.jqx.dataAdapter(ordersSource);
+                        nestedDataTable.jqxDataTable({
+                            width: '105%',
+                            theme: 'orange',
+                            autoRowHeight: true,
+                            columnsHeight: 60,
+                            columnsresize: true,
+                            editable: true,
+                            localization: getLocalization('ru'),
+                            source: nestedDataTableAdapter,
+                            editSettings: { saveOnPageChange: true, saveOnBlur: true, saveOnSelectionChange: true, cancelOnEsc: true, saveOnEnter: true, editSingleCell: true, editOnDoubleClick: true, editOnF2: true },
+                            columns: [
+                                { text: '№ тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsrenderer: tenderLink, editable: false, dataField: 'tenderNumber', width: '5%' },
+                                { text: 'Маршрут', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'routeOrder', width: '10%' },
+                                { text: 'Наименование груза', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, autoRowHeight: true, dataField: 'cargoName', width: '12%' },
+                                { text: 'Заказчик', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'subCompanyName', width: '11%' },
+                                { text: 'Дата погрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'downloadDataRequired', cellsFormat: 'P', width: '8%' },
+                                { text: 'Дата выгрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'unloadDataRequired', cellsFormat: 'P', width: '9%' },
+                                { text: 'Тип тендера:Тендер(RFx), Аукцион/Редукцион', renderer: columnsrenderer, editable: false, cellsrenderer: cellsrenderer, dataField: 'stageMode', width: '13%' },
+                                { text: 'Номер тура:/1/2', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'stageNumber', width: '7%' },
+                                { text: 'Результаты тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsAlign: 'left', align: 'left', editable: true, dataField: 'resultsTender', width: '25%' }
+                            ]
+                        });
+
+                        // Cell End Edit
+                        $("#dataTable").on('cellEndEdit', function (event) {
+                            var args = event.args;
+                            // cell's value.
+                            var value = args.value;
+                            var rowTenderNumber = args.row.tenderNumber;
+                            var registyTender =
+                            {
+                                tenderNumber: rowTenderNumber,
+                                resultsTender: value
+                            }
+                            var registryUpdate = JSON.stringify(registyTender);
+                            $.ajax({
+                                type: "POST",
+                                async: true,
+                                url: "/OrderTender/ResultsTenderUpdate",
+                                data: registryUpdate,
+                                dataType: "json",
+                                contentType: 'application/json; charset=utf-8',
+                                success: function (data) {
+                                    var dataJS = JSON.parse(data);
+                                    console.log(data);
+                                },
+                                error: function () {
+                                    alert("Ошибка обновления данных в БД!")
+                                }
+                            });
+                            return columnsrenderer(value);
+                        });
+                    }
+                }
+
+
+
+
+                // Alignment headers text and columns text
+                var cellsrenderer = function (row, column, value) {
+                    return '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' +value + '</div>';
+                }
+                var columnsrenderer = function (value) {
+                    return '<div style="white-space: normal; text-align: center; margin-top: 10px; color:black">' + value + '</div>';
+                }
+
+
+                // Link to Order
+                var linkOrder = function (row, column, value) {
+                    var link = 'http://localhost:14589/Orders/UpdateOrder/' + value;
+                    return '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' + '<a href="'+link+'"target="_blank">'+value +'</a>'+ '</div>';
+                }
+
+                // Initialize buttonOrderConcurs
+                var buttonOrderConcurs = function (row, column, value)
+                {
+                    var orders = registryTenderAdapter.records;
+                    var filterGroup = new $.jqx.filter();
+                    var filterValue = value;
+                    var filterCondition = 'equal';
+                    var filter = filterGroup.createfilter('stringfilter', filterValue, filterCondition);
+
+                    // fill the orders depending on the TenderUuid.
+                    var valueOrder;;
+                    for (var m = 0; m < orders.length; m++) {
+                        var result = filter.evaluate(orders[m]["TenderUuid"]);
+                        if (result)
+                            valueOrder = orders[m]["OrderId"];
+                    }
+                    var link = 'http://localhost:14589/OrderConcurs/OrderCompetitiveList?OrderId=' + valueOrder;
+                    return "<div><button style='display: initial; margin-bottom:10px;' class='btn btn-primary'>" + '<a href="' + link + '"target="_blank" style="color: white">' + 'Конк.лист' + '</a>'+"</button></div>";
+                }
+
+                // Tender link to ApsTender
+                var tenderLink = function (row, column, value) {
+
+                    var orders = ordersDataAdapter.records;
+                    var filterGroup = new $.jqx.filter();
+                    var filterValue = value;
+                    var filterCondition = 'equal';
+                    var filter = filterGroup.createfilter('stringfilter', filterValue, filterCondition);
+
+                    // fill the orders depending on the tenderOwnerPath.
+                    var valueOrder;
+                    for (var m = 0; m < orders.length; m++) {
+                        var result = filter.evaluate(orders[m]["tenderNumber"]);
+                        if (result)
+                            valueOrder = orders[m]["tenderOwnerPath"];
+                    }
+                    var link = valueOrder;
+                    return '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' + '<a href="' + link + '"target="_blank">' + value + '</a>' + '</div>';
+                }
+
+                // Update current remaining time
+                var remainingTime = function (row, column, value) {
+                    var orders = registryTenderAdapter.records;
+                    var timeList = {};
+                    for (var m = 0; m < orders.length; m++)
+                    {
+                        var firstTime = orders[m].dateEnd;
+                        var TenderUuid = orders[m].TenderUuid;
+                        var currentTime = new Date();
+                        var timeSpan = firstTime - currentTime;
+                        var time = null;
+                        var hours = 0;
+                        var minutes = 0;
+                        var row = {};
+                        if (!(timeSpan < 0)) {
+                            minutes = ((Math.round(((timeSpan / (1000 * 60 * 60)) % 1) * 60)) != 60) ? (Math.round(((timeSpan / (1000 * 60 * 60)) % 1) * 60)) : 0;
+                            hours = ((Math.round(((timeSpan / (1000 * 60 * 60)) % 1) * 60)) != 60) ? (Math.round((timeSpan / (1000 * 60 * 60)) - (Math.round((timeSpan / (1000 * 60 * 60)) % 1)))) : (Math.round((timeSpan / (1000 * 60 * 60)) - (Math.round((timeSpan / (1000 * 60 * 60)) % 1)))) + 1;
+                            time = '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' + hours + 'ч : ' + minutes + ' м' + '</div>';
+                            row['remainingTime'] = hours + 'ч : ' + minutes + ' м';
+                            row['TenderUuid'] = TenderUuid;
+                        }
+                        else {
+                            time = '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">Завершен</div>';
+                            row['remainingTime'] = 'Завершен';
+                            row['TenderUuid'] = TenderUuid;
+                        }
+                        $("#dataTable").jqxDataTable('setCellValue', m, 'remainingTime', time);
+                        timeList[m] = row;
+                    }
+                    var RemainingTimeUpdate =
+                    {
+                        "TimeList": timeList
+                    }
+                    var timeUpdate = JSON.stringify(RemainingTimeUpdate);
+                    $.ajax({
+                        type: "POST",
+                        async: true,
+                        url: "/OrderTender/RemainingTimeUpdate",
+                        data: timeUpdate,
+                        dataType: "json",
+                        contentType: 'application/json; charset=utf-8',
+                        success: function (data) {
+                            var dataJS = JSON.parse(data);
+                            console.log(data);
+                        },
+                        error: function () {
+                            alert("Ошибка обновления данных в БД!")
+                        }
+                    });
+                }
+                // create jqxDataTable.
+                $("#dataTable").jqxDataTable(
+                    {
+                        width: '100%',
+                        altRows: false,
+                        theme: 'orange',
+                        autorowheight: true,
+                        filterable: true,
+                        filterMode: 'advanced',
+                        source: registryTenderAdapter,
+                        pageable: true,
+                        pageSize: 8,
+                        rowDetails: true,
+                        selectionMode: 'singleRow',
+                        sortable: true,
+                        columnsheight: 60,
+                        columnsresize: true,
+                        rowDetails: true,
+                        localization: getLocalization('ru'),
+                        initRowDetails: initRowDetails,
+                        ready: remainingTime,
+                        columns: [
+                            { text: '№ заявки', editable: false, renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsrenderer: linkOrder, dataField: 'OrderId', width: '5%'},
+                            { text: 'Категория тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'industryName', width: '11%' },
+                            { text: 'Город погрузки/Грузоотправитель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadAddress', width: '14%' },
+                            { text: 'Город выгрузки/Грузополучатель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'unloadAddress', width: '14%' },
+                            { text: 'Дата погрузки автомобиля', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadDataRequired', cellsFormat: 'P', width: '10%'},
+                            { text: 'Дата начала тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateStart', cellsFormat: 'P', width: '10%' },
+                            { text: 'Дата окончания\nтендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateEnd', cellsFormat: 'P', width: '10%' },
+                            { text: 'До завершения\nосталось', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'remainingTime', width: '8%' },
+                            { text: 'Статус тендера', editable: true, renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'processValue', width: '9%' },
+                            {
+                                text: 'Действия', renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsAlign: 'center', align: "center", columnType: 'none', editable: false, sortable: false, dataField: 'TenderUuid', filterable: false, cellsrenderer: buttonOrderConcurs, width: '9%'
+                            }
+                        ]
+                    });
+
+            });
+        });
+    </script>
+}
+

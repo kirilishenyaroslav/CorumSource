@@ -17,6 +17,7 @@ namespace Corum.Models.ViewModels.Tender
 {
     public class TenderForma : TenderParamsDefaults  // Модель тендера
     {
+        public Dictionary<string, string> otherParams;
         public DataTender data { get; set; }
         public TenderForma()
         { }
@@ -30,8 +31,10 @@ namespace Corum.Models.ViewModels.Tender
         public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, TendFormDeserializedJSON formDeserializedJSON, List<SpecificationNames> specificationNames, List<Countries> countries,
             OrderTruckTransport orderTruckTransport, IList<OrderAdditionalRoutePointModel> routePointsLoadInfo, IList<OrderAdditionalRoutePointModel> routePointsUnloadInfo) : base(competitiveListViewModel, listTenderServices, listBalanceKeepers, formDeserializedJSON, specificationNames, countries, orderTruckTransport, routePointsLoadInfo, routePointsUnloadInfo)
         {
+            this.otherParams = new Dictionary<string, string>();
             this.competitiveListViewModel = competitiveListViewModel;
             data = new DataTender();
+            this.otherParams = data.otherParams;
             this.formDeserializedJSON = formDeserializedJSON;
             this.listSpecificationNames = specificationNames;
             this.listCountriesNames = countries;
@@ -133,11 +136,11 @@ namespace Corum.Models.ViewModels.Tender
                 addLoadPoint = "Отсутствует дополнительная точка загрузки";
                 addUnLoadPoint = "Отсутствует дополнительная точка выгрузки";
             }
-            string cargoName = (competitiveListViewModel.TruckDescription.Trim().Length <= 100) ? competitiveListViewModel.TruckDescription.Trim(): competitiveListViewModel.TruckDescription.Trim().Remove(100);
+            string cargoName = (competitiveListViewModel.TruckDescription.Trim().Length <= 100) ? competitiveListViewModel.TruckDescription.Trim() : competitiveListViewModel.TruckDescription.Trim().Remove(100);
             string specCondition = (competitiveListViewModel.VehicleTypeName.Trim().Length <= 100) ? competitiveListViewModel.VehicleTypeName.Trim() : competitiveListViewModel.VehicleTypeName.Trim().Remove(100);
             string downloadAddress = (orderTruckTransport.ShipperAdress.Trim().Length <= 100) ? orderTruckTransport.ShipperAdress.Trim() : orderTruckTransport.ShipperAdress.Trim().Remove(100);
             string unloadAddress = (orderTruckTransport.ConsigneeAdress.Trim().Length <= 100) ? orderTruckTransport.ConsigneeAdress.Trim() : orderTruckTransport.ConsigneeAdress.Trim().Remove(100);
-            
+
             this.propAliasValues = new List<PropAliasValues>()   // !!!!! При автоматической установке атрибутов необходимо раскомментировать данный блок кода!!!!!
             {
                   new PropAliasValues()
@@ -249,6 +252,7 @@ namespace Corum.Models.ViewModels.Tender
         public Dictionary<int, string> listTenderCategor;
         public SelectList listRegums, listTures, listServices, listPublications;
         DateTime date = DateTime.Now;
+        public Dictionary<string, string> otherParams;
         public DataTender()
         {
 
@@ -270,6 +274,7 @@ namespace Corum.Models.ViewModels.Tender
                         break;
                     }
             }
+            otherParams = new Dictionary<string, string>();
             tenderAuthorName = "Литовченко С.В.";
             tenderAuthorId = (tenderAuthorName != "Литовченко С.В.") ? 0 : Convert.ToInt64(allAppSettings["tenderAuthorId"]);
             companyName = "ООО «КОРУМ ГРУПП»";
@@ -301,6 +306,12 @@ namespace Corum.Models.ViewModels.Tender
             listPublications = new SelectList(typePublications);
             Random random = new Random();
             tenderExternalN = competitiveListViewModel.Id.ToString() + "-" + random.Next(1, 10000).ToString();
+            this.otherParams.Add("DOWNLOAD_ADDRESS", $"{competitiveListViewModel.ShipperCountryName}, {competitiveListViewModel.CityFrom} ({orderTruckTransport.Shipper})");
+            this.otherParams.Add("UNLOADING_ADDRESS", $"{competitiveListViewModel.ConsigneeCountryName}, {competitiveListViewModel.CityTo}  ({orderTruckTransport.Consignee})");
+            this.otherParams.Add("DOWNLOADDATEREQUIRED", $"{competitiveListViewModel.FromDateRaw}");
+            this.otherParams.Add("UNLOADINGDATEREQUIRED", $"{competitiveListViewModel.ToDateRaw}");
+            this.otherParams.Add("ROUTE", $"[{ competitiveListViewModel.ShipperCountryName}]|{competitiveListViewModel.CityFrom}({ orderTruckTransport.Shipper}) - [‎{competitiveListViewModel.ConsigneeCountryName}]|{competitiveListViewModel.CityTo}({orderTruckTransport.Consignee})".Trim());
+            this.otherParams.Add("CARGO_NAME", $"{competitiveListViewModel.TruckDescription.Trim()}");
         }
 
 
@@ -324,20 +335,23 @@ namespace Corum.Models.ViewModels.Tender
             lotName = this.lots[0].lotName;
 
             lots[0].items = new List<Items>();
-            foreach (var item in this.formDeserializedJSON.JqxGridNmc)
+            if (this.formDeserializedJSON.JqxGridNmc != null)
             {
-                try
+                foreach (var item in this.formDeserializedJSON.JqxGridNmc)
                 {
-                    Items items = new Items();
-                    items.qty = Convert.ToDouble(item.Value.qty);
-                    items.nmcId = Convert.ToInt64(listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).nmcWorkId);
-                    items.itemExternalN = listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).SpecCode.ToString();
+                    try
+                    {
+                        Items items = new Items();
+                        items.qty = Convert.ToDouble(item.Value.qty);
+                        items.nmcId = Convert.ToInt64(listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).nmcWorkId);
+                        items.itemExternalN = listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).SpecCode.ToString();
 
-                    lots[0].items.Add(items);
-                }
-                catch (Exception e)
-                {
+                        lots[0].items.Add(items);
+                    }
+                    catch (Exception e)
+                    {
 
+                    }
                 }
             }
         }
@@ -416,7 +430,7 @@ namespace Corum.Models.ViewModels.Tender
         public int kind { get; set; } // тип публикации (необязательное поле, тип int, 1 - открытая, 2 - закрытая,по умолчанию - 1)
 
 
-        [Display(Name = "Дата создания тендера")]
+        [Display(Name = "Дата начала приема предложений ")]
         public string dateStart { get; set; } // дата начала приема предложений (необязательное  поле,  тип данных string, дата в формате ISO 8601)
         [Display(Name = "Введите дату в формате дд.мм.гггг --:--")]
         public string errorMessageTenderDataStart { get; set; }   //ошибка ввода даты создания в поле "Дата создания тендера"

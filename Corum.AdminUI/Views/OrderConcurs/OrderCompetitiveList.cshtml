@@ -991,7 +991,7 @@
                                     $.ajax({
                                         type: "POST",
                                         async: true,
-                                        url: "/OrderConcurs/SendNotificationTender",
+                                        url: "/OrderTender/SendNotificationTender",
                                         data: tenderSumOrder,
                                         dataType: "json",
                                         contentType: 'application/json; charset=utf-8',
@@ -1001,6 +1001,9 @@
 
                                             if (dataJS.success != false) {
                                                 alert('Запрос на тендер успешно создан!');
+                                            }
+                                            else if (!dataJS.success && !dataJS.isLoadMultiple) {
+                                                alert('Тендер для этой заявки уже создан!');
                                             }
                                             else {
                                                 alert('Запрос на тендер не создан!');

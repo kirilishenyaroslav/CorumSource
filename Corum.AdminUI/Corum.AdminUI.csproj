@@ -189,6 +189,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\OrderTenderController.cs" />
     <Compile Include="Views\TabsController.cs" />
     <Content Include="App_Code\NavBarActiveLink.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
@@ -506,6 +507,8 @@
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\corum.js" />
     <Content Include="Scripts\datetimewrapper.js" />
+    <Content Include="Scripts\demos.js" />
+    <Content Include="Scripts\globalize.culture.ru-ru.js" />
     <Content Include="Scripts\gridmvc.js" />
     <Content Include="Scripts\gridmvc.lang.no.js" />
     <Content Include="Scripts\gridmvc.min.js" />
@@ -542,6 +545,8 @@
     <Content Include="Scripts\JQWidgets\globalization\globalize.culture.ru-RU.js" />
     <Content Include="Scripts\JQWidgets\globalization\globalize.culture.sa-IN.js" />
     <Content Include="Scripts\JQWidgets\globalization\globalize.js" />
+    <Content Include="Scripts\JQWidgets\globalization\jquery.glob.ru-ru.js" />
+    <Content Include="Scripts\JQWidgets\globalization\jquery.global.js" />
     <Content Include="Scripts\JQWidgets\globalization\ReadMe.txt" />
     <Content Include="Scripts\JQWidgets\jqx-all.js" />
     <Content Include="Scripts\JQWidgets\jqxangular.js" />
@@ -610,6 +615,7 @@
     <Content Include="Scripts\JQWidgets\jqxtreemap.js" />
     <Content Include="Scripts\JQWidgets\jqxvalidator.js" />
     <Content Include="Scripts\JQWidgets\jqxwindow.js" />
+    <Content Include="Scripts\localization.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\moment-with-locales.js" />
     <Content Include="Scripts\moment-with-locales.min.js" />
@@ -1094,10 +1100,8 @@
     <Content Include="Views\Reports\_restAddItemToBasketByBarcode.cshtml" />
     <Content Include="Views\OrderConcurs\_PartialModul.cshtml" />
     <Content Include="Views\OrderConcurs\Tabs.cshtml" />
-    <Content Include="Views\TabsTend\TabsTend.cshtml" />
-    <Content Include="Views\TabsTend\TabsTender.cshtml" />
-    <Content Include="Views\TabsTend\Index.cshtml" />
     <Content Include="Views\OrderConcurs\_restReportAddItemToBasket2.cshtml" />
+    <Content Include="Views\OrderTender\TenderReport.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

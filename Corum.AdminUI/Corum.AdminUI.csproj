@@ -190,6 +190,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Controllers\OrderTenderController.cs" />
+    <Compile Include="HangFireTasks\HangFireTasks.cs" />
     <Compile Include="Views\TabsController.cs" />
     <Content Include="App_Code\NavBarActiveLink.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />

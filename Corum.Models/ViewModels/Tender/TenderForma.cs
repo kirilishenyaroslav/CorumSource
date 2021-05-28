@@ -297,7 +297,7 @@ namespace Corum.Models.ViewModels.Tender
                 listTenderCategor[item.industryId] = item.industryName;
             }
             listServices = new SelectList(listTenderCategor.Values);
-            dateStartDef = date.ToString("yyyy-MM-dd'T'HH:mm");
+            dateStartDef = date.AddHours(2).ToString("yyyy-MM-dd'T'HH:mm");
             dateEndDef = date.AddDays(10).ToString("yyyy-MM-dd'T'HH:mm");
             dateStart = dateStartDef;
             dateEnd = dateEndDef;
@@ -317,6 +317,7 @@ namespace Corum.Models.ViewModels.Tender
 
         public void InitializedAfterDeserialized()
         {
+            Random random = new Random();
             typeTrure = this.formDeserializedJSON.TypeTure;
             mode = (typeTures[0].Contains(typeTrure)) ? 1 : 2;
 
@@ -341,12 +342,17 @@ namespace Corum.Models.ViewModels.Tender
                 {
                     try
                     {
-                        Items items = new Items();
-                        items.qty = Convert.ToDouble(item.Value.qty);
-                        items.nmcId = Convert.ToInt64(listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).nmcWorkId);
-                        items.itemExternalN = listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).SpecCode.ToString();
+                        int countCars = Convert.ToInt32(item.Value.qty);
+                        do
+                        {
+                            Items items = new Items();
+                            items.qty = 1;
+                            items.nmcId = Convert.ToInt64(listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).nmcWorkId);
+                            items.itemExternalN = listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).SpecCode.ToString()+random.Next(10000).ToString();
 
-                        lots[0].items.Add(items);
+                            lots[0].items.Add(items);
+                        }
+                        while (countCars-- > 1);
                     }
                     catch (Exception e)
                     {

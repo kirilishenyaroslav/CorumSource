@@ -7,6 +7,11 @@ using Microsoft.Owin.Security.Cookies;
 using CorumAdminUI.Models;
 using System.Collections.Generic;
 using System.Diagnostics;
+using Hangfire;
+using Hangfire.Dashboard;
+using Hangfire.SqlServer;
+using Hangfire.AspNet;
+using CorumAdminUI.HangFireTasks;
 
 [assembly: OwinStartupAttribute(typeof(BarnivannAdminUI.Startup))]
 namespace BarnivannAdminUI
@@ -16,6 +21,10 @@ namespace BarnivannAdminUI
         public void Configuration(IAppBuilder app)
         {
             ConfigureAuth(app);
+            app.UseHangfireAspNet(GetHangfireServers);
+            app.UseHangfireDashboard();
+
+            RecurringJob.AddOrUpdate<HangFireTasks>(x => x.ListTasks(), "*/5 * * * *");
         }
     }
 }

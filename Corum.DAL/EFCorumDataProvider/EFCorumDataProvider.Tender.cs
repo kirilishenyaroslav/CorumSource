@@ -127,6 +127,14 @@ namespace Corum.DAL
             return registerTenders;
         }
 
+        public void UpdateStatusRegisterTender(int tenderNumber, int process, DateTime dateUpdateStatus)
+        {
+            var tender = db.RegisterTenders.Where(x => x.tenderNumber == tenderNumber).OrderByDescending(x => x.dateEnd).FirstOrDefault();
+            tender.processValue = GetStatusTenders()[process];
+            tender.dateUpdateStatus = dateUpdateStatus;
+            db.SaveChanges();
+        }
+
         public Dictionary<int, string> GetStatusTenders()
         {
             Dictionary<int, string> statusTenders = new Dictionary<int, string>();

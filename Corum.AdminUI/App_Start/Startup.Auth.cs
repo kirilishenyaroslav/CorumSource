@@ -6,12 +6,18 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Owin;
 using CorumAdminUI.Models;
+using Hangfire;
+using Hangfire.Dashboard;
+using Hangfire.SqlServer;
+using Hangfire.AspNet;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace BarnivannAdminUI
 {
     public partial class Startup
     {
-        
+
         public void ConfigureAuth(IAppBuilder app)
         {
             // Configure the db context, user manager and signin manager to use a single instance per request
@@ -36,24 +42,42 @@ namespace BarnivannAdminUI
                     OnValidateIdentity = SecurityStampValidator.OnValidateIdentity<ApplicationUserManager, ApplicationUser>(
                         validateInterval: TimeSpan.FromMinutes(60),
                         regenerateIdentity: (manager, user) => user.GenerateUserIdentityAsync(manager)),
-                    
+
                 }
 
-                
-            });            
+
+            });
             app.UseExternalSignInCookie(DefaultAuthenticationTypes.ExternalCookie);
 
             // Enables the application to temporarily store user information when they are verifying the second factor in the two-factor authentication process.
             app.UseTwoFactorSignInCookie(DefaultAuthenticationTypes.TwoFactorCookie, TimeSpan.FromMinutes(60));
 
-           
+
 
             // Enables the application to remember the second login verification factor such as phone or email.
             // Once you check this option, your second step of verification during the login process will be remembered on the device where you logged in from.
             // This is similar to the RememberMe option when you log in.
             app.UseTwoFactorRememberBrowserCookie(DefaultAuthenticationTypes.TwoFactorRememberBrowserCookie);
 
-            
+
+        }
+
+        private IEnumerable<IDisposable> GetHangfireServers()
+        {
+            GlobalConfiguration.Configuration
+                .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
+                .UseSimpleAssemblyNameTypeSerializer()
+                .UseRecommendedSerializerSettings()
+                .UseSqlServerStorage(@"Integrated Security=true;Initial Catalog=Corum.Prod-2021-01-30;Data Source=WORK;", new SqlServerStorageOptions
+                {
+                    CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
+                    SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),
+                    QueuePollInterval = TimeSpan.Zero,
+                    UseRecommendedIsolationLevel = true,
+                    DisableGlobalLocks = true
+                });
+
+            yield return new BackgroundJobServer(new BackgroundJobServerOptions { ServerName = $"{Environment.MachineName}:{Process.GetCurrentProcess().Id}:{AppDomain.CurrentDomain.Id}" });
         }
     }
 }

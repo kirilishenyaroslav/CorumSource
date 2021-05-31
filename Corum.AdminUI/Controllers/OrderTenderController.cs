@@ -48,6 +48,7 @@ namespace CorumAdminUI.Controllers
         public ActionResult SendNotificationTender(TenderSumOrderId tenderSumOrder)
         {
             Dictionary<string, string> otherParams = new Dictionary<string, string>();
+            DateTimeOffset localTimeStart, otherTimeStart, localTimeEnd, otherTimeEnd;
             TenderForma tenderForma = null;
             try
             {
@@ -58,6 +59,13 @@ namespace CorumAdminUI.Controllers
                                tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID),
                                context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList());
                 tenderForma.data.InitializedAfterDeserialized();
+                tenderForma.data.tenderName = tenderSumOrder.ListItemsModelTenderForm.TenderName;
+                localTimeStart = new DateTimeOffset(DateTime.Parse(tenderSumOrder.ListItemsModelTenderForm.DateStart));
+                localTimeEnd = new DateTimeOffset(DateTime.Parse(tenderSumOrder.ListItemsModelTenderForm.DateEnd));
+                otherTimeStart = localTimeStart.ToUniversalTime();
+                otherTimeEnd = localTimeEnd.ToUniversalTime();
+                tenderForma.data.dateStart = otherTimeStart.ToString("yyyy-MM-dd'T'HH:mm:ssZ");
+                tenderForma.data.dateEnd = otherTimeEnd.ToString("yyyy-MM-dd'T'HH:mm:ssZ");
                 otherParams = tenderForma.otherParams;
             }
             catch (Exception e)

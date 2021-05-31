@@ -33,5 +33,6 @@ namespace Corum.Models.Tender
         public string resultsTender { get; set; }
         public string tenderOwnerPath { get; set; }
         public string remainingTime { get; set; }
+        public Nullable<System.DateTime> dateUpdateStatus { get; set; }
     }
 }

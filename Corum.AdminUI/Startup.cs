@@ -24,7 +24,7 @@ namespace BarnivannAdminUI
             app.UseHangfireAspNet(GetHangfireServers);
             app.UseHangfireDashboard();
 
-            RecurringJob.AddOrUpdate<HangFireTasks>(x => x.ListTasks(), "*/5 * * * *");
+            RecurringJob.AddOrUpdate<HangFireTasks>(x => x.ListTasks(), "0 23 * * *");
         }
     }
 }

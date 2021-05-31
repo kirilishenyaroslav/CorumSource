@@ -150,7 +150,7 @@ namespace Corum.Models.ViewModels.Tender
                       CARGO_NAME = cargoName,
                       DOWNLOADDATEREQUIRED = competitiveListViewModel.FromDateRaw,
                       UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw,
-                      REQUIRED_NUMBER_OF_CARS = competitiveListViewModel.CarNumber.ToString(),
+                      REQUIRED_NUMBER_OF_CARS = "1",
                       SPECIALCONDITIONS = specCondition,
                       ADDLOADPOINT = addLoadPoint,
                       ADDUNLOADINGPOINT = addUnLoadPoint,

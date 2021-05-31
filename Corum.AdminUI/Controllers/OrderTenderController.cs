@@ -107,7 +107,8 @@ namespace CorumAdminUI.Controllers
                         lotState = myDeserializedClass.data.lots[0].lotState,
                         resultsTender = null,
                         tenderOwnerPath = myDeserializedClass.data.tenderOwnerPath,
-                        remainingTime = timeSpan.ToString()
+                        remainingTime = timeSpan.ToString(),
+                        dateCreate = myDeserializedClass.data.dateCreate
                     };
                     context.AddNewDataTender(registerTenders);
                 }

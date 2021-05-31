@@ -93,7 +93,6 @@ namespace Corum.DAL
         {
             List<Corum.Models.Tender.RegisterTenders> registerTenders = new List<Corum.Models.Tender.RegisterTenders>();
             var registerTendersList = db.RegisterTenders.OrderByDescending(x => x.dateEnd).ToList();
-            //var statusValuesList = db.
             foreach (var item in registerTendersList)
             {
                 Corum.Models.Tender.RegisterTenders register = new Corum.Models.Tender.RegisterTenders();
@@ -122,6 +121,7 @@ namespace Corum.DAL
                 register.resultsTender = item.resultsTender;
                 register.tenderOwnerPath = item.tenderOwnerPath;
                 register.remainingTime = item.remainingTime;
+                register.dateCreate = item.dateCreate;
                 registerTenders.Add(register);
             }
             return registerTenders;
@@ -219,7 +219,8 @@ namespace Corum.DAL
                     processValue = GetStatusTenders()[model.process],
                     resultsTender = model.resultsTender,
                     tenderOwnerPath = model.tenderOwnerPath,
-                    remainingTime = RemainingCount(model.remainingTime)
+                    remainingTime = RemainingCount(model.remainingTime),
+                    dateCreate = model.dateCreate
                 });
                 db.SaveChanges();
             }
@@ -275,6 +276,21 @@ namespace Corum.DAL
 
             }
             return time;
+        }
+
+        public void UpdateRemainingTime()
+        {
+            var registerTendersList = db.RegisterTenders.OrderByDescending(x => x.dateEnd).ToList();
+            DateTime nowDateTime = DateTime.Now;
+            foreach (var item in registerTendersList)
+            {
+                if (item.remainingTime != "Завершен")
+                {
+                    TimeSpan timeSpan = item.dateEnd - nowDateTime;
+                    item.remainingTime = RemainingCount(timeSpan.ToString());
+                    db.SaveChanges();
+                }
+            }
         }
     }
 }

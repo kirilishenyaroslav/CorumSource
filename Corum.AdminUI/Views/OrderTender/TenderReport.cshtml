@@ -170,7 +170,7 @@
 
                 // Link to Order
                 var linkOrder = function (row, column, value) {
-                    var link = 'http://localhost:14589/Orders/UpdateOrder/' + value;
+                    var link = 'http://corumsource.com/Orders/UpdateOrder/' + value;
                     return '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' + '<a href="'+link+'"target="_blank">'+value +'</a>'+ '</div>';
                 }
 
@@ -190,7 +190,7 @@
                         if (result)
                             valueOrder = orders[m]["OrderId"];
                     }
-                    var link = 'http://localhost:14589/OrderConcurs/OrderCompetitiveList?OrderId=' + valueOrder;
+                    var link = 'http://corumsource.com/OrderConcurs/OrderCompetitiveList?OrderId=' + valueOrder;
                     return "<div><button style='display: initial; margin-bottom:10px;' class='btn btn-primary'>" + '<a href="' + link + '"target="_blank" style="color: white">' + 'Конк.лист' + '</a>'+"</button></div>";
                 }
 

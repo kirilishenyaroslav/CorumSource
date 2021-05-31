@@ -26,7 +26,7 @@ namespace CorumAdminUI.HangFireTasks
         {
             listRegistryTenders = new List<RegisterTenders>();
             context = DependencyResolver.Current.GetService<ICorumDataProvider>();
-            options = new ParallelOptions(); 
+            options = new ParallelOptions();
             options.MaxDegreeOfParallelism = Environment.ProcessorCount > 3 ? Environment.ProcessorCount - 1 : 1;
             listTask = new List<Task>();
             allAppSettings = ConfigurationManager.AppSettings;
@@ -45,15 +45,19 @@ namespace CorumAdminUI.HangFireTasks
             DateTime dateUpdateStatus = DateTime.Now;
             context.UpdateStatusRegisterTender(numberTender, myDeserializedClass.data.process, dateUpdateStatus);
         }
-       
+
         public async Task ListTasks()
         {
+            context.UpdateRemainingTime();
             listRegistryTenders = context.GetRegisterTenders();
             foreach (var item in listRegistryTenders)
             {
-                await Task.Run(() => AsyncStatusTender(item));
+                if (item.remainingTime != "Завершен")
+                {
+                    await Task.Run(() => AsyncStatusTender(item));
+                }
             }
-           
+
         }
     }
 }

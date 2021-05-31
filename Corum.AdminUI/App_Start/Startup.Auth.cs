@@ -12,6 +12,8 @@ using Hangfire.SqlServer;
 using Hangfire.AspNet;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Collections.Specialized;
+using System.Configuration;
 
 namespace BarnivannAdminUI
 {
@@ -64,11 +66,12 @@ namespace BarnivannAdminUI
 
         private IEnumerable<IDisposable> GetHangfireServers()
         {
+            var connectionStrings = ConfigurationManager.ConnectionStrings;
             GlobalConfiguration.Configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage(@"Integrated Security=true;Initial Catalog=Corum.Prod-2021-01-30;Data Source=WORK;", new SqlServerStorageOptions
+                .UseSqlServerStorage(connectionStrings[2].ConnectionString, new SqlServerStorageOptions
                 {
                     CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
                     SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),

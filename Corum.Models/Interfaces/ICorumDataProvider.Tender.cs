@@ -23,5 +23,6 @@ namespace Corum.Models
         void UpdateRegisterTenders(int tenderNumber, string resultsTender);
         void RemainingTime(Dictionary<string,Time> time);
         void UpdateStatusRegisterTender(int tenderNumber, int process, DateTime dateUpdateStatus);
+        void UpdateRemainingTime();
     }
 }

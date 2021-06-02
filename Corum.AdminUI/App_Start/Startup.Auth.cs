@@ -66,12 +66,12 @@ namespace BarnivannAdminUI
 
         private IEnumerable<IDisposable> GetHangfireServers()
         {
-            var connectionStrings = ConfigurationManager.ConnectionStrings;
+            var connectstringToDB = ConfigurationManager.ConnectionStrings["DefaultConnection"].ConnectionString;
             GlobalConfiguration.Configuration
                 .SetDataCompatibilityLevel(CompatibilityLevel.Version_170)
                 .UseSimpleAssemblyNameTypeSerializer()
                 .UseRecommendedSerializerSettings()
-                .UseSqlServerStorage(connectionStrings[2].ConnectionString, new SqlServerStorageOptions
+                .UseSqlServerStorage(connectstringToDB, new SqlServerStorageOptions
                 {
                     CommandBatchMaxTimeout = TimeSpan.FromMinutes(5),
                     SlidingInvisibilityTimeout = TimeSpan.FromMinutes(5),

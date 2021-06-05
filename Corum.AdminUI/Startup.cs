@@ -22,7 +22,10 @@ namespace BarnivannAdminUI
         {
             ConfigureAuth(app);
             app.UseHangfireAspNet(GetHangfireServers);
-            app.UseHangfireDashboard();
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions
+            {
+                Authorization = new[] { new HangFireAuthorizationFilter() }
+            });
 
             RecurringJob.AddOrUpdate<HangFireTasks>(x => x.ListTasks(), "0 23 * * *");
         }

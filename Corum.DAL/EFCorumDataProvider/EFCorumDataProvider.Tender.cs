@@ -278,19 +278,16 @@ namespace Corum.DAL
             return time;
         }
 
-        public void UpdateRemainingTime()
+        public void UpdateTimeRemainingTime(RequestJSONDeserializedToModel myDeserializedClass, int numberTender)
         {
-            var registerTendersList = db.RegisterTenders.OrderByDescending(x => x.dateEnd).ToList();
             DateTime nowDateTime = DateTime.Now;
-            foreach (var item in registerTendersList)
-            {
-                if (item.remainingTime != "Завершен")
-                {
-                    TimeSpan timeSpan = item.dateEnd - nowDateTime;
-                    item.remainingTime = RemainingCount(timeSpan.ToString());
-                    db.SaveChanges();
-                }
-            }
+            var tender = db.RegisterTenders.Where(x => x.tenderNumber == numberTender).OrderByDescending(x => x.Id).FirstOrDefault();
+            tender.dateStart = myDeserializedClass.data.dateStart;
+            tender.dateEnd = myDeserializedClass.data.dateEnd;
+            TimeSpan timeSpan = myDeserializedClass.data.dateEnd - nowDateTime;
+            tender.remainingTime = RemainingCount(timeSpan.ToString());
+
+            db.SaveChanges();
         }
     }
 }

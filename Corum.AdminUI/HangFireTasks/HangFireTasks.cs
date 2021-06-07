@@ -37,6 +37,12 @@ namespace CorumAdminUI.HangFireTasks
             await Task.Factory.StartNew(() => Parallel.Invoke(options, () => GetStatusTender(numberTender)));
         }
 
+        public async Task AsyncGetInfoTenderId(RegisterTenders item)
+        {
+            int numberTender = item.tenderNumber;
+            await Task.Factory.StartNew(() => Parallel.Invoke(options, () => GetTenderInfoId(numberTender)));
+        }
+
         public void GetStatusTender(int numberTender)
         {
             BaseClient clientbase = new BaseClient($"{allAppSettings["ApiGetStatusTender"]}{numberTender}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
@@ -46,18 +52,27 @@ namespace CorumAdminUI.HangFireTasks
             context.UpdateStatusRegisterTender(numberTender, myDeserializedClass.data.process, dateUpdateStatus);
         }
 
+        public void GetTenderInfoId(int numberTender)
+        {
+            BaseClient clientbase = new BaseClient($"{allAppSettings["ApiGetTenderId"]}{numberTender}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
+            var JSONresponse = new GetApiTender().GetCallAsync(clientbase).Result.ResponseMessage;
+            RequestJSONDeserializedToModel myDeserializedClass = JsonConvert.DeserializeObject<RequestJSONDeserializedToModel>(JSONresponse);
+            context.UpdateTimeRemainingTime(myDeserializedClass, numberTender);
+        }
+
         public async Task ListTasks()
         {
-            context.UpdateRemainingTime();
             listRegistryTenders = context.GetRegisterTenders();
             foreach (var item in listRegistryTenders)
             {
-                if (item.remainingTime != "Завершен")
+                if (item.processValue != "Завершен")
                 {
+                    await Task.Run(() => AsyncGetInfoTenderId(item));
                     await Task.Run(() => AsyncStatusTender(item));
                 }
             }
 
         }
+
     }
 }

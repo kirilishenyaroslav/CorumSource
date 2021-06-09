@@ -1149,6 +1149,10 @@
       <Project>{82c3cdcd-5e2e-4726-bdd4-4d2c877e0e04}</Project>
       <Name>Corum.ReportsUI</Name>
     </ProjectReference>
+    <ProjectReference Include="..\Corum.RestRenderModels\Corum.RestRenderModels.csproj">
+      <Project>{2aac03fd-c323-4b99-8274-cc2414e34990}</Project>
+      <Name>Corum.RestRenderModels</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_LocalResources\Resources.resx">

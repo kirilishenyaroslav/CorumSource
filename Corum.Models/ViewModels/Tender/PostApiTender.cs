@@ -12,32 +12,32 @@ using System.Diagnostics;
 
 namespace Corum.Models.ViewModels.Tender
 {
-    public class PostApiTender
+    public class PostApiTender<T> where T: new()
     {
-        public async Task<BaseResponse> GetCallAsync(BaseClient clientbase, TenderForma postValues)
+        public async Task<BaseResponse> GetCallAsync(BaseClient clientbase, object postValues, int number)
         {
             HttpClient client = clientbase.client;
-            TenderForma postContent = postValues;
             BaseResponse baseresponse = clientbase.baseresponse;
             int count = 0;
             try
             {
                 while (count < 10)
                 {
-                    //baseresponse.response = client.PostAsync(client.BaseAddress, new StringContent(new JavaScriptSerializer().Serialize(postContent), Encoding.UTF8, "application/json")).Result;
-                    baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postContent).Result;
+                    switch (number)
+                    {
+                        case 0: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesOne>).Result; break;
+                        case 1: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesOne>).Result; break;
+                        case 2: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesTwo>).Result; break;
+                        case 3: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesThree>).Result; break;
+                        case 4: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesFour>).Result; break;
+                        case 5: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesFive>).Result; break;
+                        default: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesOne>).Result; break;
+                    }
+                   
                     if (baseresponse.response.IsSuccessStatusCode)
                     {
                         baseresponse.ResponseMessage = await baseresponse.response.Content.ReadAsStringAsync();
                         baseresponse.StatusCode = (int)baseresponse.response.StatusCode;
-                        //string content = string.Empty;
-                        //using (StreamReader stream = new StreamReader(baseresponse.response.Content.ReadAsStreamAsync().Result, System.Text.Encoding.GetEncoding(Encoding.UTF8.WebName)))
-                        //{
-                        //    content = stream.ReadToEnd();
-                        //    Debug.WriteLine(content);
-                        //    string path = @"C:\Users\Work\Dropbox\Стажировка\Corum project\CorumSource\Corum.AdminUI\bin\client-server_Api.json";
-                        //    File.WriteAllText(path, content);
-                        //}
                         count = 10;
                     }
                     else

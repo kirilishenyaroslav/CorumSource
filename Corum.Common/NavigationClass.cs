@@ -239,7 +239,7 @@ namespace Corum.Models
     public class OrderNavigationResult<T> : NavigationResult<T> where T : class
     {
         public UserViewModel userInfo;
-        public TenderForma tenderForma;
+        public TenderForma<PropAliasValuesOne> tenderForma;
         public OrderTruckTransport orderTruckData;
 
         public List<TenderServices> tenderServices { get; set; }

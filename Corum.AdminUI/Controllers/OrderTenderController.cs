@@ -60,16 +60,54 @@ namespace CorumAdminUI.Controllers
         {
             Dictionary<string, string> otherParams = new Dictionary<string, string>();
             DateTimeOffset localTimeStart, otherTimeStart, localTimeEnd, otherTimeEnd;
-            TenderForma tenderForma = null;
+            dynamic tenderForma = null;
+            var routePointsLoadinfo = context.getLoadPoints(OrderID, true).ToList();
+            var routePointsUnloadinfo = context.getLoadPoints(OrderID, false).ToList();
+            int count = 5;
+            int num = 0;
+            while (routePointsLoadinfo.Count == 0 && count++ < 5)
+            {
+                routePointsLoadinfo = context.getLoadPoints(OrderID, true).ToList();
+                routePointsUnloadinfo = context.getLoadPoints(OrderID, false).ToList();
+            }
             try
             {
                 TendFormDeserializedJSON tendFormDeserializedJSON = tenderSumOrder.ListItemsModelTenderForm;
                 OrderID = Convert.ToInt64(tenderSumOrder.OrderId);
+                num = (routePointsLoadinfo.Count < routePointsUnloadinfo.Count) ? routePointsUnloadinfo.Count : routePointsLoadinfo.Count;
+                switch (num)
+                {
+                    case 0:
+                        tenderForma = new TenderForma<PropAliasValuesOne>(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(),
+                   tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID),
+                   context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList()); break;
+                    case 1:
+                        tenderForma = new TenderForma<PropAliasValuesOne>(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(),
+                   tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID),
+                   context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList()); break;
+                    case 2:
+                        tenderForma = new TenderForma<PropAliasValuesTwo>(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(),
+                   tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID),
+                   context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList()); break;
+                    case 3:
+                        tenderForma = new TenderForma<PropAliasValuesThree>(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(),
+                   tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID),
+                   context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList()); break;
+                    case 4:
+                        tenderForma = new TenderForma<PropAliasValuesFour>(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(),
+                   tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID),
+                   context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList()); break;
+                    case 5:
+                        tenderForma = new TenderForma<PropAliasValuesFive>(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(),
+                   tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID),
+                   context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList()); break;
+                    default:
+                        tenderForma = new TenderForma<PropAliasValuesOne>(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(),
+                   tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID),
+                   context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList()); break;
+                }
 
-                tenderForma = new TenderForma(context.getCompetitiveListInfo(OrderID), context.GetTenderServices(), context.GetBalanceKeepers(),
-                               tendFormDeserializedJSON, context.GetSpecificationNames(), context.GetCountries(), context.GetOrderTruckTransport(OrderID),
-                               context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList());
-                tenderForma.data.InitializedAfterDeserialized();
+                tenderForma.data.InitializedAfterDeserialized(tenderSumOrder);
                 tenderForma.data.tenderName = tenderSumOrder.ListItemsModelTenderForm.TenderName;
                 localTimeStart = new DateTimeOffset(DateTime.Parse(tenderSumOrder.ListItemsModelTenderForm.DateStart));
                 localTimeEnd = new DateTimeOffset(DateTime.Parse(tenderSumOrder.ListItemsModelTenderForm.DateEnd));
@@ -88,7 +126,7 @@ namespace CorumAdminUI.Controllers
             if (context.IsRegisterTendersExist(OrderID, Boolean.Parse(appsett)))
             {
                 BaseClient clientbase = new BaseClient(allAppSettings["ApiUrl"], allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
-                var response = new PostApiTender().GetCallAsync(clientbase, tenderForma).Result.ResponseMessage;
+                var response = new PostApiTender<PropAliasValuesOne>().GetCallAsync(clientbase, tenderForma, num).Result.ResponseMessage;
                 try
                 {
                     byte[] dataOrder = OrderAsExcelData((int)OrderID);

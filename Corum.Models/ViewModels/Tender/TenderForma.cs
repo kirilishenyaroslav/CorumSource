@@ -15,8 +15,22 @@ using System.Web.Mvc;
 
 namespace Corum.Models.ViewModels.Tender
 {
-    public class TenderForma<T> where T : TenderParamsDefaults, new()  // Модель тендера
+    public static class InitializeData
     {
+        public static CompetitiveListViewModel competitiveListViewModel;
+        public static OrderTruckTransport orderTruckTransport;
+        public static TendFormDeserializedJSON formDeserializedJSON;
+        public static List<SpecificationNames> listSpecificationNames;
+        public static List<Countries> listCountriesNames;
+        public static IList<OrderAdditionalRoutePointModel> routePointsLoadinfo;
+        public static IList<OrderAdditionalRoutePointModel> routePointsUnloadinfo;
+        public static List<TenderServices> listTenderServices;
+        public static List<BalanceKeepers> listBalanceKeepers;
+        public static NameValueCollection allAppSettings;
+    }
+    public class TenderForma<T> where T : new()  // Модель тендера
+    {
+        protected Corum.Models.ICorumDataProvider context;
         public Dictionary<string, string> otherParams;
         public DataTender<T> data { get; set; }
         public CompetitiveListViewModel competitiveListViewModel;
@@ -26,20 +40,25 @@ namespace Corum.Models.ViewModels.Tender
         public List<Countries> listCountriesNames;
         public IList<OrderAdditionalRoutePointModel> routePointsLoadinfo;
         public IList<OrderAdditionalRoutePointModel> routePointsUnloadinfo;
-        protected Corum.Models.ICorumDataProvider context;
+        public List<TenderServices> listTenderServices;
+        public List<BalanceKeepers> listBalanceKeepers;
+        NameValueCollection allAppSettings;
 
         public TenderForma()
         { }
         public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, OrderTruckTransport orderTruckTransport)
         {
             this.context = DependencyResolver.Current.GetService<ICorumDataProvider>();
-            Initialize.orderTruckTransport = orderTruckTransport;
-            Initialize.competitiveListViewModel = competitiveListViewModel;
-            Initialize.listCountriesNames = context.GetCountries();
-            Initialize.routePointsLoadinfo = context.getLoadPoints(orderTruckTransport.OrderId, true).ToList();
-            Initialize.routePointsUnloadinfo = context.getLoadPoints(orderTruckTransport.OrderId, false).ToList();
             this.competitiveListViewModel = competitiveListViewModel;
+            this.listTenderServices = listTenderServices;
+            this.listBalanceKeepers = listBalanceKeepers;
             this.orderTruckTransport = orderTruckTransport;
+            this.allAppSettings = ConfigurationManager.AppSettings;
+            InitializeData.competitiveListViewModel = this.competitiveListViewModel;
+            InitializeData.listBalanceKeepers = this.listBalanceKeepers;
+            InitializeData.listTenderServices = this.listTenderServices;
+            InitializeData.orderTruckTransport = this.orderTruckTransport;
+            InitializeData.allAppSettings = this.allAppSettings;
             data = new DataTender<T>();
         }
 
@@ -47,15 +66,28 @@ namespace Corum.Models.ViewModels.Tender
             OrderTruckTransport orderTruckTransport, IList<OrderAdditionalRoutePointModel> routePointsLoadInfo, IList<OrderAdditionalRoutePointModel> routePointsUnloadInfo)
         {
             this.otherParams = new Dictionary<string, string>();
+            this.allAppSettings = ConfigurationManager.AppSettings;
             this.competitiveListViewModel = competitiveListViewModel;
-            data = new DataTender<T>();
-            this.otherParams = data.otherParams;
+            this.listTenderServices = listTenderServices;
+            this.listBalanceKeepers = listBalanceKeepers;
             this.formDeserializedJSON = formDeserializedJSON;
             this.listSpecificationNames = specificationNames;
             this.listCountriesNames = countries;
             this.orderTruckTransport = orderTruckTransport;
             this.routePointsLoadinfo = routePointsLoadInfo;
             this.routePointsUnloadinfo = routePointsUnloadInfo;
+            InitializeData.competitiveListViewModel = this.competitiveListViewModel;
+            InitializeData.listBalanceKeepers = this.listBalanceKeepers;
+            InitializeData.listTenderServices = this.listTenderServices;
+            InitializeData.orderTruckTransport = this.orderTruckTransport;
+            InitializeData.formDeserializedJSON = this.formDeserializedJSON;
+            InitializeData.listCountriesNames = this.listCountriesNames;
+            InitializeData.listSpecificationNames = this.listSpecificationNames;
+            InitializeData.routePointsLoadinfo = this.routePointsLoadinfo;
+            InitializeData.routePointsUnloadinfo = this.routePointsUnloadinfo;
+            InitializeData.allAppSettings = this.allAppSettings;
+            data = new DataTender<T>();
+            this.otherParams = data.otherParams;
         }
     }
 
@@ -78,15 +110,7 @@ namespace Corum.Models.ViewModels.Tender
     //    public string ДопТочкаВыгрузки5 { get; set; }
     //}
 
-    public static class Initialize
-    {
-        public static List<Countries> listCountriesNames;
-        public static OrderTruckTransport orderTruckTransport;
-        public static IList<OrderAdditionalRoutePointModel> routePointsLoadinfo;
-        public static IList<OrderAdditionalRoutePointModel> routePointsUnloadinfo;
-        public static CompetitiveListViewModel competitiveListViewModel;
-    }
-    public class PropAliasValues : TenderParamsDefaults  // Установка значений атрибутов через площадку Aps tender
+    public class PropAliasValues  // Установка значений атрибутов через площадку Aps tender
     {
         public string WEIGHT { get; set; }
         public string ROUTE { get; set; }
@@ -124,27 +148,14 @@ namespace Corum.Models.ViewModels.Tender
         public string ADDLOADPOINT5 { get; set; }
         public string ADDUNLOADINGPOINT5 { get; set; }
     }
-    public class Items<T> where T : TenderParamsDefaults, new()  //Класс описывающий позицию лота (обязательное поле)
+    public class Items<T> where T : new()  //Класс описывающий позицию лота (обязательное поле)
     {
         private string itemNAME, itemNOTE, itemEXTERNALN;
         private Dictionary<string, string> keyValuePairs { get; set; }
         public long nmcId { get; set; } // код номенклатуры (тип  данных long) 
-        public List<Countries> listCountriesNames;
-        public OrderTruckTransport orderTruckTransport;
-        public IList<OrderAdditionalRoutePointModel> routePointsLoadinfo;
-        public IList<OrderAdditionalRoutePointModel> routePointsUnloadinfo;
-        public CompetitiveListViewModel competitiveListViewModel;
-        protected Corum.Models.ICorumDataProvider context;
-        public static long OrderID;
 
         public Items()
         {
-            context = DependencyResolver.Current.GetService<ICorumDataProvider>();
-            this.listCountriesNames = Initialize.listCountriesNames;
-            this.orderTruckTransport = Initialize.orderTruckTransport;
-            this.routePointsLoadinfo = context.getLoadPoints(OrderID, true).ToList();
-            this.routePointsUnloadinfo = context.getLoadPoints(OrderID, false).ToList();
-            this.competitiveListViewModel = Initialize.competitiveListViewModel;
             //this.propValues = new List<PropValues>()   //!!!!! При ручной установке атрибутов необходимо раскомментировать данный блок кода!!!!!
             //{
             //    new PropValuesOne()
@@ -159,14 +170,14 @@ namespace Corum.Models.ViewModels.Tender
             //        ДопТочкаВыгрузки3 = "Третья доп точка выгрузки"
             //    }
             //};
-            var countryShortNameShipper = listCountriesNames.Find(x => x.Code == orderTruckTransport.ShipperCountryId).alpha2;
-            var countryShortNameConseegnee = listCountriesNames.Find(x => x.Code == orderTruckTransport.ConsigneeCountryId).alpha2;
+            var countryShortNameShipper = InitializeData.listCountriesNames.Find(x => x.Code == InitializeData.orderTruckTransport.ShipperCountryId).alpha2;
+            var countryShortNameConseegnee = InitializeData.listCountriesNames.Find(x => x.Code == InitializeData.orderTruckTransport.ConsigneeCountryId).alpha2;
             var countryShortNameAddLoadPoint = "";
             var countryShortNameAddUnLoadPoint = "";
             try
             {
-                countryShortNameAddLoadPoint = listCountriesNames.Find(x => x.Name == routePointsLoadinfo[0].CountryPoint).alpha2;
-                countryShortNameAddUnLoadPoint = listCountriesNames.Find(x => x.Name == routePointsUnloadinfo[0].CountryPoint).alpha2;
+                countryShortNameAddLoadPoint = InitializeData.listCountriesNames.Find(x => x.Name == InitializeData.routePointsLoadinfo[0].CountryPoint).alpha2;
+                countryShortNameAddUnLoadPoint = InitializeData.listCountriesNames.Find(x => x.Name == InitializeData.routePointsUnloadinfo[0].CountryPoint).alpha2;
             }
             catch
             {
@@ -174,31 +185,31 @@ namespace Corum.Models.ViewModels.Tender
                 countryShortNameAddUnLoadPoint = "";
             }
 
-            string route = $"[{ competitiveListViewModel.ShipperCountryName}]|({ orderTruckTransport.Shipper}) - [‎{competitiveListViewModel.ConsigneeCountryName}]|({orderTruckTransport.Consignee})".Trim();  // Ограничение в количестве символов! Строка не должна быть слишком длинной! Иначе возинкнет ошибка запроса на тендер.
+            string route = $"[{ InitializeData.competitiveListViewModel.ShipperCountryName}]|({ InitializeData.orderTruckTransport.Shipper}) - [‎{InitializeData.competitiveListViewModel.ConsigneeCountryName}]|({InitializeData.orderTruckTransport.Consignee})".Trim();  // Ограничение в количестве символов! Строка не должна быть слишком длинной! Иначе возинкнет ошибка запроса на тендер.
             if (route.Length > 100)
             {
-                route = ($"[{ countryShortNameShipper}]|({ orderTruckTransport.Shipper})-[‎{countryShortNameConseegnee}]|({orderTruckTransport.Consignee})".Trim().Length <= 100) ? $"[{ countryShortNameShipper}]|({ orderTruckTransport.Shipper})-[‎{countryShortNameConseegnee}]|({orderTruckTransport.Consignee})".Trim() : $"[{ competitiveListViewModel.ShipperCountryName}] - [‎{competitiveListViewModel.ConsigneeCountryName}]";
+                route = ($"[{ countryShortNameShipper}]|({ InitializeData.orderTruckTransport.Shipper})-[‎{countryShortNameConseegnee}]|({InitializeData.orderTruckTransport.Consignee})".Trim().Length <= 100) ? $"[{ countryShortNameShipper}]|({ InitializeData.orderTruckTransport.Shipper})-[‎{countryShortNameConseegnee}]|({InitializeData.orderTruckTransport.Consignee})".Trim() : $"[{ InitializeData.competitiveListViewModel.ShipperCountryName}] - [‎{InitializeData.competitiveListViewModel.ConsigneeCountryName}]";
             }
             string addLoadPoint = "";
             string addUnLoadPoint = "";
-            
-            if (routePointsLoadinfo.Count != 0 && routePointsUnloadinfo.Count != 0)
+
+            if (InitializeData.routePointsLoadinfo.Count != 0 && InitializeData.routePointsUnloadinfo.Count != 0)
             {
                 try
                 {
-                    addLoadPoint = $"[{countryShortNameAddLoadPoint}]|({routePointsLoadinfo[0].NamePoint}-{routePointsLoadinfo[0].CityAddress})".Trim();
+                    addLoadPoint = $"[{countryShortNameAddLoadPoint}]|({InitializeData.routePointsLoadinfo[0].NamePoint}-{InitializeData.routePointsLoadinfo[0].CityAddress})".Trim();
                     if (addLoadPoint.Length > 100)
                     {
-                        addLoadPoint = ($"[{countryShortNameAddLoadPoint}]|({routePointsLoadinfo[0].NamePoint}-{routePointsLoadinfo[0].CityPoint})".Trim().Length <= 100) ? $"[{countryShortNameAddLoadPoint}]|({routePointsLoadinfo[0].NamePoint}-{routePointsLoadinfo[0].CityPoint})".Trim() : $"[{countryShortNameAddLoadPoint}]|({routePointsLoadinfo[0].NamePoint})".Trim();
+                        addLoadPoint = ($"[{countryShortNameAddLoadPoint}]|({InitializeData.routePointsLoadinfo[0].NamePoint}-{InitializeData.routePointsLoadinfo[0].CityPoint})".Trim().Length <= 100) ? $"[{countryShortNameAddLoadPoint}]|({InitializeData.routePointsLoadinfo[0].NamePoint}-{InitializeData.routePointsLoadinfo[0].CityPoint})".Trim() : $"[{countryShortNameAddLoadPoint}]|({InitializeData.routePointsLoadinfo[0].NamePoint})".Trim();
                     }
                 }
                 catch { addLoadPoint = "Отсутствует дополнительная точка загрузки"; }
                 try
                 {
-                    addUnLoadPoint = $"[{countryShortNameAddUnLoadPoint}]|({routePointsUnloadinfo[0].NamePoint}-{routePointsUnloadinfo[0].CityAddress})".Trim();
+                    addUnLoadPoint = $"[{countryShortNameAddUnLoadPoint}]|({InitializeData.routePointsUnloadinfo[0].NamePoint}-{InitializeData.routePointsUnloadinfo[0].CityAddress})".Trim();
                     if (addUnLoadPoint.Length > 100)
                     {
-                        addUnLoadPoint = ($"[{countryShortNameAddUnLoadPoint}]|({routePointsUnloadinfo[0].NamePoint}-{routePointsUnloadinfo[0].CityPoint})".Trim().Length <= 100) ? $"[{countryShortNameAddUnLoadPoint}]|({routePointsUnloadinfo[0].NamePoint}-{routePointsUnloadinfo[0].CityPoint})".Trim() : $"[{countryShortNameAddUnLoadPoint}]|({routePointsUnloadinfo[0].NamePoint})".Trim();
+                        addUnLoadPoint = ($"[{countryShortNameAddUnLoadPoint}]|({InitializeData.routePointsUnloadinfo[0].NamePoint}-{InitializeData.routePointsUnloadinfo[0].CityPoint})".Trim().Length <= 100) ? $"[{countryShortNameAddUnLoadPoint}]|({InitializeData.routePointsUnloadinfo[0].NamePoint}-{InitializeData.routePointsUnloadinfo[0].CityPoint})".Trim() : $"[{countryShortNameAddUnLoadPoint}]|({InitializeData.routePointsUnloadinfo[0].NamePoint})".Trim();
                     }
                 }
                 catch { addUnLoadPoint = "Отсутствует дополнительная точка выгрузки"; }
@@ -208,60 +219,60 @@ namespace Corum.Models.ViewModels.Tender
                 addLoadPoint = "Отсутствует дополнительная точка загрузки";
                 addUnLoadPoint = "Отсутствует дополнительная точка выгрузки";
             }
-            string cargoName = (competitiveListViewModel.TruckDescription.Trim().Length <= 100) ? competitiveListViewModel.TruckDescription.Trim() : competitiveListViewModel.TruckDescription.Trim().Remove(100);
-            string specCondition = (competitiveListViewModel.VehicleTypeName.Trim().Length <= 100) ? competitiveListViewModel.VehicleTypeName.Trim() : competitiveListViewModel.VehicleTypeName.Trim().Remove(100);
-            string downloadAddress = (orderTruckTransport.ShipperAdress.Trim().Length <= 100) ? orderTruckTransport.ShipperAdress.Trim() : orderTruckTransport.ShipperAdress.Trim().Remove(100);
-            string unloadAddress = (orderTruckTransport.ConsigneeAdress.Trim().Length <= 100) ? orderTruckTransport.ConsigneeAdress.Trim() : orderTruckTransport.ConsigneeAdress.Trim().Remove(100);
-            int num = (routePointsLoadinfo.Count < routePointsUnloadinfo.Count) ? routePointsUnloadinfo.Count : routePointsLoadinfo.Count;
+            string cargoName = (InitializeData.competitiveListViewModel.TruckDescription.Trim().Length <= 100) ? InitializeData.competitiveListViewModel.TruckDescription.Trim() : InitializeData.competitiveListViewModel.TruckDescription.Trim().Remove(100);
+            string specCondition = (InitializeData.competitiveListViewModel.VehicleTypeName.Trim().Length <= 100) ? InitializeData.competitiveListViewModel.VehicleTypeName.Trim() : InitializeData.competitiveListViewModel.VehicleTypeName.Trim().Remove(100);
+            string downloadAddress = (InitializeData.orderTruckTransport.ShipperAdress.Trim().Length <= 100) ? InitializeData.orderTruckTransport.ShipperAdress.Trim() : InitializeData.orderTruckTransport.ShipperAdress.Trim().Remove(100);
+            string unloadAddress = (InitializeData.orderTruckTransport.ConsigneeAdress.Trim().Length <= 100) ? InitializeData.orderTruckTransport.ConsigneeAdress.Trim() : InitializeData.orderTruckTransport.ConsigneeAdress.Trim().Remove(100);
+            int num = (InitializeData.routePointsLoadinfo.Count < InitializeData.routePointsUnloadinfo.Count) ? InitializeData.routePointsUnloadinfo.Count : InitializeData.routePointsLoadinfo.Count;
             switch (num)
             {
                 case 0:
                     this.propAliasValues = new List<T>() { new T() };
-                    (this.propAliasValues[0] as PropAliasValuesOne).WEIGHT = competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesOne).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesOne).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesOne).DOWNLOADDATEREQUIRED = competitiveListViewModel.FromDateRaw;
-                    (this.propAliasValues[0] as PropAliasValuesOne).UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesOne).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesOne).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesOne).ADDLOADPOINT1 = AddLoadPoint(1);
+                    (this.propAliasValues[0] as PropAliasValuesOne).WEIGHT = InitializeData.competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesOne).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesOne).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesOne).DOWNLOADDATEREQUIRED = InitializeData.competitiveListViewModel.FromDateRaw;
+                    (this.propAliasValues[0] as PropAliasValuesOne).UNLOADINGDATEREQUIRED = InitializeData.competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesOne).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesOne).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesOne).ADDLOADPOINT1 = AddLoadPoint(1);
                     (this.propAliasValues[0] as PropAliasValuesOne).ADDUNLOADINGPOINT1 = AddUnLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesOne).DOWNLOAD_ADDRESS = downloadAddress; (this.propAliasValues[0] as PropAliasValuesOne).UNLOADING_ADDRESS = unloadAddress; break;
                 case 1:
                     this.propAliasValues = new List<T>() { new T() };
-                    (this.propAliasValues[0] as PropAliasValuesOne).WEIGHT = competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesOne).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesOne).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesOne).DOWNLOADDATEREQUIRED = competitiveListViewModel.FromDateRaw;
-                    (this.propAliasValues[0] as PropAliasValuesOne).UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesOne).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesOne).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesOne).ADDLOADPOINT1 = AddLoadPoint(1);
+                    (this.propAliasValues[0] as PropAliasValuesOne).WEIGHT = InitializeData.competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesOne).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesOne).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesOne).DOWNLOADDATEREQUIRED = InitializeData.competitiveListViewModel.FromDateRaw;
+                    (this.propAliasValues[0] as PropAliasValuesOne).UNLOADINGDATEREQUIRED = InitializeData.competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesOne).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesOne).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesOne).ADDLOADPOINT1 = AddLoadPoint(1);
                     (this.propAliasValues[0] as PropAliasValuesOne).ADDUNLOADINGPOINT1 = AddUnLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesOne).DOWNLOAD_ADDRESS = downloadAddress; (this.propAliasValues[0] as PropAliasValuesOne).UNLOADING_ADDRESS = unloadAddress; break;
                 case 2:
                     this.propAliasValues = new List<T>() { new T() };
-                    (this.propAliasValues[0] as PropAliasValuesTwo).WEIGHT = competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesTwo).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesTwo).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesTwo).DOWNLOADDATEREQUIRED = competitiveListViewModel.FromDateRaw;
-                    (this.propAliasValues[0] as PropAliasValuesTwo).UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesTwo).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesTwo).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesTwo).ADDLOADPOINT1 = AddLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesTwo).ADDLOADPOINT2 = AddLoadPoint(2);
+                    (this.propAliasValues[0] as PropAliasValuesTwo).WEIGHT = InitializeData.competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesTwo).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesTwo).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesTwo).DOWNLOADDATEREQUIRED = InitializeData.competitiveListViewModel.FromDateRaw;
+                    (this.propAliasValues[0] as PropAliasValuesTwo).UNLOADINGDATEREQUIRED = InitializeData.competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesTwo).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesTwo).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesTwo).ADDLOADPOINT1 = AddLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesTwo).ADDLOADPOINT2 = AddLoadPoint(2);
                     (this.propAliasValues[0] as PropAliasValuesTwo).ADDUNLOADINGPOINT1 = AddUnLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesTwo).ADDUNLOADINGPOINT2 = AddUnLoadPoint(2); (this.propAliasValues[0] as PropAliasValuesTwo).DOWNLOAD_ADDRESS = downloadAddress; (this.propAliasValues[0] as PropAliasValuesTwo).UNLOADING_ADDRESS = unloadAddress; break;
                 case 3:
                     this.propAliasValues = new List<T>() { new T() };
-                    (this.propAliasValues[0] as PropAliasValuesThree).WEIGHT = competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesThree).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesThree).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesThree).DOWNLOADDATEREQUIRED = competitiveListViewModel.FromDateRaw;
-                    (this.propAliasValues[0] as PropAliasValuesThree).UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesThree).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesThree).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesThree).ADDLOADPOINT1 = AddLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesThree).ADDLOADPOINT2 = AddLoadPoint(2);
+                    (this.propAliasValues[0] as PropAliasValuesThree).WEIGHT = InitializeData.competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesThree).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesThree).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesThree).DOWNLOADDATEREQUIRED = InitializeData.competitiveListViewModel.FromDateRaw;
+                    (this.propAliasValues[0] as PropAliasValuesThree).UNLOADINGDATEREQUIRED = InitializeData.competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesThree).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesThree).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesThree).ADDLOADPOINT1 = AddLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesThree).ADDLOADPOINT2 = AddLoadPoint(2);
                     (this.propAliasValues[0] as PropAliasValuesThree).ADDUNLOADINGPOINT1 = AddUnLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesThree).ADDUNLOADINGPOINT2 = AddUnLoadPoint(2); (this.propAliasValues[0] as PropAliasValuesThree).DOWNLOAD_ADDRESS = downloadAddress; (this.propAliasValues[0] as PropAliasValuesThree).UNLOADING_ADDRESS = unloadAddress; (this.propAliasValues[0] as PropAliasValuesThree).ADDLOADPOINT3 = AddLoadPoint(3);
                     (this.propAliasValues[0] as PropAliasValuesThree).ADDUNLOADINGPOINT3 = AddUnLoadPoint(3); break;
                 case 4:
                     this.propAliasValues = new List<T>() { new T() };
-                    (this.propAliasValues[0] as PropAliasValuesFour).WEIGHT = competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesFour).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesFour).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesFour).DOWNLOADDATEREQUIRED = competitiveListViewModel.FromDateRaw;
-                    (this.propAliasValues[0] as PropAliasValuesFour).UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesFour).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesFour).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesFour).ADDLOADPOINT1 = AddLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesFour).ADDLOADPOINT2 = AddLoadPoint(2);
+                    (this.propAliasValues[0] as PropAliasValuesFour).WEIGHT = InitializeData.competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesFour).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesFour).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesFour).DOWNLOADDATEREQUIRED = InitializeData.competitiveListViewModel.FromDateRaw;
+                    (this.propAliasValues[0] as PropAliasValuesFour).UNLOADINGDATEREQUIRED = InitializeData.competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesFour).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesFour).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesFour).ADDLOADPOINT1 = AddLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesFour).ADDLOADPOINT2 = AddLoadPoint(2);
                     (this.propAliasValues[0] as PropAliasValuesFour).ADDUNLOADINGPOINT1 = AddUnLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesFour).ADDUNLOADINGPOINT2 = AddUnLoadPoint(2); (this.propAliasValues[0] as PropAliasValuesFour).DOWNLOAD_ADDRESS = downloadAddress; (this.propAliasValues[0] as PropAliasValuesFour).UNLOADING_ADDRESS = unloadAddress; (this.propAliasValues[0] as PropAliasValuesFour).ADDLOADPOINT3 = AddLoadPoint(3);
                     (this.propAliasValues[0] as PropAliasValuesFour).ADDUNLOADINGPOINT3 = AddUnLoadPoint(3); (this.propAliasValues[0] as PropAliasValuesFour).ADDUNLOADINGPOINT4 = AddUnLoadPoint(4); (this.propAliasValues[0] as PropAliasValuesFour).ADDLOADPOINT4 = AddLoadPoint(4); break;
                 case 5:
                     this.propAliasValues = new List<T>() { new T() };
-                    (this.propAliasValues[0] as PropAliasValuesFive).WEIGHT = competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesFive).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesFive).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesFive).DOWNLOADDATEREQUIRED = competitiveListViewModel.FromDateRaw;
-                    (this.propAliasValues[0] as PropAliasValuesFive).UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesFive).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesFive).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesFive).ADDLOADPOINT1 = AddLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesFive).ADDLOADPOINT2 = AddLoadPoint(2);
+                    (this.propAliasValues[0] as PropAliasValuesFive).WEIGHT = InitializeData.competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesFive).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesFive).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesFive).DOWNLOADDATEREQUIRED = InitializeData.competitiveListViewModel.FromDateRaw;
+                    (this.propAliasValues[0] as PropAliasValuesFive).UNLOADINGDATEREQUIRED = InitializeData.competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesFive).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesFive).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesFive).ADDLOADPOINT1 = AddLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesFive).ADDLOADPOINT2 = AddLoadPoint(2);
                     (this.propAliasValues[0] as PropAliasValuesFive).ADDUNLOADINGPOINT1 = AddUnLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesFive).ADDUNLOADINGPOINT2 = AddUnLoadPoint(2); (this.propAliasValues[0] as PropAliasValuesFive).DOWNLOAD_ADDRESS = downloadAddress; (this.propAliasValues[0] as PropAliasValuesFive).UNLOADING_ADDRESS = unloadAddress; (this.propAliasValues[0] as PropAliasValuesFive).ADDLOADPOINT3 = AddLoadPoint(3);
                     (this.propAliasValues[0] as PropAliasValuesFive).ADDUNLOADINGPOINT3 = AddUnLoadPoint(3); (this.propAliasValues[0] as PropAliasValuesFive).ADDUNLOADINGPOINT4 = AddUnLoadPoint(4); (this.propAliasValues[0] as PropAliasValuesFive).ADDLOADPOINT4 = AddLoadPoint(4); (this.propAliasValues[0] as PropAliasValuesFive).ADDUNLOADINGPOINT5 = AddUnLoadPoint(5); (this.propAliasValues[0] as PropAliasValuesFive).ADDLOADPOINT5 = AddLoadPoint(5); break;
                 default:
                     this.propAliasValues = new List<T>() { new T() };
-                    (this.propAliasValues[0] as PropAliasValuesOne).WEIGHT = competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesOne).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesOne).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesOne).DOWNLOADDATEREQUIRED = competitiveListViewModel.FromDateRaw;
-                    (this.propAliasValues[0] as PropAliasValuesOne).UNLOADINGDATEREQUIRED = competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesOne).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesOne).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesOne).ADDLOADPOINT1 = AddLoadPoint(1);
+                    (this.propAliasValues[0] as PropAliasValuesOne).WEIGHT = InitializeData.competitiveListViewModel.Weight + ", тн"; (this.propAliasValues[0] as PropAliasValuesOne).ROUTE = route; (this.propAliasValues[0] as PropAliasValuesOne).CARGO_NAME = cargoName; (this.propAliasValues[0] as PropAliasValuesOne).DOWNLOADDATEREQUIRED = InitializeData.competitiveListViewModel.FromDateRaw;
+                    (this.propAliasValues[0] as PropAliasValuesOne).UNLOADINGDATEREQUIRED = InitializeData.competitiveListViewModel.ToDateRaw; (this.propAliasValues[0] as PropAliasValuesOne).REQUIRED_NUMBER_OF_CARS = "1"; (this.propAliasValues[0] as PropAliasValuesOne).SPECIALCONDITIONS = specCondition; (this.propAliasValues[0] as PropAliasValuesOne).ADDLOADPOINT1 = AddLoadPoint(1);
                     (this.propAliasValues[0] as PropAliasValuesOne).ADDUNLOADINGPOINT1 = AddUnLoadPoint(1); (this.propAliasValues[0] as PropAliasValuesOne).DOWNLOAD_ADDRESS = downloadAddress; (this.propAliasValues[0] as PropAliasValuesOne).UNLOADING_ADDRESS = unloadAddress; break;
             }
         }
         public string AddLoadPoint(int number)
         {
-            var countryShortNameShipper = listCountriesNames.Find(x => x.Code == orderTruckTransport.ShipperCountryId).alpha2;
+            var countryShortNameShipper = InitializeData.listCountriesNames.Find(x => x.Code == InitializeData.orderTruckTransport.ShipperCountryId).alpha2;
             var countryShortNameAddLoadPoint = "";
             try
             {
-                countryShortNameAddLoadPoint = listCountriesNames.Find(x => x.Name == routePointsLoadinfo[number - 1].CountryPoint).alpha2;
+                countryShortNameAddLoadPoint = InitializeData.listCountriesNames.Find(x => x.Name == InitializeData.routePointsLoadinfo[number - 1].CountryPoint).alpha2;
             }
             catch
             {
@@ -270,10 +281,10 @@ namespace Corum.Models.ViewModels.Tender
             string addLoadPoint = "";
             try
             {
-                addLoadPoint = $"[{countryShortNameAddLoadPoint}]|({routePointsLoadinfo[number - 1].NamePoint}-{routePointsLoadinfo[number - 1].CityAddress})".Trim();
+                addLoadPoint = $"[{countryShortNameAddLoadPoint}]|({InitializeData.routePointsLoadinfo[number - 1].NamePoint}-{InitializeData.routePointsLoadinfo[number - 1].CityAddress})".Trim();
                 if (addLoadPoint.Length > 100)
                 {
-                    addLoadPoint = ($"[{countryShortNameAddLoadPoint}]|({routePointsLoadinfo[number - 1].NamePoint}-{routePointsLoadinfo[number - 1].CityPoint})".Trim().Length <= 100) ? $"[{countryShortNameAddLoadPoint}]|({routePointsLoadinfo[number - 1].NamePoint}-{routePointsLoadinfo[number - 1].CityPoint})".Trim() : $"[{countryShortNameAddLoadPoint}]|({routePointsLoadinfo[number - 1].NamePoint})".Trim();
+                    addLoadPoint = ($"[{countryShortNameAddLoadPoint}]|({InitializeData.routePointsLoadinfo[number - 1].NamePoint}-{InitializeData.routePointsLoadinfo[number - 1].CityPoint})".Trim().Length <= 100) ? $"[{countryShortNameAddLoadPoint}]|({InitializeData.routePointsLoadinfo[number - 1].NamePoint}-{InitializeData.routePointsLoadinfo[number - 1].CityPoint})".Trim() : $"[{countryShortNameAddLoadPoint}]|({InitializeData.routePointsLoadinfo[number - 1].NamePoint})".Trim();
                 }
             }
             catch
@@ -285,11 +296,11 @@ namespace Corum.Models.ViewModels.Tender
 
         public string AddUnLoadPoint(int number)
         {
-            var countryShortNameConseegnee = listCountriesNames.Find(x => x.Code == orderTruckTransport.ConsigneeCountryId).alpha2;
+            var countryShortNameConseegnee = InitializeData.listCountriesNames.Find(x => x.Code == InitializeData.orderTruckTransport.ConsigneeCountryId).alpha2;
             var countryShortNameAddUnLoadPoint = "";
             try
             {
-                countryShortNameAddUnLoadPoint = listCountriesNames.Find(x => x.Name == routePointsUnloadinfo[number - 1].CountryPoint).alpha2;
+                countryShortNameAddUnLoadPoint = InitializeData.listCountriesNames.Find(x => x.Name == InitializeData.routePointsUnloadinfo[number - 1].CountryPoint).alpha2;
             }
             catch
             {
@@ -298,10 +309,10 @@ namespace Corum.Models.ViewModels.Tender
             string addUnLoadPoint = "";
             try
             {
-                addUnLoadPoint = $"[{countryShortNameAddUnLoadPoint}]|({routePointsUnloadinfo[number - 1].NamePoint}-{routePointsUnloadinfo[number - 1].CityAddress})".Trim();
+                addUnLoadPoint = $"[{countryShortNameAddUnLoadPoint}]|({InitializeData.routePointsUnloadinfo[number - 1].NamePoint}-{InitializeData.routePointsUnloadinfo[number - 1].CityAddress})".Trim();
                 if (addUnLoadPoint.Length > 100)
                 {
-                    addUnLoadPoint = ($"[{countryShortNameAddUnLoadPoint}]|({routePointsUnloadinfo[number - 1].NamePoint}-{routePointsUnloadinfo[number - 1].CityPoint})".Trim().Length <= 100) ? $"[{countryShortNameAddUnLoadPoint}]|({routePointsUnloadinfo[number - 1].NamePoint}-{routePointsUnloadinfo[number - 1].CityPoint})".Trim() : $"[{countryShortNameAddUnLoadPoint}]|({routePointsUnloadinfo[number - 1].NamePoint})".Trim();
+                    addUnLoadPoint = ($"[{countryShortNameAddUnLoadPoint}]|({InitializeData.routePointsUnloadinfo[number - 1].NamePoint}-{InitializeData.routePointsUnloadinfo[number - 1].CityPoint})".Trim().Length <= 100) ? $"[{countryShortNameAddUnLoadPoint}]|({InitializeData.routePointsUnloadinfo[number - 1].NamePoint}-{InitializeData.routePointsUnloadinfo[number - 1].CityPoint})".Trim() : $"[{countryShortNameAddUnLoadPoint}]|({InitializeData.routePointsUnloadinfo[number - 1].NamePoint})".Trim();
                 }
             }
             catch
@@ -353,7 +364,7 @@ namespace Corum.Models.ViewModels.Tender
     }
 
 
-    public class Lots<T> where T : TenderParamsDefaults, new()  // Класс описывающий лот тендера
+    public class Lots<T> where T : new()  // Класс описывающий лот тендера
     {
 
         public string lotName { get; set; }  // наименование лота (тип  данных string, максимальная длина 100 символов) (необязательное поле)
@@ -395,7 +406,7 @@ namespace Corum.Models.ViewModels.Tender
 
 
 
-    public class DataTender<T> where T : TenderParamsDefaults, new()// Тело data из формы тендера
+    public class DataTender<T> where T : new()// Тело data из формы тендера
     {
         private string tenderEXTERNALN, dateStartDef, dateEndDef;
         private int lightModeID;
@@ -404,69 +415,50 @@ namespace Corum.Models.ViewModels.Tender
         public SelectList listRegums, listTures, listServices, listPublications;
         DateTime date = DateTime.Now;
         public Dictionary<string, string> otherParams;
-        public List<Countries> listCountriesNames;
-        public OrderTruckTransport orderTruckTransport;
-        public IList<OrderAdditionalRoutePointModel> routePointsLoadinfo;
-        public IList<OrderAdditionalRoutePointModel> routePointsUnloadinfo;
-        public CompetitiveListViewModel competitiveListViewModel;
-        public List<BalanceKeepers> listBalanceKeepers;
-        public List<TenderServices> listTenderServices;
-        public List<SpecificationNames> listSpecificationNames;
-        protected Corum.Models.ICorumDataProvider context;
-        public TendFormDeserializedJSON formDeserializedJSON;
+        
         public DataTender()
         {
-            this.listCountriesNames = Initialize.listCountriesNames;
-            this.orderTruckTransport = Initialize.orderTruckTransport;
-            this.routePointsLoadinfo = Initialize.routePointsLoadinfo;
-            this.routePointsUnloadinfo = Initialize.routePointsUnloadinfo;
-            this.competitiveListViewModel = Initialize.competitiveListViewModel;
-            NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
-            this.context = DependencyResolver.Current.GetService<ICorumDataProvider>();
-            this.listBalanceKeepers = context.GetBalanceKeepers();
-            this.listTenderServices = context.GetTenderServices();
-
             Lots<T> lot = new Lots<T>();
             lots = new List<Lots<T>>();
             lots.Add(lot);
-            switch (competitiveListViewModel.tripTypeName)
+            switch (InitializeData.competitiveListViewModel.tripTypeName)
             {
                 case "Международная":
                     {
-                        tenderName = $"({competitiveListViewModel.Id}) {competitiveListViewModel.ShipperCountryName}, {competitiveListViewModel.CityFrom} ({orderTruckTransport.Shipper})" +
-                                     $" - ‎{competitiveListViewModel.ConsigneeCountryName}, {competitiveListViewModel.CityTo}  ({orderTruckTransport.Consignee}), " +
-                       $"{competitiveListViewModel.Weight}тн., погрузка {competitiveListViewModel.FromDate}";
+                        tenderName = $"({InitializeData.competitiveListViewModel.Id}) {InitializeData.competitiveListViewModel.ShipperCountryName}, {InitializeData.competitiveListViewModel.CityFrom} ({InitializeData.orderTruckTransport.Shipper})" +
+                                     $" - ‎{InitializeData.competitiveListViewModel.ConsigneeCountryName}, {InitializeData.competitiveListViewModel.CityTo}  ({InitializeData.orderTruckTransport.Consignee}), " +
+                       $"{InitializeData.competitiveListViewModel.Weight}тн., погрузка {InitializeData.competitiveListViewModel.FromDate}";
                         break;
                     }
                 default:
                     {
-                        tenderName = $"({competitiveListViewModel.Id}) {competitiveListViewModel.CityFrom} ({orderTruckTransport.Shipper})" +
-                                     $" - ‎{competitiveListViewModel.CityTo}  ({orderTruckTransport.Consignee}), груз - " +
-                       $"{competitiveListViewModel.Weight}тн., дата погрузки {competitiveListViewModel.FromDate}";
+                        tenderName = $"({InitializeData.competitiveListViewModel.Id}) {InitializeData.competitiveListViewModel.CityFrom} ({InitializeData.orderTruckTransport.Shipper})" +
+                                     $" - ‎{InitializeData.competitiveListViewModel.CityTo}  ({InitializeData.orderTruckTransport.Consignee}), груз - " +
+                       $"{InitializeData.competitiveListViewModel.Weight}тн., дата погрузки {InitializeData.competitiveListViewModel.FromDate}";
                         break;
                     }
             }
             otherParams = new Dictionary<string, string>();
             tenderAuthorName = "Литовченко С.В.";
-            tenderAuthorId = (tenderAuthorName != "Литовченко С.В.") ? 0 : Convert.ToInt64(allAppSettings["tenderAuthorId"]);
+            tenderAuthorId = (tenderAuthorName != "Литовченко С.В.") ? 0 : Convert.ToInt64(InitializeData.allAppSettings["tenderAuthorId"]);
             companyName = "ООО «КОРУМ ГРУПП»";
-            companyId = (companyName != "ООО «КОРУМ ГРУПП»") ? 0 : Convert.ToInt64(allAppSettings["companyId"]);
+            companyId = (companyName != "ООО «КОРУМ ГРУПП»") ? 0 : Convert.ToInt64(InitializeData.allAppSettings["companyId"]);
             regums = new string[] { "Облегченный" };
             listRegums = new SelectList(regums);
 
-            subCompanyName = competitiveListViewModel.PayerName;
-            var subCompanyIdn = listBalanceKeepers.Find((x) => x.BalanceKeeper.Contains(subCompanyName)).subCompanyId;
+            subCompanyName = InitializeData.competitiveListViewModel.PayerName;
+            var subCompanyIdn = InitializeData.listBalanceKeepers.Find((x) => x.BalanceKeeper.Contains(subCompanyName)).subCompanyId_Test;
             subCompanyId = (subCompanyIdn == null) ? 10 : Convert.ToInt64(subCompanyIdn);
 
             typeTures = new string[] { "Тендер RFx", "Аукцион/Редукцион" };
             listTures = new SelectList(typeTures);
 
             depName = "Департамент по логистике";
-            depId = (depName != "Департамент по логистике") ? 0 : Convert.ToInt64(allAppSettings["depId"]);
+            depId = (depName != "Департамент по логистике") ? 0 : Convert.ToInt64(InitializeData.allAppSettings["depId"]);
             listTenderCategor = new Dictionary<int, string>();
-            foreach (var item in listTenderServices.ToList())
+            foreach (var item in InitializeData.listTenderServices.ToList())
             {
-                listTenderCategor[item.industryId] = item.industryName;
+                listTenderCategor[item.industryId_Test] = item.industryName;
             }
             listServices = new SelectList(listTenderCategor.Values);
             dateStartDef = date.AddHours(2).ToString("yyyy-MM-dd'T'HH:mm");
@@ -477,56 +469,51 @@ namespace Corum.Models.ViewModels.Tender
             typePublications = new string[] { "Открытый", "Закрытый" };
             listPublications = new SelectList(typePublications);
             Random random = new Random();
-            tenderExternalN = competitiveListViewModel.Id.ToString() + "-" + random.Next(1, 10000).ToString();
-            this.otherParams.Add("DOWNLOAD_ADDRESS", $"{competitiveListViewModel.ShipperCountryName}, {competitiveListViewModel.CityFrom} ({orderTruckTransport.Shipper})");
-            this.otherParams.Add("UNLOADING_ADDRESS", $"{competitiveListViewModel.ConsigneeCountryName}, {competitiveListViewModel.CityTo}  ({orderTruckTransport.Consignee})");
-            this.otherParams.Add("DOWNLOADDATEREQUIRED", $"{competitiveListViewModel.FromDateRaw}");
-            this.otherParams.Add("UNLOADINGDATEREQUIRED", $"{competitiveListViewModel.ToDateRaw}");
-            this.otherParams.Add("ROUTE", $"[{ competitiveListViewModel.ShipperCountryName}]|{competitiveListViewModel.CityFrom}({ orderTruckTransport.Shipper}) - [‎{competitiveListViewModel.ConsigneeCountryName}]|{competitiveListViewModel.CityTo}({orderTruckTransport.Consignee})".Trim());
-            this.otherParams.Add("CARGO_NAME", $"{competitiveListViewModel.TruckDescription.Trim()}");
+            tenderExternalN = InitializeData.competitiveListViewModel.Id.ToString() + "-" + random.Next(1, 10000).ToString();
+            this.otherParams.Add("DOWNLOAD_ADDRESS", $"{InitializeData.competitiveListViewModel.ShipperCountryName}, {InitializeData.competitiveListViewModel.CityFrom} ({InitializeData.orderTruckTransport.Shipper})");
+            this.otherParams.Add("UNLOADING_ADDRESS", $"{InitializeData.competitiveListViewModel.ConsigneeCountryName}, {InitializeData.competitiveListViewModel.CityTo}  ({InitializeData.orderTruckTransport.Consignee})");
+            this.otherParams.Add("DOWNLOADDATEREQUIRED", $"{InitializeData.competitiveListViewModel.FromDateRaw}");
+            this.otherParams.Add("UNLOADINGDATEREQUIRED", $"{InitializeData.competitiveListViewModel.ToDateRaw}");
+            this.otherParams.Add("ROUTE", $"[{ InitializeData.competitiveListViewModel.ShipperCountryName}]|{InitializeData.competitiveListViewModel.CityFrom}({ InitializeData.orderTruckTransport.Shipper}) - [‎{InitializeData.competitiveListViewModel.ConsigneeCountryName}]|{InitializeData.competitiveListViewModel.CityTo}({InitializeData.orderTruckTransport.Consignee})".Trim());
+            this.otherParams.Add("CARGO_NAME", $"{InitializeData.competitiveListViewModel.TruckDescription.Trim()}");
         }
 
 
-        public void InitializedAfterDeserialized(TenderSumOrderId tenderSumOrder)
+        public void InitializedAfterDeserialized()
         {
-
-            TendFormDeserializedJSON tendFormDeserializedJSON = tenderSumOrder.ListItemsModelTenderForm;
-            this.formDeserializedJSON = tendFormDeserializedJSON;
-            this.listSpecificationNames = context.GetSpecificationNames();
             Random random = new Random();
-            typeTrure = this.formDeserializedJSON.TypeTure;
+            typeTrure = InitializeData.formDeserializedJSON.TypeTure;
             mode = (typeTures[0].Contains(typeTrure)) ? 1 : 2;
 
-            budget = Convert.ToDouble(this.formDeserializedJSON.Budget);
+            budget = Convert.ToDouble(InitializeData.formDeserializedJSON.Budget);
 
-            typePublic = this.formDeserializedJSON.TypePublic;
+            typePublic = InitializeData.formDeserializedJSON.TypePublic;
             kind = (typePublications[0].Contains(typePublic)) ? 1 : 2;
 
-            industryName = this.formDeserializedJSON.IndustryName;
-            industryId = listTenderServices.ToList().Find((x) => x.industryName.Contains(industryName)).industryId;
+            industryName = InitializeData.formDeserializedJSON.IndustryName;
+            industryId = InitializeData.listTenderServices.ToList().Find((x) => x.industryName.Contains(industryName)).industryId_Test;
 
-            dateStart = this.formDeserializedJSON.DateStart;
-            dateEnd = this.formDeserializedJSON.DateEnd;
+            dateStart = InitializeData.formDeserializedJSON.DateStart;
+            dateEnd = InitializeData.formDeserializedJSON.DateEnd;
 
-            this.lots[0].lotName = this.formDeserializedJSON.LotName;
+            this.lots[0].lotName = InitializeData.formDeserializedJSON.LotName;
             lotName = this.lots[0].lotName;
 
             lots[0].items = new List<Items<T>>();
 
-            if (this.formDeserializedJSON.JqxGridNmc != null)
+            if (InitializeData.formDeserializedJSON.JqxGridNmc != null)
             {
-                foreach (var item in this.formDeserializedJSON.JqxGridNmc)
+                foreach (var item in InitializeData.formDeserializedJSON.JqxGridNmc)
                 {
                     try
                     {
                         int countCars = Convert.ToInt32(item.Value.qty);
                         do
                         {
-                            Items<T>.OrderID = Convert.ToInt64(tenderSumOrder.OrderId);
                             Items<T> items = new Items<T>();
                             items.qty = 1;
-                            items.nmcId = Convert.ToInt64(listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).nmcWorkId);
-                            items.itemExternalN = listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).SpecCode.ToString() + random.Next(10000).ToString();
+                            items.nmcId = Convert.ToInt64(InitializeData.listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).nmcTestId);
+                            items.itemExternalN = InitializeData.listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).SpecCode.ToString() + random.Next(10000).ToString();
 
                             lots[0].items.Add(items);
                         }

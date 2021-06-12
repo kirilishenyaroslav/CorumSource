@@ -101,7 +101,7 @@ namespace CorumAdminUI.Controllers
                    context.getLoadPoints(OrderID, true).ToList(), context.getLoadPoints(OrderID, false).ToList()); break;
                 }
 
-                tenderForma.data.InitializedAfterDeserialized(tenderSumOrder);
+                tenderForma.data.InitializedAfterDeserialized();
                 tenderForma.data.tenderName = tenderSumOrder.ListItemsModelTenderForm.TenderName;
                 localTimeStart = new DateTimeOffset(DateTime.Parse(tenderSumOrder.ListItemsModelTenderForm.DateStart));
                 localTimeEnd = new DateTimeOffset(DateTime.Parse(tenderSumOrder.ListItemsModelTenderForm.DateEnd));

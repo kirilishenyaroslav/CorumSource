@@ -204,7 +204,6 @@
     <Compile Include="ViewModels\Tender\RemainingTimeUpdate.cs" />
     <Compile Include="ViewModels\Tender\RequestJSONDeserializedToModel.cs" />
     <Compile Include="ViewModels\Tender\TenderForma.cs" />
-    <Compile Include="ViewModels\Tender\TenderParamsDefaults.cs" />
     <Compile Include="ViewModels\Tender\TenderRegistryUpdate.cs" />
     <Compile Include="ViewModels\Tender\TenderSumOrderId.cs" />
     <Compile Include="ViewModels\Tender\TendFormDeserializedJSON.cs" />

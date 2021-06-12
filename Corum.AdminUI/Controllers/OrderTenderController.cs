@@ -58,22 +58,16 @@ namespace CorumAdminUI.Controllers
         [HttpPost]
         public ActionResult SendNotificationTender(TenderSumOrderId tenderSumOrder)
         {
+            OrderID = Convert.ToInt64(tenderSumOrder.OrderId);
             Dictionary<string, string> otherParams = new Dictionary<string, string>();
             DateTimeOffset localTimeStart, otherTimeStart, localTimeEnd, otherTimeEnd;
             dynamic tenderForma = null;
             var routePointsLoadinfo = context.getLoadPoints(OrderID, true).ToList();
             var routePointsUnloadinfo = context.getLoadPoints(OrderID, false).ToList();
-            int count = 5;
             int num = 0;
-            while (routePointsLoadinfo.Count == 0 && count++ < 5)
-            {
-                routePointsLoadinfo = context.getLoadPoints(OrderID, true).ToList();
-                routePointsUnloadinfo = context.getLoadPoints(OrderID, false).ToList();
-            }
             try
             {
                 TendFormDeserializedJSON tendFormDeserializedJSON = tenderSumOrder.ListItemsModelTenderForm;
-                OrderID = Convert.ToInt64(tenderSumOrder.OrderId);
                 num = (routePointsLoadinfo.Count < routePointsUnloadinfo.Count) ? routePointsUnloadinfo.Count : routePointsLoadinfo.Count;
                 switch (num)
                 {

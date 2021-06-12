@@ -135,15 +135,16 @@ namespace Corum.Models.ViewModels.Tender
         public IList<OrderAdditionalRoutePointModel> routePointsUnloadinfo;
         public CompetitiveListViewModel competitiveListViewModel;
         protected Corum.Models.ICorumDataProvider context;
+        public static long OrderID;
 
         public Items()
         {
+            context = DependencyResolver.Current.GetService<ICorumDataProvider>();
             this.listCountriesNames = Initialize.listCountriesNames;
             this.orderTruckTransport = Initialize.orderTruckTransport;
-            this.routePointsLoadinfo = Initialize.routePointsLoadinfo;
-            this.routePointsUnloadinfo = Initialize.routePointsUnloadinfo;
+            this.routePointsLoadinfo = context.getLoadPoints(OrderID, true).ToList();
+            this.routePointsUnloadinfo = context.getLoadPoints(OrderID, false).ToList();
             this.competitiveListViewModel = Initialize.competitiveListViewModel;
-            context = DependencyResolver.Current.GetService<ICorumDataProvider>();
             //this.propValues = new List<PropValues>()   //!!!!! При ручной установке атрибутов необходимо раскомментировать данный блок кода!!!!!
             //{
             //    new PropValuesOne()
@@ -180,12 +181,7 @@ namespace Corum.Models.ViewModels.Tender
             }
             string addLoadPoint = "";
             string addUnLoadPoint = "";
-            int count = 0;
-            while (routePointsLoadinfo.Count == 0 && count++ < 5)
-            {
-                routePointsLoadinfo = context.getLoadPoints(competitiveListViewModel.OrderId, true).ToList();
-                routePointsUnloadinfo = context.getLoadPoints(competitiveListViewModel.OrderId, false).ToList();
-            }
+            
             if (routePointsLoadinfo.Count != 0 && routePointsUnloadinfo.Count != 0)
             {
                 try
@@ -493,6 +489,7 @@ namespace Corum.Models.ViewModels.Tender
 
         public void InitializedAfterDeserialized(TenderSumOrderId tenderSumOrder)
         {
+
             TendFormDeserializedJSON tendFormDeserializedJSON = tenderSumOrder.ListItemsModelTenderForm;
             this.formDeserializedJSON = tendFormDeserializedJSON;
             this.listSpecificationNames = context.GetSpecificationNames();
@@ -525,6 +522,7 @@ namespace Corum.Models.ViewModels.Tender
                         int countCars = Convert.ToInt32(item.Value.qty);
                         do
                         {
+                            Items<T>.OrderID = Convert.ToInt64(tenderSumOrder.OrderId);
                             Items<T> items = new Items<T>();
                             items.qty = 1;
                             items.nmcId = Convert.ToInt64(listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).nmcWorkId);

@@ -12,28 +12,25 @@ using System.Diagnostics;
 
 namespace Corum.Models.ViewModels.Tender
 {
-    public class PostApiTender<T> where T: new()
+    public class AddFilePostApiTender
     {
-        public async Task<BaseResponse> GetCallAsync(BaseClient clientbase, object postValues, int number)
+        public async Task<ResponseApi> GetCallAsync(HttpClientApi clientbase, byte[] data, string filename)
         {
             HttpClient client = clientbase.client;
-            BaseResponse baseresponse = clientbase.baseresponse;
+            byte[] postContent = data;
+            ResponseApi baseresponse = clientbase.baseresponse;
+            var requestContent = new MultipartFormDataContent();
+            var streamContent = new ByteArrayContent(data);
+            streamContent.Headers.Add("Content-Type", "application/octet-stream");
+            streamContent.Headers.Add("Content-Disposition", "form-data; name=\"Orderfile\"; filename=\"" + filename + "\"");
+            requestContent.Add(streamContent, "Orderfile", filename);
+
             int count = 0;
             try
             {
                 while (count < 10)
                 {
-                    switch (number)
-                    {
-                        case 0: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesOne>).Result; break;
-                        case 1: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesOne>).Result; break;
-                        case 2: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesTwo>).Result; break;
-                        case 3: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesThree>).Result; break;
-                        case 4: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesFour>).Result; break;
-                        case 5: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesFive>).Result; break;
-                        default: baseresponse.response = client.PostAsJsonAsync(client.BaseAddress, postValues as TenderForma<PropAliasValuesOne>).Result; break;
-                    }
-                   
+                    baseresponse.response = client.PostAsync(client.BaseAddress.AbsoluteUri, requestContent).Result;
                     if (baseresponse.response.IsSuccessStatusCode)
                     {
                         baseresponse.ResponseMessage = await baseresponse.response.Content.ReadAsStringAsync();
@@ -57,33 +54,27 @@ namespace Corum.Models.ViewModels.Tender
             return baseresponse;
         }
     }
-    public class BaseResponse
+    public class ResponseApi
     {
         public int StatusCode { get; set; }
         public string ResponseMessage { get; set; }
         public HttpResponseMessage response;
     }
 
-    public class BaseClient
+    public class HttpClientApi
     {
         public readonly HttpClient client;
-        public readonly BaseResponse baseresponse;
+        public readonly ResponseApi baseresponse;
 
-        public BaseClient(string baseAddress, string username, string password)
+        public HttpClientApi(string baseAddress, string username, string password)
         {
-            HttpClientHandler handler = new HttpClientHandler()
-            {
-                Proxy = new WebProxy("http://127.0.0.1:8888"),
-                UseProxy = false,
-            };
-
-            client = new HttpClient(handler);
+            client = new HttpClient();
             client.BaseAddress = new Uri(baseAddress);
             client.DefaultRequestHeaders.Add("ContentType", "application/json");
             var val = System.Convert.ToBase64String(Encoding.UTF8.GetBytes(username + ":" + password));
             client.DefaultRequestHeaders.Add("Authorization", "Basic " + val);
 
-            baseresponse = new BaseResponse();
+            baseresponse = new ResponseApi();
         }
     }
 }

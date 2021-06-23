@@ -127,6 +127,47 @@ namespace Corum.DAL
             return registerTenders;
         }
 
+        public List<RegisterTenders> GetRegisterTendersOfOrder(long orderId)
+        {
+            List<RegisterTenders> allRegisterTenders = new List<RegisterTenders>();
+            var registerTendersList = db.RegisterTenders.OrderByDescending(x => x.dateEnd).ToList();
+            foreach (var item in registerTendersList)
+            {
+                if (item.OrderId == orderId)
+                {
+                    RegisterTenders registerTenders = new RegisterTenders();
+                    registerTenders.dateEnd = item.dateEnd;
+                    registerTenders.dateStart = item.dateStart;
+                    registerTenders.Id = item.Id;
+                    registerTenders.processValue = item.processValue;
+                    registerTenders.remainingTime = UpdateRegistersRemainingTime(item.tenderNumber);
+                    registerTenders.TenderUuid = item.TenderUuid;
+                    registerTenders.OrderId = item.OrderId;
+                    registerTenders.stageNumber = item.stageNumber;
+                    registerTenders.tenderNumber = item.tenderNumber;
+                    registerTenders.cargoName = item.cargoName;
+                    registerTenders.dateCreate = item.dateCreate;
+                    registerTenders.dateUpdateStatus = item.dateUpdateStatus;
+                    registerTenders.downloadAddress = item.downloadAddress;
+                    registerTenders.downloadDataRequired = item.downloadDataRequired;
+                    registerTenders.industryId = item.industryId;
+                    registerTenders.industryName = item.industryName;
+                    registerTenders.lotState = item.lotState;
+                    registerTenders.mode = item.mode;
+                    registerTenders.process = item.process;
+                    registerTenders.resultsTender = item.resultsTender;
+                    registerTenders.routeOrder = item.routeOrder;
+                    registerTenders.stageMode = item.stageMode;
+                    registerTenders.subCompanyId = item.subCompanyId;
+                    registerTenders.subCompanyName = item.subCompanyName;
+                    registerTenders.tenderOwnerPath = item.tenderOwnerPath;
+                    registerTenders.unloadAddress = item.unloadAddress;
+                    registerTenders.unloadDataRequired = item.unloadDataRequired;
+                    allRegisterTenders.Add(registerTenders);
+                }
+            }
+            return allRegisterTenders;
+        }
         public void UpdateStatusRegisterTender(int tenderNumber, int process, DateTime dateUpdateStatus)
         {
             var tender = db.RegisterTenders.Where(x => x.tenderNumber == tenderNumber).OrderByDescending(x => x.dateEnd).FirstOrDefault();
@@ -288,6 +329,17 @@ namespace Corum.DAL
             tender.remainingTime = RemainingCount(timeSpan.ToString());
 
             db.SaveChanges();
+        }
+
+        public string UpdateRegistersRemainingTime(int tenderNumber)
+        {
+            DateTime nowDateTime = DateTime.Now;
+            var tender = db.RegisterTenders.Where(x => x.tenderNumber == tenderNumber).OrderByDescending(x => x.Id).FirstOrDefault();
+            TimeSpan timeSpan = tender.dateEnd - nowDateTime;
+            var remainingT = RemainingCount(timeSpan.ToString());
+            tender.remainingTime = remainingT;
+            db.SaveChanges();
+            return remainingT;
         }
     }
 }

@@ -39,7 +39,7 @@ namespace CorumAdminUI.Controllers
                 tenderServices = context.GetTenderServices(),
                 specificationNames = context.GetSpecificationNames(),
                 orderTruckData = context.GetOrderTruckTransport(navInfo.OrderId),
-                tenderForma = new TenderForma<PropAliasValuesOne>(context.getCompetitiveListInfo(navInfo.OrderId), context.GetTenderServices(), context.GetBalanceKeepers(), context.GetOrderTruckTransport(navInfo.OrderId))
+                tenderForma = new TenderForma<PropAliasValuesOne>(context.getCompetitiveListInfo(navInfo.OrderId), context.GetTenderServices(), context.GetBalanceKeepers(), context.GetOrderTruckTransport(navInfo.OrderId), context.GetRegisterTendersOfOrder(navInfo.OrderId))
             };
             return View(model);
         }

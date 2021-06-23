@@ -49,7 +49,7 @@
 
             <div class="table-header clearfix">
 
-                <div class="col-md-9">
+                <div class="col-md-8">
                     @Html.ActionLink("В заявку", "UpdateOrder", "Orders", new { Id = Model.CompetitiveListInfo.Id }, new { @class = "btn btn-success", @style = "margin-bottom:10px" })
                     @Html.ActionLink("Реестр заявок", "Orders", "Orders", null, new { @class = "btn btn-success", @style = "margin-bottom:10px" })
                     @Html.ActionLink("В excel", "ConcursAsExcel", "ExportToExcel", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })&nbsp;
@@ -61,6 +61,7 @@
                         </a>}
                     @Html.ActionLink("Ставки дисконт-я", "ConcursDiscountRate", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })
                     <a style="margin-bottom: 10px;" class="btn btn-success" onclick="SendNotification(@Model.Id)">Тендер</a>
+
 
                     @if (Model.DisplayValues.Count() > 0)
                     {
@@ -347,7 +348,7 @@
                                     <td class="grid-cell rigth_column"> @item.DelayEffect </td>
 
                                     <td class="grid-cell rigth_column"> @item.Prepayment</td>
-                                    <td class="grid-cell rigth_column"> @item.Prepayment2</td>
+                                    <td class="grid-cell rigth_column"></td>
                                     <td class="grid-cell rigth_column"> @item.PrepaymentEffect</td>
 
                                     <!--<td class="grid-cell rigth_column"> @*@item.PrepaymentEffect2*@</td>-->
@@ -644,7 +645,9 @@
             InitFilterMultipleDropDowns();
             GetSpecification(1);
             $("#tabs").tabs();
+
         });
+
 
 
         // Модальное окно при нажатии на кнопку "Тендер"
@@ -670,11 +673,11 @@
                             var dataTend383 = [];
                             var dataTend384 = [];
                             var dataTend385 = [];
-                            var dataTend54 = [];
-                            var dataTend67 = [];
+                            var dataTend42 = [];
+                            var dataTend57 = [];
                             @foreach (var item in Model.specificationNames)
                             {
-                                switch (item.industryId.ToString())
+                                switch (item.industryId_Test.ToString())
                                 {
                                     case "383":
                                         {
@@ -691,14 +694,14 @@
                                             @:dataTend385.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
-                                    case "54":
+                                    case "42":
                                         {
-                                            @:dataTend54.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            @:dataTend42.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
-                                    case "67":
+                                    case "57":
                                         {
-                                            @:dataTend67.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            @:dataTend57.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
                                     default: break;
@@ -792,7 +795,7 @@
                                             text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
                                             createeditor: function (row, column, editor)
                                             {
-                                                    editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383});
+                                                    editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend42});
                                             }
                                         },
 
@@ -821,7 +824,7 @@
                                                     text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
                                                     createeditor: function (row, column, editor)
                                                     {
-                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383 });
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend42 });
                                                     }
                                                 },
 
@@ -872,7 +875,7 @@
                                                     text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
                                                     createeditor: function (row, column, editor)
                                                     {
-                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend54 });
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383 });
                                                     }
                                                 },
 
@@ -888,7 +891,7 @@
                                                 {
                                                     text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
                                                     createeditor: function (row, column, editor) {
-                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend67 });
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend57 });
                                                     }
                                                 },
 
@@ -1156,7 +1159,7 @@
                 var dateNow = new Date;
                 var valueDataStart = $("#DateStart").val();
                 var dateModalForm = new Date(Date.parse(valueDataStart));
-               
+
                 var pattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2}[T]{1}[0-9]{2}[:]{1}[0-9]{2}$/;
                 var regex = new RegExp(pattern);
                 if (!regex.test(valueDataStart))
@@ -1197,7 +1200,7 @@
             var valueDateEndCorrect = $("#DateEnd").val();
             function DisplayErrorDataEnd() {
                 var dateModalFormStart = new Date(Date.parse(valueDataStartCorrect));
-              
+
                 var valueDataEnd = $("#DateEnd").val();
                 var dateModalFormEnd = new Date(Date.parse(valueDataEnd));
                 var pattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2}[T]{1}[0-9]{2}[:]{1}[0-9]{2}$/;
@@ -1246,6 +1249,80 @@
             var rootTab3 = document.getElementById('tabs-3');
             var child = document.getElementById('jqx1');
             rootTab3.removeChild(child);
+        }
+
+        $(".dropdown-menu li a").click(function () {
+            $(this).parents(".dropdown").find('.dropdown-toggle').html($(this).text() + ' <span class="caret"></span>');
+            $(this).parents(".dropdown").find('.dropdown-toggle').val($(this).data('value'));
+            var itemDropDown = document.activeElement.innerHTML;
+            InitialDataStatusTender(itemDropDown);
+        });
+
+        function InitialDataStatusTender(tenderNumber)
+        {
+            var item = [];
+            @foreach (var item in Model.tenderForma.listRegisterTenders)
+            {
+                @:item.push(@Html.Raw(Json.Encode(@item)));
+            }
+            var thfStatusTender = document.getElementById('fStatusTender');
+            var thCountTure = document.getElementById('CountTUR');
+            var thTypeTender = document.getElementById('TypeTender');
+            var thDateStartTender = document.getElementById('DateStartTender');
+            var thDateEndTender = document.getElementById('DateEndTender');
+
+            var childTh = thCountTure.getElementsByClassName('badge');
+            var childThTypeTender = thTypeTender.getElementsByClassName('badge');
+            var childthDateStartTender = thDateStartTender.getElementsByClassName('badge');
+            var childthEndStartTender = thDateEndTender.getElementsByClassName('badge');
+
+            var options = {
+                day: 'numeric',
+                month: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric'
+            }
+            for (let i = 0; i < item.length; i++)
+            {
+                if (tenderNumber == "Новый тендер")
+                {
+                    $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
+                    $(thfStatusTender).text('(не создан)');
+                    $(childTh).text('н.д.');
+                    if (childThTypeTender.length != 0)
+                    {
+                        $(childThTypeTender).text('н.д.');
+                    }
+                    else
+                    {
+                        thTypeTender.innerHTML = "";
+                        $(thTypeTender).append("<span class='badge'>" + 'н.д.' + '</span>');
+                    }
+                    $(childthDateStartTender).text('н.д.');
+                    $(childthEndStartTender).text('н.д.');
+                    break;
+                }
+                if (item[i].tenderNumber == tenderNumber)
+                {
+                    if (item[i].processValue.length > 11) {
+                        $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
+                        $(thfStatusTender).text(item[i].processValue);
+                        $(childTh).text(item[i].stageNumber);
+                        $(thTypeTender).attr("style", "font-size: 12px; padding:3px 7px 3px 7px; font-weight: 900;");
+                        $(thTypeTender).text(item[i].stageMode);
+                        let dateStr = Number(item[i].dateStart.replace(/\D+/g, ''));
+                        let dateEnd = Number(item[i].dateEnd.replace(/\D+/g, ''));
+                        let dateModalFormStart = new Date(dateStr);
+                        let dateModalFormEnd = new Date(dateEnd);
+                        var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
+                        var dateToFormatEnd = dateModalFormEnd.toLocaleString('ru', options).replace(',', '');
+                        $(childthDateStartTender).text(dateToFormatStr);
+                        $(childthEndStartTender).text(dateToFormatEnd);
+
+                    }
+                }
+            }
         }
     </script>
 }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Web;
+using System.Web.Mvc;
 
 namespace Corum.ReportsUI
 {
@@ -46,6 +47,81 @@ namespace Corum.ReportsUI
             }
 
             return convert;
+        }
+    }
+    public class BootstrapHtml
+    {
+        public static MvcHtmlString Dropdown(string id, List<SelectListItem> selectListItems, string label)
+        {
+            var button = new TagBuilder("a")
+            {
+                Attributes =
+            {
+                {"id", id},
+                {"data-toggle", "dropdown"}
+            }
+            };
+
+            button.AddCssClass("dropdown-toggle");
+
+            button.SetInnerText(label);
+            button.InnerHtml += " " + BuildCaret();
+
+            var wrapper = new TagBuilder("div");
+            wrapper.AddCssClass("dropdown");
+
+            wrapper.InnerHtml += button;
+            wrapper.InnerHtml += BuildDropdown(id, selectListItems);
+
+            return new MvcHtmlString(wrapper.ToString());
+        }
+
+        private static string BuildCaret()
+        {
+            var caret = new TagBuilder("span");
+            caret.AddCssClass("caret");
+
+            return caret.ToString();
+        }
+
+        private static string BuildDropdown(string id, IEnumerable<SelectListItem> items)
+        {
+            var list = new TagBuilder("ul")
+            {
+                Attributes =
+            {
+                {"class", "dropdown-menu"},
+                {"role", "menu"},
+                {"aria-labelledby", id}
+            }
+            };
+
+            var listItem = new TagBuilder("li");
+            listItem.Attributes.Add("role", "presentation");
+
+            foreach (var x in items)
+            {
+                list.InnerHtml += "<li role=\"presentation\">" + BuildListRow(x) + "</li>";
+            }
+
+            return list.ToString();
+        }
+
+        private static string BuildListRow(SelectListItem item)
+        {
+            var anchor = new TagBuilder("a")
+            {
+                Attributes =
+            {
+                {"role", "menuitem"},
+                {"tabindex", "-1"},
+                {"href", item.Value}
+            }
+            };
+
+            anchor.SetInnerText(item.Text);
+
+            return anchor.ToString();
         }
     }
 }

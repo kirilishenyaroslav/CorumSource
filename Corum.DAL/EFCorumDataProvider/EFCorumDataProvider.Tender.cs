@@ -341,5 +341,37 @@ namespace Corum.DAL
             db.SaveChanges();
             return remainingT;
         }
+
+        public UpdateRegisterStatusTender UpdateCLStatusTenderOrder(RequestJSONDeserializedToModel myDeserializedClass, int numberTender)
+        {
+            var registerTender = db.RegisterTenders.Where(x => x.tenderNumber == numberTender).OrderByDescending(x => x.Id).FirstOrDefault();
+            UpdateRegisterStatusTender updateDeserializedClass = new UpdateRegisterStatusTender();
+            DateTime dateStart = myDeserializedClass.data.dateStart;
+            DateTime dateEnd = myDeserializedClass.data.dateEnd;
+            string processValue = GetStatusTenders()[Int32.Parse(myDeserializedClass.data.process)];
+            string remainingTime = UpdateRegistersRemainingTime(numberTender);
+            byte stageNumber = (byte)myDeserializedClass.data.stageNumber;
+            DateTime dateUpdateStatus = DateTime.Now;
+            int lotState = myDeserializedClass.data.lots[0].lotState;
+            byte process = Byte.Parse(myDeserializedClass.data.process);
+            registerTender.dateEnd = dateEnd;
+            registerTender.dateStart = dateStart;
+            registerTender.processValue = processValue;
+            registerTender.remainingTime = remainingTime;
+            registerTender.stageNumber = stageNumber;
+            registerTender.dateUpdateStatus = dateUpdateStatus;
+            registerTender.lotState = lotState;
+            registerTender.process = process;
+            db.SaveChanges();
+            updateDeserializedClass.dateEnd = dateEnd;
+            updateDeserializedClass.dateStart = dateStart;
+            updateDeserializedClass.processValue = processValue;
+            updateDeserializedClass.remainingTime = remainingTime;
+            updateDeserializedClass.stageNumber = stageNumber.ToString();
+            updateDeserializedClass.dateUpdateStatus = dateUpdateStatus;
+            updateDeserializedClass.lotState = lotState.ToString();
+            updateDeserializedClass.process = process.ToString();
+            return updateDeserializedClass;
+        }
     }
 }

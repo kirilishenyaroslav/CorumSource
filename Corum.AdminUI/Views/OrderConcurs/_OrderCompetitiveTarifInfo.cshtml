@@ -8,7 +8,7 @@
                     <thead>
                         <tr>
                             <th class="dropdown text-center bg-warning" colspan="3">
-                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">ТЕНДЕР<span class="caret"></span></a>
+                                <a id="drpDwnListTend" href="#" class="dropdown-toggle" data-toggle="dropdown">Новый тендер<span class="caret"></span></a>
                                 <ul class="dropdown-menu">
                                     @foreach (var item in Model.tenderForma.data.listTendersToOrder)
                                     {
@@ -16,37 +16,36 @@
                                     }
                                 </ul>
                             </th>
-                            <th id="fStatusTender" class="text-center bg-warning" style="padding:5px 0px 5px 0px;">черновик</th>
+                            <th id="fStatusTender" class="text-center bg-warning" style="padding:5px 0px 5px 0px;">(не создан)</th>
                         </tr>
                     </thead>
                     <tfoot>
                         <tr>
-                            <th colspan="4" style="padding:5px 0px 5px 0px;" class="text-center bg-warning">До завершения: <span class="badge">10ч</span></th>
+                            <th id ="remainingTM" colspan="4" style="padding:5px 0px 5px 0px;" class="text-center bg-warning"><span class="badge">н.д.</span></th>
                         </tr>
                     </tfoot>
                     <tbody>
                         <tr>
                             <td scope="row" class="col-md-3">Тур:</td>
-                            <th id="CountTUR" scope="row" style="padding:2px 0px 2px 0px;" class="col-md-3 text-center"><span class="badge">1</span></th>
+                            <th id="CountTUR" scope="row" style="padding:2px 0px 2px 0px;" class="col-md-3 text-center"><span class="badge">н.д.</span></th>
                             <td scope="row" class="col-md-5 text-center">Тип:</td>
-                            <th id="TypeTender" class="text-center"><span class="badge">Аукцион</span></th>
+                            <th id="TypeTender" class="text-center"><span class="badge">н.д.</span></th>
                         </tr>
                         <tr>
                             <td colspan="2" style="padding: 0px 0px 0px 5px; font-size: 13px;" class="text-left">Дата начала:</td>
-                            <th id="DateStartTender" scope="row" class="text-center"><span style="font-size: 12px;" class="badge">02.04.2021 17:49</span></th>
-                            <td style="padding:2px 2px 2px 2px;" class="text-center">
+                            <th id="DateStartTender" scope="row" class="text-center"><span style="font-size: 12px;" class="badge">н.д.</span></th>
+                            <td id="BtnPostOne" style="padding:2px 2px 2px 2px;" class="text-center">
                                 <a onclick="SendNotification(@Model.Id)"
-                                   class="delete_link btn btn-success col-md-12 btn-sm btn-tend">
+                                   class="delete_link btn btn-success col-md-12 btn-sm btn-tend" style="display: initial">
                                     Создать тендер
                                 </a>
                             </td>
                         </tr>
                         <tr>
                             <td colspan="2" style="padding: 0px 0px 0px 5px; font-size: 13px;" class="text-left">Дата окончания:</td>
-                            <th id="DateEndTender" scope="row" class="text-center"><span style="font-size: 12px;" class="badge">05.04.2021 18:00</span></th>
-                            <td style="padding:2px 2px 2px 2px;" class="text-center">
-                                <a onclick="window.open('@Url.Action("ConcursHistory", "OrderConcurs", new {Id = 0, ShowAll = true, OrderId = @Model.CompetitiveListInfo.Id})');"
-                                   class="delete_link btn btn-success col-md-12 btn-sm btn-tend">
+                            <th id="DateEndTender" scope="row" class="text-center" style="padding: 0px 0px 2px 0px;"><span style="font-size: 12px;" class="badge">н.д.</span></th>
+                            <td id="BtnPostTwo" style="padding:2px 2px 2px 2px;" class="text-center">
+                                <a id="UpdateTendData" class="delete_link btn btn-success col-md-12 btn-sm btn-tend" style="display: none">
                                     Обновить с APS
                                 </a>
                             </td>

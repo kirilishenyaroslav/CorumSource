@@ -26,5 +26,6 @@ namespace Corum.Models
         void UpdateStatusRegisterTender(int tenderNumber, int process, DateTime dateUpdateStatus);
         void UpdateTimeRemainingTime(RequestJSONDeserializedToModel myDeserializedClass, int numberTender);
         string UpdateRegistersRemainingTime(int tenderNumber);
+        UpdateRegisterStatusTender UpdateCLStatusTenderOrder(RequestJSONDeserializedToModel myDeserializedClass, int numberTender);
     }
 }

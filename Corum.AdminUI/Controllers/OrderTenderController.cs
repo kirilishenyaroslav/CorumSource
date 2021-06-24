@@ -41,18 +41,41 @@ namespace CorumAdminUI.Controllers
             return View(model);
         }
 
+        [HttpGet]
+        public ActionResult UpdateStatusOrderTender(int tenderNumber)
+        {
+            UpdateRegisterStatusTender updateDeserializedClass = new UpdateRegisterStatusTender();
+            try
+            {
+                NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
+                BaseClient clientbase = new BaseClient($"{allAppSettings["ApiGetTenderId"]}{tenderNumber}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
+                var JSONresponse = new GetApiTendAjax().GetCallAsync(clientbase).Result.ResponseMessage;
+                RequestJSONDeserializedToModel myDeserializedClass = JsonConvert.DeserializeObject<RequestJSONDeserializedToModel>(JSONresponse);
+                if (myDeserializedClass.success)
+                {
+                    updateDeserializedClass = context.UpdateCLStatusTenderOrder(myDeserializedClass, tenderNumber);
+                }
+            }
+            catch { }
+            return new JsonpResult
+            {
+                Data = updateDeserializedClass,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
+
         [HttpPost]
         public ActionResult ResultsTenderUpdate(TenderRegistryUpdate registryUpdate)
         {
             context.UpdateRegisterTenders(Convert.ToInt32(registryUpdate.tenderNumber), registryUpdate.resultsTender);
-            return Json("{\"success\":true");
+            return Json("{\"success\":true}");
         }
 
         [HttpPost]
         public ActionResult RemainingTimeUpdate(RemainingTimeUpdate timeUpdate)
         {
             context.RemainingTime(timeUpdate.TimeList);
-            return Json("{\"success\":true");
+            return Json("{\"success\":true}");
         }
 
         [HttpPost]

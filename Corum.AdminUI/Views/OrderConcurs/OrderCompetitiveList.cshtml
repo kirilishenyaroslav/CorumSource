@@ -60,7 +60,7 @@
                             <span class="tooltip-message">Выбор услуг</span>
                         </a>}
                     @Html.ActionLink("Ставки дисконт-я", "ConcursDiscountRate", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })
-                    <a style="margin-bottom: 10px;" class="btn btn-success" onclick="SendNotification(@Model.Id)">Тендер</a>
+                    <a style="margin-bottom: 10px; display: none" class="btn btn-success" onclick="SendNotification(@Model.Id)">Тендер</a>
 
 
                     @if (Model.DisplayValues.Count() > 0)
@@ -645,7 +645,7 @@
             InitFilterMultipleDropDowns();
             GetSpecification(1);
             $("#tabs").tabs();
-
+            InitialDataStatusTender("Новый тендер");
         });
 
 
@@ -925,14 +925,14 @@
                         [
                             {
                                 text: "Отмена",
-                                "class": 'cancel-btn btn btn-outline',
+                                "class": 'cancel-btn btn btn-primary',
                                 click: function () {
                                     $(this).dialog("close");
                                 }
                             },
                             {
-                                text: "Отправить",
-                                "class": 'btn btn-primary',
+                                text: "Выгрузить на APS",
+                                "class": 'btn btn-success',
                                 click: function () {
                                     var dataStart = document.getElementById('DateStart');
                                     var elDataStart = document.getElementById('erroreMessageTenderDataStart');
@@ -1270,11 +1270,17 @@
             var thTypeTender = document.getElementById('TypeTender');
             var thDateStartTender = document.getElementById('DateStartTender');
             var thDateEndTender = document.getElementById('DateEndTender');
+            var thRemainingTM = document.getElementById('remainingTM');
+            var tdBtnPostOne = document.getElementById('BtnPostOne');
+            var tdBtnPostTwo = document.getElementById('BtnPostTwo');
 
             var childTh = thCountTure.getElementsByClassName('badge');
             var childThTypeTender = thTypeTender.getElementsByClassName('badge');
             var childthDateStartTender = thDateStartTender.getElementsByClassName('badge');
             var childthEndStartTender = thDateEndTender.getElementsByClassName('badge');
+            var childthRemainingTM = thRemainingTM.getElementsByClassName('badge');
+            var childtdBtnPostOne = tdBtnPostOne.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
+            var childtdBtnPostTwo = tdBtnPostTwo.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
 
             var options = {
                 day: 'numeric',
@@ -1301,6 +1307,10 @@
                     }
                     $(childthDateStartTender).text('н.д.');
                     $(childthEndStartTender).text('н.д.');
+                    thRemainingTM.innerHTML = "";
+                    $(thRemainingTM).append("<span class='badge'>" + 'н.д.' + '</span>');
+                    $(childtdBtnPostOne).attr("style", "display: initial;");
+                    $(childtdBtnPostTwo).attr("style", "display: none;");
                     break;
                 }
                 if (item[i].tenderNumber == tenderNumber)
@@ -1320,9 +1330,77 @@
                         $(childthDateStartTender).text(dateToFormatStr);
                         $(childthEndStartTender).text(dateToFormatEnd);
 
+                        thRemainingTM.innerHTML = "";
+                        $(thRemainingTM).append("До завершения: <span class='badge'>" + item[i].remainingTime + '</span>');
+
+                        $(childtdBtnPostOne).attr("style", "display: none;");
+                        $(childtdBtnPostTwo).attr("style", "display: initial;");
                     }
                 }
             }
         }
+
+        $("#UpdateTendData").click(function ()
+        {
+            let DropDownListTender = document.getElementById('drpDwnListTend');
+            let tendNumber = Number(DropDownListTender.textContent.replace(" ", ""));
+            $.ajax({
+                type: "GET",
+                async: true,
+                url: "/OrderTender/UpdateStatusOrderTender",
+                data:
+                {
+                    tenderNumber: tendNumber
+                },
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    var options = {
+                        day: 'numeric',
+                        month: 'numeric',
+                        year: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric'
+                    }
+                    var thfStatusTender = document.getElementById('fStatusTender');
+                    var thCountTure = document.getElementById('CountTUR');
+                    var thTypeTender = document.getElementById('TypeTender');
+                    var thDateStartTender = document.getElementById('DateStartTender');
+                    var thDateEndTender = document.getElementById('DateEndTender');
+                    var thRemainingTM = document.getElementById('remainingTM');
+                    var tdBtnPostOne = document.getElementById('BtnPostOne');
+                    var tdBtnPostTwo = document.getElementById('BtnPostTwo');
+                    var childTh = thCountTure.getElementsByClassName('badge');
+                    var childThTypeTender = thTypeTender.getElementsByClassName('badge');
+                    var childthDateStartTender = thDateStartTender.getElementsByClassName('badge');
+                    var childthEndStartTender = thDateEndTender.getElementsByClassName('badge');
+                    var childthRemainingTM = thRemainingTM.getElementsByClassName('badge');
+                    var childtdBtnPostOne = tdBtnPostOne.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
+                    var childtdBtnPostTwo = tdBtnPostTwo.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
+
+
+                    $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
+                    $(thfStatusTender).text(data.processValue);
+                    $(childTh).text(data.stageNumber);
+                    let dateStr = Number(data.dateStart.replace(/\D+/g, ''));
+                    let dateEnd = Number(data.dateEnd.replace(/\D+/g, ''));
+                    let dateModalFormStart = new Date(dateStr);
+                    let dateModalFormEnd = new Date(dateEnd);
+                    var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
+                    var dateToFormatEnd = dateModalFormEnd.toLocaleString('ru', options).replace(',', '');
+                    $(childthDateStartTender).text(dateToFormatStr);
+                    $(childthEndStartTender).text(dateToFormatEnd);
+
+                    thRemainingTM.innerHTML = "";
+                    $(thRemainingTM).append("До завершения: <span class='badge'>" + data.remainingTime + '</span>');
+
+                    $(childtdBtnPostOne).attr("style", "display: none;");
+                    $(childtdBtnPostTwo).attr("style", "display: initial;");
+                },
+                error: function () {
+                    alert("Ошибка обновления статуса в клиенте!")
+                }
+            });
+        });
     </script>
 }

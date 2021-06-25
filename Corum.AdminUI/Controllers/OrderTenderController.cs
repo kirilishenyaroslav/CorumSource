@@ -81,6 +81,7 @@ namespace CorumAdminUI.Controllers
         [HttpPost]
         public ActionResult SendNotificationTender(TenderSumOrderId tenderSumOrder)
         {
+            RegisterTenders modifRegisterTenders = new RegisterTenders();
             OrderID = Convert.ToInt64(tenderSumOrder.OrderId);
             Dictionary<string, string> otherParams = new Dictionary<string, string>();
             DateTimeOffset localTimeStart, otherTimeStart, localTimeEnd, otherTimeEnd;
@@ -180,13 +181,17 @@ namespace CorumAdminUI.Controllers
                     context.AddNewDataTender(registerTenders);
                     HttpClientApi clientbaseAddFile = new HttpClientApi($"{allAppSettings["ApiUrlAddFile"]}{registerTenders.tenderNumber}&suppVisible=1", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
                     new AddFilePostApiTender().GetCallAsync(clientbaseAddFile, dataOrder, $"OrderReport{OrderID}.xlsx");
+                    modifRegisterTenders = context.GetRegisterTenders().Find(x => x.tenderNumber == registerTenders.tenderNumber);
                 }
                 catch (Exception e)
                 {
 
                 }
-
-                return Json(response);
+                return new JsonpResult
+                {
+                    Data = new { modifRegisterTenders, response },
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                };
             }
             else
             {

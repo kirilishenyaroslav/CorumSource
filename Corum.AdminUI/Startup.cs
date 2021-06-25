@@ -27,7 +27,7 @@ namespace BarnivannAdminUI
                 Authorization = new[] { new HangFireAuthorizationFilter() }
             });
 
-            RecurringJob.AddOrUpdate<HangFireTasks>(x => x.ListTasks(), "0 23 * * *");
+            RecurringJob.AddOrUpdate<HangFireTasks>(x => x.ListTasks(), "0 0 */20 * *");
         }
     }
 }

@@ -1020,9 +1020,11 @@
                                         dataType: "json",
                                         contentType: 'application/json; charset=utf-8',
                                         success: function (data) {
-                                            var dataJS = JSON.parse(data);
-                                            console.log(data);
-
+                                            var dataJS = JSON.parse(data.response);
+                                            formValidationAccessAttributes.accesAddNewTender = true;
+                                            listTendersOrder(data.modifRegisterTenders, data.modifRegisterTenders.tenderNumber);
+                                            InitialDataStatusTender(data.modifRegisterTenders.tenderNumber);
+                                            console.log(data.response);
                                             if (dataJS.success != false) {
                                                 alert('Запрос на тендер успешно создан!');
                                             }
@@ -1059,7 +1061,9 @@
             accessLotNameStringLength: true,
             accessBudget: true,
             accessDataStart: true,
-            accessDataEnd: true
+            accessDataEnd: true,
+            accessInitTend: true,
+            accesAddNewTender: false
         };
 
         function FormInputErrorChecking()
@@ -1251,6 +1255,7 @@
             rootTab3.removeChild(child);
         }
 
+        // Обработчик события dropdownList таблицы статуса КЛ
         $(".dropdown-menu li a").click(function () {
             $(this).parents(".dropdown").find('.dropdown-toggle').html($(this).text() + ' <span class="caret"></span>');
             $(this).parents(".dropdown").find('.dropdown-toggle').val($(this).data('value'));
@@ -1258,12 +1263,53 @@
             InitialDataStatusTender(itemDropDown);
         });
 
+        function ModifClickDropDownList()
+        {
+            $(this).parents(".dropdown").find('.dropdown-toggle').html($(this).text() + ' <span class="caret"></span>');
+            $(this).parents(".dropdown").find('.dropdown-toggle').val($(this).data('value'));
+            var itemDropDown = document.activeElement.innerHTML;
+            let dropDownListTender = document.getElementById('drpDwnListTend');
+            $(dropDownListTender).text(itemDropDown);
+            $(dropDownListTender).append(" <span class='caret'></span>");
+            InitialDataStatusTender(itemDropDown);
+        }
+
+        var listTendersOrder = function InitModelRegisTender(params, tenderNumber)
+        {
+            let item = [];
+            item = JSON.parse(sessionStorage.getItem('data'));
+            for (let i = 0; i < item.length; i++)
+            {
+                if (item[i].tenderNumber == tenderNumber && params != null)
+                {
+                    item[i].processValue = params.processValue;
+                    item[i].stageNumber = params.stageNumber;
+                    item[i].dateStart = params.dateStart;
+                    item[i].dateEnd = params.dateEnd;
+                    item[i].remainingTime = params.remainingTime;
+                }
+            }
+            if (formValidationAccessAttributes.accesAddNewTender)
+            {
+                item.push(params);
+            }
+            sessionStorage.setItem('data', JSON.stringify(item));
+            return item;
+        }
         function InitialDataStatusTender(tenderNumber)
         {
             var item = [];
-            @foreach (var item in Model.tenderForma.listRegisterTenders)
+            if (formValidationAccessAttributes.accessInitTend) {
+                @foreach (var item in Model.tenderForma.listRegisterTenders)
+                {
+                    @:item.push(@Html.Raw(Json.Encode(@item)));
+                }
+                sessionStorage.setItem('data', JSON.stringify(item));
+                formValidationAccessAttributes.accessInitTend = false;
+            }
+            else
             {
-                @:item.push(@Html.Raw(Json.Encode(@item)));
+                item = JSON.parse(sessionStorage.getItem('data'));
             }
             var thfStatusTender = document.getElementById('fStatusTender');
             var thCountTure = document.getElementById('CountTUR');
@@ -1281,6 +1327,23 @@
             var childthRemainingTM = thRemainingTM.getElementsByClassName('badge');
             var childtdBtnPostOne = tdBtnPostOne.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
             var childtdBtnPostTwo = tdBtnPostTwo.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
+
+            if (formValidationAccessAttributes.accesAddNewTender)
+            {
+                let dropDownListTender = document.getElementById('drpDwnListTend');
+                let dropdwmenu = document.getElementsByClassName('dropdown-menu');
+                $(dropdwmenu).html("");
+                let childLi = $(dropdwmenu).append("<li><a href='#'>" + "Новый тендер" + "</a></li>");
+                $(childLi).attr("onclick", "ModifClickDropDownList()");
+                for (let i = 0; i < item.length; i++)
+                {
+                    let childLi = $(dropdwmenu).append("<li><a href='#'>" + item[i].tenderNumber + "</a></li>");
+                    $(childLi).attr("onclick", "ModifClickDropDownList()");
+                }
+                dropDownListTender.innerHTML = "";
+                $(dropDownListTender).append(tenderNumber+" <span class='caret'></span>");
+                formValidationAccessAttributes.accesAddNewTender = false;
+            }
 
             var options = {
                 day: 'numeric',
@@ -1309,13 +1372,15 @@
                     $(childthEndStartTender).text('н.д.');
                     thRemainingTM.innerHTML = "";
                     $(thRemainingTM).append("<span class='badge'>" + 'н.д.' + '</span>');
+                    $(childtdBtnPostOne).attr("onclick", "SendNotification(@Model.Id)");
+                    $(childtdBtnPostOne).text("Создать тендер");
                     $(childtdBtnPostOne).attr("style", "display: initial;");
                     $(childtdBtnPostTwo).attr("style", "display: none;");
                     break;
                 }
                 if (item[i].tenderNumber == tenderNumber)
                 {
-                    if (item[i].processValue.length > 11) {
+                    if (item[i].processValue != "Завершен") {
                         $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
                         $(thfStatusTender).text(item[i].processValue);
                         $(childTh).text(item[i].stageNumber);
@@ -1334,6 +1399,31 @@
                         $(thRemainingTM).append("До завершения: <span class='badge'>" + item[i].remainingTime + '</span>');
 
                         $(childtdBtnPostOne).attr("style", "display: none;");
+                        $(childtdBtnPostTwo).attr("style", "display: initial;");
+                    }
+                    else
+                    {
+                        $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
+                        $(thfStatusTender).text(item[i].processValue);
+                        $(childTh).text(item[i].stageNumber);
+                        $(thTypeTender).attr("style", "font-size: 12px; padding:3px 7px 3px 7px; font-weight: 900;");
+                        $(thTypeTender).text(item[i].stageMode);
+                        let dateStr = Number(item[i].dateStart.replace(/\D+/g, ''));
+                        let dateEnd = Number(item[i].dateEnd.replace(/\D+/g, ''));
+                        let dateModalFormStart = new Date(dateStr);
+                        let dateModalFormEnd = new Date(dateEnd);
+                        var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
+                        var dateToFormatEnd = dateModalFormEnd.toLocaleString('ru', options).replace(',', '');
+                        $(childthDateStartTender).text(dateToFormatStr);
+                        $(childthEndStartTender).text(dateToFormatEnd);
+
+                        thRemainingTM.innerHTML = "";
+                        $(thRemainingTM).append("До завершения: <span class='badge'>" + item[i].remainingTime + '</span>');
+
+                        $(childtdBtnPostOne).attr("onclick", "ThBottonOne()");
+                        $(childtdBtnPostOne).text("Аннулировать");
+                        $(childtdBtnPostOne).attr("style", "display: initial;");
+
                         $(childtdBtnPostTwo).attr("style", "display: initial;");
                     }
                 }
@@ -1355,6 +1445,7 @@
                 dataType: "json",
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
+                    listTendersOrder(data, tendNumber);
                     var options = {
                         day: 'numeric',
                         month: 'numeric',
@@ -1378,29 +1469,58 @@
                     var childtdBtnPostOne = tdBtnPostOne.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
                     var childtdBtnPostTwo = tdBtnPostTwo.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
 
+                    if (data.processValue != "Завершен") {
+                        $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
+                        $(thfStatusTender).text(data.processValue);
+                        $(childTh).text(data.stageNumber);
+                        let dateStr = Number(data.dateStart.replace(/\D+/g, ''));
+                        let dateEnd = Number(data.dateEnd.replace(/\D+/g, ''));
+                        let dateModalFormStart = new Date(dateStr);
+                        let dateModalFormEnd = new Date(dateEnd);
+                        var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
+                        var dateToFormatEnd = dateModalFormEnd.toLocaleString('ru', options).replace(',', '');
 
-                    $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
-                    $(thfStatusTender).text(data.processValue);
-                    $(childTh).text(data.stageNumber);
-                    let dateStr = Number(data.dateStart.replace(/\D+/g, ''));
-                    let dateEnd = Number(data.dateEnd.replace(/\D+/g, ''));
-                    let dateModalFormStart = new Date(dateStr);
-                    let dateModalFormEnd = new Date(dateEnd);
-                    var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
-                    var dateToFormatEnd = dateModalFormEnd.toLocaleString('ru', options).replace(',', '');
-                    $(childthDateStartTender).text(dateToFormatStr);
-                    $(childthEndStartTender).text(dateToFormatEnd);
+                        $(childthDateStartTender).text(dateToFormatStr);
+                        $(childthEndStartTender).text(dateToFormatEnd);
 
-                    thRemainingTM.innerHTML = "";
-                    $(thRemainingTM).append("До завершения: <span class='badge'>" + data.remainingTime + '</span>');
+                        thRemainingTM.innerHTML = "";
+                        $(thRemainingTM).append("До завершения: <span class='badge'>" + data.remainingTime + '</span>');
 
-                    $(childtdBtnPostOne).attr("style", "display: none;");
-                    $(childtdBtnPostTwo).attr("style", "display: initial;");
+                        $(childtdBtnPostOne).attr("style", "display: none;");
+                        $(childtdBtnPostTwo).attr("style", "display: initial;");
+
+                    }
+                    else
+                    {
+                        $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
+                        $(thfStatusTender).text(data.processValue);
+                        $(childTh).text(data.stageNumber);
+                        let dateStr = Number(data.dateStart.replace(/\D+/g, ''));
+                        let dateEnd = Number(data.dateEnd.replace(/\D+/g, ''));
+                        let dateModalFormStart = new Date(dateStr);
+                        let dateModalFormEnd = new Date(dateEnd);
+                        var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
+                        var dateToFormatEnd = dateModalFormEnd.toLocaleString('ru', options).replace(',', '');
+                        $(childthDateStartTender).text(dateToFormatStr);
+                        $(childthEndStartTender).text(dateToFormatEnd);
+
+                        thRemainingTM.innerHTML = "";
+                        $(thRemainingTM).append("До завершения: <span class='badge'>" + data.remainingTime + '</span>');
+                        $(childtdBtnPostOne).attr("onclick", "ThBottonOne()");
+                        $(childtdBtnPostOne).text("Аннулировать");
+                        $(childtdBtnPostOne).attr("style", "display: initial;");
+                        $(childtdBtnPostTwo).attr("style", "display: initial;");
+                    }
                 },
                 error: function () {
                     alert("Ошибка обновления статуса в клиенте!")
                 }
             });
         });
+
+        function ThBottonOne()
+        {
+
+        }
     </script>
 }

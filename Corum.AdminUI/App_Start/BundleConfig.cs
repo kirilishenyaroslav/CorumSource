@@ -127,6 +127,7 @@ namespace BarnivannAdminUI
                 .Include("~/scripts/jqwidgets/jqxcombobox.js")
                 .Include("~/scripts/jqwidgets/jqxdata.export.js")
                 .Include("~/scripts/jqwidgets/globalize.js")
+                .Include("~/scripts/jqwidgets/jqxnotification.js")
                 );
 
             bundles.Add(new ScriptBundle("~/bundles/tinymce")

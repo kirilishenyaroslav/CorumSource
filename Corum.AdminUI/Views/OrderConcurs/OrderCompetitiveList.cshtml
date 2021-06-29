@@ -60,7 +60,7 @@
                             <span class="tooltip-message">Выбор услуг</span>
                         </a>}
                     @Html.ActionLink("Ставки дисконт-я", "ConcursDiscountRate", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })
-                    <a style="margin-bottom: 10px; display: none" class="btn btn-success" onclick="SendNotification(@Model.Id)">Тендер</a>
+                    <a id="BtnReestTendersKL" style="margin-bottom: 10px; display: none" class="btn btn-success" onclick="ThBottonOne()">Реестр тендеров</a>
 
 
                     @if (Model.DisplayValues.Count() > 0)
@@ -673,11 +673,11 @@
                             var dataTend383 = [];
                             var dataTend384 = [];
                             var dataTend385 = [];
-                            var dataTend42 = [];
-                            var dataTend57 = [];
+                            var dataTend54 = [];
+                            var dataTend67 = [];
                             @foreach (var item in Model.specificationNames)
                             {
-                                switch (item.industryId_Test.ToString())
+                                switch (item.industryId.ToString())
                                 {
                                     case "383":
                                         {
@@ -694,14 +694,14 @@
                                             @:dataTend385.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
-                                    case "42":
+                                    case "54":
                                         {
-                                            @:dataTend42.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            @:dataTend54.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
-                                    case "57":
+                                    case "67":
                                         {
-                                            @:dataTend57.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
+                                            @:dataTend67.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
                                     default: break;
@@ -795,7 +795,7 @@
                                             text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
                                             createeditor: function (row, column, editor)
                                             {
-                                                    editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend42});
+                                                    editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383});
                                             }
                                         },
 
@@ -824,7 +824,7 @@
                                                     text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
                                                     createeditor: function (row, column, editor)
                                                     {
-                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend42 });
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383 });
                                                     }
                                                 },
 
@@ -875,7 +875,7 @@
                                                     text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
                                                     createeditor: function (row, column, editor)
                                                     {
-                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend383 });
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend54 });
                                                     }
                                                 },
 
@@ -891,7 +891,7 @@
                                                 {
                                                     text: 'Наименование позиции', datafield: 'nmcName', width: 650, columntype: 'dropdownlist',
                                                     createeditor: function (row, column, editor) {
-                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend57 });
+                                                        editor.jqxDropDownList({ autoDropDownHeight: false, placeHolder: null, source: dataTend67 });
                                                     }
                                                 },
 
@@ -1026,24 +1026,49 @@
                                             InitialDataStatusTender(data.modifRegisterTenders.tenderNumber);
                                             console.log(data.response);
                                             if (dataJS.success != false) {
-                                                alert('Запрос на тендер успешно создан!');
+                                                CreateNotification("success", data.modifRegisterTenders.tenderNumber);
+                                                $("#jqxNotification").jqxNotification({
+                                                    position: "bottom-right", opacity: 0.8, animationCloseDelay: 1000, autoCloseDelay: 5000,
+                                                    autoOpen: true, autoClose: true, template: "success"
+                                                });
+                                                DeleteNotification();
                                             }
                                             else if (!dataJS.success && !dataJS.isLoadMultiple) {
-                                                alert('Тендер для этой заявки уже создан!');
+                                                CreateNotification("warning", data.modifRegisterTenders.tenderNumber);
+                                                $("#jqxNotification").jqxNotification({
+                                                    position: "bottom-right", opacity: 0.8,
+                                                    autoOpen: true, autoClose: true, template: "warning"
+                                                });
+                                                DeleteNotification();
                                             }
                                             else {
-                                                alert('Запрос на тендер не создан!');
+                                                CreateNotification("errorSuc", null);
+                                                $("#jqxNotification").jqxNotification({
+                                                    position: "bottom-right", opacity: 0.8,
+                                                    autoOpen: true, autoClose: true, template: "error"
+                                                });
+                                                DeleteNotification();
                                             }
                                         },
                                         error: function () {
-                                            alert("Error occured!!")
+                                            CreateNotification("error", null);
+                                            $("#jqxNotification").jqxNotification({
+                                                position: "bottom-right", opacity: 0.8,
+                                                autoOpen: true, autoClose: true, template: "error"
+                                            });
+                                            DeleteNotification();
                                         }
                                     });
                                     $(this).dialog("close");
                                 }
                                 else
                                 {
-                                    alert('Заполните правильно поля формы.');
+                                    CreateNotification("errorForm");
+                                    $("#jqxNotification").jqxNotification({
+                                        position: "bottom-right", opacity: 0.8,
+                                        autoOpen: true, autoClose: true, template: "warning"
+                                    });
+                                    DeleteNotification();
                                 }
                             }
                         }
@@ -1051,6 +1076,30 @@
                 });
             $('#partialModul').dialog('open');
             return;
+        }
+        // Динамическое создание jqxNotification
+        function CreateNotification(status, numberTender) {
+            var rootTab3 = document.getElementById('JqxCrNot');
+            var div = document.createElement("div");
+            div.id = "jqxNotification";
+            div.className = "col-md-4";
+            switch (status) {
+                case "success": div.innerHTML = "<h4><span style='color: white'>Тендер успешно создан под номером " + "<span style='color: white; font-size: 18px;' class='badge'>" + numberTender +"</span >"+"</span ></h4 > "; break;
+                case "warning": div.innerHTML = "<h4><span style='color: white'>Тендер для этой заявки уже создан!</span></h4>"; break;
+                case "errorSuc": div.innerHTML = "<h4><span style='color: white'>Запрос на тендер не создан!</span></h4>"; break;
+                case "error": div.innerHTML = "<h4><span style='color: white'>Ошибка!</span></h4>"; break;
+                case "errorForm": div.innerHTML = "<h4><span style='color: white'>Заполните правильно поля формы!</span></h4>"; break;
+                case "errorStatuse": div.innerHTML = "<h4><span style='color: white'>Ошибка обновления статуса!</span></h4>"; break;
+                default: break;
+            }
+            rootTab3.appendChild(div);
+        }
+
+        // Динамическое удаление jqxNotification
+        function DeleteNotification() {
+            var rootTab3 = document.getElementById('JqxCrNot');
+            var child = document.getElementById('jqxNotification');
+            rootTab3.removeChild(child);
         }
 
         // Атрибуты допуска валидации полей тендера на подачу формы
@@ -1257,7 +1306,7 @@
 
         // Обработчик события dropdownList таблицы статуса КЛ
         $(".dropdown-menu li a").click(function () {
-            $(this).parents(".dropdown").find('.dropdown-toggle').html($(this).text() + ' <span class="caret"></span>');
+            var el = $(this).parents(".dropdown").find('.dropdown-toggle').html($(this).text() + ' <span class="caret"></span>');
             $(this).parents(".dropdown").find('.dropdown-toggle').val($(this).data('value'));
             var itemDropDown = document.activeElement.innerHTML;
             InitialDataStatusTender(itemDropDown);
@@ -1331,7 +1380,7 @@
             if (formValidationAccessAttributes.accesAddNewTender)
             {
                 let dropDownListTender = document.getElementById('drpDwnListTend');
-                let dropdwmenu = document.getElementsByClassName('dropdown-menu');
+                let dropdwmenu = document.getElementById('drpListMenu');
                 $(dropdwmenu).html("");
                 let childLi = $(dropdwmenu).append("<li><a href='#'>" + "Новый тендер" + "</a></li>");
                 $(childLi).attr("onclick", "ModifClickDropDownList()");
@@ -1356,6 +1405,9 @@
             {
                 if (tenderNumber == "Новый тендер")
                 {
+                    let btnReestTend = document.getElementById('BtnReestTendersKL');
+                    $(btnReestTend).attr("style", "display: none;");
+
                     $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
                     $(thfStatusTender).text('(не создан)');
                     $(childTh).text('н.д.');
@@ -1380,6 +1432,9 @@
                 }
                 if (item[i].tenderNumber == tenderNumber)
                 {
+                    let btnReestTend = document.getElementById('BtnReestTendersKL');
+                    $(btnReestTend).attr("style", "display: initial;");
+
                     if (item[i].processValue != "Завершен") {
                         $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
                         $(thfStatusTender).text(item[i].processValue);
@@ -1513,7 +1568,12 @@
                     }
                 },
                 error: function () {
-                    alert("Ошибка обновления статуса в клиенте!")
+                    CreateNotification("errorStatuse", null);
+                    $("#jqxNotification").jqxNotification({
+                        position: "bottom-right", opacity: 0.8,
+                        autoOpen: true, autoClose: true, template: "error"
+                    });
+                    DeleteNotification();
                 }
             });
         });

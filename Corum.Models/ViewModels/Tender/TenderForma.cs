@@ -468,7 +468,7 @@ namespace Corum.Models.ViewModels.Tender
             while (numTend++ < InitializeData.listRegisterTenders.Count);
             listTendersToOrder = new SelectList(listTenders);
             subCompanyName = InitializeData.competitiveListViewModel.PayerName;
-            var subCompanyIdn = InitializeData.listBalanceKeepers.Find((x) => x.BalanceKeeper.Contains(subCompanyName)).subCompanyId_Test;
+            var subCompanyIdn = InitializeData.listBalanceKeepers.Find((x) => x.BalanceKeeper.Contains(subCompanyName)).subCompanyId;
             subCompanyId = (subCompanyIdn == null) ? 10 : Convert.ToInt64(subCompanyIdn);
 
             typeTures = new string[] { "Тендер RFx", "Аукцион/Редукцион" };
@@ -479,7 +479,7 @@ namespace Corum.Models.ViewModels.Tender
             listTenderCategor = new Dictionary<int, string>();
             foreach (var item in InitializeData.listTenderServices.ToList())
             {
-                listTenderCategor[item.industryId_Test] = item.industryName;
+                listTenderCategor[item.industryId] = item.industryName;
             }
             listServices = new SelectList(listTenderCategor.Values);
             dateStartDef = date.AddHours(2).ToString("yyyy-MM-dd'T'HH:mm");
@@ -512,7 +512,7 @@ namespace Corum.Models.ViewModels.Tender
             kind = (typePublications[0].Contains(typePublic)) ? 1 : 2;
 
             industryName = InitializeData.formDeserializedJSON.IndustryName;
-            industryId = InitializeData.listTenderServices.ToList().Find((x) => x.industryName.Contains(industryName)).industryId_Test;
+            industryId = InitializeData.listTenderServices.ToList().Find((x) => x.industryName.Contains(industryName)).industryId;
 
             dateStart = InitializeData.formDeserializedJSON.DateStart;
             dateEnd = InitializeData.formDeserializedJSON.DateEnd;
@@ -533,7 +533,7 @@ namespace Corum.Models.ViewModels.Tender
                         {
                             Items<T> items = new Items<T>();
                             items.qty = 1;
-                            items.nmcId = Convert.ToInt64(InitializeData.listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).nmcTestId);
+                            items.nmcId = Convert.ToInt64(InitializeData.listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).nmcWorkId);
                             items.itemExternalN = InitializeData.listSpecificationNames.ToList().Find((x) => x.SpecName.Contains(item.Value.nmcName)).SpecCode.ToString() + random.Next(10000).ToString();
 
                             lots[0].items.Add(items);

@@ -205,7 +205,6 @@
     <Compile Include="HangFireTasks\HangFireAuthorizationFilter.cs" />
     <Compile Include="HangFireTasks\HangFireTasks.cs" />
     <Compile Include="HangFireTasks\ResponseStatusTender.cs" />
-    <Compile Include="Views\TabsController.cs" />
     <Content Include="App_Code\NavBarActiveLink.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />

@@ -278,6 +278,9 @@
     <Content Include="Content\icons\Icon7.png" />
     <Content Include="Content\icons\Icon8.png" />
     <Content Include="Content\icons\Icon9.png" />
+    <Content Include="Content\images\ajax-loader-gray.gif" />
+    <Content Include="Content\images\ajax-loader-large.gif" />
+    <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\busket.jpg" />
     <Content Include="Content\images\busket.png" />
     <Content Include="Content\images\select2.png" />
@@ -604,6 +607,7 @@
     <Content Include="Scripts\JQWidgets\jqxknockout.js" />
     <Content Include="Scripts\JQWidgets\jqxlistbox.js" />
     <Content Include="Scripts\JQWidgets\jqxlistmenu.js" />
+    <Content Include="Scripts\JQWidgets\jqxloader.js" />
     <Content Include="Scripts\JQWidgets\jqxmaskedinput.js" />
     <Content Include="Scripts\JQWidgets\jqxmenu.js" />
     <Content Include="Scripts\JQWidgets\jqxnavigationbar.js" />
@@ -1113,7 +1117,6 @@
     <Content Include="Views\Reports\ViewBucketDocument.cshtml" />
     <Content Include="Views\Reports\_restAddItemToBasketByBarcode.cshtml" />
     <Content Include="Views\OrderConcurs\_PartialModul.cshtml" />
-    <Content Include="Views\OrderConcurs\Tabs.cshtml" />
     <Content Include="Views\OrderConcurs\_restReportAddItemToBasket2.cshtml" />
     <Content Include="Views\OrderTender\TenderReport.cshtml" />
   </ItemGroup>

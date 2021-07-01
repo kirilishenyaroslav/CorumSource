@@ -35,9 +35,23 @@ namespace CorumAdminUI.Controllers
         }
 
         [HttpGet]
-        public ActionResult TenderReport()
+        public ActionResult TenderReport(int? orderId, long? dataStart, long? dataEnd, bool? active)
         {
             var model = context.GetRegisterTenders();
+            if (orderId != null && dataStart != null && dataEnd != null && active != false)
+            {
+                ViewBag.orderId = orderId;
+                ViewBag.dataStart = dataStart;
+                ViewBag.dataEnd = dataEnd;
+                ViewBag.active = "true";
+            }
+            else
+            {
+                ViewBag.orderId = "null";
+                ViewBag.dataStart = "null";
+                ViewBag.dataEnd = "null";
+                ViewBag.active = "false";
+            }
             return View(model);
         }
 

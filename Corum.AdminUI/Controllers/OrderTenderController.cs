@@ -35,29 +35,67 @@ namespace CorumAdminUI.Controllers
         }
 
         [HttpGet]
-        public ActionResult TenderReport()
+        public ActionResult TenderReport(int? orderId, long? dataStart, long? dataEnd, bool? active)
         {
             var model = context.GetRegisterTenders();
+            if (orderId != null && dataStart != null && dataEnd != null && active != false)
+            {
+                ViewBag.orderId = orderId;
+                ViewBag.dataStart = dataStart;
+                ViewBag.dataEnd = dataEnd;
+                ViewBag.active = "true";
+            }
+            else
+            {
+                ViewBag.orderId = "null";
+                ViewBag.dataStart = "null";
+                ViewBag.dataEnd = "null";
+                ViewBag.active = "false";
+            }
             return View(model);
+        }
+
+        [HttpGet]
+        public ActionResult UpdateStatusOrderTender(int tenderNumber)
+        {
+            UpdateRegisterStatusTender updateDeserializedClass = new UpdateRegisterStatusTender();
+            try
+            {
+                NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
+                BaseClient clientbase = new BaseClient($"{allAppSettings["ApiGetTenderId"]}{tenderNumber}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
+                var JSONresponse = new GetApiTendAjax().GetCallAsync(clientbase).Result.ResponseMessage;
+                RequestJSONDeserializedToModel myDeserializedClass = JsonConvert.DeserializeObject<RequestJSONDeserializedToModel>(JSONresponse);
+                if (myDeserializedClass.success)
+                {
+                    updateDeserializedClass = context.UpdateCLStatusTenderOrder(myDeserializedClass, tenderNumber);
+                }
+            }
+            catch { }
+            return new JsonpResult
+            {
+                Data = updateDeserializedClass,
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
         }
 
         [HttpPost]
         public ActionResult ResultsTenderUpdate(TenderRegistryUpdate registryUpdate)
         {
             context.UpdateRegisterTenders(Convert.ToInt32(registryUpdate.tenderNumber), registryUpdate.resultsTender);
-            return Json("{\"success\":true");
+            return Json("{\"success\":true}");
         }
 
         [HttpPost]
         public ActionResult RemainingTimeUpdate(RemainingTimeUpdate timeUpdate)
         {
             context.RemainingTime(timeUpdate.TimeList);
-            return Json("{\"success\":true");
+            return Json("{\"success\":true}");
         }
 
         [HttpPost]
         public ActionResult SendNotificationTender(TenderSumOrderId tenderSumOrder)
         {
+            RegisterTenders modifRegisterTenders = new RegisterTenders();
             OrderID = Convert.ToInt64(tenderSumOrder.OrderId);
             Dictionary<string, string> otherParams = new Dictionary<string, string>();
             DateTimeOffset localTimeStart, otherTimeStart, localTimeEnd, otherTimeEnd;
@@ -157,13 +195,17 @@ namespace CorumAdminUI.Controllers
                     context.AddNewDataTender(registerTenders);
                     HttpClientApi clientbaseAddFile = new HttpClientApi($"{allAppSettings["ApiUrlAddFile"]}{registerTenders.tenderNumber}&suppVisible=1", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
                     new AddFilePostApiTender().GetCallAsync(clientbaseAddFile, dataOrder, $"OrderReport{OrderID}.xlsx");
+                    modifRegisterTenders = context.GetRegisterTenders().Find(x => x.tenderNumber == registerTenders.tenderNumber);
                 }
                 catch (Exception e)
                 {
 
                 }
-
-                return Json(response);
+                return new JsonpResult
+                {
+                    Data = new { modifRegisterTenders, response },
+                    JsonRequestBehavior = JsonRequestBehavior.AllowGet
+                };
             }
             else
             {

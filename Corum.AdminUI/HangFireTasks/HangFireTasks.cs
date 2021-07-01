@@ -45,19 +45,33 @@ namespace CorumAdminUI.HangFireTasks
 
         public void GetStatusTender(int numberTender)
         {
-            BaseClient clientbase = new BaseClient($"{allAppSettings["ApiGetStatusTender"]}{numberTender}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
-            var JSONresponse = new GetApiTender().GetCallAsync(clientbase).Result.ResponseMessage;
-            ResponseStatusTender myDeserializedClass = JsonConvert.DeserializeObject<ResponseStatusTender>(JSONresponse);
-            DateTime dateUpdateStatus = DateTime.Now;
-            context.UpdateStatusRegisterTender(numberTender, myDeserializedClass.data.process, dateUpdateStatus);
+            try
+            {
+                BaseClient clientbase = new BaseClient($"{allAppSettings["ApiGetStatusTender"]}{numberTender}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
+                var JSONresponse = new GetApiTender().GetCallAsync(clientbase).Result.ResponseMessage;
+                ResponseStatusTender myDeserializedClass = JsonConvert.DeserializeObject<ResponseStatusTender>(JSONresponse);
+                DateTime dateUpdateStatus = DateTime.Now;
+                if (myDeserializedClass.success)
+                {
+                    context.UpdateStatusRegisterTender(numberTender, myDeserializedClass.data.process, dateUpdateStatus);
+                }
+            }
+            catch { }
         }
 
         public void GetTenderInfoId(int numberTender)
         {
-            BaseClient clientbase = new BaseClient($"{allAppSettings["ApiGetTenderId"]}{numberTender}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
-            var JSONresponse = new GetApiTender().GetCallAsync(clientbase).Result.ResponseMessage;
-            RequestJSONDeserializedToModel myDeserializedClass = JsonConvert.DeserializeObject<RequestJSONDeserializedToModel>(JSONresponse);
-            context.UpdateTimeRemainingTime(myDeserializedClass, numberTender);
+            try
+            {
+                BaseClient clientbase = new BaseClient($"{allAppSettings["ApiGetTenderId"]}{numberTender}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
+                var JSONresponse = new GetApiTender().GetCallAsync(clientbase).Result.ResponseMessage;
+                RequestJSONDeserializedToModel myDeserializedClass = JsonConvert.DeserializeObject<RequestJSONDeserializedToModel>(JSONresponse);
+                if (myDeserializedClass.success)
+                {
+                    context.UpdateTimeRemainingTime(myDeserializedClass, numberTender);
+                }
+            }
+            catch { }
         }
 
         public async Task ListTasks()

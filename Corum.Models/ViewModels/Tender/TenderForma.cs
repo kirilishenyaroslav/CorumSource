@@ -22,6 +22,7 @@ namespace Corum.Models.ViewModels.Tender
         public static TendFormDeserializedJSON formDeserializedJSON;
         public static List<SpecificationNames> listSpecificationNames;
         public static List<Countries> listCountriesNames;
+        public static List<RegisterTenders> listRegisterTenders;
         public static IList<OrderAdditionalRoutePointModel> routePointsLoadinfo;
         public static IList<OrderAdditionalRoutePointModel> routePointsUnloadinfo;
         public static List<TenderServices> listTenderServices;
@@ -42,23 +43,26 @@ namespace Corum.Models.ViewModels.Tender
         public IList<OrderAdditionalRoutePointModel> routePointsUnloadinfo;
         public List<TenderServices> listTenderServices;
         public List<BalanceKeepers> listBalanceKeepers;
+        public List<RegisterTenders> listRegisterTenders;
         NameValueCollection allAppSettings;
 
         public TenderForma()
         { }
-        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, OrderTruckTransport orderTruckTransport)
+        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, OrderTruckTransport orderTruckTransport, List<RegisterTenders> listRegisterTenders)
         {
             this.context = DependencyResolver.Current.GetService<ICorumDataProvider>();
             this.competitiveListViewModel = competitiveListViewModel;
             this.listTenderServices = listTenderServices;
             this.listBalanceKeepers = listBalanceKeepers;
             this.orderTruckTransport = orderTruckTransport;
+            this.listRegisterTenders = listRegisterTenders;
             this.allAppSettings = ConfigurationManager.AppSettings;
             InitializeData.competitiveListViewModel = this.competitiveListViewModel;
             InitializeData.listBalanceKeepers = this.listBalanceKeepers;
             InitializeData.listTenderServices = this.listTenderServices;
             InitializeData.orderTruckTransport = this.orderTruckTransport;
             InitializeData.allAppSettings = this.allAppSettings;
+            InitializeData.listRegisterTenders = this.listRegisterTenders;
             data = new DataTender<T>();
         }
 
@@ -86,6 +90,7 @@ namespace Corum.Models.ViewModels.Tender
             InitializeData.routePointsLoadinfo = this.routePointsLoadinfo;
             InitializeData.routePointsUnloadinfo = this.routePointsUnloadinfo;
             InitializeData.allAppSettings = this.allAppSettings;
+            InitializeData.listRegisterTenders = this.listRegisterTenders;
             data = new DataTender<T>();
             this.otherParams = data.otherParams;
         }
@@ -411,11 +416,12 @@ namespace Corum.Models.ViewModels.Tender
         private string tenderEXTERNALN, dateStartDef, dateEndDef;
         private int lightModeID;
         public string[] regums, typeTures, typePublications;
+        public List<string> listTenders;
         public Dictionary<int, string> listTenderCategor;
-        public SelectList listRegums, listTures, listServices, listPublications;
+        public SelectList listRegums, listTures, listServices, listPublications, listTendersToOrder;
         DateTime date = DateTime.Now;
         public Dictionary<string, string> otherParams;
-        
+
         public DataTender()
         {
             Lots<T> lot = new Lots<T>();
@@ -444,8 +450,23 @@ namespace Corum.Models.ViewModels.Tender
             companyName = "ООО «КОРУМ ГРУПП»";
             companyId = (companyName != "ООО «КОРУМ ГРУПП»") ? 0 : Convert.ToInt64(InitializeData.allAppSettings["companyId"]);
             regums = new string[] { "Облегченный" };
+            int numTend = 0;
             listRegums = new SelectList(regums);
-
+            do
+            {
+                if (numTend == 0)
+                {
+                    listTenders = new List<string> { "Новый тендер" };
+                    if (InitializeData.listRegisterTenders == null)
+                    { break; }
+                }
+                else
+                {
+                    listTenders.Add(InitializeData.listRegisterTenders[numTend - 1].tenderNumber.ToString());
+                }
+            }
+            while (numTend++ < InitializeData.listRegisterTenders.Count);
+            listTendersToOrder = new SelectList(listTenders);
             subCompanyName = InitializeData.competitiveListViewModel.PayerName;
             var subCompanyIdn = InitializeData.listBalanceKeepers.Find((x) => x.BalanceKeeper.Contains(subCompanyName)).subCompanyId;
             subCompanyId = (subCompanyIdn == null) ? 10 : Convert.ToInt64(subCompanyIdn);

@@ -3,6 +3,7 @@
 
 @using System.Linq
 @using GridMvc.Html
+@using Corum.Models.Tender;
 @{ ViewBag.Title = "Работа с конкурентным листом";
     Layout = "~/Views/Shared/_Layout.cshtml"; }
 
@@ -287,8 +288,8 @@
                                     14
                                 </th>
                                 <!--  <th class="grid-header centered_column">
-                        14
-                    </th>-->
+                                    14
+                                </th>-->
                                 <th class="grid-header centered_column">
                                     16
                                 </th>
@@ -646,13 +647,75 @@
             InitFilterMultipleDropDowns();
             GetSpecification(1);
             $("#tabs").tabs();
-            InitialDataStatusTender("Новый тендер");
-        });
+            let dropDownListTender = document.getElementById('drpDwnListTend');
+            let tenderNumber;
+            @{
+                if (Model.tenderForma.tenderUuid != Guid.Empty)
+                {
+                    RegisterTenders tender = Model.tenderForma.listRegisterTenders.Find(x => x.TenderUuid == Model.tenderForma.tenderUuid);
+                        @:tenderNumber = @Html.Raw(Json.Encode(@tender.tenderNumber.ToString()));
+                        @:sessionStorage.setItem('OrderIdKL', JSON.stringify(@Model.tenderForma.competitiveListViewModel.Id));
+                        @:let dateStr = @Html.Raw(Json.Encode(@tender.dateStart));
+                        @:dateStr = Number(dateStr.replace(/\D+/g, ''));
+                        @:sessionStorage.setItem('dataStart', JSON.stringify(dateStr));
+                        @:let dateEnd = @Html.Raw(Json.Encode(@tender.dateEnd));
+                        @:dateEnd = Number(dateEnd.replace(/\D+/g, ''));
+                        @:sessionStorage.setItem('dataEnd', JSON.stringify(dateEnd));
+                }
+                else
+                {
+                        List<RegisterTenders> listAllClosed = new List<RegisterTenders>();
+                        List<RegisterTenders> listAllOpened = new List<RegisterTenders>();
+                        if (Model.tenderForma.listRegisterTenders.Count != 0)
+                        {
+                            foreach (var item in Model.tenderForma.listRegisterTenders)
+                            {
+                                switch (item.processValue)
+                                {
+                                    case "Завершен": listAllClosed.Add(item); break;
+                                    default: listAllOpened.Add(item); break;
+                                }
+                            }
+                            if (listAllOpened.Count != 0)
+                            {
+                                RegisterTenders tender = listAllOpened.OrderByDescending(x => x.tenderNumber).FirstOrDefault();
+                                @:tenderNumber = @Html.Raw(Json.Encode(@tender.tenderNumber.ToString()));
+                                @:sessionStorage.setItem('OrderIdKL', JSON.stringify(@Model.tenderForma.competitiveListViewModel.Id));
+                                @:let dateStr = @Html.Raw(Json.Encode(@tender.dateStart));
+                                @:dateStr = Number(dateStr.replace(/\D+/g, ''));
+                                @:sessionStorage.setItem('dataStart', JSON.stringify(dateStr));
+                                @:let dateEnd = @Html.Raw(Json.Encode(@tender.dateEnd));
+                                @:dateEnd = Number(dateEnd.replace(/\D+/g, ''));
+                                @:sessionStorage.setItem('dataEnd', JSON.stringify(dateEnd));
+                            }
+                            else
+                            {
+                                RegisterTenders tender = listAllClosed.OrderByDescending(x => x.tenderNumber).FirstOrDefault();
+                                @:tenderNumber = @Html.Raw(Json.Encode(@tender.tenderNumber.ToString()));
+                                @:sessionStorage.setItem('OrderIdKL', JSON.stringify(@Model.tenderForma.competitiveListViewModel.Id));
+                                @:let dateStr = @Html.Raw(Json.Encode(@tender.dateStart));
+                                @:dateStr = Number(dateStr.replace(/\D+/g, ''));
+                                @:sessionStorage.setItem('dataStart', JSON.stringify(dateStr));
+                                @:let dateEnd = @Html.Raw(Json.Encode(@tender.dateEnd));
+                                @:dateEnd = Number(dateEnd.replace(/\D+/g, ''));
+                                @:sessionStorage.setItem('dataEnd', JSON.stringify(dateEnd));
+                            }
+                        }
+                        else
+                        {
+                            @:tenderNumber = "Новый тендер";
+                        }
+                }
+            }
+            $(dropDownListTender).text(tenderNumber);
+            $(dropDownListTender).append(" <span class='caret'></span>");
+            InitialDataStatusTender(tenderNumber);
+                });
 
 
 
-        // Модальное окно при нажатии на кнопку "Тендер"
-        function SendNotification(orderId) {
+                // Модальное окно при нажатии на кнопку "Тендер"
+                function SendNotification(orderId) {
 
             $('#partialModul')
                 .dialog({
@@ -665,23 +728,23 @@
                     title: "Запрос на тендер",
                     modal: true,
                     open: function(event, ui) {
-                        InitFilterDropDowns();
+                    InitFilterDropDowns();
 
-                        CreateJqxGrid();
-                        FormInputErrorChecking(); // Метод валидации полей формы тендера
+                    CreateJqxGrid();
+                    FormInputErrorChecking(); // Метод валидации полей формы тендера
                         $(document).ready(function () {
 
-                            var dataTend383 = [];
-                            var dataTend384 = [];
-                            var dataTend385 = [];
-                            var dataTend54 = [];
-                            var dataTend67 = [];
-                            @foreach (var item in Model.specificationNames)
+                        var dataTend383 = [];
+                        var dataTend384 = [];
+                        var dataTend385 = [];
+                        var dataTend54 = [];
+                        var dataTend67 = [];
+                        @foreach (var item in Model.specificationNames)
                             {
-                                switch (item.industryId.ToString())
-                                {
-                                    case "383":
-                                        {
+                            switch (item.industryId.ToString())
+                            {
+                                case "383":
+                                    {
                                             @:dataTend383.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }

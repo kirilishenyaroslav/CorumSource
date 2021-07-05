@@ -28,6 +28,7 @@ namespace Corum.Models.ViewModels.Tender
         public static List<TenderServices> listTenderServices;
         public static List<BalanceKeepers> listBalanceKeepers;
         public static NameValueCollection allAppSettings;
+        public static System.Guid tenderUuid;
     }
     public class TenderForma<T> where T : new()  // Модель тендера
     {
@@ -44,11 +45,12 @@ namespace Corum.Models.ViewModels.Tender
         public List<TenderServices> listTenderServices;
         public List<BalanceKeepers> listBalanceKeepers;
         public List<RegisterTenders> listRegisterTenders;
+        public System.Guid tenderUuid;
         NameValueCollection allAppSettings;
 
         public TenderForma()
         { }
-        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, OrderTruckTransport orderTruckTransport, List<RegisterTenders> listRegisterTenders)
+        public TenderForma(CompetitiveListViewModel competitiveListViewModel, List<TenderServices> listTenderServices, List<BalanceKeepers> listBalanceKeepers, OrderTruckTransport orderTruckTransport, List<RegisterTenders> listRegisterTenders, System.Guid tenderUuid)
         {
             this.context = DependencyResolver.Current.GetService<ICorumDataProvider>();
             this.competitiveListViewModel = competitiveListViewModel;
@@ -57,12 +59,14 @@ namespace Corum.Models.ViewModels.Tender
             this.orderTruckTransport = orderTruckTransport;
             this.listRegisterTenders = listRegisterTenders;
             this.allAppSettings = ConfigurationManager.AppSettings;
+            this.tenderUuid = tenderUuid;
             InitializeData.competitiveListViewModel = this.competitiveListViewModel;
             InitializeData.listBalanceKeepers = this.listBalanceKeepers;
             InitializeData.listTenderServices = this.listTenderServices;
             InitializeData.orderTruckTransport = this.orderTruckTransport;
             InitializeData.allAppSettings = this.allAppSettings;
             InitializeData.listRegisterTenders = this.listRegisterTenders;
+            InitializeData.tenderUuid = this.tenderUuid;
             data = new DataTender<T>();
         }
 
@@ -91,6 +95,7 @@ namespace Corum.Models.ViewModels.Tender
             InitializeData.routePointsUnloadinfo = this.routePointsUnloadinfo;
             InitializeData.allAppSettings = this.allAppSettings;
             InitializeData.listRegisterTenders = this.listRegisterTenders;
+            InitializeData.tenderUuid = this.tenderUuid;
             data = new DataTender<T>();
             this.otherParams = data.otherParams;
         }

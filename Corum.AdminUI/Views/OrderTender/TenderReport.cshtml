@@ -249,7 +249,7 @@
                         if (result)
                             valueOrder = orders[m]["OrderId"];
                     }
-                    var link = 'http://corumsource.com/OrderConcurs/OrderCompetitiveList?OrderId=' + valueOrder;
+                    var link = 'http://corumsource.com/OrderConcurs/OrderCompetitiveList?OrderId=' + valueOrder + '&tenderUuid=' + value;
                     return "<div><button style='display: initial; margin-bottom:10px;' class='btn btn-primary'>" + '<a href="' + link + '"target="_blank" style="color: white">' + 'Конк.лист' + '</a>'+"</button></div>";
                 }
 

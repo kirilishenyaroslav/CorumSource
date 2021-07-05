@@ -103,6 +103,7 @@ namespace Corum.Models
     {
         public bool ShowAll { get; set; }
         public long OrderId { get; set; }
+        public System.Guid tenderUuid { get; set; }
     }
 
     public class PipelinesNavigationInfo : NavigationInfo

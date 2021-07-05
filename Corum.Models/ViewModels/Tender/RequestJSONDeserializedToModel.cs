@@ -66,6 +66,9 @@ namespace Corum.Models.ViewModels.Tender
         public string tenderOwnerPath { get; set; }
         public string process { get; set; }
         public string generalTerms { get; set; }
+        public string processValue { get; set; }
+        public string remainingTime { get; set; }
+        public DateTime dateUpdateStatus { get; set; }
         public List<Lot> lots { get; } = new List<Lot>();
     }
 }

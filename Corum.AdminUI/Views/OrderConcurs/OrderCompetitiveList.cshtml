@@ -3,6 +3,7 @@
 
 @using System.Linq
 @using GridMvc.Html
+@using Corum.Models.Tender;
 @{ ViewBag.Title = "Работа с конкурентным листом";
     Layout = "~/Views/Shared/_Layout.cshtml"; }
 
@@ -49,7 +50,7 @@
 
             <div class="table-header clearfix">
 
-                <div class="col-md-9">
+                <div class="col-md-8">
                     @Html.ActionLink("В заявку", "UpdateOrder", "Orders", new { Id = Model.CompetitiveListInfo.Id }, new { @class = "btn btn-success", @style = "margin-bottom:10px" })
                     @Html.ActionLink("Реестр заявок", "Orders", "Orders", null, new { @class = "btn btn-success", @style = "margin-bottom:10px" })
                     @Html.ActionLink("В excel", "ConcursAsExcel", "ExportToExcel", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })&nbsp;
@@ -60,7 +61,9 @@
                             <span class="tooltip-message">Выбор услуг</span>
                         </a>}
                     @Html.ActionLink("Ставки дисконт-я", "ConcursDiscountRate", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })
-                    <a style="margin-bottom: 10px;" class="btn btn-success" onclick="SendNotification(@Model.Id)">Тендер</a>
+
+                    <a id="BtnReestTendersKL" style="margin-bottom: 10px; display: none" class="btn btn-success" href="/OrderTender/TenderReport" onclick="OnIndexCall(this)">Реестр тендеров</a>
+
 
                     @if (Model.DisplayValues.Count() > 0)
                     {
@@ -70,7 +73,7 @@
                 @Html.Partial("_OrderCompetitiveTarifInfo")
 
 
-
+                <img src="/Content/images/ajax-loader-gray.gif" id="loading-indicator" style="position: fixed; left: 45%; top: 45%; display: none" />
                 <div id="detailValuesGrid" class="table-header clearfix col-md-12" style="font-size: 11px;">
 
                     <table class="table table-striped table-bordered no-footer grid-table" style="height: 100%;">
@@ -347,7 +350,7 @@
                                     <td class="grid-cell rigth_column"> @item.DelayEffect </td>
 
                                     <td class="grid-cell rigth_column"> @item.Prepayment</td>
-                                    <td class="grid-cell rigth_column"> @item.Prepayment2</td>
+                                    <td class="grid-cell rigth_column"></td>
                                     <td class="grid-cell rigth_column"> @item.PrepaymentEffect</td>
 
                                     <!--<td class="grid-cell rigth_column"> @*@item.PrepaymentEffect2*@</td>-->
@@ -644,11 +647,75 @@
             InitFilterMultipleDropDowns();
             GetSpecification(1);
             $("#tabs").tabs();
-        });
+            let dropDownListTender = document.getElementById('drpDwnListTend');
+            let tenderNumber;
+            @{
+                if (Model.tenderForma.tenderUuid != Guid.Empty)
+                {
+                    RegisterTenders tender = Model.tenderForma.listRegisterTenders.Find(x => x.TenderUuid == Model.tenderForma.tenderUuid);
+                        @:tenderNumber = @Html.Raw(Json.Encode(@tender.tenderNumber.ToString()));
+                        @:sessionStorage.setItem('OrderIdKL', JSON.stringify(@Model.tenderForma.competitiveListViewModel.Id));
+                        @:let dateStr = @Html.Raw(Json.Encode(@tender.dateStart));
+                        @:dateStr = Number(dateStr.replace(/\D+/g, ''));
+                        @:sessionStorage.setItem('dataStart', JSON.stringify(dateStr));
+                        @:let dateEnd = @Html.Raw(Json.Encode(@tender.dateEnd));
+                        @:dateEnd = Number(dateEnd.replace(/\D+/g, ''));
+                        @:sessionStorage.setItem('dataEnd', JSON.stringify(dateEnd));
+                }
+                else
+                {
+                        List<RegisterTenders> listAllClosed = new List<RegisterTenders>();
+                        List<RegisterTenders> listAllOpened = new List<RegisterTenders>();
+                        if (Model.tenderForma.listRegisterTenders.Count != 0)
+                        {
+                            foreach (var item in Model.tenderForma.listRegisterTenders)
+                            {
+                                switch (item.processValue)
+                                {
+                                    case "Завершен": listAllClosed.Add(item); break;
+                                    default: listAllOpened.Add(item); break;
+                                }
+                            }
+                            if (listAllOpened.Count != 0)
+                            {
+                                RegisterTenders tender = listAllOpened.OrderByDescending(x => x.tenderNumber).FirstOrDefault();
+                                @:tenderNumber = @Html.Raw(Json.Encode(@tender.tenderNumber.ToString()));
+                                @:sessionStorage.setItem('OrderIdKL', JSON.stringify(@Model.tenderForma.competitiveListViewModel.Id));
+                                @:let dateStr = @Html.Raw(Json.Encode(@tender.dateStart));
+                                @:dateStr = Number(dateStr.replace(/\D+/g, ''));
+                                @:sessionStorage.setItem('dataStart', JSON.stringify(dateStr));
+                                @:let dateEnd = @Html.Raw(Json.Encode(@tender.dateEnd));
+                                @:dateEnd = Number(dateEnd.replace(/\D+/g, ''));
+                                @:sessionStorage.setItem('dataEnd', JSON.stringify(dateEnd));
+                            }
+                            else
+                            {
+                                RegisterTenders tender = listAllClosed.OrderByDescending(x => x.tenderNumber).FirstOrDefault();
+                                @:tenderNumber = @Html.Raw(Json.Encode(@tender.tenderNumber.ToString()));
+                                @:sessionStorage.setItem('OrderIdKL', JSON.stringify(@Model.tenderForma.competitiveListViewModel.Id));
+                                @:let dateStr = @Html.Raw(Json.Encode(@tender.dateStart));
+                                @:dateStr = Number(dateStr.replace(/\D+/g, ''));
+                                @:sessionStorage.setItem('dataStart', JSON.stringify(dateStr));
+                                @:let dateEnd = @Html.Raw(Json.Encode(@tender.dateEnd));
+                                @:dateEnd = Number(dateEnd.replace(/\D+/g, ''));
+                                @:sessionStorage.setItem('dataEnd', JSON.stringify(dateEnd));
+                            }
+                        }
+                        else
+                        {
+                            @:tenderNumber = "Новый тендер";
+                        }
+                }
+            }
+            $(dropDownListTender).text(tenderNumber);
+            $(dropDownListTender).append(" <span class='caret'></span>");
+            InitialDataStatusTender(tenderNumber);
+                });
 
 
-        // Модальное окно при нажатии на кнопку "Тендер"
-        function SendNotification(orderId) {
+
+                // Модальное окно при нажатии на кнопку "Тендер"
+                function SendNotification(orderId) {
 
             $('#partialModul')
                 .dialog({
@@ -661,23 +728,23 @@
                     title: "Запрос на тендер",
                     modal: true,
                     open: function(event, ui) {
-                        InitFilterDropDowns();
+                    InitFilterDropDowns();
 
-                        CreateJqxGrid();
-                        FormInputErrorChecking(); // Метод валидации полей формы тендера
+                    CreateJqxGrid();
+                    FormInputErrorChecking(); // Метод валидации полей формы тендера
                         $(document).ready(function () {
 
-                            var dataTend383 = [];
-                            var dataTend384 = [];
-                            var dataTend385 = [];
-                            var dataTend54 = [];
-                            var dataTend67 = [];
-                            @foreach (var item in Model.specificationNames)
+                        var dataTend383 = [];
+                        var dataTend384 = [];
+                        var dataTend385 = [];
+                        var dataTend54 = [];
+                        var dataTend67 = [];
+                        @foreach (var item in Model.specificationNames)
                             {
-                                switch (item.industryId.ToString())
-                                {
-                                    case "383":
-                                        {
+                            switch (item.industryId.ToString())
+                            {
+                                case "383":
+                                    {
                                             @:dataTend383.push(@Html.Raw(Json.Encode(item.SpecName.Trim(' ').ToString())));
                                             break;
                                         }
@@ -922,16 +989,37 @@
                         [
                             {
                                 text: "Отмена",
-                                "class": 'cancel-btn btn btn-outline',
+                                "class": 'cancel-btn btn btn-primary',
                                 click: function () {
                                     $(this).dialog("close");
                                 }
                             },
                             {
-                                text: "Отправить",
-                                "class": 'btn btn-primary',
+                                text: "Выгрузить на APS",
+                                "class": 'btn btn-success',
                                 click: function () {
+                                    var dataStart = document.getElementById('DateStart');
+                                    var elDataStart = document.getElementById('erroreMessageTenderDataStart');
+                                    var uncorrectDataStart = document.getElementById('uncorrectMessageTenderDataStart');
+                                    var valueDataStartCorrect = $("#DateStart").val();
+                                    function DisplayErrorDataStart() {
+                                        var dateNow = new Date;
+                                        dateNow.setMinutes(dateNow.getMinutes() + 3);
+                                        var valueDataStart = $("#DateStart").val();
+                                        var dateModalForm = new Date(Date.parse(valueDataStart));
 
+                                        var pattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2}[T]{1}[0-9]{2}[:]{1}[0-9]{2}$/;
+                                        var regex = new RegExp(pattern);
+                                        if (!regex.test(valueDataStart)) {
+                                            elDataStart.style.display = "initial";
+                                            formValidationAccessAttributes.accessDataStart = false;
+                                        }
+                                        else if (dateModalForm.getTime() < dateNow.getTime()) {
+                                            uncorrectDataStart.style.display = "initial";
+                                            formValidationAccessAttributes.accessDataStart = false;
+                                        }
+                                    }
+                                    DisplayErrorDataStart();
                                     var valuesGridData = {};
                                     var countGridRows = $("#grid").jqxGrid('getdisplayrows');
                                     for (var i = 0; i < countGridRows.length; i++) {
@@ -988,6 +1076,7 @@
                                     formValidationAccessAttributes.accessBudget != false && formValidationAccessAttributes.accessDataStart != false &&
                                     formValidationAccessAttributes.accessDataEnd != false)
                                 {
+                                    $('#loading-indicator').show();
                                     $.ajax({
                                         type: "POST",
                                         async: true,
@@ -996,28 +1085,57 @@
                                         dataType: "json",
                                         contentType: 'application/json; charset=utf-8',
                                         success: function (data) {
-                                            var dataJS = JSON.parse(data);
-                                            console.log(data);
-
+                                            $('#loading-indicator').hide();
+                                            var dataJS = JSON.parse(data.response);
+                                            formValidationAccessAttributes.accesAddNewTender = true;
+                                            listTendersOrder(data.modifRegisterTenders, data.modifRegisterTenders.tenderNumber);
+                                            InitialDataStatusTender(data.modifRegisterTenders.tenderNumber);
+                                            console.log(data.response);
                                             if (dataJS.success != false) {
-                                                alert('Запрос на тендер успешно создан!');
+                                                CreateNotification("success", data.modifRegisterTenders.tenderNumber);
+                                                $("#jqxNotification").jqxNotification({
+                                                    position: "bottom-right", opacity: 0.8, animationCloseDelay: 1000, autoCloseDelay: 5000,
+                                                    autoOpen: true, autoClose: true, template: "success"
+                                                });
+                                                DeleteNotification();
                                             }
                                             else if (!dataJS.success && !dataJS.isLoadMultiple) {
-                                                alert('Тендер для этой заявки уже создан!');
+                                                CreateNotification("warning", data.modifRegisterTenders.tenderNumber);
+                                                $("#jqxNotification").jqxNotification({
+                                                    position: "bottom-right", opacity: 0.8,
+                                                    autoOpen: true, autoClose: true, template: "warning"
+                                                });
+                                                DeleteNotification();
                                             }
                                             else {
-                                                alert('Запрос на тендер не создан!');
+                                                CreateNotification("errorSuc", null);
+                                                $("#jqxNotification").jqxNotification({
+                                                    position: "bottom-right", opacity: 0.8,
+                                                    autoOpen: true, autoClose: true, template: "error"
+                                                });
+                                                DeleteNotification();
                                             }
                                         },
                                         error: function () {
-                                            alert("Error occured!!")
+                                            $('#loading-indicator').hide();
+                                            CreateNotification("error", null);
+                                            $("#jqxNotification").jqxNotification({
+                                                position: "bottom-right", opacity: 0.8,
+                                                autoOpen: true, autoClose: true, template: "error"
+                                            });
+                                            DeleteNotification();
                                         }
                                     });
                                     $(this).dialog("close");
                                 }
                                 else
                                 {
-                                    alert('Заполните правильно поля формы.');
+                                    CreateNotification("errorForm");
+                                    $("#jqxNotification").jqxNotification({
+                                        position: "bottom-right", opacity: 0.8,
+                                        autoOpen: true, autoClose: true, template: "warning"
+                                    });
+                                    DeleteNotification();
                                 }
                             }
                         }
@@ -1025,6 +1143,32 @@
                 });
             $('#partialModul').dialog('open');
             return;
+        }
+
+
+        // Динамическое создание jqxNotification
+        function CreateNotification(status, numberTender) {
+            var rootTab3 = document.getElementById('JqxCrNot');
+            var div = document.createElement("div");
+            div.id = "jqxNotification";
+            div.className = "col-md-4";
+            switch (status) {
+                case "success": div.innerHTML = "<h4><span style='color: white'>Тендер успешно создан под номером " + "<span style='color: white; font-size: 18px;' class='badge'>" + numberTender +"</span >"+"</span ></h4 > "; break;
+                case "warning": div.innerHTML = "<h4><span style='color: white'>Тендер для этой заявки уже создан!</span></h4>"; break;
+                case "errorSuc": div.innerHTML = "<h4><span style='color: white'>Запрос на тендер не создан!</span></h4>"; break;
+                case "error": div.innerHTML = "<h4><span style='color: white'>Ошибка!</span></h4>"; break;
+                case "errorForm": div.innerHTML = "<h4><span style='color: white'>Заполните правильно поля формы!</span></h4>"; break;
+                case "errorStatuse": div.innerHTML = "<h4><span style='color: white'>Ошибка обновления статуса!</span></h4>"; break;
+                default: break;
+            }
+            rootTab3.appendChild(div);
+        }
+
+        // Динамическое удаление jqxNotification
+        function DeleteNotification() {
+            var rootTab3 = document.getElementById('JqxCrNot');
+            var child = document.getElementById('jqxNotification');
+            rootTab3.removeChild(child);
         }
 
         // Атрибуты допуска валидации полей тендера на подачу формы
@@ -1035,7 +1179,9 @@
             accessLotNameStringLength: true,
             accessBudget: true,
             accessDataStart: true,
-            accessDataEnd: true
+            accessDataEnd: true,
+            accessInitTend: true,
+            accesAddNewTender: false
         };
 
         function FormInputErrorChecking()
@@ -1135,7 +1281,7 @@
                 var dateNow = new Date;
                 var valueDataStart = $("#DateStart").val();
                 var dateModalForm = new Date(Date.parse(valueDataStart));
-                dateModalForm.setHours(dateModalForm.getHours() + 3);
+
                 var pattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2}[T]{1}[0-9]{2}[:]{1}[0-9]{2}$/;
                 var regex = new RegExp(pattern);
                 if (!regex.test(valueDataStart))
@@ -1176,7 +1322,7 @@
             var valueDateEndCorrect = $("#DateEnd").val();
             function DisplayErrorDataEnd() {
                 var dateModalFormStart = new Date(Date.parse(valueDataStartCorrect));
-                dateModalFormStart.setHours(dateModalFormStart.getHours() + 3);
+
                 var valueDataEnd = $("#DateEnd").val();
                 var dateModalFormEnd = new Date(Date.parse(valueDataEnd));
                 var pattern = /^[0-9]{4}-[0-9]{2}-[0-9]{2}[T]{1}[0-9]{2}[:]{1}[0-9]{2}$/;
@@ -1225,6 +1371,325 @@
             var rootTab3 = document.getElementById('tabs-3');
             var child = document.getElementById('jqx1');
             rootTab3.removeChild(child);
+        }
+
+        // Обработчик события dropdownList таблицы статуса КЛ
+        $(".dropdown-menu li a").click(function () {
+            var el = $(this).parents(".dropdown").find('.dropdown-toggle').html($(this).text() + ' <span class="caret"></span>');
+            $(this).parents(".dropdown").find('.dropdown-toggle').val($(this).data('value'));
+            var itemDropDown = document.activeElement.innerHTML;
+            sessionStorage.setItem('OrderIdKL', JSON.stringify(@Model.tenderForma.competitiveListViewModel.Id));
+
+            let item = [];
+            item = JSON.parse(sessionStorage.getItem('data'));
+            for (let i = 0; i < item.length; i++) {
+                if (item[i].tenderNumber == itemDropDown && itemDropDown != "Новый тендер") {
+                    let dateStr = Number(item[i].dateStart.replace(/\D+/g, ''));
+                    sessionStorage.setItem('dataStart', JSON.stringify(dateStr));
+                    let dateEnd = Number(item[i].dateEnd.replace(/\D+/g, ''));
+                    sessionStorage.setItem('dataEnd', JSON.stringify(dateEnd));
+                }
+            }
+            InitialDataStatusTender(itemDropDown);
+        });
+
+        function ModifClickDropDownList()
+        {
+            $(this).parents(".dropdown").find('.dropdown-toggle').html($(this).text() + ' <span class="caret"></span>');
+            $(this).parents(".dropdown").find('.dropdown-toggle').val($(this).data('value'));
+            var itemDropDown = document.activeElement.innerHTML;
+            sessionStorage.setItem('OrderIdKL', JSON.stringify(@Model.tenderForma.competitiveListViewModel.Id));
+
+            let item = [];
+            item = JSON.parse(sessionStorage.getItem('data'));
+            for (let i = 0; i < item.length; i++) {
+                if (item[i].tenderNumber == itemDropDown && itemDropDown != "Новый тендер") {
+                    let dateStr = Number(item[i].dateStart.replace(/\D+/g, ''));
+                    sessionStorage.setItem('dataStart', JSON.stringify(dateStr));
+                    let dateEnd = Number(item[i].dateEnd.replace(/\D+/g, ''));
+                    sessionStorage.setItem('dataEnd', JSON.stringify(dateEnd));
+                }
+            }
+            let dropDownListTender = document.getElementById('drpDwnListTend');
+            $(dropDownListTender).text(itemDropDown);
+            $(dropDownListTender).append(" <span class='caret'></span>");
+            InitialDataStatusTender(itemDropDown);
+        }
+
+        var listTendersOrder = function InitModelRegisTender(params, tenderNumber)
+        {
+            let item = [];
+            item = JSON.parse(sessionStorage.getItem('data'));
+            for (let i = 0; i < item.length; i++)
+            {
+                if (item[i].tenderNumber == tenderNumber && params != null)
+                {
+                    item[i].processValue = params.processValue;
+                    item[i].stageNumber = params.stageNumber;
+                    item[i].dateStart = params.dateStart;
+                    item[i].dateEnd = params.dateEnd;
+                    item[i].remainingTime = params.remainingTime;
+                }
+            }
+            if (formValidationAccessAttributes.accesAddNewTender)
+            {
+                item.push(params);
+            }
+            for (let i = 0; i < item.length; i++) {
+                if (item[i].tenderNumber == tenderNumber && tenderNumber != "Новый тендер") {
+                    let dateStr = Number(item[i].dateStart.replace(/\D+/g, ''));
+                    sessionStorage.setItem('dataStart', JSON.stringify(dateStr));
+                    let dateEnd = Number(item[i].dateEnd.replace(/\D+/g, ''));
+                    sessionStorage.setItem('dataEnd', JSON.stringify(dateEnd));
+                }
+            }
+            sessionStorage.setItem('data', JSON.stringify(item));
+            sessionStorage.setItem('OrderIdKL', JSON.stringify(@Model.tenderForma.competitiveListViewModel.Id));
+            return item;
+        }
+        function InitialDataStatusTender(tenderNumber)
+        {
+            var item = [];
+            if (formValidationAccessAttributes.accessInitTend) {
+                @foreach (var item in Model.tenderForma.listRegisterTenders)
+                {
+                    @:item.push(@Html.Raw(Json.Encode(@item)));
+                }
+                sessionStorage.setItem('data', JSON.stringify(item));
+                formValidationAccessAttributes.accessInitTend = false;
+            }
+            else
+            {
+                item = JSON.parse(sessionStorage.getItem('data'));
+            }
+            var thfStatusTender = document.getElementById('fStatusTender');
+            var thCountTure = document.getElementById('CountTUR');
+            var thTypeTender = document.getElementById('TypeTender');
+            var thDateStartTender = document.getElementById('DateStartTender');
+            var thDateEndTender = document.getElementById('DateEndTender');
+            var thRemainingTM = document.getElementById('remainingTM');
+            var tdBtnPostOne = document.getElementById('BtnPostOne');
+            var tdBtnPostTwo = document.getElementById('BtnPostTwo');
+
+            var childTh = thCountTure.getElementsByClassName('badge');
+            var childThTypeTender = thTypeTender.getElementsByClassName('badge');
+            var childthDateStartTender = thDateStartTender.getElementsByClassName('badge');
+            var childthEndStartTender = thDateEndTender.getElementsByClassName('badge');
+            var childthRemainingTM = thRemainingTM.getElementsByClassName('badge');
+            var childtdBtnPostOne = tdBtnPostOne.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
+            var childtdBtnPostTwo = tdBtnPostTwo.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
+
+            if (formValidationAccessAttributes.accesAddNewTender)
+            {
+                let dropDownListTender = document.getElementById('drpDwnListTend');
+                let dropdwmenu = document.getElementById('drpListMenu');
+                $(dropdwmenu).html("");
+                let childLi = $(dropdwmenu).append("<li><a href='#'>" + "Новый тендер" + "</a></li>");
+                $(childLi).attr("onclick", "ModifClickDropDownList()");
+                for (let i = 0; i < item.length; i++)
+                {
+                    let childLi = $(dropdwmenu).append("<li><a href='#'>" + item[i].tenderNumber + "</a></li>");
+                    $(childLi).attr("onclick", "ModifClickDropDownList()");
+                }
+                dropDownListTender.innerHTML = "";
+                $(dropDownListTender).append(tenderNumber+" <span class='caret'></span>");
+                formValidationAccessAttributes.accesAddNewTender = false;
+            }
+
+            var options = {
+                day: 'numeric',
+                month: 'numeric',
+                year: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric'
+            }
+            for (let i = 0; i < item.length; i++)
+            {
+                if (tenderNumber == "Новый тендер")
+                {
+                    let btnReestTend = document.getElementById('BtnReestTendersKL');
+                    $(btnReestTend).attr("style", "display: none;");
+
+                    $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
+                    $(thfStatusTender).text('(не создан)');
+                    $(childTh).text('н.д.');
+                    if (childThTypeTender.length != 0)
+                    {
+                        $(childThTypeTender).text('н.д.');
+                    }
+                    else
+                    {
+                        thTypeTender.innerHTML = "";
+                        $(thTypeTender).append("<span class='badge'>" + 'н.д.' + '</span>');
+                    }
+                    $(childthDateStartTender).text('н.д.');
+                    $(childthEndStartTender).text('н.д.');
+                    thRemainingTM.innerHTML = "";
+                    $(thRemainingTM).append("<span class='badge'>" + 'н.д.' + '</span>');
+                    $(childtdBtnPostOne).attr("onclick", "SendNotification(@Model.Id)");
+                    $(childtdBtnPostOne).text("Создать тендер");
+                    $(childtdBtnPostOne).attr("style", "display: initial;");
+                    $(childtdBtnPostTwo).attr("style", "display: none;");
+                    break;
+                }
+                if (item[i].tenderNumber == tenderNumber)
+                {
+                    let btnReestTend = document.getElementById('BtnReestTendersKL');
+                    $(btnReestTend).attr("style", "display: initial;");
+
+                    if (item[i].processValue != "Завершен") {
+                        $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
+                        $(thfStatusTender).text(item[i].processValue);
+                        $(childTh).text(item[i].stageNumber);
+                        $(thTypeTender).attr("style", "font-size: 12px; padding:3px 7px 3px 7px; font-weight: 900;");
+                        $(thTypeTender).text(item[i].stageMode);
+                        let dateStr = Number(item[i].dateStart.replace(/\D+/g, ''));
+                        let dateEnd = Number(item[i].dateEnd.replace(/\D+/g, ''));
+                        let dateModalFormStart = new Date(dateStr);
+                        let dateModalFormEnd = new Date(dateEnd);
+                        var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
+                        var dateToFormatEnd = dateModalFormEnd.toLocaleString('ru', options).replace(',', '');
+                        $(childthDateStartTender).text(dateToFormatStr);
+                        $(childthEndStartTender).text(dateToFormatEnd);
+
+                        thRemainingTM.innerHTML = "";
+                        $(thRemainingTM).append("До завершения: <span class='badge'>" + item[i].remainingTime + '</span>');
+
+                        $(childtdBtnPostOne).attr("style", "display: none;");
+                        $(childtdBtnPostTwo).attr("style", "display: initial;");
+                    }
+                    else
+                    {
+                        $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
+                        $(thfStatusTender).text(item[i].processValue);
+                        $(childTh).text(item[i].stageNumber);
+                        $(thTypeTender).attr("style", "font-size: 12px; padding:3px 7px 3px 7px; font-weight: 900;");
+                        $(thTypeTender).text(item[i].stageMode);
+                        let dateStr = Number(item[i].dateStart.replace(/\D+/g, ''));
+                        let dateEnd = Number(item[i].dateEnd.replace(/\D+/g, ''));
+                        let dateModalFormStart = new Date(dateStr);
+                        let dateModalFormEnd = new Date(dateEnd);
+                        var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
+                        var dateToFormatEnd = dateModalFormEnd.toLocaleString('ru', options).replace(',', '');
+                        $(childthDateStartTender).text(dateToFormatStr);
+                        $(childthEndStartTender).text(dateToFormatEnd);
+
+                        thRemainingTM.innerHTML = "";
+                        $(thRemainingTM).append("До завершения: <span class='badge'>" + item[i].remainingTime + '</span>');
+
+                        $(childtdBtnPostOne).attr("onclick", "ThBottonOne()");
+                        $(childtdBtnPostOne).text("Аннулировать");
+                        $(childtdBtnPostOne).attr("style", "display: initial;");
+
+                        $(childtdBtnPostTwo).attr("style", "display: initial;");
+                    }
+                }
+            }
+        }
+
+        $("#UpdateTendData").click(function ()
+        {
+            let DropDownListTender = document.getElementById('drpDwnListTend');
+            let tendNumber = Number(DropDownListTender.textContent.replace(" ", ""));
+            $.ajax({
+                type: "GET",
+                async: true,
+                url: "/OrderTender/UpdateStatusOrderTender",
+                data:
+                {
+                    tenderNumber: tendNumber
+                },
+                dataType: "json",
+                contentType: 'application/json; charset=utf-8',
+                success: function (data) {
+                    listTendersOrder(data, tendNumber);
+                    var options = {
+                        day: 'numeric',
+                        month: 'numeric',
+                        year: 'numeric',
+                        hour: 'numeric',
+                        minute: 'numeric'
+                    }
+                    var thfStatusTender = document.getElementById('fStatusTender');
+                    var thCountTure = document.getElementById('CountTUR');
+                    var thTypeTender = document.getElementById('TypeTender');
+                    var thDateStartTender = document.getElementById('DateStartTender');
+                    var thDateEndTender = document.getElementById('DateEndTender');
+                    var thRemainingTM = document.getElementById('remainingTM');
+                    var tdBtnPostOne = document.getElementById('BtnPostOne');
+                    var tdBtnPostTwo = document.getElementById('BtnPostTwo');
+                    var childTh = thCountTure.getElementsByClassName('badge');
+                    var childThTypeTender = thTypeTender.getElementsByClassName('badge');
+                    var childthDateStartTender = thDateStartTender.getElementsByClassName('badge');
+                    var childthEndStartTender = thDateEndTender.getElementsByClassName('badge');
+                    var childthRemainingTM = thRemainingTM.getElementsByClassName('badge');
+                    var childtdBtnPostOne = tdBtnPostOne.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
+                    var childtdBtnPostTwo = tdBtnPostTwo.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
+
+                    if (data.processValue != "Завершен") {
+                        $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
+                        $(thfStatusTender).text(data.processValue);
+                        $(childTh).text(data.stageNumber);
+                        let dateStr = Number(data.dateStart.replace(/\D+/g, ''));
+                        let dateEnd = Number(data.dateEnd.replace(/\D+/g, ''));
+                        let dateModalFormStart = new Date(dateStr);
+                        let dateModalFormEnd = new Date(dateEnd);
+                        var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
+                        var dateToFormatEnd = dateModalFormEnd.toLocaleString('ru', options).replace(',', '');
+
+                        $(childthDateStartTender).text(dateToFormatStr);
+                        $(childthEndStartTender).text(dateToFormatEnd);
+
+                        thRemainingTM.innerHTML = "";
+                        $(thRemainingTM).append("До завершения: <span class='badge'>" + data.remainingTime + '</span>');
+
+                        $(childtdBtnPostOne).attr("style", "display: none;");
+                        $(childtdBtnPostTwo).attr("style", "display: initial;");
+
+                    }
+                    else
+                    {
+                        $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
+                        $(thfStatusTender).text(data.processValue);
+                        $(childTh).text(data.stageNumber);
+                        let dateStr = Number(data.dateStart.replace(/\D+/g, ''));
+                        let dateEnd = Number(data.dateEnd.replace(/\D+/g, ''));
+                        let dateModalFormStart = new Date(dateStr);
+                        let dateModalFormEnd = new Date(dateEnd);
+                        var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
+                        var dateToFormatEnd = dateModalFormEnd.toLocaleString('ru', options).replace(',', '');
+                        $(childthDateStartTender).text(dateToFormatStr);
+                        $(childthEndStartTender).text(dateToFormatEnd);
+
+                        thRemainingTM.innerHTML = "";
+                        $(thRemainingTM).append("До завершения: <span class='badge'>" + data.remainingTime + '</span>');
+                        $(childtdBtnPostOne).attr("onclick", "ThBottonOne()");
+                        $(childtdBtnPostOne).text("Аннулировать");
+                        $(childtdBtnPostOne).attr("style", "display: initial;");
+                        $(childtdBtnPostTwo).attr("style", "display: initial;");
+                    }
+                },
+                error: function () {
+                    CreateNotification("errorStatuse", null);
+                    $("#jqxNotification").jqxNotification({
+                        position: "bottom-right", opacity: 0.8,
+                        autoOpen: true, autoClose: true, template: "error"
+                    });
+                    DeleteNotification();
+                }
+            });
+        });
+
+        function ThBottonOne()
+        {
+
+        }
+
+        function OnIndexCall(elem) {
+            var orderId = Number(JSON.parse(sessionStorage.getItem('OrderIdKL')));
+            var dataStart = Number(JSON.parse(sessionStorage.getItem('dataStart')));
+            var dataEnd = Number(JSON.parse(sessionStorage.getItem('dataEnd')));
+            return $(elem).attr('href', $(elem).attr('href') + '?orderId=' + orderId + '&dataStart=' + dataStart + '&dataEnd=' + dataEnd + '&active=' + true);
         }
     </script>
 }

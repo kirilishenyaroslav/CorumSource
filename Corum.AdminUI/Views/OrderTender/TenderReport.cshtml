@@ -18,11 +18,41 @@
     <script>
         $(document).ready(function () {
             $(document).ready(function () {
+                var options = {
+                    day: 'numeric',
+                    month: 'numeric',
+                    year: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric'
+                }
+                var dataModelInit = [];
                 var dataModel = [];
                 @foreach (var item in Model)
                 {
                 @:dataModel.push(@Html.Raw(Json.Encode(item)));
                 }
+
+                var orderIdKL = @ViewBag.orderId;
+                var dataStartKL = @ViewBag.dataStart;
+                var dataEndKL = @ViewBag.dataEnd;
+                var active = @ViewBag.active;
+                for (let i = 0; i < dataModel.length; i++)
+                {
+                    let dateStr = Number(dataModel[i].dateStart.replace(/\D+/g, ''));
+                    let dateModalFormStart = new Date(dateStr);
+                    var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
+                    dataModel[i].dateStart = dateToFormatStr;
+                    dataModelInit[i] = { 'dateEnd': dataModel[i].dateEnd};
+                    let dateEnd = Number(dataModel[i].dateEnd.replace(/\D+/g, ''));                   
+                    let dateModalFormEnd = new Date(dateEnd);
+                    var dateToFormatEnd = dateModalFormEnd.toLocaleString('ru', options).replace(',', '');
+                    dataModel[i].dateEnd = dateToFormatEnd;
+
+                }
+                dataStartKL = new Date(dataStartKL);
+                dataEndKL = new Date(dataEndKL);
+                dataStartKL = dataStartKL.toLocaleString('ru', options).replace(',', '');
+                dataEndKL = dataEndKL.toLocaleString('ru', options).replace(',', '');
              var source =
              {
                     localdata: dataModel,
@@ -33,8 +63,8 @@
                         { name: 'downloadAddress', type: 'string' },
                         { name: 'unloadAddress', type: 'string' },
                         { name: 'downloadDataRequired', type: 'date' },
-                        { name: 'dateStart', type: 'date' },
-                        { name: 'dateEnd', type: 'date' },
+                        { name: 'dateStart', type: 'string' },
+                        { name: 'dateEnd', type: 'string' },
                         { name: 'processValue', type: 'string' },
                         { name: 'TenderUuid', type: 'string' },
                         { name: 'remainingTime', type: 'string' }
@@ -157,7 +187,36 @@
                 }
 
 
+                var addfilterCurrentTender = function () {
+                    var filtergroup = new $.jqx.filter();
+                    var filter_or_operator = 1;
+                    var filtervalue = String(orderIdKL);
+                    var filtercondition = 'equal';
+                    var filter1 = filtergroup.createfilter('stringfilter', filtervalue, filtercondition);
+                    filtergroup.addfilter(filter_or_operator, filter1);
+                    // add the filters.
+                    $("#dataTable").jqxDataTable('addFilter', 'OrderId', filtergroup);
+                    // apply the filters.
+                    $("#dataTable").jqxDataTable('applyFilters');
 
+                    var filtervalue = String(dataStartKL);
+                    var filtercondition = 'equal';
+                    var filter2 = filtergroup.createfilter('stringfilter', filtervalue, filtercondition);
+                    filtergroup.addfilter(filter_or_operator, filter2);
+                    // add the filters.
+                    $("#dataTable").jqxDataTable('addFilter', 'dateStart', filtergroup);
+                    // apply the filters.
+                    $("#dataTable").jqxDataTable('applyFilters');
+
+                    var filtervalue = String(dataEndKL);
+                    var filtercondition = 'equal';
+                    var filter3 = filtergroup.createfilter('stringfilter', filtervalue, filtercondition);
+                    filtergroup.addfilter(filter_or_operator, filter3);
+                    // add the filters.
+                    $("#dataTable").jqxDataTable('addFilter', 'dateEnd', filtergroup);
+                    // apply the filters.
+                    $("#dataTable").jqxDataTable('applyFilters');
+                }
 
                 // Alignment headers text and columns text
                 var cellsrenderer = function (row, column, value) {
@@ -170,7 +229,7 @@
 
                 // Link to Order
                 var linkOrder = function (row, column, value) {
-                    var link = 'http://localhost:14589/Orders/UpdateOrder/' + value;
+                    var link = 'http://corumsource.com/Orders/UpdateOrder/' + value;
                     return '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' + '<a href="'+link+'"target="_blank">'+value +'</a>'+ '</div>';
                 }
 
@@ -190,7 +249,7 @@
                         if (result)
                             valueOrder = orders[m]["OrderId"];
                     }
-                    var link = 'http://localhost:14589/OrderConcurs/OrderCompetitiveList?OrderId=' + valueOrder;
+                    var link = 'http://corumsource.com/OrderConcurs/OrderCompetitiveList?OrderId=' + valueOrder + '&tenderUuid=' + value;
                     return "<div><button style='display: initial; margin-bottom:10px;' class='btn btn-primary'>" + '<a href="' + link + '"target="_blank" style="color: white">' + 'Конк.лист' + '</a>'+"</button></div>";
                 }
 
@@ -220,7 +279,8 @@
                     var timeList = {};
                     for (var m = 0; m < orders.length; m++)
                     {
-                        var firstTime = orders[m].dateEnd;
+                        let datEnd = Number(dataModelInit[m].dateEnd.replace(/\D+/g, ''));
+                        var firstTime = new Date(datEnd);
                         var TenderUuid = orders[m].TenderUuid;
                         var currentTime = new Date();
                         var timeSpan = firstTime - currentTime;
@@ -284,15 +344,21 @@
                         rowDetails: true,
                         localization: getLocalization('ru'),
                         initRowDetails: initRowDetails,
-                        ready: remainingTime,
+                        ready: function () {
+                            remainingTime();
+                            if (orderIdKL != null && dataStartKL != null && dataEndKL != null && active != false)
+                            {
+                                addfilterCurrentTender();
+                            }
+                        },
                         columns: [
                             { text: '№ заявки', editable: false, renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsrenderer: linkOrder, dataField: 'OrderId', width: '5%'},
                             { text: 'Категория тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'industryName', width: '11%' },
                             { text: 'Город погрузки/Грузоотправитель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadAddress', width: '14%' },
                             { text: 'Город выгрузки/Грузополучатель', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'unloadAddress', width: '14%' },
                             { text: 'Дата погрузки автомобиля', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'downloadDataRequired', cellsFormat: 'P', width: '10%'},
-                            { text: 'Дата начала тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateStart', cellsFormat: 'P', width: '10%' },
-                            { text: 'Дата окончания\nтендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateEnd', cellsFormat: 'P', width: '10%' },
+                            { text: 'Дата начала тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateStart', width: '10%' },
+                            { text: 'Дата окончания\nтендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'dateEnd', width: '10%' },
                             { text: 'До завершения\nосталось', renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'remainingTime', width: '8%' },
                             { text: 'Статус тендера', editable: true, renderer: columnsrenderer, cellsrenderer: cellsrenderer, dataField: 'processValue', width: '9%' },
                             {

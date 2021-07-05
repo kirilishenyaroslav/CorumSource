@@ -19,8 +19,13 @@ namespace Corum.Models
         void AddNewDataTender(RegisterTenders model);
         bool IsRegisterTendersExist(long orderId, bool isMultipleTenders);
         List<RegisterTenders> GetRegisterTenders();
+        List<RegisterTenders> GetRegisterTendersOfOrder(long orderId);
         Dictionary<int, string> GetStatusTenders();
         void UpdateRegisterTenders(int tenderNumber, string resultsTender);
         void RemainingTime(Dictionary<string,Time> time);
+        void UpdateStatusRegisterTender(int tenderNumber, int process, DateTime dateUpdateStatus);
+        void UpdateTimeRemainingTime(RequestJSONDeserializedToModel myDeserializedClass, int numberTender);
+        string UpdateRegistersRemainingTime(int tenderNumber);
+        UpdateRegisterStatusTender UpdateCLStatusTenderOrder(RequestJSONDeserializedToModel myDeserializedClass, int numberTender);
     }
 }

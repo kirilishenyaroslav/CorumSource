@@ -122,6 +122,9 @@ namespace Corum.DAL
                 register.tenderOwnerPath = item.tenderOwnerPath;
                 register.remainingTime = item.remainingTime;
                 register.dateCreate = item.dateCreate;
+                register.uuidFile = item.uuidFile;
+                register.lotStateName = item.lotStateName;
+                register.lotResultNote = item.lotResultNote;
                 registerTenders.Add(register);
             }
             return registerTenders;
@@ -163,17 +166,60 @@ namespace Corum.DAL
                     registerTenders.tenderOwnerPath = item.tenderOwnerPath;
                     registerTenders.unloadAddress = item.unloadAddress;
                     registerTenders.unloadDataRequired = item.unloadDataRequired;
+                    registerTenders.uuidFile = item.uuidFile;
+                    registerTenders.lotStateName = item.lotStateName;
+                    registerTenders.lotResultNote = item.lotResultNote;
                     allRegisterTenders.Add(registerTenders);
                 }
             }
             return allRegisterTenders;
         }
-        public void UpdateStatusRegisterTender(int tenderNumber, int process, DateTime dateUpdateStatus)
+        public void UpdateStatusRegisterTender(int tenderNumber, int process, DateTime dateUpdateStatus, RequestJSONDeserializedToModel resultDeserializedClass)
         {
-            var tender = db.RegisterTenders.Where(x => x.tenderNumber == tenderNumber).OrderByDescending(x => x.dateEnd).FirstOrDefault();
-            tender.processValue = GetStatusTenders()[process];
-            tender.dateUpdateStatus = dateUpdateStatus;
-            db.SaveChanges();
+            try
+            {
+                var tender = db.RegisterTenders.Where(x => x.tenderNumber == tenderNumber).OrderByDescending(x => x.dateEnd).FirstOrDefault();
+                tender.processValue = GetStatusTenders()[process];
+                tender.dateUpdateStatus = dateUpdateStatus;
+                db.SaveChanges();
+                string result = null;
+                int countWinner = 0;
+                if (resultDeserializedClass != null)
+                {
+                    if (resultDeserializedClass.data.competitorList != null)
+                    {
+                        tender.uuidFile = Guid.Parse(resultDeserializedClass.data.competitorList.tenderFileUuid);
+                    }
+                    while (countWinner < resultDeserializedClass.data.lots[0].items.Count)
+                    {
+                        if (resultDeserializedClass.data.lots[0].items[countWinner].winner != null)
+                        {
+                            result += $"\nКонтрагент-победитель: {resultDeserializedClass.data.lots[0].items[countWinner].winner.ownershipType} \"{resultDeserializedClass.data.lots[0].items[countWinner].winner.name}\"" +
+                                $" ({resultDeserializedClass.data.lots[0].items[countWinner].winner.country}, {resultDeserializedClass.data.lots[0].items[countWinner].winner.addressActual},\n" +
+                                $"ЕДРПОУ: {resultDeserializedClass.data.lots[0].items[countWinner].winner.edrpou})\nКритерии:\n";
+                            foreach (var item in resultDeserializedClass.data.lots[0].items[countWinner].criteriaValues)
+                            {
+                                result += $"{item.name}: {item.value};\n";
+                            }
+                        }
+                        ++countWinner;
+                    }
+                    tender.process = (byte)process;
+                    tender.stageNumber = (byte)resultDeserializedClass.data.stageNumber;
+                    if (resultDeserializedClass.data.lots.Count != 0)
+                    {
+                        tender.lotState = resultDeserializedClass.data.lots[0].lotState;
+                        tender.lotStateName = resultDeserializedClass.data.lots[0].lotStateName;
+                        tender.lotResultNote = resultDeserializedClass.data.lots[0].lotResultNote;
+                    }
+                    tender.resultsTender = result;
+                    db.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
         }
 
         public Dictionary<int, string> GetStatusTenders()
@@ -363,6 +409,39 @@ namespace Corum.DAL
             registerTender.lotState = lotState;
             registerTender.process = process;
             db.SaveChanges();
+            string result = null;
+            int countWinner = 0;
+            if (myDeserializedClass != null)
+            {
+                if (myDeserializedClass.data.competitorList != null)
+                {
+                    registerTender.uuidFile = Guid.Parse(myDeserializedClass.data.competitorList.tenderFileUuid);
+                }
+                while (countWinner < myDeserializedClass.data.lots[0].items.Count)
+                {
+                    if (myDeserializedClass.data.lots[0].items[countWinner].winner != null)
+                    {
+                        result += $"\nКонтрагент-победитель: {myDeserializedClass.data.lots[0].items[countWinner].winner.ownershipType} \"{myDeserializedClass.data.lots[0].items[countWinner].winner.name}\"" +
+                            $" ({myDeserializedClass.data.lots[0].items[countWinner].winner.country}, {myDeserializedClass.data.lots[0].items[countWinner].winner.addressActual},\n" +
+                            $"ЕДРПОУ: {myDeserializedClass.data.lots[0].items[countWinner].winner.edrpou})\nКритерии:\n";
+                        foreach (var item in myDeserializedClass.data.lots[0].items[countWinner].criteriaValues)
+                        {
+                            result += $"{item.name}: {item.value};\n";
+                        }
+                    }
+                    ++countWinner;
+                }
+                registerTender.process = (byte)process;
+                registerTender.stageNumber = (byte)myDeserializedClass.data.stageNumber;
+                if (myDeserializedClass.data.lots.Count != 0)
+                {
+                    registerTender.lotState = myDeserializedClass.data.lots[0].lotState;
+                    registerTender.lotStateName = myDeserializedClass.data.lots[0].lotStateName;
+                    registerTender.lotResultNote = myDeserializedClass.data.lots[0].lotResultNote;
+                }
+                registerTender.resultsTender = result;
+                db.SaveChanges();
+            }
             updateDeserializedClass.dateEnd = dateEnd;
             updateDeserializedClass.dateStart = dateStart;
             updateDeserializedClass.processValue = processValue;

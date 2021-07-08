@@ -43,7 +43,7 @@
                     var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
                     dataModel[i].dateStart = dateToFormatStr;
                     dataModelInit[i] = { 'dateEnd': dataModel[i].dateEnd};
-                    let dateEnd = Number(dataModel[i].dateEnd.replace(/\D+/g, ''));                   
+                    let dateEnd = Number(dataModel[i].dateEnd.replace(/\D+/g, ''));
                     let dateModalFormEnd = new Date(dateEnd);
                     var dateToFormatEnd = dateModalFormEnd.toLocaleString('ru', options).replace(',', '');
                     dataModel[i].dateEnd = dateToFormatEnd;
@@ -88,7 +88,8 @@
                         { name: 'stageNumber', type: 'string' },
                         { name: 'resultsTender', type: 'string' },
                         { name: 'TenderUuid', type: 'string' },
-                        { name: 'tenderOwnerPath', type: 'string' }
+                        { name: 'tenderOwnerPath', type: 'string' },
+                        { name: 'TenderUuidFile', type: 'string' }
                     ]
                 };
                 var ordersDataAdapter = new $.jqx.dataAdapter(registrySource, { autoBind: true });
@@ -150,9 +151,58 @@
                                 { text: 'Дата выгрузки', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'unloadDataRequired', cellsFormat: 'P', width: '9%' },
                                 { text: 'Тип тендера:Тендер(RFx), Аукцион/Редукцион', renderer: columnsrenderer, editable: false, cellsrenderer: cellsrenderer, dataField: 'stageMode', width: '13%' },
                                 { text: 'Номер тура:/1/2', renderer: columnsrenderer, cellsrenderer: cellsrenderer, editable: false, dataField: 'stageNumber', width: '7%' },
-                                { text: 'Результаты тендера', renderer: columnsrenderer, cellsrenderer: cellsrenderer, cellsAlign: 'left', align: 'left', editable: true, dataField: 'resultsTender', width: '25%' }
+                                {
+                                    text: 'Результаты тендера', renderer: columnsrenderer, cellsrenderer: function (row, dataField, value, rowData) {
+                                        var orders = ordersDataAdapter.records;
+                                        var filterGroup = new $.jqx.filter();
+                                        var filterValue = rowData.tenderNumber;
+                                        var filterCondition = 'equal';
+                                        var filter = filterGroup.createfilter('stringfilter', filterValue, filterCondition);
+
+                                        // fill the orders depending on the TenderUuid.
+                                        var valueOrder = null;
+                                        var valueLotState = null;
+                                        var valueLotResult = null;
+                                        for (var m = 0; m < orders.length; m++) {
+                                            var result = filter.evaluate(orders[m]["tenderNumber"]);
+                                            if (result) {
+                                                valueOrder = dataModel[m]["uuidFile"];
+                                                valueLotState = (dataModel[m]["lotStateName"] != null) ? (dataModel[m]["lotResultNote"] != null) ? '<b>' + dataModel[m]["lotStateName"] + '.</b>' : '<b>' + dataModel[m]["lotStateName"] +'.</b><br/>': "";
+                                                valueLotResult = (dataModel[m]["lotResultNote"] != null) ? '<b>' +dataModel[m]["lotResultNote"] +'.</b>' + '<br/><br/>': "";
+                                            }
+                                        }
+                                        if (value != "" && valueOrder != null) {
+                                            return '<div style="white-space: normal; text-align: left; color:black; height: auto; max-height: 150px; overflow-x: hidden; padding: 5px 50px 10px 5px; font-size: 12px;">' + valueLotState + valueLotResult+ value +
+                                                '<br/>' + "<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a id="callRegistClickSuccess" href="/ExportToExcel/ConcursListTenderAsExcel?tenderUuid=' + valueOrder + '"style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>" + '</div>';
+                                        }
+                                        else if (value != "" && valueOrder == null)
+                                        {
+                                            return '<div style="white-space: normal; text-align: left; color:black; height: auto; max-height: 150px; overflow-x: hidden; padding: 5px 50px 10px 5px; font-size: 12px;">' + valueLotState + valueLotResult + value +
+                                                '<br/>' + "<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a id="callRegistClickError" href="#" style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>" + '</div>';
+                                        }
+                                        else
+                                        {
+                                            return '<div style="white-space: normal; text-align: left; color:black; height: auto; max-height: 150px; overflow-x: hidden; padding: 5px 50px 10px 5px; font-size: 12px;">' + valueLotState + valueLotResult+'</div>';
+                                        }
+                                    },
+                                    cellsAlign: 'left', align: 'left', editable: false, dataField: 'resultsTender', width: '25%'
+                                }
                             ]
                         });
+
+                        // Button excel file download click
+
+                        $("#callRegistClickError").click(function () {
+                            CreateNotification("warning", null);
+                        });
+
+                        // Вывод предупреждения об отсутствии документа КЛ тендера
+                        function CreateNotification(status) {
+                            switch (status) {
+                                case "warning": alert('Конк.лист тендера отсутствует в ЭТП!'); break;
+                                default: break;
+                            }
+                        }
 
                         // Cell End Edit
                         $("#dataTable").on('cellEndEdit', function (event) {
@@ -229,7 +279,7 @@
 
                 // Link to Order
                 var linkOrder = function (row, column, value) {
-                    var link = 'http://corumsource.com/Orders/UpdateOrder/' + value;
+                    var link = '/Orders/UpdateOrder/' + value;
                     return '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' + '<a href="'+link+'"target="_blank">'+value +'</a>'+ '</div>';
                 }
 
@@ -243,13 +293,13 @@
                     var filter = filterGroup.createfilter('stringfilter', filterValue, filterCondition);
 
                     // fill the orders depending on the TenderUuid.
-                    var valueOrder;;
+                    var valueOrder;
                     for (var m = 0; m < orders.length; m++) {
                         var result = filter.evaluate(orders[m]["TenderUuid"]);
                         if (result)
                             valueOrder = orders[m]["OrderId"];
                     }
-                    var link = 'http://corumsource.com/OrderConcurs/OrderCompetitiveList?OrderId=' + valueOrder + '&tenderUuid=' + value;
+                    var link = '/OrderConcurs/OrderCompetitiveList?OrderId=' + valueOrder + '&tenderUuid=' + value;
                     return "<div><button style='display: initial; margin-bottom:10px;' class='btn btn-primary'>" + '<a href="' + link + '"target="_blank" style="color: white">' + 'Конк.лист' + '</a>'+"</button></div>";
                 }
 

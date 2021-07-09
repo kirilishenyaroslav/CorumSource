@@ -35,5 +35,8 @@ namespace Corum.Models.Tender
         public string remainingTime { get; set; }
         public Nullable<System.DateTime> dateUpdateStatus { get; set; }
         public Nullable<System.DateTime> dateCreate { get; set; }
+        public Nullable<System.Guid> uuidFile { get; set; }
+        public string lotStateName { get; set; }
+        public string lotResultNote { get; set; }
     }
 }

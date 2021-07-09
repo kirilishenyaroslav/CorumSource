@@ -15,6 +15,9 @@ using CorumAdminUI.Controllers;
 using Corum.Models.ViewModels.Orders;
 using Corum.Models.ViewModels.OrderConcurs;
 using Corum.Models.ViewModels.Bucket;
+using Corum.Models.ViewModels.Tender;
+using System.Configuration;
+using System.Collections.Specialized;
 
 namespace Corum.ReportsUI
 {
@@ -22,6 +25,7 @@ namespace Corum.ReportsUI
     public class ExportToExcelController : CorumBaseController
     {
         protected IReportRenderer report;
+        NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
 
 
         public ExportToExcelController()
@@ -3439,6 +3443,17 @@ namespace Corum.ReportsUI
             fileContents = report.RenderReport<BucketItem>(Header, Data, Footer, Param);
 
             return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "BucketDocument"+document.Id.ToString()+".xlsx");
+        }
+
+        [HttpGet]
+        [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
+        public FileResult ConcursListTenderAsExcel(Guid tenderUuid)
+        {
+            var tender = context.GetRegisterTenders().Find(x => x.uuidFile == tenderUuid);
+            var nameKL = $"KЛ_№_{tender.tenderNumber}_Тур_{tender.stageNumber}_{tender.industryName}.xls";
+            BaseClient clientbase = new BaseClient($"{allAppSettings["ApiUrlGetFile"]}{tenderUuid}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
+            var response = new GetFileApiTender().GetCallAsync(clientbase).Result;
+            return File(response, "application/vnd.ms-excel", nameKL);
         }
     }
 }

@@ -64,7 +64,7 @@
         </EntityType>
         <EntityType Name="BalanceKeepers">
           <Key>
-            <PropertyRef Name="Id" />
+            <PropertyRef Name="Id" />            
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BalanceKeeper" Type="nvarchar" MaxLength="500" Nullable="false" />
@@ -870,7 +870,6 @@
           <Property Name="subCompanyName" Type="nvarchar" MaxLength="150" Nullable="false" />
           <Property Name="industryId" Type="int" Nullable="false" />
           <Property Name="industryName" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="dateCreate" Type="datetime2" Precision="7" />
           <Property Name="dateStart" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="dateEnd" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="mode" Type="tinyint" Nullable="false" />
@@ -886,10 +885,14 @@
           <Property Name="cargoName" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="lotState" Type="int" Nullable="false" />
           <Property Name="processValue" Type="nvarchar" MaxLength="100" />
-          <Property Name="resultsTender" Type="nvarchar" MaxLength="1000" />
+          <Property Name="resultsTender" Type="text" />
           <Property Name="tenderOwnerPath" Type="nvarchar" MaxLength="200" Nullable="false" />
           <Property Name="remainingTime" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="dateUpdateStatus" Type="datetime2" Precision="7" />
+          <Property Name="dateCreate" Type="datetime2" Precision="7" />
+          <Property Name="uuidFile" Type="uniqueidentifier" />
+          <Property Name="lotStateName" Type="text" />
+          <Property Name="lotResultNote" Type="text" />
         </EntityType>
         <EntityType Name="RestsSnapshot">
           <Key>
@@ -1137,18 +1140,6 @@
             </Principal>
             <Dependent Role="AdditionalRoutePoints">
               <PropertyRef Name="RoutePointId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Contracts_BalanceKeepers">
-          <End Role="BalanceKeepers" Type="Self.BalanceKeepers" Multiplicity="0..1" />
-          <End Role="Contracts" Type="Self.Contracts" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BalanceKeepers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="Contracts">
-              <PropertyRef Name="BalanceKeeperId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1822,18 +1813,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK_OrdersBase_BalanceKeepers">
-          <End Role="BalanceKeepers" Type="Self.BalanceKeepers" Multiplicity="0..1" />
-          <End Role="OrdersBase" Type="Self.OrdersBase" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="BalanceKeepers">
-              <PropertyRef Name="Id" />
-            </Principal>
-            <Dependent Role="OrdersBase">
-              <PropertyRef Name="PayerId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <Association Name="FK_OrdersBase_OrderClients">
           <End Role="OrderClients" Type="Self.OrderClients" Multiplicity="1" />
           <End Role="OrdersBase" Type="Self.OrdersBase" Multiplicity="*" />
@@ -2487,6 +2466,18 @@
             </Principal>
             <Dependent Role="ContractSpecifications">
               <PropertyRef Name="CarryCapacityId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Specifications_Names">
+          <End Role="SpecificationNames" Type="Self.SpecificationNames" Multiplicity="1" />
+          <End Role="ContractSpecifications" Type="Self.ContractSpecifications" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="SpecificationNames">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="ContractSpecifications">
+              <PropertyRef Name="NameId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3348,7 +3339,6 @@
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="BalanceKeepers" EntityType="Self.BalanceKeepers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BucketDocumentRows" EntityType="Self.BucketDocumentRows" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BucketDocuments" EntityType="Self.BucketDocuments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CarCarryCapacity" EntityType="Self.CarCarryCapacity" Schema="dbo" store:Type="Tables" />
@@ -3417,6 +3407,14 @@
           <EntitySet Name="UserMessages" EntityType="Self.UserMessages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserSettings" EntityType="Self.UserSettings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BalanceKeepers" EntityType="Self.BalanceKeepers" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [BalanceKeepers].[Id] AS [Id], 
+    [BalanceKeepers].[BalanceKeeper] AS [BalanceKeeper], 
+    [BalanceKeepers].[subCompanyId] AS [subCompanyId], 
+    [BalanceKeepers].[subCompanyId_Test] AS [subCompanyId_Test]
+    FROM [dbo].[BalanceKeepers] AS [BalanceKeepers]</DefiningQuery>
+          </EntitySet>
           <AssociationSet Name="FK__OrdersBas__Proje__1446FBA6" Association="Self.FK__OrdersBas__Proje__1446FBA6">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="OrdersBase" EntitySet="OrdersBase" />
@@ -3436,10 +3434,6 @@
           <AssociationSet Name="FK_AdditionalRoutePoints_Organization" Association="Self.FK_AdditionalRoutePoints_Organization">
             <End Role="Organization" EntitySet="Organization" />
             <End Role="AdditionalRoutePoints" EntitySet="AdditionalRoutePoints" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Contracts_BalanceKeepers" Association="Self.FK_Contracts_BalanceKeepers">
-            <End Role="BalanceKeepers" EntitySet="BalanceKeepers" />
-            <End Role="Contracts" EntitySet="Contracts" />
           </AssociationSet>
           <AssociationSet Name="FK_Contracts_CarOwners" Association="Self.FK_Contracts_CarOwners">
             <End Role="CarOwners" EntitySet="CarOwners" />
@@ -3651,10 +3645,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_OrdersBase_AspNetUsers1" Association="Self.FK_OrdersBase_AspNetUsers1">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
-            <End Role="OrdersBase" EntitySet="OrdersBase" />
-          </AssociationSet>
-          <AssociationSet Name="FK_OrdersBase_BalanceKeepers" Association="Self.FK_OrdersBase_BalanceKeepers">
-            <End Role="BalanceKeepers" EntitySet="BalanceKeepers" />
             <End Role="OrdersBase" EntitySet="OrdersBase" />
           </AssociationSet>
           <AssociationSet Name="FK_OrdersBase_OrderClients" Association="Self.FK_OrdersBase_OrderClients">
@@ -3871,6 +3861,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_Specifications_CarCarryCapacity" Association="Self.FK_Specifications_CarCarryCapacity">
             <End Role="CarCarryCapacity" EntitySet="CarCarryCapacity" />
+            <End Role="ContractSpecifications" EntitySet="ContractSpecifications" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Specifications_Names" Association="Self.FK_Specifications_Names">
+            <End Role="SpecificationNames" EntitySet="SpecificationNames" />
             <End Role="ContractSpecifications" EntitySet="ContractSpecifications" />
           </AssociationSet>
           <AssociationSet Name="FK_Specifications_RouteIntervalType" Association="Self.FK_Specifications_RouteIntervalType">
@@ -8652,11 +8646,14 @@
           <Property Name="cargoName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="lotState" Type="Int32" Nullable="false" />
           <Property Name="processValue" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="resultsTender" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="resultsTender" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="tenderOwnerPath" Type="String" MaxLength="200" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="remainingTime" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="dateUpdateStatus" Type="DateTime" Precision="7" />
           <Property Name="dateCreate" Type="DateTime" Precision="7" />
+          <Property Name="uuidFile" Type="Guid" />
+          <Property Name="lotStateName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="lotResultNote" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="StatusTenders">
           <Key>
@@ -10725,6 +10722,9 @@
           <EntitySetMapping Name="RegisterTenders">
             <EntityTypeMapping TypeName="CorumModel.RegisterTenders">
               <MappingFragment StoreEntitySet="RegisterTenders">
+                <ScalarProperty Name="lotResultNote" ColumnName="lotResultNote" />
+                <ScalarProperty Name="lotStateName" ColumnName="lotStateName" />
+                <ScalarProperty Name="uuidFile" ColumnName="uuidFile" />
                 <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />
                 <ScalarProperty Name="dateUpdateStatus" ColumnName="dateUpdateStatus" />
                 <ScalarProperty Name="remainingTime" ColumnName="remainingTime" />

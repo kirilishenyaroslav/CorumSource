@@ -53,7 +53,24 @@ namespace CorumAdminUI.HangFireTasks
                 DateTime dateUpdateStatus = DateTime.Now;
                 if (myDeserializedClass.success)
                 {
-                    context.UpdateStatusRegisterTender(numberTender, myDeserializedClass.data.process, dateUpdateStatus);
+                    if (myDeserializedClass.data.process > 7)
+                    {
+                        try
+                        {
+                            BaseClient client = new BaseClient($"{allAppSettings["ApiGetTenderId"]}{numberTender}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
+                            var response = new GetApiTender().GetCallAsync(client).Result.ResponseMessage;
+                            RequestJSONDeserializedToModel resultDeserializedClass = JsonConvert.DeserializeObject<RequestJSONDeserializedToModel>(response);
+                            context.UpdateStatusRegisterTender(numberTender, myDeserializedClass.data.process, dateUpdateStatus, resultDeserializedClass);
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+                    }
+                    else
+                    {
+                        context.UpdateStatusRegisterTender(numberTender, myDeserializedClass.data.process, dateUpdateStatus, null);
+                    }
                 }
             }
             catch { }

@@ -23,7 +23,7 @@ namespace Corum.Models
         Dictionary<int, string> GetStatusTenders();
         void UpdateRegisterTenders(int tenderNumber, string resultsTender);
         void RemainingTime(Dictionary<string,Time> time);
-        void UpdateStatusRegisterTender(int tenderNumber, int process, DateTime dateUpdateStatus);
+        void UpdateStatusRegisterTender(int tenderNumber, int process, DateTime dateUpdateStatus, RequestJSONDeserializedToModel resultDeserializedClass);
         void UpdateTimeRemainingTime(RequestJSONDeserializedToModel myDeserializedClass, int numberTender);
         string UpdateRegistersRemainingTime(int tenderNumber);
         UpdateRegisterStatusTender UpdateCLStatusTenderOrder(RequestJSONDeserializedToModel myDeserializedClass, int numberTender);

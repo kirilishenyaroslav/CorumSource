@@ -96,8 +96,7 @@ namespace CorumAdminUI.HangFireTasks
             listRegistryTenders = context.GetRegisterTenders();
             foreach (var item in listRegistryTenders)
             {
-                //if (item.processValue != "Завершен")
-                if (true)
+                if (item.processValue != "Завершен")
                 {
                     await Task.Run(() => AsyncGetInfoTenderId(item));
                     await Task.Run(() => AsyncStatusTender(item));

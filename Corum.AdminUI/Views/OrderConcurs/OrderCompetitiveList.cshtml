@@ -61,13 +61,17 @@
                             <span class="tooltip-message">Выбор услуг</span>
                         </a>}
                     @Html.ActionLink("Ставки дисконт-я", "ConcursDiscountRate", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })
-
-                    <a id="BtnReestTendersKL" style="margin-bottom: 10px; display: none" class="btn btn-success" href="/OrderTender/TenderReport" onclick="OnIndexCall(this)">Реестр тендеров</a>
-
+                    @Html.ActionLink("Реестр тендеров", "TenderReport", "OrderTender", null, new
+               {
+                   @id = "BtnReestTendersKL",
+                   @class = "delete_link btn btn-success",
+                   @style = "margin-bottom:10px",
+                   @onclick = "OnIndexCall(this)"
+               })
 
                     @if (Model.DisplayValues.Count() > 0)
-                    {
-                        @Html.Partial("_SetListStatusButton")
+                            {
+                                @Html.Partial("_SetListStatusButton")
                         @Html.ActionLink("Тайм-лайн", "GetListTimeline", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })}
                 </div>
                 @Html.Partial("_OrderCompetitiveTarifInfo")
@@ -104,7 +108,7 @@
                                 </th>
 
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
-                                {
+                            {
                                     <th rowspan="2" class="grid-header centered_column">
                                         <a class="tarash-i update_link tooltips" href="#">
                                             <span class="tooltip-message">
@@ -129,7 +133,7 @@
                                         </a>
                                     </th>
                                 }
-                                @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
+                    @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                 {
                                     <th rowspan="2" class="grid-header centered_column">
                                         <a class="tarash-i update_link tooltips" href="#">
@@ -647,6 +651,7 @@
             InitFilterMultipleDropDowns();
             GetSpecification(1);
             $("#tabs").tabs();
+            $("#BtnReestTendersKL").toggle(false);
             let dropDownListTender = document.getElementById('drpDwnListTend');
             let tenderNumber;
             @{
@@ -1508,7 +1513,7 @@
                 if (tenderNumber == "Новый тендер")
                 {
                     let btnReestTend = document.getElementById('BtnReestTendersKL');
-                    $(btnReestTend).attr("style", "display: none;");
+                    $(btnReestTend).toggle(false);
 
                     $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
                     $(thfStatusTender).text('(не создан)');
@@ -1535,7 +1540,7 @@
                 if (item[i].tenderNumber == tenderNumber)
                 {
                     let btnReestTend = document.getElementById('BtnReestTendersKL');
-                    $(btnReestTend).attr("style", "display: initial;");
+                    $(btnReestTend).toggle(true);
 
                     if (item[i].processValue != "Завершен") {
                         $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");

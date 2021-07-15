@@ -233,6 +233,43 @@ namespace Corum.DAL
             return statusTenders;
         }
 
+        public Dictionary<string, int> ShareTendersFromRegistyTenders()
+        {
+            Dictionary<int, int> shareTenders = new Dictionary<int, int>();
+            Dictionary<string, int> shareTendersName = new Dictionary<string, int>();
+            var registerTendersList = db.RegisterTenders.OrderByDescending(x => x.dateEnd).ToList();
+            int countTenders = 0;
+            foreach (var item in registerTendersList)
+            {
+                countTenders = (item.process != 9) ? ++countTenders : countTenders;
+            }
+            InitializeShareTenders(ref shareTenders, ref shareTendersName);
+            foreach (var item in registerTendersList)
+            {
+                switch (item.process)
+                {
+                    case 1: shareTenders[item.process] = (shareTenders.ContainsKey(item.process)) ? ++shareTenders[item.process] : shareTenders[item.process] = 1; shareTendersName[item.processValue] = shareTenders[item.process]; break;
+                    case 2: shareTenders[item.process] = (shareTenders.ContainsKey(item.process)) ? ++shareTenders[item.process] : shareTenders[item.process] = 1; shareTendersName[item.processValue] = shareTenders[item.process]; break;
+                    case 3: shareTenders[item.process] = (shareTenders.ContainsKey(item.process)) ? ++shareTenders[item.process] : shareTenders[item.process] = 1; shareTendersName[item.processValue] = shareTenders[item.process]; break;
+                    case 4: shareTenders[item.process] = (shareTenders.ContainsKey(item.process)) ? ++shareTenders[item.process] : shareTenders[item.process] = 1; shareTendersName[item.processValue] = shareTenders[item.process]; break;
+                    case 5: shareTenders[item.process] = (shareTenders.ContainsKey(item.process)) ? ++shareTenders[item.process] : shareTenders[item.process] = 1; shareTendersName[item.processValue] = shareTenders[item.process]; break;
+                    case 6: shareTenders[item.process] = (shareTenders.ContainsKey(item.process)) ? ++shareTenders[item.process] : shareTenders[item.process] = 1; shareTendersName[item.processValue] = shareTenders[item.process]; break;
+                    case 7: shareTenders[item.process] = (shareTenders.ContainsKey(item.process)) ? ++shareTenders[item.process] : shareTenders[item.process] = 1; shareTendersName[item.processValue] = shareTenders[item.process]; break;
+                    case 8: shareTenders[item.process] = (shareTenders.ContainsKey(item.process)) ? ++shareTenders[item.process] : shareTenders[item.process] = 1; shareTendersName[item.processValue] = shareTenders[item.process]; break;
+                }
+            }
+
+            return shareTendersName;
+        }
+        private void InitializeShareTenders(ref Dictionary<int, int> shareTenders, ref Dictionary<string, int> shareTendersName)
+        {
+            var status = db.StatusTenders.ToList();
+            for (int i = 0; i < status.Count-1; i++)
+            {
+                shareTenders[i] = 0; shareTendersName[status[i].processValue] = 0;
+            }
+        }
+
         public bool IsRegisterTendersExist(long orderId, bool isMultipleTenders)
         {
             return (db.RegisterTenders.Count(x => x.OrderId == orderId) != 0) ? isMultipleTenders : true;

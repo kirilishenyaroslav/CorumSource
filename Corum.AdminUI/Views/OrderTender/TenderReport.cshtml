@@ -6,13 +6,14 @@
 }
 <div class="container-fluid">
     <div class="row">
+        <div class="col-md-12 centered_column" style="margin-top: 35px;"><h3>Реестр тендеров</h3></div>
+    </div>
+    <div class="row">
         <div class="col-md-12">
-            <h3 class="centered_column" style="margin-top: 35px;">Реестр тендеров</h3>
             <div id="dataTable" style="margin-top:15px;"></div>
         </div>
     </div>
 </div>
-
 @section scripts
 {
     <script>
@@ -27,15 +28,19 @@
                 }
                 var dataModelInit = [];
                 var dataModel = [];
+               
                 @foreach (var item in Model)
                 {
-                @:dataModel.push(@Html.Raw(Json.Encode(item)));
+                   @:dataModel.push(@Html.Raw(Json.Encode(item)));
                 }
 
                 var orderIdKL = @ViewBag.orderId;
                 var dataStartKL = @ViewBag.dataStart;
                 var dataEndKL = @ViewBag.dataEnd;
                 var active = @ViewBag.active;
+                var processValueShare = '@ViewBag.processValue';
+                var filterShare = @ViewBag.filterShare;
+
                 for (let i = 0; i < dataModel.length; i++)
                 {
                     let dateStr = Number(dataModel[i].dateStart.replace(/\D+/g, ''));
@@ -268,6 +273,19 @@
                     $("#dataTable").jqxDataTable('applyFilters');
                 }
 
+                var addfilterShare = function (processValueShare) {
+                    var filtergroup = new $.jqx.filter();
+                    var filter_or_operator = 1;
+                    var filtervalue = String(processValueShare);
+                    var filtercondition = 'equal';
+                    var filter1 = filtergroup.createfilter('stringfilter', filtervalue, filtercondition);
+                    filtergroup.addfilter(filter_or_operator, filter1);
+                    // add the filters.
+                    $("#dataTable").jqxDataTable('addFilter', 'processValue', filtergroup);
+                    // apply the filters.
+                    $("#dataTable").jqxDataTable('applyFilters');
+                }
+
                 // Alignment headers text and columns text
                 var cellsrenderer = function (row, column, value) {
                     return '<div style="white-space: normal; text-align: center; margin-top: 5px; color:black">' +value + '</div>';
@@ -399,6 +417,10 @@
                             if (orderIdKL != null && dataStartKL != null && dataEndKL != null && active != false)
                             {
                                 addfilterCurrentTender();
+                            }
+                            if (filterShare)
+                            {
+                                addfilterShare(processValueShare);
                             }
                         },
                         columns: [

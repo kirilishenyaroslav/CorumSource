@@ -117,7 +117,7 @@ namespace Corum.DAL
 
         public int GetDefaultSnapshotId()
         {
-            var snapshot = db.LogisticSnapshots.FirstOrDefault(s=>s.isDefaultForReports == 1);
+            var snapshot = db.LogisticSnapshots.FirstOrDefault(s => s.isDefaultForReports == 1);
             if (snapshot != null) return snapshot.id_spanshot;
             return 0;
         }
@@ -221,6 +221,11 @@ namespace Corum.DAL
             return ((userInfo != null) && (userInfo.AspNetRoles.Any(r => r.Id == roleId)));
         }
 
+        public string GetAspNetRoleId(string name)
+        {
+            var guidRoleId = db.AspNetRoles.FirstOrDefault(x => x.Name == name).Id;
+            return guidRoleId;
+        }
         public bool IsUserAdmin(string userId)
         {
             return UserHasRole(userId, "1000");

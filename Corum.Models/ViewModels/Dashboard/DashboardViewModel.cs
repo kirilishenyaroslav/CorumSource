@@ -31,5 +31,7 @@ namespace Corum.Models.ViewModels.Dashboard
         public DateTime dateStart { get; set; }
         public DateTime dateEnd { get; set; }
         public List<DashboardViewModelItem> BPInfo { get; set; }
+        public bool PermissionToCompetetiveList { get; set; }
+        public Dictionary<string, int> shareTendersfromRegistyTenders { get; set; }
     }
 }

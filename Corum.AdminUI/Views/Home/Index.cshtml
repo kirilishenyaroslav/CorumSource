@@ -22,11 +22,11 @@
     @foreach (var report in Model.BPInfo)
     {
 
-            <div class="col-xs-12 col-sm-12 col-md-10 col-lg-12">
-                <div @Html.Raw("id='chart_div_" + @report.OrderType.ToString() + "'") style="height: 200px;"></div>
-                <br>
-                <div>
-                    <a @Html.Raw("id='title_" + @report.OrderType.ToString() + "'") class="title_overlay barnivann_text_color" href="@Url.Action( (@report.IsTransportType? "Orders":"OrdersBase"),"Orders",
+        <div class="col-xs-12 col-sm-12 col-md-10 col-lg-12">
+            <div @Html.Raw("id='chart_div_" + @report.OrderType.ToString() + "'") style="height: 200px;"></div>
+            <br>
+            <div>
+                <a @Html.Raw("id='title_" + @report.OrderType.ToString() + "'") class="title_overlay barnivann_text_color" href="@Url.Action( (@report.IsTransportType? "Orders":"OrdersBase"),"Orders",
                                                                                                                         new {
                                                                                                                             UseOrderTypeFilter = true,
                                                                                                                             FilterOrderTypeId  = @report.OrderType,
@@ -36,13 +36,22 @@
                                                                                                                             FilterOrderDateEnd = @Model.dateEnd.ToString("dd.MM.yyyy"),
                                                                                                                             FilterOrderDateEndRaw = DateTimeConvertClass.getString(@Model.dateEnd) })">
 
-                    </a>
-                </div>
+                </a>
             </div>
+        </div>
     }
+    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-12">
+        <div @Html.Raw("id='chart_div_TendStatus' style='height: 200px;'")></div>
+        <br>
+        <div>
+            <a @Html.Raw("id='title_TendStatus' class='title_overlay barnivann_text_color'") href="@Url.Action("TenderReport", "OrderTender")">
+
+            </a>
+        </div>
+    </div>
 </div>
 
-       
+
 
 
 @section head_scripts {
@@ -50,13 +59,13 @@
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
 
     <script type="text/javascript">
-	    google.load('visualization', '1.0', { 'packages': ['corechart'] });
+        google.load('visualization', '1.0', { 'packages': ['corechart'] });
     </script>
 
     <script type="text/javascript">
 
         function ReloadReport(){
-            
+
             var e = document.getElementById("reporttype");
             var reportType = e.options[e.selectedIndex].value;
 
@@ -75,27 +84,27 @@
                  var data = new google.visualization.DataTable();
                  data.addColumn('string', 'OrderType');
                  data.addColumn('number', 'PercentPart');
-                     
+
                  data.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
                  data.addRows([
                      @foreach (var typeItem in report.BPInfo)
                      {
                             <text>
                               ['@typeItem.ItemName'+"("+@typeItem.OrderCount.ToString()+")", @typeItem.Percent, "@Url.Action((@report.IsTransportType ? "Orders" : "OrdersBase"), "Orders",
-                                                                                                                                new
-                                                                                                                                {
-                                                                                                                                    UseOrderTypeFilter = true,
-                                                                                                                                    FilterOrderTypeId = @report.OrderType,
-                                                                                                                                    UseOrderDateFilter = true,
-                                                                                                                                    FilterOrderDateBeg = @Model.dateStart.ToString("dd.MM.yyyy"),
-                                                                                                                                    FilterOrderDateBegRaw = DateTimeConvertClass.getString(Model.dateStart),
-                                                                                                                                    FilterOrderDateEnd = @Model.dateEnd.AddDays(1).ToString("dd.MM.yyyy"),
-                                                                                                                                    FilterOrderDateEndRaw = DateTimeConvertClass.getString(@Model.dateEnd.AddDays(1)),
-                                                                                                                                    UseStatusFilter = true,
-                                                                                                                                    FilterStatusId = @typeItem.StatusId,
-                                                                                                                                    UseFinalStatusFilter = (@typeItem.StatusId == 0),
-                                                                                                                                    FilterFinalStatus= (@typeItem.StatusId == 0)
-                                                                                                                                })"],
+                    new
+                    {
+                        UseOrderTypeFilter = true,
+                        FilterOrderTypeId = @report.OrderType,
+                        UseOrderDateFilter = true,
+                        FilterOrderDateBeg = @Model.dateStart.ToString("dd.MM.yyyy"),
+                        FilterOrderDateBegRaw = DateTimeConvertClass.getString(Model.dateStart),
+                        FilterOrderDateEnd = @Model.dateEnd.AddDays(1).ToString("dd.MM.yyyy"),
+                        FilterOrderDateEndRaw = DateTimeConvertClass.getString(@Model.dateEnd.AddDays(1)),
+                        UseStatusFilter = true,
+                        FilterStatusId = @typeItem.StatusId,
+                        UseFinalStatusFilter = (@typeItem.StatusId == 0),
+                        FilterFinalStatus = (@typeItem.StatusId == 0)
+                    })"],
                             </text>
                      }
 
@@ -131,12 +140,75 @@
                  }
 
                  jQuery('#title_@report.OrderType.ToString()').text('@report.OrderTypeShortName');
-                 google.visualization.events.addListener(chart, 'select', selectHandler);    
+                 google.visualization.events.addListener(chart, 'select', selectHandler);
                  chart.draw(data, options);
 
              });
       	    </text>
         }
+
+        @{
+            if (Model.PermissionToCompetetiveList)
+            {
+                <text>
+                         google.setOnLoadCallback(ShareTenderStatus);
+
+                         function ShareTenderStatus()
+                         {
+                             var data = new google.visualization.DataTable();
+                             data.addColumn('string', 'StatusTendr');
+                             data.addColumn('number', 'Share');
+                             data.addColumn({type: 'string', role: 'tooltip', 'p': {'html': true}});
+                             data.addRows([
+                                 @{
+                                        int countPercent = 0;
+                                        foreach (var item in Model.shareTendersfromRegistyTenders)
+                                        {
+
+                                                countPercent += item.Value;
+                                                <text>
+                                                ['@item.Key'+"("+@item.Value.ToString()+")", @item.Value,"@Url.Action("TenderReport", "OrderTender",
+                                                        new { processValue = item.Key })"],
+                                                </text>
+                                        }
+                                         if (countPercent == 0)
+                                         {
+                                                     <text>
+                                                         ['Завершен', 1,"@Url.Action("TenderReport", "OrderTender")"]
+                                                     </text>
+                                         }
+                                  }
+                                 ]);
+
+                             var options = {
+                                 titlePosition: 'none',
+                                 legend: { position: 'right' },
+                                 pieHole: 1.0,
+                                 pieSliceTextStyle: { position: 'none' },
+                                 tooltip: { trigger: 'none' },
+                                  enableInteractivity: true
+
+                             };
+
+
+                             var chart = new google.visualization.PieChart(document.getElementById('chart_div_TendStatus'));
+
+                             function selectHandler() {
+                                 var selectedItem = chart.getSelection()[0];
+                                 if (selectedItem) {
+                                     var topping = data.getValue(selectedItem.row, 2).replace(/&amp;/g, '&');
+                                     window.location.href = topping;
+                                 }
+                             }
+
+                             jQuery('#title_TendStatus').text('Статусы тендеров');
+                             google.visualization.events.addListener(chart, 'select', selectHandler);
+                             chart.draw(data, options);
+                         }
+
+      	        </text>
+            }
+         }
 
     </script>
 }

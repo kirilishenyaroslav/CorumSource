@@ -35,9 +35,12 @@ namespace CorumAdminUI.Controllers
         }
 
         [HttpGet]
-        public ActionResult TenderReport(int? orderId, long? dataStart, long? dataEnd, bool? active)
+        public ActionResult TenderReport(int? orderId, long? dataStart, long? dataEnd, bool? active, string processValue)
         {
             var model = context.GetRegisterTenders();
+            ViewBag.processValue = (processValue != null) ? processValue : "null";
+            ViewBag.filterShare = (processValue != null) ? "true" : "false";
+            ViewBag.shareTendersfromRegistyTenders = context.ShareTendersFromRegistyTenders();
             if (orderId != null && dataStart != null && dataEnd != null && active != false)
             {
                 ViewBag.orderId = orderId;

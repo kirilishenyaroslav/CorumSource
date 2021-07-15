@@ -18,6 +18,7 @@ namespace Corum.Models
         void AddRole(string userId, string roleId);
         void RemoveRole(string userId, string roleId);
         bool UserHasRole(string userId, string roleId);
+        string GetAspNetRoleId(string name);
         void RemoveUser(string userId);
         List<UserRoleViewModel> getUserRoles(string userid);
         void AssignRoles(string userId, string[] roles);

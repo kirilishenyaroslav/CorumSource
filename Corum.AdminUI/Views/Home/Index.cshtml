@@ -209,7 +209,7 @@
         function UpdateAllTenderStatus() {     
             $.ajax({
                 type: "GET",
-                async: true,
+                async: false,
                 url: "/OrderTender/UpdateAllStatusOrderTender",
                 data: null,
                 dataType: "json",

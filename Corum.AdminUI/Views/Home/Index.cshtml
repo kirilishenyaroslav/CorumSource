@@ -45,6 +45,7 @@
         <br>
         <div>
             <a id="title_TendStatus" class="title_overlay barnivann_text_color" href="/Home/Index" onclick="UpdateAllTenderStatus()">Статусы тендеров</a>
+            <img src="/Content/images/ajax-loader-square.gif" id="loading-indicator" style="position: fixed; left: 81%; top: 74%; display: none" />
         </div>
     </div>
 </div>
@@ -206,7 +207,8 @@
             }
          }
         
-        function UpdateAllTenderStatus() {     
+        function UpdateAllTenderStatus() { 
+            $('#loading-indicator').show();
             $.ajax({
                 type: "GET",
                 async: false,
@@ -215,8 +217,10 @@
                 dataType: "json",
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
+                    $('#loading-indicator').hide();
                 },
                 error: function () {
+                    $('#loading-indicator').hide();
                 }
             });
         };

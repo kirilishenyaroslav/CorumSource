@@ -408,6 +408,7 @@ namespace Corum.DAL
             var tender = db.RegisterTenders.Where(x => x.tenderNumber == numberTender).OrderByDescending(x => x.Id).FirstOrDefault();
             tender.dateStart = myDeserializedClass.data.dateStart;
             tender.dateEnd = myDeserializedClass.data.dateEnd;
+            tender.process = Byte.Parse(myDeserializedClass.data.process);
             TimeSpan timeSpan = myDeserializedClass.data.dateEnd - nowDateTime;
             tender.remainingTime = RemainingCount(timeSpan.ToString());
 

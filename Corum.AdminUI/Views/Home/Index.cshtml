@@ -44,7 +44,7 @@
         <div @Html.Raw("id='chart_div_TendStatus' style='height: 200px;'")></div>
         <br>
         <div>
-            <a id="title_TendStatus" class="title_overlay barnivann_text_color" href="/Home/Index" onclick="UpdateAllTenderStatus()">Статусы тендеров</a>
+            <a id="title_TendStatus" class="title_overlay barnivann_text_color" href="/OrderTender/UpdateAllStatusOrderTender">Статусы тендеров</a>
         </div>
     </div>
 </div>
@@ -205,20 +205,5 @@
       	        </text>
             }
          }
-        
-        function UpdateAllTenderStatus() {     
-            $.ajax({
-                type: "GET",
-                async: true,
-                url: "/OrderTender/UpdateAllStatusOrderTender",
-                data: null,
-                dataType: "json",
-                contentType: 'application/json; charset=utf-8',
-                success: function (data) {
-                },
-                error: function () {
-                }
-            });
-        };
     </script>
 }

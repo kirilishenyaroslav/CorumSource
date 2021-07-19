@@ -44,9 +44,7 @@
         <div @Html.Raw("id='chart_div_TendStatus' style='height: 200px;'")></div>
         <br>
         <div>
-            <a @Html.Raw("id='title_TendStatus' class='title_overlay barnivann_text_color'") href="@Url.Action("TenderReport", "OrderTender")">
-
-            </a>
+            <a id="title_TendStatus" class="title_overlay barnivann_text_color" href="/OrderTender/UpdateAllStatusOrderTender">Статусы тендеров</a>
         </div>
     </div>
 </div>
@@ -200,8 +198,6 @@
                                      window.location.href = topping;
                                  }
                              }
-
-                             jQuery('#title_TendStatus').text('Статусы тендеров');
                              google.visualization.events.addListener(chart, 'select', selectHandler);
                              chart.draw(data, options);
                          }
@@ -209,6 +205,5 @@
       	        </text>
             }
          }
-
     </script>
 }

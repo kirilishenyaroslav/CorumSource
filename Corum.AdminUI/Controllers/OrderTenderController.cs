@@ -20,6 +20,10 @@ using Corum.Models.Interfaces;
 using Corum.Models.ViewModels.Orders;
 using Corum.RestRenderModels;
 using Corum.ReportsUI;
+using CorumAdminUI.HangFireTasks;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Diagnostics;
 
 namespace CorumAdminUI.Controllers
 {
@@ -79,6 +83,22 @@ namespace CorumAdminUI.Controllers
                 Data = updateDeserializedClass,
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
+        }
+
+        [HttpGet]
+        public ActionResult UpdateAllStatusOrderTender()
+        {
+            Debug.WriteLine("Вход в контроллер");
+            Task.WaitAll(Task.Run(AsyncUpdateTenderRegisty));
+            Debug.WriteLine("Продолжение главного потока");
+            return RedirectToAction("Index", "Home");
+        }
+        private async Task AsyncUpdateTenderRegisty()
+        {
+            Debug.WriteLine("Вход в асинхронный метод");
+            HangFireTasks.HangFireTasks task = new HangFireTasks.HangFireTasks();
+            await task.ListTasks();
+            Debug.WriteLine("Выход из асинхронного метода");
         }
 
         [HttpPost]

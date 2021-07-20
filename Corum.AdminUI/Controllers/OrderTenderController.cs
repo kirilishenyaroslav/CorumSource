@@ -77,7 +77,7 @@ namespace CorumAdminUI.Controllers
                     updateDeserializedClass = context.UpdateCLStatusTenderOrder(myDeserializedClass, tenderNumber);
 
                     // Вытягивание данных о контрагентах из aps tender
-                    if (myDeserializedClass.data.lots[0].items.Count != 0)
+                    if (myDeserializedClass.data.lots[0].items.Count != 0 && Int32.Parse(myDeserializedClass.data.process) >= 8)
                     {
                         BaseClient clientbaseOffer = new BaseClient($"{allAppSettings["ApiUrlGetOffer"]}{myDeserializedClass.data.lots[0].items[0].tenderItemUuid}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
                         var JSONresponseContragent = $"{{\"data\":{new GetApiTendAjax().GetCallAsync(clientbaseOffer).Result.ResponseMessage}}}";

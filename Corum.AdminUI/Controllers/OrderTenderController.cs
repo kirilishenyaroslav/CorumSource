@@ -75,9 +75,36 @@ namespace CorumAdminUI.Controllers
                 if (myDeserializedClass.success)
                 {
                     updateDeserializedClass = context.UpdateCLStatusTenderOrder(myDeserializedClass, tenderNumber);
+
+                    // Вытягивание данных о контрагентах из aps tender
+                    if (myDeserializedClass.data.lots[0].items.Count != 0)
+                    {
+                        BaseClient clientbaseOffer = new BaseClient($"{allAppSettings["ApiUrlGetOffer"]}{myDeserializedClass.data.lots[0].items[0].tenderItemUuid}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
+                        var JSONresponseContragent = $"{{\"data\":{new GetApiTendAjax().GetCallAsync(clientbaseOffer).Result.ResponseMessage}}}";
+                        RequestJSONContragentModel myDeserializedClassContragent = JsonConvert.DeserializeObject<RequestJSONContragentModel>(JSONresponseContragent);
+                        List<RequestJSONContragentMainData> listContAgentModelJSONDesiarized = new List<RequestJSONContragentMainData>();
+                        int SupplierIdWinnerContragent = 0;
+                        foreach (var item in myDeserializedClassContragent.Data)
+                        {
+                            BaseClient clientbaseSuppContragent = new BaseClient($"{allAppSettings["ApiUrlGetSuppContrAgent"]}{item.SupplierId}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
+                            var JSONresponseContAgentModel = new GetApiTendAjax().GetCallAsync(clientbaseSuppContragent).Result.ResponseMessage;
+                            RequestJSONContragentMainData myDeserializedClassContragentModel = JsonConvert.DeserializeObject<RequestJSONContragentMainData>(JSONresponseContAgentModel);
+                            listContAgentModelJSONDesiarized.Add(myDeserializedClassContragentModel);
+                            if ((item.IsWinner != null) ? true : false)
+                            {
+                                SupplierIdWinnerContragent = item.SupplierId;
+                            }
+                        }
+                        List<ContrAgentModel> listContragentModels = new List<ContrAgentModel>();
+                        ContrAgentModel isWinnerContragent = new ContrAgentModel();
+                        listContragentModels = context.GetAgentModels(listContAgentModelJSONDesiarized);   // Список всех контрагентов, которые принимали участие в тендере
+                        isWinnerContragent = context.GetWinnerContragent(listContragentModels, SupplierIdWinnerContragent); // Информация о контрагенте-победителе
+                    }
                 }
             }
-            catch { }
+            catch
+            {
+            }
             return new JsonpResult
             {
                 Data = updateDeserializedClass,

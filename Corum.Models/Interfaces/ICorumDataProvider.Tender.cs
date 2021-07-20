@@ -28,5 +28,7 @@ namespace Corum.Models
         string UpdateRegistersRemainingTime(int tenderNumber);
         UpdateRegisterStatusTender UpdateCLStatusTenderOrder(RequestJSONDeserializedToModel myDeserializedClass, int numberTender);
         Dictionary<string, int> ShareTendersFromRegistyTenders();
+        List<ContrAgentModel> GetAgentModels(List<RequestJSONContragentMainData> listRequestJSONContragent);
+        ContrAgentModel GetWinnerContragent(List<ContrAgentModel> listAllContragents, int SupplierIdWinnerContragent);
     }
 }

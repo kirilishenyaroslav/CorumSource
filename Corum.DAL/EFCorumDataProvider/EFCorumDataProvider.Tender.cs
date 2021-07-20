@@ -264,7 +264,7 @@ namespace Corum.DAL
         private void InitializeShareTenders(ref Dictionary<int, int> shareTenders, ref Dictionary<string, int> shareTendersName)
         {
             var status = db.StatusTenders.ToList();
-            for (int i = 0; i < status.Count-1; i++)
+            for (int i = 0; i < status.Count - 1; i++)
             {
                 shareTenders[i] = 0; shareTendersName[status[i].processValue] = 0;
             }
@@ -489,6 +489,111 @@ namespace Corum.DAL
             updateDeserializedClass.lotState = lotState.ToString();
             updateDeserializedClass.process = process.ToString();
             return updateDeserializedClass;
+        }
+
+        public List<ContrAgentModel> GetAgentModels(List<RequestJSONContragentMainData> listRequestJSONContragent)
+        {
+            List<ContrAgentModel> listContrAgents = new List<ContrAgentModel>();
+            try
+            {
+                foreach (var item in listRequestJSONContragent)
+                {
+                    ContrAgentModel contrAgentModel = new ContrAgentModel()
+                    {
+                        SupplierId = item.Data.SupplierId,
+                        SupplierEdrpou = item.Data.SupplierEdrpou,
+                        OwnershipTypeId = item.Data.OwnershipTypeId,
+                        OwnershipTypeName = item.Data.OwnershipTypeName,
+                        SupplierName = item.Data.SupplierName,
+                        RegistrationDate = item.Data.RegistrationDate,
+                        WebSiteUrl = item.Data.WebSiteUrl,
+                        ContactEmail = item.Data.ContactEmail,
+                        ContactPhone = item.Data.ContactPhone,
+                        LegalAddressContragent = new ContrAgentModel.LegalAddress()
+                        {
+                            CountryId = item.Data.LegalAddress.CountryId,
+                            City = item.Data.LegalAddress.City,
+                            CountryName = item.Data.LegalAddress.CountryName,
+                            PostalCode = item.Data.LegalAddress.PostalCode,
+                            RegionId = item.Data.LegalAddress.RegionId,
+                            RegionName = item.Data.LegalAddress.RegionName,
+                            Street = item.Data.LegalAddress.Street
+                        },
+                        PhysicalAddressContragent = new ContrAgentModel.PhysicalAddress()
+                        {
+                            Street = item.Data.PhysicalAddress.Street,
+                            RegionName = item.Data.PhysicalAddress.RegionName,
+                            RegionId = item.Data.PhysicalAddress.RegionId,
+                            PostalCode = item.Data.PhysicalAddress.PostalCode,
+                            CountryName = item.Data.PhysicalAddress.CountryName,
+                            City = item.Data.PhysicalAddress.City,
+                            CountryId = item.Data.PhysicalAddress.CountryId
+                        },
+                        CompanyTaxationContragent = new ContrAgentModel.CompanyTaxation()
+                        {
+                            CodeIPN = item.Data.CompanyTaxation.CodeIPN,
+                            CodeVAT = item.Data.CompanyTaxation.CodeVAT,
+                            TaxSystemId = item.Data.CompanyTaxation.TaxSystemId,
+                            TaxSystemName = item.Data.CompanyTaxation.TaxSystemName
+                        },
+                        BankAccounts = new List<ContrAgentModel.BankAccount>(),
+                        SupplierAccountantContragent = new ContrAgentModel.SupplierAccountant()
+                        {
+                            EMail = item.Data.SupplierAccountant.EMail,
+                            FullName = item.Data.SupplierAccountant.FullName,
+                            Phone = item.Data.SupplierAccountant.Phone
+                        },
+                        SupplierCEOContragent = new ContrAgentModel.SupplierCEO()
+                        {
+                            EMail = item.Data.SupplierCEO.EMail,
+                            Phone = item.Data.SupplierCEO.Phone,
+                            FullName = item.Data.SupplierCEO.FullName
+                        },
+                        SupplierUsers = new List<ContrAgentModel.SupplierUser>(),
+                        RegDocsConsent = item.Data.RegDocsConsent,
+                        StateId = item.Data.StateId,
+                        StateName = item.Data.StateName,
+                        SecurityStateId = item.Data.SecurityStateId,
+                        SecurityStateName = item.Data.SecurityStateName,
+                        CompanyType = item.Data.CompanyType,
+                        ComplianceStateId = item.Data.ComplianceStateId,
+                        ComplianceStateName = item.Data.ComplianceStateName
+                    };
+                    for (int i = 0; i < item.Data.BankAccounts.Count; i++)
+                    {
+                        contrAgentModel.BankAccounts.Add(new ContrAgentModel.BankAccount()
+                        {
+                            AccountNumber = item.Data.BankAccounts[i].AccountNumber,
+                            BankMFO = item.Data.BankAccounts[i].BankMFO,
+                            BankName = item.Data.BankAccounts[i].BankName
+                        });
+                        contrAgentModel.SupplierUsers.Add(new ContrAgentModel.SupplierUser()
+                        {
+                            CreateDate = item.Data.SupplierUsers[i].CreateDate,
+                            EMail = item.Data.SupplierUsers[i].EMail,
+                            FirstName = item.Data.SupplierUsers[i].FirstName,
+                            IsAdmin = item.Data.SupplierUsers[i].IsAdmin,
+                            IsBlocked = item.Data.SupplierUsers[i].IsBlocked,
+                            IsContactPerson = item.Data.SupplierUsers[i].IsContactPerson,
+                            IsDeleted = item.Data.SupplierUsers[i].IsDeleted,
+                            LastName = item.Data.SupplierUsers[i].LastName,
+                            MiddleName = item.Data.SupplierUsers[i].MiddleName,
+                            Phone = item.Data.SupplierUsers[i].Phone,
+                            SuppUserId = item.Data.SupplierUsers[i].SuppUserId,
+                            UserId = item.Data.SupplierUsers[i].UserId
+                        });
+                    }
+                    listContrAgents.Add(contrAgentModel);
+                }
+            }
+            catch { return null; }
+            
+            return listContrAgents;
+        }
+
+        public ContrAgentModel GetWinnerContragent(List<ContrAgentModel> listAllContragents, int SupplierIdWinnerContragent)
+        {
+            return listAllContragents.Find(x => x.SupplierId == SupplierIdWinnerContragent);
         }
     }
 }

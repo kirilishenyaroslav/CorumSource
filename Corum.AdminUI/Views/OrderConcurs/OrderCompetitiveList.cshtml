@@ -51,6 +51,7 @@
             <div class="table-header clearfix">
 
                 <div class="col-md-8">
+                    @Html.Partial("_ResultsTendersKL")
                     @Html.ActionLink("В заявку", "UpdateOrder", "Orders", new { Id = Model.CompetitiveListInfo.Id }, new { @class = "btn btn-success", @style = "margin-bottom:10px" })
                     @Html.ActionLink("Реестр заявок", "Orders", "Orders", null, new { @class = "btn btn-success", @style = "margin-bottom:10px" })
                     @Html.ActionLink("В excel", "ConcursAsExcel", "ExportToExcel", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })&nbsp;
@@ -70,9 +71,10 @@
                })
 
                     @if (Model.DisplayValues.Count() > 0)
-                            {
-                                @Html.Partial("_SetListStatusButton")
+                    {
+                        @Html.Partial("_SetListStatusButton")
                         @Html.ActionLink("Тайм-лайн", "GetListTimeline", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })}
+
                 </div>
                 @Html.Partial("_OrderCompetitiveTarifInfo")
 
@@ -108,7 +110,7 @@
                                 </th>
 
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
-                            {
+                                {
                                     <th rowspan="2" class="grid-header centered_column">
                                         <a class="tarash-i update_link tooltips" href="#">
                                             <span class="tooltip-message">
@@ -133,7 +135,7 @@
                                         </a>
                                     </th>
                                 }
-                    @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
+                                @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                 {
                                     <th rowspan="2" class="grid-header centered_column">
                                         <a class="tarash-i update_link tooltips" href="#">
@@ -1434,6 +1436,9 @@
                     item[i].dateStart = params.dateStart;
                     item[i].dateEnd = params.dateEnd;
                     item[i].remainingTime = params.remainingTime;
+                    item[i].resultsTender = params.resultsTender;
+                    item[i].lotStateName = params.lotStateName;
+                    item[i].lotResultNote = params.lotResultNote;
                 }
             }
             if (formValidationAccessAttributes.accesAddNewTender)
@@ -1475,6 +1480,7 @@
             var thRemainingTM = document.getElementById('remainingTM');
             var tdBtnPostOne = document.getElementById('BtnPostOne');
             var tdBtnPostTwo = document.getElementById('BtnPostTwo');
+            var tdResulttend = document.getElementById('TdResult');
 
             var childTh = thCountTure.getElementsByClassName('badge');
             var childThTypeTender = thTypeTender.getElementsByClassName('badge');
@@ -1535,6 +1541,7 @@
                     $(childtdBtnPostOne).text("Создать тендер");
                     $(childtdBtnPostOne).attr("style", "display: initial;");
                     $(childtdBtnPostTwo).attr("style", "display: none;");
+                    $("#contResTen").toggle(false);
                     break;
                 }
                 if (item[i].tenderNumber == tenderNumber)
@@ -1562,6 +1569,29 @@
 
                         $(childtdBtnPostOne).attr("style", "display: none;");
                         $(childtdBtnPostTwo).attr("style", "display: initial;");
+
+                        $("#contResTen").toggle(true);
+                        tdResulttend.innerHTML = "";
+                        if (item[i].lotStateName != null || item[i].lotResultNote != null || item[i].resultsTender != null) {
+                            var valueLotState = (item[i].lotStateName != null) ? (item[i].lotResultNote != null) ? '<b>' + item[i].lotStateName + '. </b>' : '<b>' + item[i].lotStateName + '. </b><br/>' : "";
+                            var valueLotResult = (item[i].lotResultNote != null) ? '<b>' + item[i].lotResultNote + '. </b>' + '<br/>' : "";
+                            var resultTen = (item[i].resultsTender != null) ? item[i].resultsTender.split("Контрагент-победитель: ") : "";
+                            var joinResultTen = "";
+                            if (resultTen.length != 0) {
+                                joinResultTen += "</br>";
+                                for (var b = 1; b < resultTen.length; b++) {
+                                    if (b > 1) { joinResultTen += "<hr>"; }
+                                    joinResultTen += "<b>Контрагент-победитель: </b>" + resultTen[b] + "</br>";
+                                }
+                            }
+                            $(tdResulttend).append("<span>" + valueLotState + valueLotResult + "<span style='font-size:12px;'>" + joinResultTen + "</span>" + "<\span>");
+                            if (item[i].uuidFile != null) {
+                                $(tdResulttend).append("<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a href="/ExportToExcel/ConcursListTenderAsExcel?tenderUuid=' + item[i].uuidFile + '"style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>");
+                            }
+                        }
+                        else {
+                            $("#contResTen").toggle(false);
+                        }
                     }
                     else
                     {
@@ -1585,8 +1615,34 @@
                         $(childtdBtnPostOne).attr("onclick", "ThBottonOne()");
                         $(childtdBtnPostOne).text("Аннулировать");
                         $(childtdBtnPostOne).attr("style", "display: initial;");
-
                         $(childtdBtnPostTwo).attr("style", "display: initial;");
+
+                        $("#contResTen").toggle(true);
+                        tdResulttend.innerHTML = "";
+                        if (item[i].lotStateName != null || item[i].lotResultNote != null || item[i].resultsTender != null) {
+                            var valueLotState = (item[i].lotStateName != null) ? (item[i].lotResultNote != null) ? '<b>' + item[i].lotStateName + '. </b>' : '<b>' + item[i].lotStateName + '. </b><br/>' : "";
+                            var valueLotResult = (item[i].lotResultNote != null) ? '<b>' + item[i].lotResultNote + '. </b>' + '<br/>' : "";
+                            var resultTen = (item[i].resultsTender != null) ? item[i].resultsTender.split("Контрагент-победитель: ") : "";
+                            var joinResultTen = "";
+                            if (resultTen.length != 0)
+                            {
+                                joinResultTen += "</br>";
+                                for (var b = 1; b < resultTen.length; b++)
+                                {
+                                    if (b > 1) { joinResultTen += "<hr>"; }
+                                    joinResultTen += "<b>Контрагент-победитель: </b>" + resultTen[b] + "</br>";
+                                }
+                            }
+                            $(tdResulttend).append("<span>" + valueLotState + valueLotResult + "<span style='font-size:12px;'>" + joinResultTen + "</span>" + "<\span>");
+                            if (item[i].uuidFile != null)
+                            {
+                                $(tdResulttend).append("<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a href="/ExportToExcel/ConcursListTenderAsExcel?tenderUuid=' + item[i].uuidFile + '"style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>");
+                            }
+                        }
+                        else
+                        {
+                            $("#contResTen").toggle(false);
+                        }
                     }
                 }
             }
@@ -1623,6 +1679,7 @@
                     var thRemainingTM = document.getElementById('remainingTM');
                     var tdBtnPostOne = document.getElementById('BtnPostOne');
                     var tdBtnPostTwo = document.getElementById('BtnPostTwo');
+                    var tdResulttend = document.getElementById('TdResult');
                     var childTh = thCountTure.getElementsByClassName('badge');
                     var childThTypeTender = thTypeTender.getElementsByClassName('badge');
                     var childthDateStartTender = thDateStartTender.getElementsByClassName('badge');
@@ -1651,6 +1708,28 @@
                         $(childtdBtnPostOne).attr("style", "display: none;");
                         $(childtdBtnPostTwo).attr("style", "display: initial;");
 
+                        $("#contResTen").toggle(true);
+                        tdResulttend.innerHTML = "";
+                        if (item[i].lotStateName != null || item[i].lotResultNote != null || item[i].resultsTender != null) {
+                            var valueLotState = (item[i].lotStateName != null) ? (item[i].lotResultNote != null) ? '<b>' + item[i].lotStateName + '. </b>' : '<b>' + item[i].lotStateName + '. </b><br/>' : "";
+                            var valueLotResult = (item[i].lotResultNote != null) ? '<b>' + item[i].lotResultNote + '. </b>' + '<br/>' : "";
+                            var resultTen = (item[i].resultsTender != null) ? item[i].resultsTender.split("Контрагент-победитель: ") : "";
+                            var joinResultTen = "";
+                            if (resultTen.length != 0) {
+                                joinResultTen += "</br>";
+                                for (var b = 1; b < resultTen.length; b++) {
+                                    if (b > 1) { joinResultTen += "<hr>"; }
+                                    joinResultTen += "<b>Контрагент-победитель: </b>" + resultTen[b] + "</br>";
+                                }
+                            }
+                            $(tdResulttend).append("<span>" + valueLotState + valueLotResult + "<span style='font-size:12px;'>" + joinResultTen + "</span>" + "<\span>");
+                            if (item[i].uuidFile != null) {
+                                $(tdResulttend).append("<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a href="/ExportToExcel/ConcursListTenderAsExcel?tenderUuid=' + item[i].uuidFile + '"style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>");
+                            }
+                        }
+                        else {
+                            $("#contResTen").toggle(false);
+                        }
                     }
                     else
                     {
@@ -1672,6 +1751,29 @@
                         $(childtdBtnPostOne).text("Аннулировать");
                         $(childtdBtnPostOne).attr("style", "display: initial;");
                         $(childtdBtnPostTwo).attr("style", "display: initial;");
+
+                        $("#contResTen").toggle(true);
+                        tdResulttend.innerHTML = "";
+                        if (item[i].lotStateName != null || item[i].lotResultNote != null || item[i].resultsTender != null) {
+                            var valueLotState = (item[i].lotStateName != null) ? (item[i].lotResultNote != null) ? '<b>' + item[i].lotStateName + '. </b>' : '<b>' + item[i].lotStateName + '. </b><br/>' : "";
+                            var valueLotResult = (item[i].lotResultNote != null) ? '<b>' + item[i].lotResultNote + '. </b>' + '<br/>' : "";
+                            var resultTen = (item[i].resultsTender != null) ? item[i].resultsTender.split("Контрагент-победитель: ") : "";
+                            var joinResultTen = "";
+                            if (resultTen.length != 0) {
+                                joinResultTen += "</br>";
+                                for (var b = 1; b < resultTen.length; b++) {
+                                    if (b > 1) { joinResultTen += "<hr>"; }
+                                    joinResultTen += "<b>Контрагент-победитель: </b>" + resultTen[b] + "</br>";
+                                }
+                            }
+                            $(tdResulttend).append("<span>" + valueLotState + valueLotResult + "<span style='font-size:12px;'>" + joinResultTen + "</span>" + "<\span>");
+                            if (item[i].uuidFile != null) {
+                                $(tdResulttend).append("<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a href="/ExportToExcel/ConcursListTenderAsExcel?tenderUuid=' + item[i].uuidFile + '"style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>");
+                            }
+                        }
+                        else {
+                            $("#contResTen").toggle(false);
+                        }
                     }
                 },
                 error: function () {

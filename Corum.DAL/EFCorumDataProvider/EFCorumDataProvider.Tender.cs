@@ -488,6 +488,9 @@ namespace Corum.DAL
             updateDeserializedClass.dateUpdateStatus = dateUpdateStatus;
             updateDeserializedClass.lotState = lotState.ToString();
             updateDeserializedClass.process = process.ToString();
+            updateDeserializedClass.resultsTender = result;
+            updateDeserializedClass.lotStateName = myDeserializedClass.data.lots[0].lotStateName;
+            updateDeserializedClass.lotResultNote = myDeserializedClass.data.lots[0].lotResultNote;
             return updateDeserializedClass;
         }
 

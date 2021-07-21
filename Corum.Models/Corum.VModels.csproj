@@ -123,6 +123,7 @@
     <Compile Include="Interfaces\IReportRenderer.cs" />
     <Compile Include="Navigation\NavigationModels.cs" />
     <Compile Include="Tender\BalanceKeepers.cs" />
+    <Compile Include="Tender\ContrAgentModel.cs" />
     <Compile Include="Tender\Countries.cs" />
     <Compile Include="Tender\OrderTruckTransport.cs" />
     <Compile Include="Tender\RegisterTenders.cs" />
@@ -208,6 +209,8 @@
     <Compile Include="ViewModels\Tender\GetFileApiTender.cs" />
     <Compile Include="ViewModels\Tender\PostApiTender.cs" />
     <Compile Include="ViewModels\Tender\RemainingTimeUpdate.cs" />
+    <Compile Include="ViewModels\Tender\RequestJSONContragentMainData.cs" />
+    <Compile Include="ViewModels\Tender\RequestJSONContragentModel.cs" />
     <Compile Include="ViewModels\Tender\RequestJSONDeserializedToModel.cs" />
     <Compile Include="ViewModels\Tender\TenderForma.cs" />
     <Compile Include="ViewModels\Tender\TenderRegistryUpdate.cs" />

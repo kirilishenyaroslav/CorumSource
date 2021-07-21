@@ -1119,6 +1119,7 @@
     <Content Include="Views\OrderConcurs\_PartialModul.cshtml" />
     <Content Include="Views\OrderConcurs\_restReportAddItemToBasket2.cshtml" />
     <Content Include="Views\OrderTender\TenderReport.cshtml" />
+    <Content Include="Views\OrderConcurs\_ResultsTendersKL.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

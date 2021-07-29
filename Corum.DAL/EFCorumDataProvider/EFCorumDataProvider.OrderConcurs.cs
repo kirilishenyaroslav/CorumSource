@@ -108,7 +108,7 @@ namespace Corum.DAL
             var truckInfo = db.OrderTruckTransport.AsNoTracking().FirstOrDefault(x => x.OrderId == OrderId);
             var payers = db.BalanceKeepers.AsNoTracking().FirstOrDefault(x => x.Id == orderInfo.PayerId);
             var currentStep = getCurrentStatusForList(OrderId);
-             var OrderTypeFullInfo = getOrderType(orderInfo.OrderType);
+            var OrderTypeFullInfo = getOrderType(orderInfo.OrderType);
 
             CompetitiveListViewModel compList = new CompetitiveListViewModel();
             compList.Id = orderInfo.Id;
@@ -424,7 +424,7 @@ namespace Corum.DAL
                     //SpecInfoItem.DeparturePoint = spec.DeparturePoint;
                     //SpecInfoItem.ArrivalPoint = spec.ArrivalPoint;
                     SpecInfoItem.RouteName = spec.RouteName;
-                    
+
                     SpecInfoItem.FilterTripTypeId = _FilterTripTypeId;
                     SpecInfoItem.FilterSpecificationTypeId = _FilterSpecificationTypeId;
                     SpecInfoItem.FilterVehicleTypeId = _FilterVehicleTypeId;
@@ -578,11 +578,17 @@ namespace Corum.DAL
         {
 
             var concurs = db.OrderCompetitiveList.FirstOrDefault(o => o.Id == id);
-
-            if (concurs != null)
+            try
             {
-                db.OrderCompetitiveList.Remove(concurs);
-                db.SaveChanges();
+                if (concurs != null)
+                {
+                    db.OrderCompetitiveList.Remove(concurs);
+                    db.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            { 
+            
             }
             return true;
         }
@@ -1033,12 +1039,12 @@ namespace Corum.DAL
                                                              DateTime FilterOrderDateEnd)
         {
             var orderInfo = db.OrdersBase.AsNoTracking().FirstOrDefault(x => x.Id == OrderId);
-           // var headerInfo = getCompetitiveListInfo(OrderId);
+            // var headerInfo = getCompetitiveListInfo(OrderId);
             int? SpecificationId = null;
             int? RouteTypeId = null;
             int? IntervalTypeId = null;
 
-           // var currentStep = getCurrentStatusForList(OrderId);
+            // var currentStep = getCurrentStatusForList(OrderId);
             // double discountRateInfo = GetDiscountRateInfo(orderInfo.OrderDate);
 
             if (!(ShowAll))
@@ -1085,7 +1091,7 @@ namespace Corum.DAL
                 else if (spec.DaysDelay > 0)
                     c.AcceptDaysDelay = spec.DaysDelay ?? 0;
                 else c.AcceptDaysDelay = 0;
-                
+
                 // CarCost7Str = concursStep.CarCost7;
 
                 if (concursStep.CarCost == null) concursStep.CarCost = "0";
@@ -1113,7 +1119,7 @@ namespace Corum.DAL
                     var passInfo = db.OrdersPassengerTransport.FirstOrDefault(or => or.OrderId == c.HistoryOrderId);
                     if (passInfo != null)
                     {
-                        c.FromDate = passInfo.StartDateTimeOfTrip.ToString("dd.MM.yyyy");                        
+                        c.FromDate = passInfo.StartDateTimeOfTrip.ToString("dd.MM.yyyy");
                         c.ToDate = passInfo.FinishDateTimeOfTrip.ToString("dd.MM.yyyy");
 
                         tripType = passInfo.TripType ?? 0;
@@ -1132,7 +1138,7 @@ namespace Corum.DAL
                     if (truckInfo != null)
                     {
                         c.FromDate = truckInfo.FromShipperDatetime.Value.ToString("dd.MM.yyyy");
-                        c.ToDate = truckInfo.ToConsigneeDatetime.Value.ToString("dd.MM.yyyy");                                              
+                        c.ToDate = truckInfo.ToConsigneeDatetime.Value.ToString("dd.MM.yyyy");
 
                         tripType = truckInfo.TripType ?? 0;
                         var shipperCountryName = db.Countries.FirstOrDefault(u => u.Сode == truckInfo.ShipperCountryId)?.Name;

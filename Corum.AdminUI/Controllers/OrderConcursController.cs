@@ -44,7 +44,10 @@ namespace CorumAdminUI.Controllers
             return View(model);
         }
 
-
+        void GetContragentsFromTender()
+        { 
+        
+        }
         [HttpGet]
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult GetSpecifications(long OrderId, bool UseTripTypeFilter, string FilterTripTypeId,

@@ -1710,10 +1710,10 @@
 
                         $("#contResTen").toggle(true);
                         tdResulttend.innerHTML = "";
-                        if (item[i].lotStateName != null || item[i].lotResultNote != null || item[i].resultsTender != null) {
-                            var valueLotState = (item[i].lotStateName != null) ? (item[i].lotResultNote != null) ? '<b>' + item[i].lotStateName + '. </b>' : '<b>' + item[i].lotStateName + '. </b><br/>' : "";
-                            var valueLotResult = (item[i].lotResultNote != null) ? '<b>' + item[i].lotResultNote + '. </b>' + '<br/>' : "";
-                            var resultTen = (item[i].resultsTender != null) ? item[i].resultsTender.split("Контрагент-победитель: ") : "";
+                        if (data.lotStateName != null || data.lotResultNote != null || data.resultsTender != null) {
+                            var valueLotState = (data.lotStateName != null) ? (data.lotResultNote != null) ? '<b>' + data.lotStateName + '. </b>' : '<b>' + data.lotStateName + '. </b><br/>' : "";
+                            var valueLotResult = (data.lotResultNote != null) ? '<b>' + data.lotResultNote + '. </b>' + '<br/>' : "";
+                            var resultTen = (data.resultsTender != null) ? data.resultsTender.split("Контрагент-победитель: ") : "";
                             var joinResultTen = "";
                             if (resultTen.length != 0) {
                                 joinResultTen += "</br>";
@@ -1723,8 +1723,8 @@
                                 }
                             }
                             $(tdResulttend).append("<span>" + valueLotState + valueLotResult + "<span style='font-size:12px;'>" + joinResultTen + "</span>" + "<\span>");
-                            if (item[i].uuidFile != null) {
-                                $(tdResulttend).append("<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a href="/ExportToExcel/ConcursListTenderAsExcel?tenderUuid=' + item[i].uuidFile + '"style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>");
+                            if (data.uuidFile != null) {
+                                $(tdResulttend).append("<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a href="/ExportToExcel/ConcursListTenderAsExcel?tenderUuid=' + data.uuidFile + '"style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>");
                             }
                         }
                         else {
@@ -1754,10 +1754,10 @@
 
                         $("#contResTen").toggle(true);
                         tdResulttend.innerHTML = "";
-                        if (item[i].lotStateName != null || item[i].lotResultNote != null || item[i].resultsTender != null) {
-                            var valueLotState = (item[i].lotStateName != null) ? (item[i].lotResultNote != null) ? '<b>' + item[i].lotStateName + '. </b>' : '<b>' + item[i].lotStateName + '. </b><br/>' : "";
-                            var valueLotResult = (item[i].lotResultNote != null) ? '<b>' + item[i].lotResultNote + '. </b>' + '<br/>' : "";
-                            var resultTen = (item[i].resultsTender != null) ? item[i].resultsTender.split("Контрагент-победитель: ") : "";
+                        if (data.lotStateName != null || data.lotResultNote != null || data.resultsTender != null) {
+                            var valueLotState = (data.lotStateName != null) ? (data.lotResultNote != null) ? '<b>' + data.lotStateName + '. </b>' : '<b>' + data.lotStateName + '. </b><br/>' : "";
+                            var valueLotResult = (data.lotResultNote != null) ? '<b>' + data.lotResultNote + '. </b>' + '<br/>' : "";
+                            var resultTen = (data.resultsTender != null) ? data.resultsTender.split("Контрагент-победитель: ") : "";
                             var joinResultTen = "";
                             if (resultTen.length != 0) {
                                 joinResultTen += "</br>";
@@ -1767,8 +1767,8 @@
                                 }
                             }
                             $(tdResulttend).append("<span>" + valueLotState + valueLotResult + "<span style='font-size:12px;'>" + joinResultTen + "</span>" + "<\span>");
-                            if (item[i].uuidFile != null) {
-                                $(tdResulttend).append("<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a href="/ExportToExcel/ConcursListTenderAsExcel?tenderUuid=' + item[i].uuidFile + '"style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>");
+                            if (data.uuidFile != null) {
+                                $(tdResulttend).append("<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a href="/ExportToExcel/ConcursListTenderAsExcel?tenderUuid=' + data.uuidFile + '"style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>");
                             }
                         }
                         else {

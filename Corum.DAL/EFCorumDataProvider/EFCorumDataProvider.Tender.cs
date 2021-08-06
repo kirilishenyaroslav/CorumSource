@@ -491,6 +491,7 @@ namespace Corum.DAL
             updateDeserializedClass.resultsTender = result;
             updateDeserializedClass.lotStateName = myDeserializedClass.data.lots[0].lotStateName;
             updateDeserializedClass.lotResultNote = myDeserializedClass.data.lots[0].lotResultNote;
+            updateDeserializedClass.uuidFile = registerTender.uuidFile;
             return updateDeserializedClass;
         }
 

@@ -46,5 +46,6 @@ namespace Corum.Models
         void AddDiscountRate(ConcursDiscountRateModel model);
         void CloneConcurs(long Id, string userId);
         DateTime getConcursHistoryHeader(long OrderId);
+        void getCurrentStatusForListKL(long orderId, string userId, bool status);
     }
 }

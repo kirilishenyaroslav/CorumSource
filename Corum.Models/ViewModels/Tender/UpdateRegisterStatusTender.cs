@@ -19,5 +19,6 @@ namespace Corum.Models.ViewModels.Tender
         public string lotStateName { get; set; }
         public string lotResultNote { get; set; }
         public string resultsTender { get; set; }
+        public Nullable<System.Guid> uuidFile { get; set; }
     }
 }

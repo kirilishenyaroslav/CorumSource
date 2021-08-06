@@ -59,7 +59,7 @@ namespace Corum.Models.Tender
         public List<Criteriavalues> listCritariaValues {get; set;}
         public class LegalAddress
         {
-            public int CountryId { get; set; }
+            public int? CountryId { get; set; }
 
             public string CountryName { get; set; }
 

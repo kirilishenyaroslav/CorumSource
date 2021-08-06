@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Web;
 using Corum.Models;
 using Corum.Common;
 using Corum.Models.ViewModels.OrderConcurs;
@@ -13,8 +14,11 @@ using System.Globalization;
 
 namespace Corum.DAL
 {
+
     public partial class EFCorumDataProvider : EFBaseCorumDataProvider, ICorumDataProvider
     {
+        public static string userId;
+        public static bool status;
         public IEnumerable<CompetitiveListStepViewModel> getAvialiableStepsForList(long orderId)
         {
             var currentStep = getCurrentStatusForList(orderId);
@@ -57,9 +61,30 @@ namespace Corum.DAL
         {
             var currentStep =
                 db.OrderConcursListsSteps.Where(x => x.OrderId == orderId).OrderByDescending(x => x.Id).FirstOrDefault();
+            try
+            {
+                if (status)
+                {
+                    var stepInf = db.OrderConcursSteps.Where(x => x.Id == 3).FirstOrDefault();
+                    currentStep.OrderConcursSteps = stepInf;
+                    currentStep.StepId = stepInf.Id;
+                }
+            }
+            catch { }
             if (currentStep != null)
             {
-                return Mapper.Map(currentStep);
+                if (currentStep.AspNetUsers != null && currentStep.OrderConcursSteps != null)
+                {
+                    return Mapper.Map(currentStep);
+                }
+                else
+                {
+                    var stepInfo = db.OrderConcursSteps.Where(x => x.Id == currentStep.StepId).FirstOrDefault();
+                    var aspNetusers = db.AspNetUsers.Where(x => x.Id == userId).FirstOrDefault();
+                    currentStep.OrderConcursSteps = stepInfo;
+                    currentStep.AspNetUsers = aspNetusers;
+                    return Mapper.Map(currentStep);
+                }
             }
             {
                 var first = db.OrderConcursSteps.Where(x => x.Id == 1).Select(Mapper.Map).FirstOrDefault();
@@ -73,9 +98,15 @@ namespace Corum.DAL
             }
         }
 
+        public void getCurrentStatusForListKL(long orderId, string userId, bool status)
+        {
+            EFCorumDataProvider.userId = userId;
+            EFCorumDataProvider.status = status;
+            getCurrentStatusForList(orderId);
+        }
+
         public long SaveListStatus(CompetetiveListStepsInfoViewModel newStatusInfo)
         {
-
             var info = new OrderConcursListsSteps()
             {
                 OrderId = newStatusInfo.OrderId,
@@ -83,9 +114,15 @@ namespace Corum.DAL
                 StepId = newStatusInfo.StepId,
                 Datetimevalue = DateTime.Now
             };
+            try
+            {
 
-            db.OrderConcursListsSteps.Add(info);
-            db.SaveChanges();
+                db.OrderConcursListsSteps.Add(info);
+                db.SaveChanges();
+            }
+            catch (Exception e)
+            {
+            }
 
             return info.Id;
         }
@@ -437,6 +474,18 @@ namespace Corum.DAL
                     SpecInfoItem.UseRouteFilter = UseRouteFilter;
                     SpecInfoItem.NDSTax = (spec.NDSTax ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA"));
 
+                    try
+                    {
+                        var carOwner = db.CarOwners.Where(x => x.CarrierName.Contains(spec.CarrierName1)).FirstOrDefault();
+                        if (carOwner != null)
+                        {
+                            SpecInfoItem.edrpou_aps = carOwner.edrpou_aps;
+                            SpecInfoItem.email_aps = carOwner.email_aps;
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                    }
                     SpecInfo.Add(SpecInfoItem);
                 }
             }
@@ -587,8 +636,8 @@ namespace Corum.DAL
                 }
             }
             catch (Exception e)
-            { 
-            
+            {
+
             }
             return true;
         }

@@ -30,6 +30,8 @@ namespace Corum.DAL.Entity
         public string ContactPerson { get; set; }
         public Nullable<int> parentId { get; set; }
         public Nullable<bool> IsForwarder { get; set; }
+        public Nullable<long> edrpou_aps { get; set; }
+        public string email_aps { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Cars> Cars { get; set; }

@@ -111,7 +111,7 @@
 
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
                                 {
-                                    <th id="theadTrOneth" rowspan="2" class="grid-header centered_column">
+                                    <th id="thFourSTKl" rowspan="2" class="grid-header centered_column">
                                         <a class="tarash-i update_link tooltips" href="#">
                                             <span class="tooltip-message">
                                                 Стоимость одного автомобиля, грн. без  НДС (согласно КП-1)<br>
@@ -137,7 +137,7 @@
                                 }
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                 {
-                                    <th rowspan="2" class="grid-header centered_column">
+                                    <th id="thThreeSTKl" rowspan="2" class="grid-header centered_column">
                                         <a class="tarash-i update_link tooltips" href="#">
                                             <span class="tooltip-message">
                                                 Стоимость одного автомобиля, грн. без  НДС (согласно КП-2)<br>
@@ -254,7 +254,7 @@
 
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
                                 {
-                                    <th class="grid-header centered_column">
+                                    <th id="thOneStKL" class="grid-header centered_column">
                                         8
                                     </th>
                                 }
@@ -267,7 +267,7 @@
 
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                 {
-                                    <th class="grid-header centered_column">
+                                    <th id="thTwoStKL" class="grid-header centered_column">
                                         9
                                     </th>
                                 }
@@ -498,6 +498,7 @@
                                         filter.MovingTypeName = _MovingTypeName;
                                         filter.UsedRateId = _UsedRateId;
                                         filter.OrderId = _OrderId;
+                                        filter.tenderNumber = GetTenderNumber();
                                         var json = JSON.stringify(filter);
 
 
@@ -1792,11 +1793,6 @@
             });
         });
 
-        function ThBottonOne()
-        {
-
-        }
-
         function OnIndexCall(elem) {
             var orderId = Number(JSON.parse(sessionStorage.getItem('OrderIdKL')));
             var dataStart = Number(JSON.parse(sessionStorage.getItem('dataStart')));
@@ -2106,6 +2102,18 @@
             DivBtnChangeStatusKL.appendChild(tymeLineSt);
 
 
+        }
+
+        function OnIndexCallStatus(elem) {
+            let DropDownListTender = document.getElementById('drpDwnListTend');
+            let tendNumber = Number(DropDownListTender.textContent.replace(" ", ""));
+            return $(elem).attr('href', $(elem).attr('href') + '&tenderNumber=' + tendNumber);
+        }
+
+        function GetTenderNumber() {
+            let DropDownListTender = document.getElementById('drpDwnListTend');
+            let tendNumber = Number(DropDownListTender.textContent.replace(" ", ""));
+            return tendNumber;
         }
     </script>
 }

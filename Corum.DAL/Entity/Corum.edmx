@@ -459,6 +459,7 @@
           <Property Name="CarCost7" Type="decimal" Precision="16" Scale="2" />
           <Property Name="DaysDelayStep1" Type="int" />
           <Property Name="DaysDelayStep2" Type="int" />
+          <Property Name="tenderNumber" Type="int" />
         </EntityType>
         <EntityType Name="OrderConcursListsSteps">
           <Key>
@@ -469,6 +470,7 @@
           <Property Name="Datetimevalue" Type="datetime" />
           <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="OrderId" Type="bigint" />
+          <Property Name="tenderNumber" Type="bigint" />
         </EntityType>
         <EntityType Name="OrderConcursSteps">
           <Key>
@@ -6768,6 +6770,7 @@
           <NavigationProperty Name="OrderConcursSteps" Relationship="CorumModel.FK_OrderConcursListsSteps" FromRole="OrderConcursListsSteps" ToRole="OrderConcursSteps" />
           <NavigationProperty Name="OrdersBase" Relationship="CorumModel.FK_OrderConcursListsSteps2" FromRole="OrderConcursListsSteps" ToRole="OrdersBase" />
           <NavigationProperty Name="AspNetUsers" Relationship="CorumModel.FK_OrderConcursListsUsers" FromRole="OrderConcursListsSteps" ToRole="AspNetUsers" />
+          <Property Name="tenderNumber" Type="Int64" />
         </EntityType>
         <Association Name="FK_OrderConcursListsSteps">
           <End Type="CorumModel.OrderConcursSteps" Role="OrderConcursSteps" Multiplicity="1" />
@@ -6948,6 +6951,7 @@
           <Property Name="DaysDelayStep2" Type="Int32" />
           <NavigationProperty Name="ContractSpecifications" Relationship="CorumModel.FK_OrderCompetitiveList_ContractSpecifications" FromRole="OrderCompetitiveList" ToRole="ContractSpecifications" />
           <NavigationProperty Name="OrdersBase" Relationship="CorumModel.FK_OrderCompetitiveList_OrdersBase" FromRole="OrderCompetitiveList" ToRole="OrdersBase" />
+          <Property Name="tenderNumber" Type="Int32" />
         </EntityType>
         <Association Name="FK_OrderCompetitiveList_ContractSpecifications">
           <End Type="CorumModel.ContractSpecifications" Role="ContractSpecifications" Multiplicity="0..1" />
@@ -9899,6 +9903,7 @@
           <EntitySetMapping Name="OrderConcursListsSteps">
             <EntityTypeMapping TypeName="CorumModel.OrderConcursListsSteps">
               <MappingFragment StoreEntitySet="OrderConcursListsSteps">
+                <ScalarProperty Name="tenderNumber" ColumnName="tenderNumber" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Datetimevalue" ColumnName="Datetimevalue" />
@@ -9955,6 +9960,7 @@
           <EntitySetMapping Name="OrderCompetitiveList">
             <EntityTypeMapping TypeName="CorumModel.OrderCompetitiveList">
               <MappingFragment StoreEntitySet="OrderCompetitiveList">
+                <ScalarProperty Name="tenderNumber" ColumnName="tenderNumber" />
                 <ScalarProperty Name="DaysDelayStep2" ColumnName="DaysDelayStep2" />
                 <ScalarProperty Name="DaysDelayStep1" ColumnName="DaysDelayStep1" />
                 <ScalarProperty Name="CarCost7" ColumnName="CarCost7" />

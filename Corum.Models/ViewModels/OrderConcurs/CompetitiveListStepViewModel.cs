@@ -38,6 +38,7 @@ namespace Corum.Models.ViewModels.OrderConcurs
         public DateTime? timestamp { set;  get;} 
 
         public string timestampRaw { set;  get;} 
+        public Nullable<long> tenderNumber { get; set; }
 
     }
 

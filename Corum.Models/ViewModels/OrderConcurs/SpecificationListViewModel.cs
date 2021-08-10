@@ -128,6 +128,7 @@ namespace Corum.Models.ViewModels.OrderConcurs
         public bool UseRouteFilter { get; set; }
 
         public string FilterPayerId { get; set; }
+        public int? tenderNumber { get; set; }
 
     }
 

@@ -19,6 +19,7 @@ namespace Corum.DAL.Entity
         public Nullable<System.DateTime> Datetimevalue { get; set; }
         public string UserId { get; set; }
         public Nullable<long> OrderId { get; set; }
+        public Nullable<long> tenderNumber { get; set; }
     
         public virtual OrderConcursSteps OrderConcursSteps { get; set; }
         public virtual OrdersBase OrdersBase { get; set; }

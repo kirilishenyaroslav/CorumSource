@@ -106,7 +106,7 @@ namespace CorumAdminUI.Controllers
                                         }
                                     }
                                     catch (Exception e)
-                                    { 
+                                    {
                                     }
                                 }
                                 List<ContrAgentModel> listContragentModels = new List<ContrAgentModel>();
@@ -195,10 +195,11 @@ namespace CorumAdminUI.Controllers
                         {
                             StepId = 3,
                             OrderId = OrderID,
-                            userId = userId
+                            userId = userId,
+                            tenderNumber = tenderNumber
                         });
-                        context.getCurrentStatusForListKL(OrderID, userId, true);
-                        currentStatus = context.getCurrentStatusForList(OrderID);
+                        context.getCurrentStatusForListKL(OrderID, userId, tenderNumber);
+                        currentStatus = context.getCurrentStatusForList(OrderID, tenderNumber);
                         var CompetitiveListInfo_ = context.getCompetitiveListInfo(OrderId);
                         var specificationList = context.GetSpecifications(null, 5, 1, OrderId, true, CompetitiveListInfo_.FilterTripTypeId,
                                    false, null, true, CompetitiveListInfo_.FilterVehicleTypeId, true, CompetitiveListInfo_.FilterPayerId,
@@ -212,15 +213,61 @@ namespace CorumAdminUI.Controllers
                                 if (model != null)
                                 {
                                     model.OrderId = (int)OrderId;
+                                    model.tenderNumber = tenderNumber;
+                                    model.DaysDelay = it.Value[i].PaymentDelay;
+                                    model.ExpeditorName = it.Value[i].ContragentName;
+                                    model.NameSpecification = it.Value[i].nmcName;
+
                                     specificationListViews.Add(model);
+                                }
+                                else
+                                {
+                                    SpecificationListViewModel instance = new SpecificationListViewModel()
+                                    {
+                                        OrderId = (int)OrderId,
+                                        GenId = specificationList[0].GenId,
+                                        tenderNumber = tenderNumber,
+                                        CarryCapacity = specificationList[0].CarryCapacity,
+                                        DaysDelay = it.Value[i].PaymentDelay,
+                                        ExpeditorName = it.Value[i].ContragentName,
+                                        FilterPayerId = specificationList[0].FilterPayerId,
+                                        FilterSpecificationTypeId = specificationList[0].FilterSpecificationTypeId,
+                                        FilterTripTypeId = specificationList[0].FilterTripTypeId,
+                                        FilterVehicleTypeId = specificationList[0].FilterVehicleTypeId,
+                                        FreightName = specificationList[0].FreightName,
+                                        GroupeSpecId = specificationList[0].GroupeSpecId,
+                                        IntervalTypeId = specificationList[0].IntervalTypeId,
+                                        IsForwarder = specificationList[0].IsForwarder,
+                                        IsFreight = specificationList[0].IsFreight,
+                                        NDSTax = specificationList[0].NDSTax,
+                                        NameGroupeSpecification = specificationList[0].NameGroupeSpecification,
+                                        NameSpecification = it.Value[i].nmcName,
+                                        RateValue = specificationList[0].RateValue,
+                                        RouteTypeId = specificationList[0].RouteTypeId,
+                                        UsePayerFilter = specificationList[0].UsePayerFilter,
+                                        UseRouteFilter = specificationList[0].UseRouteFilter,
+                                        UseSpecificationTypeFilter = specificationList[0].UseSpecificationTypeFilter,
+                                        UseTripTypeFilter = specificationList[0].UseTripTypeFilter,
+                                        UseVehicleTypeFilter = specificationList[0].UseVehicleTypeFilter,
+                                        UsedRateId = specificationList[0].UsedRateId,
+                                        UsedRateName = specificationList[0].UsedRateName,
+                                        VehicleTypeName = specificationList[0].VehicleTypeName,
+                                        edrpou_aps = it.Value[i].EDRPOUContragent,
+                                        email_aps = it.Value[i].emailContragent,
+                                        isTruck = specificationList[0].isTruck
+                                    };
+                                    specificationListViews.Add(instance);
                                 }
                             }
                         }
                         if (specificationListViews.Count != 0)
                         {
-                            foreach (var model in specificationListViews)
+                            if (context.IsContainTender(tenderNumber))
                             {
-                                context.NewSpecification(model, this.userId);
+                                foreach (var model in specificationListViews)
+                                {
+                                    context.NewSpecification(model, this.userId, tenderNumber);
+                                }
                             }
                         }
                     }
@@ -231,9 +278,9 @@ namespace CorumAdminUI.Controllers
             }
             if (Int32.Parse(updateDeserializedClass.process) >= 8)
             {
-                var DisplayValues = context.getOrderCompetitiveList(userId, OrderID);
-                var CompetitiveListInfo = context.getCompetitiveListInfo(OrderID);
-                var listStatuses = context.getAvialiableStepsForList(OrderID);
+                var DisplayValues = context.getOrderCompetitiveList(userId, OrderID, tenderNumber);
+                var CompetitiveListInfo = context.getCompetitiveListInfo(OrderID, tenderNumber);
+                var listStatuses = context.getAvialiableStepsForList(OrderID, tenderNumber);
                 List<CompetitiveListStepViewModel> listStKL = new List<CompetitiveListStepViewModel>();
                 foreach (var el in listStatuses)
                 {

@@ -9,7 +9,7 @@
     <ul class="dropdown-menu" aria-labelledby="dropdownMenu1" style="top:80% !important; font-size:12px;">
         @foreach (var status in Model.listStatuses)
         {
-            <li>@Html.ActionLink(status.StepShortName, "SetListStatus", "OrderConcurs", new { StepId = status.Id, OrderId=Model.orderInfo.Id }, null)</li>
+            <li id="liStatKL">@Html.ActionLink(status.StepShortName, "SetListStatus", "OrderConcurs", new { StepId = status.Id, OrderId = Model.orderInfo.Id }, new { @onclick = "OnIndexCallStatus(this)" })</li>
         }
     </ul>
 </div>

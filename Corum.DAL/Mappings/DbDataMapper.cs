@@ -23,13 +23,30 @@ namespace Corum.DAL.Mappings
             {
                 Id = o.Id,
                 StepId = o.StepId,
-                StepShortCode =o.OrderConcursSteps.StepNameShort,
-                StepFullCode =o.OrderConcursSteps.StepNameFull,
-                OrderId = o.OrderId??0,
-                userId =o.UserId,
-                userName = o.AspNetUsers.DisplayName ?? o.AspNetUsers.UserName,                
-                timestamp =o.Datetimevalue,
+                StepShortCode = o.OrderConcursSteps.StepNameShort,
+                StepFullCode = o.OrderConcursSteps.StepNameFull,
+                OrderId = o.OrderId ?? 0,
+                userId = o.UserId,
+                userName = o.AspNetUsers.DisplayName ?? o.AspNetUsers.UserName,
+                timestamp = o.Datetimevalue,
                 timestampRaw = o.Datetimevalue == null ? null : o.Datetimevalue.Value.ToString("dd.MM.yyyy H:mm:ss"),
+            };
+        }
+
+        public static CompetetiveListStepsInfoViewModel Map_(OrderConcursListsSteps o, int? tenderNumber)
+        {
+            return new CompetetiveListStepsInfoViewModel()
+            {
+                Id = o.Id,
+                StepId = o.StepId,
+                StepShortCode = o.OrderConcursSteps.StepNameShort,
+                StepFullCode = o.OrderConcursSteps.StepNameFull,
+                OrderId = o.OrderId ?? 0,
+                userId = o.UserId,
+                userName = o.AspNetUsers.DisplayName ?? o.AspNetUsers.UserName,
+                timestamp = o.Datetimevalue,
+                timestampRaw = o.Datetimevalue == null ? null : o.Datetimevalue.Value.ToString("dd.MM.yyyy H:mm:ss"),
+                tenderNumber = tenderNumber
             };
         }
 
@@ -48,7 +65,7 @@ namespace Corum.DAL.Mappings
         {
             return new CompetitiveListStepViewModel()
             {
-                Id=o.Id,
+                Id = o.Id,
                 StepShortName = o.StepNameShort,
                 StepFullName = o.StepNameFull
             };
@@ -59,22 +76,22 @@ namespace Corum.DAL.Mappings
         {
             return new OrderProjectViewModel()
             {
-                Id          = o.Id,
-                Code        = o.Code,
+                Id = o.Id,
+                Code = o.Code,
                 Description = o.Description,
-                ProjectCFOId = o.ProjectCFOId??0,
-                ProjectCFOName =o.Centers?.Center,
-                ProjectTypeId = o.ProjectTypeId??0,
+                ProjectCFOId = o.ProjectCFOId ?? 0,
+                ProjectCFOName = o.Centers?.Center,
+                ProjectTypeId = o.ProjectTypeId ?? 0,
                 ProjectTypeName = o.ProjectTypes?.Name,
                 ConstructionDesc = o.ConstructionDesc,
-                PlanCount = o.PlanCount??0,
-                isActive = o.isActive??false,
+                PlanCount = o.PlanCount ?? 0,
+                isActive = o.isActive ?? false,
                 ProjectOrderer = o.ProjectOrderer,
                 Comments = o.Comments,
-                CanBeDelete = o.OrdersBase.Count()==0,
+                CanBeDelete = o.OrdersBase.Count() == 0,
                 CanShowManufacture = (o.ProjectTypeId ?? 0) == 1 ? true : false,
                 ManufacturingEnterprise = o.ManufacturingEnterprise,
-                NumOrder = o.NumOrder ?? 0,               
+                NumOrder = o.NumOrder ?? 0,
                 DateOpenOrder = o.DateOpenOrder == null ? null : o.DateOpenOrder.Value.ToString("dd.MM.yyyy"),
                 DateOpenOrderRaw = o.DateOpenOrder == null ? null : DateTimeConvertClass.getString(o.DateOpenOrder.Value),
                 PlanPeriodForMP = o.PlanPeriodForMP == null ? null : o.PlanPeriodForMP.Value.ToString("dd.MM.yyyy"),
@@ -150,8 +167,8 @@ namespace Corum.DAL.Mappings
                 ContractId = o.ContractId ?? 0,
                 ContractExpBkId = o.ContractExpBkId ?? 0,
                 ContractInfo = o.ContractInfo,
-                ContractExpBkInfo = o.Contracts1?.ContractNumber + " от " + o.Contracts1?.ContractDate.Value.ToString("dd.MM.yyyy") + 
-                                     "(с " + o.Contracts1?.DateBeg.Value.ToString("dd.MM.yyyy")  + " по " + o.Contracts1?.DateEnd.Value.ToString("dd.MM.yyyy") + ")",
+                ContractExpBkInfo = o.Contracts1?.ContractNumber + " от " + o.Contracts1?.ContractDate.Value.ToString("dd.MM.yyyy") +
+                                     "(с " + o.Contracts1?.DateBeg.Value.ToString("dd.MM.yyyy") + " по " + o.Contracts1?.DateEnd.Value.ToString("dd.MM.yyyy") + ")",
                 ExpeditorId = o.ExpeditorId ?? 0,
                 ExpeditorName = o.CarOwners?.CarrierName,
                 CarOwnerInfo = o.CarOwnerInfo,
@@ -161,8 +178,8 @@ namespace Corum.DAL.Mappings
                 CarDriverInfo = o.CarDriverInfo,
                 DriverContactInfo = o.DriverContactInfo,
                 CarrierInfo = o.CarrierInfo,
-                CarId = o.CarId??0,
-                Summ  = o.Summ??0,
+                CarId = o.CarId ?? 0,
+                Summ = o.Summ ?? 0,
                 DriverCardInfo = o.DriverCardInfo,
                 Comments = o.Comments,
                 PlanDistance = (o.PlanDistance ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
@@ -174,7 +191,7 @@ namespace Corum.DAL.Mappings
                 DelayDays = o.DelayDays,
                 FactShipperDateTime = o.FactShipperDateTime,
                 FactConsigneeDateTime = o.FactConsigneeDateTime,
-                
+
                 FactShipperDate = o.FactShipperDateTime != null ? o.FactShipperDateTime.Value.ToString("dd.MM.yyyy") : "",
                 FactShipperDateRaw = o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
                 FactConsigneeDate = o.FactConsigneeDateTime != null ? o.FactConsigneeDateTime.Value.ToString("dd.MM.yyyy") : "",
@@ -183,7 +200,7 @@ namespace Corum.DAL.Mappings
                 FactShipperTime = o.FactShipperDateTime != null ? o.FactShipperDateTime.Value.ToString("HH:mm") : "",
                 FactShipperTimeRaw = o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
                 FactConsigneeTime = o.FactConsigneeDateTime != null ? o.FactConsigneeDateTime.Value.ToString("HH:mm") : "",
-                FactConsigneeTimeRaw =  o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
+                FactConsigneeTimeRaw = o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
 
                 RealFactShipperDate = o.FactShipper != null ? o.FactShipper.Value.ToString("dd.MM.yyyy") : "",
                 RealFactShipperDateRaw = o.FactShipper != null ? DateTimeConvertClass.getString(o.FactShipper.Value) : "",
@@ -193,7 +210,7 @@ namespace Corum.DAL.Mappings
                 RealFactShipperTime = o.FactShipper != null ? o.FactShipper.Value.ToString("HH:mm") : "",
                 RealFactShipperTimeRaw = o.FactShipper != null ? DateTimeConvertClass.getString(o.FactShipper.Value) : "",
                 RealFactConsigneeTime = o.FactConsignee != null ? o.FactConsignee.Value.ToString("HH:mm") : "",
-                RealFactConsigneeTimeRaw =  o.FactConsignee != null ? DateTimeConvertClass.getString(o.FactConsignee.Value) : "",
+                RealFactConsigneeTimeRaw = o.FactConsignee != null ? DateTimeConvertClass.getString(o.FactConsignee.Value) : "",
 
             };
         }
@@ -202,17 +219,17 @@ namespace Corum.DAL.Mappings
         {
             return new OrderNotificationViewModel()
             {
-                Datetime      = o.Datetime,
-                Id            = o.Id,
-                Body          = o.Body,
-                OrderId       = o.OrderId,
-                CreatedBy     = o.CreatedBy,
+                Datetime = o.Datetime,
+                Id = o.Id,
+                Body = o.Body,
+                OrderId = o.OrderId,
+                CreatedBy = o.CreatedBy,
                 CreatedByName = o.AspNetUsers1.DisplayName,
-                Receiver      = o.Reciever,
+                Receiver = o.Reciever,
                 ReceiverEmail = o.AspNetUsers.Email,
-                ReceiverName  = o.AspNetUsers.DisplayName,
-                TypeId        = o.TypeId,
-                TypeName      = o.OrderNotificationTypes.Name
+                ReceiverName = o.AspNetUsers.DisplayName,
+                TypeId = o.TypeId,
+                TypeName = o.OrderNotificationTypes.Name
             };
 
         }
@@ -235,10 +252,10 @@ namespace Corum.DAL.Mappings
                 Name = o.Name,
                 Address = o.Address,
                 City = o.City,
-                CanBeDelete = !((o.Routes.Count() > 0) || (o.Routes1.Count() > 0) || (o.AdditionalRoutePoints.Count > 0) || (o.Projects.Count>0)||(o.Projects1.Count>0)),
+                CanBeDelete = !((o.Routes.Count() > 0) || (o.Routes1.Count() > 0) || (o.AdditionalRoutePoints.Count > 0) || (o.Projects.Count > 0) || (o.Projects1.Count > 0)),
                 CountryId = o.CountryId ?? 0,
                 Country = (o.CountryId != null) ? o.Countries.Name : "",
-                IsTruck = o.IsTruck??false,
+                IsTruck = o.IsTruck ?? false,
                 Latitude = (o.Latitude ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
                 Longitude = (o.Longitude ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
                 IsAuto = o.IsAuto,
@@ -253,7 +270,7 @@ namespace Corum.DAL.Mappings
             {
                 Id = o.Сode,
                 CountryName = o.Name,
-                IsDefault = o.IsDefault??false
+                IsDefault = o.IsDefault ?? false
             };
 
         }
@@ -285,58 +302,58 @@ namespace Corum.DAL.Mappings
                 UserName = o.AspNetUsers.DisplayName,
                 UserEmail = o.AspNetUsers.Email,
                 Datetime = o.Datetime.ToString("yyyy.MM.dd HH:mm:ss"),
-                IP       = o.IP,
-                UserAgent= o.userAgent
+                IP = o.IP,
+                UserAgent = o.userAgent
             };
         }
 
         public static void Map(OrderTruckTransport o, ref OrdersTruckTransportViewModel vm)
         {
-            vm.OrderId              = o.OrderId;
-            vm.Shipper              = o.Shipper;
-            vm.ShipperCountryId     = o.ShipperCountryId??0;
-            vm.ShipperCountryName   = o.Countries1?.Name;
-            vm.ShipperCity          = o.ShipperCity;
-            vm.ShipperAdress        = o.ShipperAdress;
-            vm.FromShipperDate      = o.FromShipperDatetime.Value.ToString("dd.MM.yyyy");
-            vm.FromShipperDateRaw   = DateTimeConvertClass.getString(o.FromShipperDatetime.Value);
-            vm.FromShipperTime      = o.FromShipperDatetime.Value.ToString("HH:mm");
-            vm.FromShipperTimeRaw   = DateTimeConvertClass.getString(o.FromShipperDatetime.Value);
+            vm.OrderId = o.OrderId;
+            vm.Shipper = o.Shipper;
+            vm.ShipperCountryId = o.ShipperCountryId ?? 0;
+            vm.ShipperCountryName = o.Countries1?.Name;
+            vm.ShipperCity = o.ShipperCity;
+            vm.ShipperAdress = o.ShipperAdress;
+            vm.FromShipperDate = o.FromShipperDatetime.Value.ToString("dd.MM.yyyy");
+            vm.FromShipperDateRaw = DateTimeConvertClass.getString(o.FromShipperDatetime.Value);
+            vm.FromShipperTime = o.FromShipperDatetime.Value.ToString("HH:mm");
+            vm.FromShipperTimeRaw = DateTimeConvertClass.getString(o.FromShipperDatetime.Value);
 
-            vm.Consignee            = o.Consignee;
-            vm.ConsigneeCountryId   = o.ConsigneeCountryId ?? 0;
+            vm.Consignee = o.Consignee;
+            vm.ConsigneeCountryId = o.ConsigneeCountryId ?? 0;
             vm.ConsigneeCountryName = o.Countries?.Name;
-            vm.ConsigneeCity        = o.ConsigneeCity;
-            vm.ConsigneeAdress      = o.ConsigneeAdress;
-            vm.ToConsigneeDate      = o.ToConsigneeDatetime.Value.ToString("dd.MM.yyyy");
-            vm.ToConsigneeDateRaw   = DateTimeConvertClass.getString(o.ToConsigneeDatetime.Value);
-            vm.ToConsigneeTime      = o.ToConsigneeDatetime.Value.ToString("HH:mm");
-            vm.ToConsigneeTimeRaw   = DateTimeConvertClass.getString(o.ToConsigneeDatetime.Value);
+            vm.ConsigneeCity = o.ConsigneeCity;
+            vm.ConsigneeAdress = o.ConsigneeAdress;
+            vm.ToConsigneeDate = o.ToConsigneeDatetime.Value.ToString("dd.MM.yyyy");
+            vm.ToConsigneeDateRaw = DateTimeConvertClass.getString(o.ToConsigneeDatetime.Value);
+            vm.ToConsigneeTime = o.ToConsigneeDatetime.Value.ToString("HH:mm");
+            vm.ToConsigneeTimeRaw = DateTimeConvertClass.getString(o.ToConsigneeDatetime.Value);
 
-            vm.BoxingDescription    = o.BoxingDescription;
-            vm.TruckDescription     = o.TruckDescription;
-            vm.TripType             = o.TripType??0;            
+            vm.BoxingDescription = o.BoxingDescription;
+            vm.TruckDescription = o.TruckDescription;
+            vm.TripType = o.TripType ?? 0;
             vm.NameRouteType = o.RouteTypes == null ? null : o.RouteTypes.NameRouteType;
-            vm.Weight               = (o.Weight ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA"));
-            vm.Volume               = Convert.ToDouble(o.Volume ?? 0);
-            vm.DimenssionL          = Convert.ToDouble(o.DimenssionL ?? 0);
-            vm.DimenssionW          = Convert.ToDouble(o.DimenssionW ?? 0);
-            vm.DimenssionH          = Convert.ToDouble(o.DimenssionH ?? 0);
-            vm.TruckTypeId          = o.TruckTypeId; 
-            vm.TruckTypeName        = o.OrderTruckTypes?.TruckTypeName;
-            vm.VehicleTypeId        = o.VehicleTypeId??0;
-            vm.VehicleTypeName      = o.OrderVehicleTypes?.VehicleTypeName;
-            vm.LoadingTypeId        = o.LoadingTypeId??0; 
-            vm.LoadingTypeName      = o.OrderLoadingTypes?.LoadingTypeName;
-            vm.UnloadingTypeId      = o.UnloadingTypeId ?? 0;
-            vm.UnloadingTypeName    = o.OrderUnloadingTypes?.UnloadingTypeName;
+            vm.Weight = (o.Weight ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA"));
+            vm.Volume = Convert.ToDouble(o.Volume ?? 0);
+            vm.DimenssionL = Convert.ToDouble(o.DimenssionL ?? 0);
+            vm.DimenssionW = Convert.ToDouble(o.DimenssionW ?? 0);
+            vm.DimenssionH = Convert.ToDouble(o.DimenssionH ?? 0);
+            vm.TruckTypeId = o.TruckTypeId;
+            vm.TruckTypeName = o.OrderTruckTypes?.TruckTypeName;
+            vm.VehicleTypeId = o.VehicleTypeId ?? 0;
+            vm.VehicleTypeName = o.OrderVehicleTypes?.VehicleTypeName;
+            vm.LoadingTypeId = o.LoadingTypeId ?? 0;
+            vm.LoadingTypeName = o.OrderLoadingTypes?.LoadingTypeName;
+            vm.UnloadingTypeId = o.UnloadingTypeId ?? 0;
+            vm.UnloadingTypeName = o.OrderUnloadingTypes?.UnloadingTypeName;
 
             vm.ShipperContactPerson = o.ShipperContactPerson;
             vm.ShipperContactPersonPhone = o.ShipperContactPersonPhone;
             vm.ConsigneeContactPerson = o.ConsigneeContactPerson;
             vm.ConsigneeContactPersonPhone = o.ConsigneeContactPersonPhone;
 
-            vm.ShipperId = o.ShipperId??0;
+            vm.ShipperId = o.ShipperId ?? 0;
             vm.ConsigneeId = o.ConsigneeId ?? 0;
             vm.LatitudeShipper = o.Organization1?.Latitude ?? 0;
             vm.LongitudeShipper = o.Organization1?.Longitude ?? 0;
@@ -345,17 +362,17 @@ namespace Corum.DAL.Mappings
 
         }
 
-        public static void Map (OrdersPassengerTransport o, ref OrdersPassTransportViewModel vm)
+        public static void Map(OrdersPassengerTransport o, ref OrdersPassTransportViewModel vm)
         {
-            vm.OrderId                 = o.OrderId;
+            vm.OrderId = o.OrderId;
 
-            vm.StartDateTimeOfTrip     = o.StartDateTimeOfTrip.ToString("dd.MM.yyyy");
-            vm.FinishDateTimeOfTrip    = o.FinishDateTimeOfTrip.ToString("dd.MM.yyyy");
+            vm.StartDateTimeOfTrip = o.StartDateTimeOfTrip.ToString("dd.MM.yyyy");
+            vm.FinishDateTimeOfTrip = o.FinishDateTimeOfTrip.ToString("dd.MM.yyyy");
 
-            vm.StartDateTimeExOfTrip   = o.StartDateTimeOfTrip.ToString("HH:mm");
-            vm.FinishDateTimeExOfTrip  = o.FinishDateTimeOfTrip.ToString("HH:mm");
+            vm.StartDateTimeExOfTrip = o.StartDateTimeOfTrip.ToString("HH:mm");
+            vm.FinishDateTimeExOfTrip = o.FinishDateTimeOfTrip.ToString("HH:mm");
 
-            vm.StartDateTimeOfTripRaw  = DateTimeConvertClass.getString(o.StartDateTimeOfTrip);
+            vm.StartDateTimeOfTripRaw = DateTimeConvertClass.getString(o.StartDateTimeOfTrip);
             vm.FinishDateTimeOfTripRaw = DateTimeConvertClass.getString(o.FinishDateTimeOfTrip);
 
             vm.StartDateTimeExOfTripRaw = DateTimeConvertClass.getString(o.StartDateTimeOfTrip);
@@ -363,46 +380,46 @@ namespace Corum.DAL.Mappings
 
             vm.NeedReturn = o.NeedReturn;
 
-            if (o.ReturnStartDateTimeOfTrip!=null) vm.ReturnStartDateTimeOfTrip = o.ReturnStartDateTimeOfTrip.Value.ToString("dd.MM.yyyy");
-            if (o.ReturnFinishDateTimeOfTrip!=null) vm.ReturnFinishDateTimeOfTrip = o.ReturnFinishDateTimeOfTrip.Value.ToString("dd.MM.yyyy");
+            if (o.ReturnStartDateTimeOfTrip != null) vm.ReturnStartDateTimeOfTrip = o.ReturnStartDateTimeOfTrip.Value.ToString("dd.MM.yyyy");
+            if (o.ReturnFinishDateTimeOfTrip != null) vm.ReturnFinishDateTimeOfTrip = o.ReturnFinishDateTimeOfTrip.Value.ToString("dd.MM.yyyy");
 
-            if (o.ReturnStartDateTimeOfTrip!=null) vm.ReturnStartDateTimeExOfTrip = o.ReturnStartDateTimeOfTrip.Value.ToString("HH:mm");
-            if (o.ReturnFinishDateTimeOfTrip!=null) vm.ReturnFinishDateTimeExOfTrip = o.ReturnFinishDateTimeOfTrip.Value.ToString("HH:mm");
+            if (o.ReturnStartDateTimeOfTrip != null) vm.ReturnStartDateTimeExOfTrip = o.ReturnStartDateTimeOfTrip.Value.ToString("HH:mm");
+            if (o.ReturnFinishDateTimeOfTrip != null) vm.ReturnFinishDateTimeExOfTrip = o.ReturnFinishDateTimeOfTrip.Value.ToString("HH:mm");
 
-            if (o.ReturnStartDateTimeOfTrip!=null) vm.ReturnStartDateTimeOfTripRaw = DateTimeConvertClass.getString(o.ReturnStartDateTimeOfTrip.Value);
-            if (o.ReturnFinishDateTimeOfTrip!=null) vm.ReturnFinishDateTimeOfTripRaw = DateTimeConvertClass.getString(o.ReturnFinishDateTimeOfTrip.Value);
+            if (o.ReturnStartDateTimeOfTrip != null) vm.ReturnStartDateTimeOfTripRaw = DateTimeConvertClass.getString(o.ReturnStartDateTimeOfTrip.Value);
+            if (o.ReturnFinishDateTimeOfTrip != null) vm.ReturnFinishDateTimeOfTripRaw = DateTimeConvertClass.getString(o.ReturnFinishDateTimeOfTrip.Value);
 
-            if (o.ReturnStartDateTimeOfTrip!=null) vm.ReturnStartDateTimeExOfTripRaw = DateTimeConvertClass.getString(o.ReturnStartDateTimeOfTrip.Value);
-            if (o.ReturnFinishDateTimeOfTrip!=null) vm.ReturnFinishDateTimeExOfTripRaw = DateTimeConvertClass.getString(o.ReturnFinishDateTimeOfTrip.Value);
+            if (o.ReturnStartDateTimeOfTrip != null) vm.ReturnStartDateTimeExOfTripRaw = DateTimeConvertClass.getString(o.ReturnStartDateTimeOfTrip.Value);
+            if (o.ReturnFinishDateTimeOfTrip != null) vm.ReturnFinishDateTimeExOfTripRaw = DateTimeConvertClass.getString(o.ReturnFinishDateTimeOfTrip.Value);
 
-            if ((o.FinishDateTimeOfTrip!=null) && (o.ReturnStartDateTimeOfTrip != null))
+            if ((o.FinishDateTimeOfTrip != null) && (o.ReturnStartDateTimeOfTrip != null))
             {
                 vm.ReturnWaitingTime = TimeSpan.FromHours((o.ReturnStartDateTimeOfTrip.Value - o.FinishDateTimeOfTrip).TotalHours).ToString(@"hh\:mm\:ss");
             }
-            
-            vm.AdressFrom              = o.AdressFrom;
-            vm.AdressTo                = o.AdressTo;
 
-            vm.OrgFrom                 = o.OrgFrom;
-            vm.OrgTo                   = o.OrgTo;
+            vm.AdressFrom = o.AdressFrom;
+            vm.AdressTo = o.AdressTo;
 
-            vm.CountryFrom             = o.FromCountry??0;
-            vm.CountryFromName         = o.Countries == null ? null : o.Countries.Name;
+            vm.OrgFrom = o.OrgFrom;
+            vm.OrgTo = o.OrgTo;
 
-            vm.CountryTo               = o.ToCountry??0;
-            vm.CountryToName           = o.Countries1 == null ? null : o.Countries1.Name;
+            vm.CountryFrom = o.FromCountry ?? 0;
+            vm.CountryFromName = o.Countries == null ? null : o.Countries.Name;
 
-            vm.CityFrom                = o.FromCity;
-            vm.CityTo                  = o.ToCity;
+            vm.CountryTo = o.ToCountry ?? 0;
+            vm.CountryToName = o.Countries1 == null ? null : o.Countries1.Name;
 
-            vm.TripDescription         = o.TripDescription;
-            vm.PassInfo                = o.PassInfo;
+            vm.CityFrom = o.FromCity;
+            vm.CityTo = o.ToCity;
 
-            vm.CarDetailInfo           = o.CarDetailInfo;
-            vm.CarDriverFio            = o.CarDriverFio;
-            vm.CarDriverContactInfo    = o.CarDriverContactInfo;
+            vm.TripDescription = o.TripDescription;
+            vm.PassInfo = o.PassInfo;
 
-            vm.TripType                = o.TripType??0;
+            vm.CarDetailInfo = o.CarDetailInfo;
+            vm.CarDriverFio = o.CarDriverFio;
+            vm.CarDriverContactInfo = o.CarDriverContactInfo;
+
+            vm.TripType = o.TripType ?? 0;
             vm.NameRouteType = o.RouteTypes == null ? null : o.RouteTypes.NameRouteType;
 
             vm.OrgFromId = o.OrgFromId ?? 0;
@@ -431,7 +448,7 @@ namespace Corum.DAL.Mappings
                 OrderTypeName = o.OrderTypesBase == null ? null : o.OrderTypesBase.TypeName,
                 FromStatusColor = o.OrderStatuses.Color,
                 ToStatusColor = o.OrderStatuses1.Color,
-                FinishStatusForBP = o.FinishOfTheProcess??false
+                FinishStatusForBP = o.FinishOfTheProcess ?? false
 
             };
         }
@@ -444,11 +461,11 @@ namespace Corum.DAL.Mappings
                 OrderId = o.OrderId,
                 DocDescription = o.DocDescription,
                 AddedByUser = o.AddedByUser,
-                AddedByUserName= o.AspNetUsers.DisplayName,
+                AddedByUserName = o.AspNetUsers.DisplayName,
                 AddedDateTime = o.AddedDateTime,
                 DocType = o.DocType,
                 DocTypeName = o.OrdersDocTypes.DocType,
-                RealFileName =o.RealFileName
+                RealFileName = o.RealFileName
             };
         }
 
@@ -475,11 +492,11 @@ namespace Corum.DAL.Mappings
             {
                 Id = o.Id,
                 OrderId = o.OrderId,
-                EditedDateTime =o.ChangeDateTime,
-                OldStatusId = o.OldStatus??0,
-                OldStatusName = (o.OldStatus!=null)? o.OrderStatuses.OrderStatusName : string.Empty,
-                NewStatusId = o.NewStatus??0,
-                NewStatusName= (o.NewStatus != null) ? o.OrderStatuses1.OrderStatusName : string.Empty,
+                EditedDateTime = o.ChangeDateTime,
+                OldStatusId = o.OldStatus ?? 0,
+                OldStatusName = (o.OldStatus != null) ? o.OrderStatuses.OrderStatusName : string.Empty,
+                NewStatusId = o.NewStatus ?? 0,
+                NewStatusName = (o.NewStatus != null) ? o.OrderStatuses1.OrderStatusName : string.Empty,
                 StatusChangeComment = o.StatusChangeComment,
                 CreatedByUser = o.ChangedByUser,
                 CreateByUserName = o.AspNetUsers.DisplayName
@@ -492,11 +509,11 @@ namespace Corum.DAL.Mappings
             return new OrderClientsViewModel()
             {
                 Id = o.Id,
-                ClientName = o.ClientName,                
+                ClientName = o.ClientName,
                 AccessRoleId = o.AccessRoleId,
                 RoleName = o.AspNetRoles.Name,
-                CanBeDelete = o.OrdersBase.Count==0,                
-                ClientCFOId = o.ClientCFOId??0,
+                CanBeDelete = o.OrdersBase.Count == 0,
+                ClientCFOId = o.ClientCFOId ?? 0,
                 ClientCFOName = o.Centers == null ? null : o.Centers.Center
             };
         }
@@ -533,9 +550,9 @@ namespace Corum.DAL.Mappings
                 Id = o.Id,
                 StatusName = o.OrderStatusName,
                 StatusColor = o.Color,
-                AllowRegData = o.AllowEditRegData??false,
-                AllowClientData = o.AllowEditClientData??false,
-                AllowExecuterData = o.AllowEditExecuterData??false,
+                AllowRegData = o.AllowEditRegData ?? false,
+                AllowClientData = o.AllowEditClientData ?? false,
+                AllowExecuterData = o.AllowEditExecuterData ?? false,
                 ActionName = o.ActionName,
                 IconFile = o.IconFile,
                 IconDescription = o.IconDescription,
@@ -564,67 +581,67 @@ namespace Corum.DAL.Mappings
                 DefaultExecuterName = o.AspNetUsers1?.DisplayName,
                 UserIdForAnonymousForm = o.UserForAnnonymousForm,
                 UserIdForAnonymousFormName = o.AspNetUsers?.DisplayName,
-                IsTransportType = o.IsTransportType??false,
+                IsTransportType = o.IsTransportType ?? false,
                 UserRoleIdForCompetitiveList = o.AspNetRoles3 == null ? null : o.AspNetRoles3.Id,
                 UserRoleIdForCompetitiveListName = o.AspNetRoles3 == null ? null : o.AspNetRoles3.Name,
                 IsActive = o.IsActive
             };
         }
 
-        public static OrderBaseViewModel Map (OrdersBase o)
+        public static OrderBaseViewModel Map(OrdersBase o)
         {
             var TotalDistanceLength = o.TotalDistanceLength ?? 0;
 
             var result = new OrderBaseViewModel()
             {
-                Id                     = o.Id,
-                OrderDate              = o.OrderDate.ToString("dd.MM.yyyy"),
-                OrderDateRaw           = DateTimeConvertClass.getString(o.OrderDate),
-                CreatedByUser          = o.CreatedByUser,
-                CreatedByUserName      = o.AspNetUsers.DisplayName,
-                CreateDatetime         = o.CreateDatetime,
-                OrderType              = o.OrderType,
-                OrderTypename          = o.OrderTypesBase.TypeName,
-                OrderTypeShortName     = o.OrderTypesBase.ShortName,
-                CurrentOrderStatus     = o.CurrentOrderStatus,
-                CurrentOrderStatusColor= o.OrderStatuses.Color,
+                Id = o.Id,
+                OrderDate = o.OrderDate.ToString("dd.MM.yyyy"),
+                OrderDateRaw = DateTimeConvertClass.getString(o.OrderDate),
+                CreatedByUser = o.CreatedByUser,
+                CreatedByUserName = o.AspNetUsers.DisplayName,
+                CreateDatetime = o.CreateDatetime,
+                OrderType = o.OrderType,
+                OrderTypename = o.OrderTypesBase.TypeName,
+                OrderTypeShortName = o.OrderTypesBase.ShortName,
+                CurrentOrderStatus = o.CurrentOrderStatus,
+                CurrentOrderStatusColor = o.OrderStatuses.Color,
                 CurrentOrderStatusName = o.OrderStatuses.OrderStatusName,
                 CurrentStatusShortName = o.OrderStatuses.ShortName,
-                FontColor              = o.OrderStatuses.FontColor,
-                BackgroundColor        = o.OrderStatuses.BackgroundColor,
-                OrderDescription       = o.OrderDescription,
-                ClientId               = o.ClientId,
-                ClientName             = o.OrderClients.ClientName,
-                ClientCenterName       = o.OrderClients.Centers.Center,
-                CanBeDelete            = (o.CurrentOrderStatus==1)||(o.CurrentOrderStatus == 17),
-                Summ                   = o.Summ??0,
-                UseNotifications       = o.UseNotifications ?? false,
-                CreatorContact         = o.CreatorContact,
-                CreatorPosition        = o.CreatorPosition,
-                PriorityType           = o.PriotityType,
-                OrderServiceDatetime   = o.OrderServiceDateTime??DateTime.Now,
-                IconFile               = o.OrderStatuses.IconFile,
-                IconDescription        = o.OrderStatuses.IconDescription,
-                OrderExecuter          = o.OrderExecuter,
-                OrderExecuterName      = o.AspNetUsers1 == null ? null : o.AspNetUsers1.DisplayName,
-                PayerId                = o.PayerId??0,
-                PayerName              = (o.PayerId!=null)? o.BalanceKeepers.BalanceKeeper: string.Empty,
-                ProjectId              = o.ProjectId??0,
-                ProjectNum             = o.Projects?.Code,
-                ProjectDescription     = o.Projects?.Description,
-                CarNumber              = o.CarNumber??0,
+                FontColor = o.OrderStatuses.FontColor,
+                BackgroundColor = o.OrderStatuses.BackgroundColor,
+                OrderDescription = o.OrderDescription,
+                ClientId = o.ClientId,
+                ClientName = o.OrderClients.ClientName,
+                ClientCenterName = o.OrderClients.Centers.Center,
+                CanBeDelete = (o.CurrentOrderStatus == 1) || (o.CurrentOrderStatus == 17),
+                Summ = o.Summ ?? 0,
+                UseNotifications = o.UseNotifications ?? false,
+                CreatorContact = o.CreatorContact,
+                CreatorPosition = o.CreatorPosition,
+                PriorityType = o.PriotityType,
+                OrderServiceDatetime = o.OrderServiceDateTime ?? DateTime.Now,
+                IconFile = o.OrderStatuses.IconFile,
+                IconDescription = o.OrderStatuses.IconDescription,
+                OrderExecuter = o.OrderExecuter,
+                OrderExecuterName = o.AspNetUsers1 == null ? null : o.AspNetUsers1.DisplayName,
+                PayerId = o.PayerId ?? 0,
+                PayerName = (o.PayerId != null) ? o.BalanceKeepers.BalanceKeeper : string.Empty,
+                ProjectId = o.ProjectId ?? 0,
+                ProjectNum = o.Projects?.Code,
+                ProjectDescription = o.Projects?.Description,
+                CarNumber = o.CarNumber ?? 0,
                 TotalDistanceDescription = o.DistanceDescription,
-                TotalCost              = (o.TotalPrice??0).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
-                TotalDistanceLenght    = TotalDistanceLength.ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
-                IsTransport            = o.OrderTypesBase.IsTransportType??false,
-                IsPrivateOrder         = o.IsPrivateOrder??false,
-                ExecuterNotes          = o.ExecuterNotes,
-                TypeSpecId = o.TypeSpecId ?? 0,               
+                TotalCost = (o.TotalPrice ?? 0).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
+                TotalDistanceLenght = TotalDistanceLength.ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
+                IsTransport = o.OrderTypesBase.IsTransportType ?? false,
+                IsPrivateOrder = o.IsPrivateOrder ?? false,
+                ExecuterNotes = o.ExecuterNotes,
+                TypeSpecId = o.TypeSpecId ?? 0,
                 TimeRoute = DateTimeConvertClass.getHoursFormat(o.TimeRoute ?? 0),
                 TimeSpecialVehicles = DateTimeConvertClass.getTimeFormat(o.TimeSpecialVehicles ?? 0),
                 SpecificationType = o.SpecificationTypes == null ? null : o.SpecificationTypes.SpecificationType,
-                IsAdditionalRoutePoints = o.IsAdditionalRoutePoints ??false,
-                RouteId = o.RouteId??0,
+                IsAdditionalRoutePoints = o.IsAdditionalRoutePoints ?? false,
+                RouteId = o.RouteId ?? 0,
                 ShortName = o.Routes == null ? "" : o.Routes.ShortName,
 
             };
@@ -671,7 +688,7 @@ namespace Corum.DAL.Mappings
                 PayerId = o.PayerId ?? 0,
                 PayerName = o.PayerName,
                 ProjectNum = o.ProjectCode,
-                ProjectId = o.ProjectId??0,
+                ProjectId = o.ProjectId ?? 0,
                 ProjectDescription = o.ProjectDescription,
                 CarNumber = o.CarNumber ?? 0,
                 TotalDistanceDescription = o.DistanceDescription,
@@ -692,23 +709,23 @@ namespace Corum.DAL.Mappings
         {
             return new MenuAccessViewModel()
             {
-                Id  = menu.Id,
+                Id = menu.Id,
                 menuName = menu.menuName,
                 menuHtmlId = menu.menuId,
                 parentId = menu.parentId
-           };
+            };
 
 
         }
-     
+
         public static ImportError Map(LogImportErrors error)
         {
             return new ImportError()
             {
-                ColumnName=error.ColumnName,
-                CommentError=error.CommentError,
-                IsCommentType=error.isCommentType,
-                NumRow=error.NumRow.ToString()
+                ColumnName = error.ColumnName,
+                CommentError = error.CommentError,
+                IsCommentType = error.isCommentType,
+                NumRow = error.NumRow.ToString()
             };
         }
 
@@ -720,7 +737,7 @@ namespace Corum.DAL.Mappings
                 userId = user.Id,
                 userEmail = user.Email,
                 displayName = user.DisplayName ?? user.UserName,
-                userPassword = "empty",                
+                userPassword = "empty",
                 twoFactorEnabled = user.TwoFactorEnabled,
                 CanBeDelete = true,
                 contactPhone = user.ContactPhone,
@@ -731,12 +748,12 @@ namespace Corum.DAL.Mappings
         public static UserViewModel Map(AspNetUsers user)
         {
             return new UserViewModel()
-            { 
+            {
                 userId = user.Id,
                 userEmail = user.Email,
                 displayName = user.DisplayName ?? user.UserName,
                 userPassword = "empty",
-                isAdmin = user.AspNetRoles.Count(r => r.Id == GlobalConsts.GetAdminRoleId())>0,
+                isAdmin = user.AspNetRoles.Count(r => r.Id == GlobalConsts.GetAdminRoleId()) > 0,
                 twoFactorEnabled = user.TwoFactorEnabled,
                 CanBeDelete = true,
                 contactPhone = user.ContactPhone,
@@ -753,7 +770,7 @@ namespace Corum.DAL.Mappings
                 roleId = role.Id,
                 roleName = role.Name,
                 roleDescription = role.RoleDescription,
-                CanBeDelete = !((role != null) && (role.AspNetUsers.Count() > 0)||(role.Id=="1000"))
+                CanBeDelete = !((role != null) && (role.AspNetUsers.Count() > 0) || (role.Id == "1000"))
             };
         }
 
@@ -792,22 +809,22 @@ namespace Corum.DAL.Mappings
                 InnerOrderNum = rest.InnerOrderNum,
                 OrderedBy = rest.OrderedBy,
                 OrderNum = rest.OrderNum,
-                QuantityBefore = rest.QuantityBefore??0,
-                PE_Before = rest.PE_Before??0,
-                PF_Before = rest.PF_Before??0,
-                PCP_Before = rest.PCP_Before??0,
-                PCPC_Before = rest.PCPC_Before??0,
-                FCP_Before = rest.FCP_Before??0,
-                FCPC_Before = rest.FCPC_Before??0,
-                BP_Before = rest.BP_Before??0,
-                PE_After = rest.PE_After??0,
-                PF_After = rest.PF_After??0,
-                PCP_After = rest.PCP_After??0,
-                PCPC_After = rest.PCPC_After??0,
-                FCP_After = rest.FCP_After??0,
-                FCPC_After = rest.FCPC_After??0,
-                BP_After = rest.BP_After??0,
-                QuantityAfter = rest.QuantityAfter??0,
+                QuantityBefore = rest.QuantityBefore ?? 0,
+                PE_Before = rest.PE_Before ?? 0,
+                PF_Before = rest.PF_Before ?? 0,
+                PCP_Before = rest.PCP_Before ?? 0,
+                PCPC_Before = rest.PCPC_Before ?? 0,
+                FCP_Before = rest.FCP_Before ?? 0,
+                FCPC_Before = rest.FCPC_Before ?? 0,
+                BP_Before = rest.BP_Before ?? 0,
+                PE_After = rest.PE_After ?? 0,
+                PF_After = rest.PF_After ?? 0,
+                PCP_After = rest.PCP_After ?? 0,
+                PCPC_After = rest.PCPC_After ?? 0,
+                FCP_After = rest.FCP_After ?? 0,
+                FCPC_After = rest.FCPC_After ?? 0,
+                BP_After = rest.BP_After ?? 0,
+                QuantityAfter = rest.QuantityAfter ?? 0,
                 Storage = rest.Storage,
                 StorageCity = rest.StorageCity,
                 Сenter = rest.Сenter,
@@ -859,7 +876,7 @@ namespace Corum.DAL.Mappings
             string ReceiveDateReal = "";
             string ReceiveDateRaw = "";
             string backgroundColor = "#a2a7af";
-            if (contract.ContractDate!=null) ContractDate = contract.ContractDate.Value.ToString("dd.MM.yyyy");
+            if (contract.ContractDate != null) ContractDate = contract.ContractDate.Value.ToString("dd.MM.yyyy");
             if (contract.DateBeg != null) DateBeg = contract.DateBeg.Value.ToString("dd.MM.yyyy");
             if (contract.DateEnd != null) DateEnd = contract.DateEnd.Value.ToString("dd.MM.yyyy");
             if (contract.ReceiveDateReal != null)
@@ -871,13 +888,16 @@ namespace Corum.DAL.Mappings
             DateTime dateTimeNow = DateTime.Now;
             DateTime dateEnd = contract.DateEnd ?? DateTime.MinValue;
             DateTime dateTimeInMonth = DateTime.Now.AddDays(30);
-            if (contract.DateEnd < DateTime.Now) {
+            if (contract.DateEnd < DateTime.Now)
+            {
                 backgroundColor = "#FF0000";
-            } else
-            if((dateEnd - dateTimeInMonth).TotalDays <= 30)
+            }
+            else
+            if ((dateEnd - dateTimeInMonth).TotalDays <= 30)
             {
                 backgroundColor = "#FFCC99";
-            } else
+            }
+            else
             {
                 backgroundColor = "#ffffff";
             }
@@ -937,7 +957,7 @@ namespace Corum.DAL.Mappings
                 UseOrderOrgToFilter = filter.UseOrderOrgToFilter ?? false,
             };
         }
-        
+
         public static UserProfileViewModel Map(UserProfile filter)
         {
             if (filter != null)
@@ -1008,100 +1028,100 @@ namespace Corum.DAL.Mappings
         }
 
         public static BaseReportViewModel Map(GetBaseReport_Result o)
-       {
-           var result = new BaseReportViewModel()
-           {
-               Id = o.Id,
-               OrderDate = o.OrderDate.ToString("dd.MM.yyyy"),
-               OrderDateRaw = DateTimeConvertClass.getString(o.OrderDate),
-               CreatedByUser = o.CreatedByUser,
-               CreatedByUserName = o.CreatorDispalyName,
-               CreateDatetime = o.CreateDatetime,
-               OrderType = o.OrderType,
-               OrderTypename = o.TypeName,
-               OrderTypeShortName = o.TypeShortName,
-               CurrentOrderStatus = o.CurrentOrderStatus,
-               CurrentOrderStatusColor = o.Color,
-               CurrentOrderStatusName = o.OrderStatusName,
-               CurrentStatusShortName = o.OrderStatusShortName,
-               FontColor = o.FontColor,
-               BackgroundColor = o.BackgroundColor,
-               OrderDescription = o.OrderDescription,
-               ClientId = o.ClientId,
-               ClientName = o.ClientName,
-               ClientCenterName = o.CenterName,
-               CanBeDelete = (o.CurrentOrderStatus == 1) || (o.CurrentOrderStatus == 17),
-               Summ = o.Summ ?? 0,
-               UseNotifications = o.UseNotifications ?? false,
-               CreatorContact = o.CreatorContact,
-               CreatorPosition = o.CreatorPosition,
-               PriorityType = o.PriotityType,
-               OrderServiceDatetime = o.OrderServiceDateTime ?? DateTime.Now,
-               IconFile = o.IconFile,
-               IconDescription = o.IconDescription,
-               OrderExecuter = o.OrderExecuter,
-               OrderExecuterName = o.ExecutorDisplayName,
-               PayerId = o.PayerId ?? 0,
-               PayerName = o.PayerName,
-               ProjectNum = o.ProjectNum,
-               CarNumber = o.CarNumber ?? 0,
-               TotalDistanceDescription = o.DistanceDescription,
-               TotalCost = (o.TotalPrice ?? 0).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
-               TotalDistanceLenght = Convert.ToInt32(o.TotalDistanceLength ?? 0),
-               IsTransport = o.IsTransportType ?? false,
-               IsPrivateOrder = o.IsPrivateOrder ?? false,
-               IsFinishOfTheProcess = o.isFinishOfTheProcess ?? false,
-               ReportStatusName = (o.isFinishOfTheProcess ?? false) ? "Финальный статус" : o.OrderStatusName,
-               ReportStatusId = (o.isFinishOfTheProcess ?? false) ? 0 : o.CurrentOrderStatus,
-               ReportColor = (o.isFinishOfTheProcess ?? false) ? "#666666" : o.BackgroundColor,
+        {
+            var result = new BaseReportViewModel()
+            {
+                Id = o.Id,
+                OrderDate = o.OrderDate.ToString("dd.MM.yyyy"),
+                OrderDateRaw = DateTimeConvertClass.getString(o.OrderDate),
+                CreatedByUser = o.CreatedByUser,
+                CreatedByUserName = o.CreatorDispalyName,
+                CreateDatetime = o.CreateDatetime,
+                OrderType = o.OrderType,
+                OrderTypename = o.TypeName,
+                OrderTypeShortName = o.TypeShortName,
+                CurrentOrderStatus = o.CurrentOrderStatus,
+                CurrentOrderStatusColor = o.Color,
+                CurrentOrderStatusName = o.OrderStatusName,
+                CurrentStatusShortName = o.OrderStatusShortName,
+                FontColor = o.FontColor,
+                BackgroundColor = o.BackgroundColor,
+                OrderDescription = o.OrderDescription,
+                ClientId = o.ClientId,
+                ClientName = o.ClientName,
+                ClientCenterName = o.CenterName,
+                CanBeDelete = (o.CurrentOrderStatus == 1) || (o.CurrentOrderStatus == 17),
+                Summ = o.Summ ?? 0,
+                UseNotifications = o.UseNotifications ?? false,
+                CreatorContact = o.CreatorContact,
+                CreatorPosition = o.CreatorPosition,
+                PriorityType = o.PriotityType,
+                OrderServiceDatetime = o.OrderServiceDateTime ?? DateTime.Now,
+                IconFile = o.IconFile,
+                IconDescription = o.IconDescription,
+                OrderExecuter = o.OrderExecuter,
+                OrderExecuterName = o.ExecutorDisplayName,
+                PayerId = o.PayerId ?? 0,
+                PayerName = o.PayerName,
+                ProjectNum = o.ProjectNum,
+                CarNumber = o.CarNumber ?? 0,
+                TotalDistanceDescription = o.DistanceDescription,
+                TotalCost = (o.TotalPrice ?? 0).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
+                TotalDistanceLenght = Convert.ToInt32(o.TotalDistanceLength ?? 0),
+                IsTransport = o.IsTransportType ?? false,
+                IsPrivateOrder = o.IsPrivateOrder ?? false,
+                IsFinishOfTheProcess = o.isFinishOfTheProcess ?? false,
+                ReportStatusName = (o.isFinishOfTheProcess ?? false) ? "Финальный статус" : o.OrderStatusName,
+                ReportStatusId = (o.isFinishOfTheProcess ?? false) ? 0 : o.CurrentOrderStatus,
+                ReportColor = (o.isFinishOfTheProcess ?? false) ? "#666666" : o.BackgroundColor,
 
                 OrderId = o.Id,
-             Shipper = o.Shipper,
-             ShipperCountryId = o.ShipperCountryId ?? 0,
-             //ShipperCountryName = o.Countries1?.Name,
-             ShipperCity = o.ShipperCity,
-             ShipperAdress = o.ShipperAdress,
-             FromShipperDate = o.FromShipperDatetime.Value.ToString("dd.MM.yyyy"),
-             FromShipperDateRaw = DateTimeConvertClass.getString(o.FromShipperDatetime.Value),
-             FromShipperTime = o.FromShipperDatetime.Value.ToString("HH:mm"),
-             FromShipperTimeRaw = DateTimeConvertClass.getString(o.FromShipperDatetime.Value),
+                Shipper = o.Shipper,
+                ShipperCountryId = o.ShipperCountryId ?? 0,
+                //ShipperCountryName = o.Countries1?.Name,
+                ShipperCity = o.ShipperCity,
+                ShipperAdress = o.ShipperAdress,
+                FromShipperDate = o.FromShipperDatetime.Value.ToString("dd.MM.yyyy"),
+                FromShipperDateRaw = DateTimeConvertClass.getString(o.FromShipperDatetime.Value),
+                FromShipperTime = o.FromShipperDatetime.Value.ToString("HH:mm"),
+                FromShipperTimeRaw = DateTimeConvertClass.getString(o.FromShipperDatetime.Value),
 
-             Consignee = o.Consignee,
-             ConsigneeCountryId = o.ConsigneeCountryId ?? 0,
-             //ConsigneeCountryName = //o.Countries?.Name,
-             ConsigneeCity = o.ConsigneeCity,
-             ConsigneeAdress = o.ConsigneeAdress,
-             ToConsigneeDate = o.ToConsigneeDatetime.Value.ToString("dd.MM.yyyy"),
-             ToConsigneeDateRaw = DateTimeConvertClass.getString(o.ToConsigneeDatetime.Value),
-             ToConsigneeTime = o.ToConsigneeDatetime.Value.ToString("HH:mm"),
-             ToConsigneeTimeRaw = DateTimeConvertClass.getString(o.ToConsigneeDatetime.Value),
+                Consignee = o.Consignee,
+                ConsigneeCountryId = o.ConsigneeCountryId ?? 0,
+                //ConsigneeCountryName = //o.Countries?.Name,
+                ConsigneeCity = o.ConsigneeCity,
+                ConsigneeAdress = o.ConsigneeAdress,
+                ToConsigneeDate = o.ToConsigneeDatetime.Value.ToString("dd.MM.yyyy"),
+                ToConsigneeDateRaw = DateTimeConvertClass.getString(o.ToConsigneeDatetime.Value),
+                ToConsigneeTime = o.ToConsigneeDatetime.Value.ToString("HH:mm"),
+                ToConsigneeTimeRaw = DateTimeConvertClass.getString(o.ToConsigneeDatetime.Value),
 
-             BoxingDescription = o.BoxingDescription,
-             TruckDescription = o.TruckDescription,
-             TripType = o.TripType ?? 0,
-             Weight = (o.Weight ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
-             Volume = Convert.ToDouble(o.Volume ?? 0),
-             DimenssionL = Convert.ToDouble(o.DimenssionL ?? 0),
-             DimenssionW = Convert.ToDouble(o.DimenssionW ?? 0),
-             DimenssionH = Convert.ToDouble(o.DimenssionH ?? 0),
-             TruckTypeId = o.TruckTypeId ?? 0,
-               //TruckTypeName = o.OrderTruckTypes?.TruckTypeName,
-               VehicleTypeId = o.VehicleTypeId ?? 0,
-             //VehicleTypeName = o.OrderVehicleTypes?.VehicleTypeName,
-             LoadingTypeId = o.LoadingTypeId ?? 0,
-             //LoadingTypeName = o.OrderLoadingTypes?.LoadingTypeName,
-             UnloadingTypeId = o.UnloadingTypeId ?? 0,
-             //UnloadingTypeName = o.OrderUnloadingTypes?.UnloadingTypeName,
+                BoxingDescription = o.BoxingDescription,
+                TruckDescription = o.TruckDescription,
+                TripType = o.TripType ?? 0,
+                Weight = (o.Weight ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
+                Volume = Convert.ToDouble(o.Volume ?? 0),
+                DimenssionL = Convert.ToDouble(o.DimenssionL ?? 0),
+                DimenssionW = Convert.ToDouble(o.DimenssionW ?? 0),
+                DimenssionH = Convert.ToDouble(o.DimenssionH ?? 0),
+                TruckTypeId = o.TruckTypeId ?? 0,
+                //TruckTypeName = o.OrderTruckTypes?.TruckTypeName,
+                VehicleTypeId = o.VehicleTypeId ?? 0,
+                //VehicleTypeName = o.OrderVehicleTypes?.VehicleTypeName,
+                LoadingTypeId = o.LoadingTypeId ?? 0,
+                //LoadingTypeName = o.OrderLoadingTypes?.LoadingTypeName,
+                UnloadingTypeId = o.UnloadingTypeId ?? 0,
+                //UnloadingTypeName = o.OrderUnloadingTypes?.UnloadingTypeName,
 
-             ShipperContactPerson = o.ShipperContactPerson,
-             ShipperContactPersonPhone = o.ShipperContactPersonPhone,
-             ConsigneeContactPerson = o.ConsigneeContactPerson,
-             ConsigneeContactPersonPhone = o.ConsigneeContactPersonPhone
+                ShipperContactPerson = o.ShipperContactPerson,
+                ShipperContactPersonPhone = o.ShipperContactPersonPhone,
+                ConsigneeContactPerson = o.ConsigneeContactPerson,
+                ConsigneeContactPersonPhone = o.ConsigneeContactPersonPhone
 
-        };
+            };
 
-           return result;
-       }
+            return result;
+        }
 
         public static ContractSpecificationsViewModel Map(ContractSpecifications spec)
         {
@@ -1170,7 +1190,7 @@ namespace Corum.DAL.Mappings
             {
                 Id = o.Id,
                 IntervalTypeName = o.NameIntervalType,
-                MaxInterval= o.MaxInterval ?? 0
+                MaxInterval = o.MaxInterval ?? 0
             };
         }
 
@@ -1218,7 +1238,7 @@ namespace Corum.DAL.Mappings
         }
 
         public static RouteViewModel Map(Routes r)
-        {           
+        {
             return new RouteViewModel()
             {
                 Id = r.Id,
@@ -1239,11 +1259,11 @@ namespace Corum.DAL.Mappings
                 ShortName = r.ShortName
             };
         }
-        
-         public static OrderCompetitiveListViewModel Map(OrderCompetitiveList o)
+
+        public static OrderCompetitiveListViewModel Map(OrderCompetitiveList o)
         {
             return new OrderCompetitiveListViewModel()
-            { 
+            {
                 Id = o.Id,
                 OrderId = o.OrderId,
                 ExpeditorName = o.ExpeditorName,
@@ -1264,7 +1284,7 @@ namespace Corum.DAL.Mappings
                 IsSelectedId = o.IsSelectedId ?? false,
                 SpecificationId = o.SpecificationId ?? 0,
                 IsChange = o.IsChange ?? false,
-                GenId = o.GenId ?? 0               
+                GenId = o.GenId ?? 0
             };
         }
 
@@ -1317,11 +1337,11 @@ namespace Corum.DAL.Mappings
                 ContactPersonPhone = o.ContactPersonPhone,
                 Contacts = o.ContactPerson + " " + o.ContactPersonPhone,
                 CityAddress = o.Organization?.City + ", " + o.Organization?.Address,
-                NumberPoint = o.NumberPoint??1,
+                NumberPoint = o.NumberPoint ?? 1,
                 Latitude = o.Organization?.Latitude ?? 0,
-                Longitude =o.Organization?.Longitude ?? 0
+                Longitude = o.Organization?.Longitude ?? 0
 
-        };
+            };
         }
 
 
@@ -1332,7 +1352,7 @@ namespace Corum.DAL.Mappings
                 Id = o.Id,
                 DiscountRate = (o.DiscountRate ?? 0).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
                 DateBeg = o.DateBeg == null ? null : o.DateBeg.Value.ToString("dd.MM.yyyy"),
-                DateBegRaw = o.DateBeg == null ? null : DateTimeConvertClass.getString(o.DateBeg.Value),                
+                DateBegRaw = o.DateBeg == null ? null : DateTimeConvertClass.getString(o.DateBeg.Value),
                 DateEnd = o.DateEnd == null ? null : o.DateEnd.Value.ToString("dd.MM.yyyy"),
                 DateEndRaw = o.DateEnd == null ? null : DateTimeConvertClass.getString(o.DateEnd.Value)
             };
@@ -1348,8 +1368,8 @@ namespace Corum.DAL.Mappings
                 FullNamePointType = o.RoutePointType?.FullNamePointType,
                 ShortNamePointType = o.RoutePointType?.ShortNamePointType,
                 ContactPerson = o.ContactPerson,
-                ContactPersonPhone = o.ContactPersonPhone,                                
-                NumberPoint = o.NumberPoint ?? 1,                
+                ContactPersonPhone = o.ContactPersonPhone,
+                NumberPoint = o.NumberPoint ?? 1,
                 NamePoint = o.Organization?.Name,
                 CountryPoint = o.Organization?.Countries?.Name,
                 CityPoint = o.Organization?.City,
@@ -1360,7 +1380,7 @@ namespace Corum.DAL.Mappings
                 Latitude = o.Organization?.Latitude ?? 0,
                 Longitude = o.Organization?.Longitude ?? 0,
 
-        };
+            };
         }
 
         public static RoutePointTypeViewModel Map(RoutePointType o)
@@ -1375,7 +1395,7 @@ namespace Corum.DAL.Mappings
 
 
         public static OrderUsedCarViewModel Map(GetFactCars_Result o)
-        {                       
+        {
             return new OrderUsedCarViewModel()
             {
                 Id = o.Id,
@@ -1383,8 +1403,8 @@ namespace Corum.DAL.Mappings
                 ContractId = o.ContractId ?? 0,
                 ContractExpBkId = o.ContractExpBkId ?? 0,
                 ContractInfo = o.ContractInfo,
-                ContractExpBkInfo = o.ContractNumber + " от " + ((o.ContractDate != null) ? o.ContractDate.Value.ToString("dd.MM.yyyy") : "") + 
-                                     "(с " +((o.DateBeg != null) ? o.DateBeg.Value.ToString("dd.MM.yyyy") : "") + 
+                ContractExpBkInfo = o.ContractNumber + " от " + ((o.ContractDate != null) ? o.ContractDate.Value.ToString("dd.MM.yyyy") : "") +
+                                     "(с " + ((o.DateBeg != null) ? o.DateBeg.Value.ToString("dd.MM.yyyy") : "") +
                                      " по " + ((o.DateEnd != null) ? o.DateEnd.Value.ToString("dd.MM.yyyy") : "") + ")",
                 ExpeditorId = o.ExpeditorId ?? 0,
                 ExpeditorName = o.CarrierName,
@@ -1395,8 +1415,8 @@ namespace Corum.DAL.Mappings
                 CarDriverInfo = o.CarDriverInfo,
                 DriverContactInfo = o.DriverContactInfo,
                 CarrierInfo = o.CarrierInfo,
-                CarId = o.CarId??0,
-                Summ  = o.Summ??0,
+                CarId = o.CarId ?? 0,
+                Summ = o.Summ ?? 0,
                 DriverCardInfo = o.DriverCardInfo,
                 Comments = o.Comments,
                 PlanDistance = (o.PlanDistance ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
@@ -1409,107 +1429,107 @@ namespace Corum.DAL.Mappings
                 FactShipperDateTime = o.FactShipperDateTime,
                 FactConsigneeDateTime = o.FactConsigneeDateTime,
                 FactShipperDate = o.FactShipperDateTime != null ? o.FactShipperDateTime.Value.ToString("dd.MM.yyyy") : "",
-                FactShipperDateRaw =  o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
+                FactShipperDateRaw = o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
                 FactConsigneeDate = o.FactConsigneeDateTime != null ? o.FactConsigneeDateTime.Value.ToString("dd.MM.yyyy") : "",
-                FactConsigneeDateRaw =   o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
+                FactConsigneeDateRaw = o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
 
                 FactShipperTime = o.FactShipperDateTime != null ? o.FactShipperDateTime.Value.ToString("HH:mm") : "",
-                FactShipperTimeRaw = o.FactShipperDateTime != null ?  DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
+                FactShipperTimeRaw = o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
                 FactConsigneeTime = o.FactConsigneeDateTime != null ? o.FactConsigneeDateTime.Value.ToString("HH:mm") : "",
                 FactConsigneeTimeRaw = o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
                 OrderTypeShortName = o.ShortName,
 
                 RealFactShipperDate = o.FactShipperDateTime != null ? o.FactShipperDateTime.Value.ToString("dd.MM.yyyy") : "",
-                RealFactShipperDateRaw =  o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
+                RealFactShipperDateRaw = o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
                 RealFactConsigneeDate = o.FactConsigneeDateTime != null ? o.FactConsigneeDateTime.Value.ToString("dd.MM.yyyy") : "",
-                RealFactConsigneeDateRaw =   o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
+                RealFactConsigneeDateRaw = o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
 
                 RealFactShipperTime = o.FactShipperDateTime != null ? o.FactShipperDateTime.Value.ToString("HH:mm") : "",
-                RealFactShipperTimeRaw = o.FactShipperDateTime != null ?  DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
+                RealFactShipperTimeRaw = o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
                 RealFactConsigneeTime = o.FactConsigneeDateTime != null ? o.FactConsigneeDateTime.Value.ToString("HH:mm") : "",
                 RealFactConsigneeTimeRaw = o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
-                        
+
             };
         }
 
-           public static OrderUsedCarViewModel Map(GetCarModelInfoFilter_Result o)
+        public static OrderUsedCarViewModel Map(GetCarModelInfoFilter_Result o)
         {
             return new OrderUsedCarViewModel()
             {
                 CarModelInfo = o.ResultFilter,
                 Id = o.Id ?? 0
-                
+
             };
         }
 
-             public static OrderUsedCarViewModel Map(GetCarRegNumFilter_Result o)
+        public static OrderUsedCarViewModel Map(GetCarRegNumFilter_Result o)
         {
             return new OrderUsedCarViewModel()
             {
                 CarRegNum = o.ResultFilter,
                 Id = o.Id ?? 0
-                
+
             };
         }
 
-              public static OrderUsedCarViewModel Map(GetCarCapacityFilter_Result o)
+        public static OrderUsedCarViewModel Map(GetCarCapacityFilter_Result o)
         {
             return new OrderUsedCarViewModel()
             {
-                CarCapacity= Int32.Parse(o.ResultFilter),
+                CarCapacity = Int32.Parse(o.ResultFilter),
                 Id = o.Id ?? 0
-                
+
             };
         }
 
-           public static OrderUsedCarViewModel Map(GetCarDriverInfoFilter_Result o)
+        public static OrderUsedCarViewModel Map(GetCarDriverInfoFilter_Result o)
         {
             return new OrderUsedCarViewModel()
             {
-                CarDriverInfo= o.ResultFilter,
+                CarDriverInfo = o.ResultFilter,
                 Id = o.Id ?? 0
-                
+
             };
         }
 
-          public static OrderUsedCarViewModel Map(GetDriverContactInfoFilter_Result o)
+        public static OrderUsedCarViewModel Map(GetDriverContactInfoFilter_Result o)
         {
             return new OrderUsedCarViewModel()
             {
                 DriverContactInfo = o.ResultFilter,
                 Id = o.Id ?? 0
-                
+
             };
         }
 
-          public static OrderUsedCarViewModel Map(GetDriverCardInfoFilter_Result o)
+        public static OrderUsedCarViewModel Map(GetDriverCardInfoFilter_Result o)
         {
             return new OrderUsedCarViewModel()
             {
                 DriverCardInfo = o.ResultFilter,
                 Id = o.Id ?? 0
-                
+
             };
         }
 
-          public static OrderUsedCarViewModel Map(GetCommentsFilter_Result o)
+        public static OrderUsedCarViewModel Map(GetCommentsFilter_Result o)
         {
             return new OrderUsedCarViewModel()
             {
                 Comments = o.ResultFilter,
                 Id = o.Id ?? 0
-                
+
             };
         }
 
-        
-          public static OrderUsedCarViewModel Map(GetContractInfoFilter_Result o)
+
+        public static OrderUsedCarViewModel Map(GetContractInfoFilter_Result o)
         {
             return new OrderUsedCarViewModel()
             {
                 ContractInfo = o.ResultFilter,
                 Id = o.Id ?? 0
-                
+
             };
         }
 
@@ -1519,7 +1539,7 @@ namespace Corum.DAL.Mappings
             {
                 CarrierInfo = o.ResultFilter,
                 Id = o.Id ?? 0
-                
+
             };
         }
 
@@ -1529,7 +1549,7 @@ namespace Corum.DAL.Mappings
             {
                 InnerOrderNum = o.InnerOrderNum,
                 idrow = o.idrow ?? 0,
-               
+
             };
         }
 

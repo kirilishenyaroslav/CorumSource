@@ -241,6 +241,8 @@ namespace Corum.Models
         public UserViewModel userInfo;
         public TenderForma<PropAliasValuesOne> tenderForma;
         public OrderTruckTransport orderTruckData;
+        public List<CompetetiveListStepsInfoViewModel> listCurrentStatuses;
+        public int? tenderNumber;
 
         public List<TenderServices> tenderServices { get; set; }
         public List<SpecificationNames> specificationNames { get; set; }

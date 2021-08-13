@@ -54,5 +54,7 @@ namespace Corum.Models
         List<CompetetiveListStepsInfoViewModel> listCurrentStatuses(long orderId);
         int? getTenderNumber(long orderId);
         bool IsContainTender(int? tenderNumber);
+        Dictionary<int, IQueryable<OrderCompetitiveListViewModel>> listDisplayValues(long orderId, string userId);
+        Dictionary<int, IEnumerable<CompetitiveListStepViewModel>> list_listStatuses(long orderId);
     }
 }

@@ -83,8 +83,44 @@ namespace Corum.DAL
             }
             return list;
         }
+
+
+        public Dictionary<int, IQueryable<OrderCompetitiveListViewModel>> listDisplayValues(long orderId, string userId)
+        {
+            Dictionary<int, IQueryable<OrderCompetitiveListViewModel>> dic = new Dictionary<int, IQueryable<OrderCompetitiveListViewModel>>();
+            IQueryable<RegisterTenders> registers = db.RegisterTenders.Where(x => x.OrderId == orderId);
+            IEnumerable<int> tendersNumbers = registers.Select(x => x.tenderNumber);
+            foreach (var item in tendersNumbers)
+            {
+                var it = getOrderCompetitiveList(userId, orderId, item);
+                if (it != null)
+                {
+                    dic[item] = it;
+                }
+            }
+            return dic;
+        }
+
+        public Dictionary<int, IEnumerable<CompetitiveListStepViewModel>> list_listStatuses(long orderId)
+        {
+            Dictionary<int, IEnumerable<CompetitiveListStepViewModel>> dic = new Dictionary<int, IEnumerable<CompetitiveListStepViewModel>>();
+            IQueryable<RegisterTenders> registers = db.RegisterTenders.Where(x => x.OrderId == orderId);
+            IEnumerable<int> tendersNumbers = registers.Select(x => x.tenderNumber);
+            foreach (var item in tendersNumbers)
+            {
+                var it = getAvialiableStepsForList(orderId, item);
+                if (it != null)
+                {
+                    dic[item] = it;
+                }
+            }
+            return dic;
+        }
+
+
         public int? getTenderNumber(long orderId)
         {
+            int tenderNumber = 0;
             IQueryable<RegisterTenders> registers = db.RegisterTenders.Where(x => x.OrderId == orderId);
             Dictionary<int, bool> ts = new Dictionary<int, bool>();
             if (registers.ToList().Count == 0)
@@ -102,7 +138,11 @@ namespace Corum.DAL
                     ts.Add(items.tenderNumber, true);
                 }
             }
-            int tenderNumber = ts.Where(x => x.Value == true).OrderByDescending(x => x.Value).FirstOrDefault().Key;
+            tenderNumber = ts.Where(x => x.Value == true).OrderByDescending(x => x.Value).FirstOrDefault().Key;
+            if (tenderNumber != null && tenderNumber == 0)
+            {
+                tenderNumber = ts.Where(x => x.Value == false).OrderByDescending(x => x.Value).FirstOrDefault().Key;
+            }
             return tenderNumber;
         }
         public CompetetiveListStepsInfoViewModel getCurrentStatusForList(long orderId, int? tenderNumber)
@@ -196,13 +236,15 @@ namespace Corum.DAL
 
         public long SaveListStatus(CompetetiveListStepsInfoViewModel newStatusInfo)
         {
+            var aspNetusers = db.AspNetUsers.Where(x => x.Id == newStatusInfo.userId).FirstOrDefault();
             var info = new OrderConcursListsSteps()
             {
                 OrderId = newStatusInfo.OrderId,
                 UserId = newStatusInfo.userId,
                 StepId = newStatusInfo.StepId,
                 Datetimevalue = DateTime.Now,
-                tenderNumber = newStatusInfo.tenderNumber
+                tenderNumber = newStatusInfo.tenderNumber,
+                AspNetUsers = aspNetusers
             };
             try
             {
@@ -915,7 +957,7 @@ namespace Corum.DAL
 
                 db.SaveChanges();
 
-                if (!db.OrderConcursListsSteps.Any(x => x.OrderId == model.OrderId && x.StepId == 1))
+                if (!db.OrderConcursListsSteps.Any(x => x.OrderId == model.OrderId && x.StepId == 3))
                 {
                     var StepInfo = new OrderConcursListsSteps()
                     {
@@ -1470,20 +1512,32 @@ namespace Corum.DAL
                 else
                 {
                     var sn = db.RegisterTenderContragents.Where(x => x.tenderNumber == tenderNumber).Where(x => x.ContragentName.Contains(orderItem.ExpeditorName)).FirstOrDefault();
-
-                    orderItem.NameSpecification = "";
-                    if (sn.nmcName != null)
-                        orderItem.NameSpecification = sn.nmcName;
-
-                    //выбранная ячейка
-                    orderItem.SelectedItem = "";
-
-                    //если запись выбрана то показывать следующие мнемоники при условии что в 4 столбце количество автомобилей больше 0                
-                    if ((orderItem.IsSelectedId) && (orderItem.CarsAccepted > 0))
+                    if (sn != null)
                     {
-                        orderItem.SelectedItem = GetSelectedItem(orderItem.GenId);
+                        orderItem.NameSpecification = "";
+                        if (sn.nmcName != null)
+                            orderItem.NameSpecification = sn.nmcName;
+
+                        //выбранная ячейка
+                        orderItem.SelectedItem = "";
+
+                        //если запись выбрана то показывать следующие мнемоники при условии что в 4 столбце количество автомобилей больше 0                
+                        if ((orderItem.IsSelectedId) && (orderItem.CarsAccepted > 0))
+                        {
+                            orderItem.SelectedItem = GetSelectedItem(orderItem.GenId);
+                        }
                     }
+
                 }
+                var sn_ = db.RegisterTenderContragents.Where(x => x.tenderNumber == tenderNumber).Where(x => x.ContragentName.Contains(orderItem.ExpeditorName)).FirstOrDefault();
+                if (sn_ != null)
+                {
+
+                    orderItem.DaysDelay = sn_.PaymentDelay;
+                    orderItem.ExpeditorName = sn_.ContragentName;
+                    orderItem.NameSpecification = sn_.nmcName;
+                }
+
 
             }
 

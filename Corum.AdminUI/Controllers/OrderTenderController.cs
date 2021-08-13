@@ -69,6 +69,7 @@ namespace CorumAdminUI.Controllers
         {
             UpdateRegisterStatusTender updateDeserializedClass = new UpdateRegisterStatusTender();
             CompetetiveListStepsInfoViewModel currentStatus = new CompetetiveListStepsInfoViewModel();
+            
             long OrderID = 0;
             try
             {
@@ -136,7 +137,7 @@ namespace CorumAdminUI.Controllers
                                     catch (Exception e)
                                     {
                                     }
-                                    if (el.SupplierId != isWinnerContragent.SupplierId)
+                                    if (isWinnerContragent != null && el.SupplierId != isWinnerContragent.SupplierId)
                                     {
                                         RegisterTenderContragent registerTenderContragent = new RegisterTenderContragent()
                                         {
@@ -273,7 +274,7 @@ namespace CorumAdminUI.Controllers
                     }
                 }
             }
-            catch
+            catch (Exception e)
             {
             }
             if (Int32.Parse(updateDeserializedClass.process) >= 8)
@@ -281,14 +282,44 @@ namespace CorumAdminUI.Controllers
                 var DisplayValues = context.getOrderCompetitiveList(userId, OrderID, tenderNumber);
                 var CompetitiveListInfo = context.getCompetitiveListInfo(OrderID, tenderNumber);
                 var listStatuses = context.getAvialiableStepsForList(OrderID, tenderNumber);
+                var listCurrentStatuses = context.listCurrentStatuses(OrderID);
+                var listDisplayValues = context.listDisplayValues(OrderID, userId);
+                var list_listStatuses = context.list_listStatuses(OrderID);
+                var listDisplayValues_ = JsonConvert.SerializeObject(listDisplayValues);
+                var list_listStatuses_ = JsonConvert.SerializeObject(list_listStatuses);
                 List<CompetitiveListStepViewModel> listStKL = new List<CompetitiveListStepViewModel>();
                 foreach (var el in listStatuses)
                 {
                     listStKL.Add(el);
                 }
+                if (currentStatus != null && listStKL.Count <= 2)
+                {
+                    context.SaveListStatus(new CompetetiveListStepsInfoViewModel()
+                    {
+                        StepId = 3,
+                        OrderId = OrderID,
+                        userId = userId,
+                        tenderNumber = tenderNumber
+                    });
+                    context.getCurrentStatusForListKL(OrderID, userId, tenderNumber);
+                    currentStatus = context.getCurrentStatusForList(OrderID, tenderNumber);
+                    DisplayValues = context.getOrderCompetitiveList(userId, OrderID, tenderNumber);
+                    CompetitiveListInfo = context.getCompetitiveListInfo(OrderID, tenderNumber);
+                    listStatuses = context.getAvialiableStepsForList(OrderID, tenderNumber);
+                    listCurrentStatuses = context.listCurrentStatuses(OrderID);
+                    listDisplayValues = context.listDisplayValues(OrderID, userId);
+                    list_listStatuses = context.list_listStatuses(OrderID);
+                    listDisplayValues_ = JsonConvert.SerializeObject(listDisplayValues);
+                    list_listStatuses_ = JsonConvert.SerializeObject(list_listStatuses);
+                    listStKL = new List<CompetitiveListStepViewModel>();
+                    foreach (var el in listStatuses)
+                    {
+                        listStKL.Add(el);
+                    }
+                }
                 return new JsonpResult
                 {
-                    Data = new { updateDeserializedClass, DisplayValues, CompetitiveListInfo, currentStatus, listStKL },
+                    Data = new { updateDeserializedClass, DisplayValues, CompetitiveListInfo, currentStatus, listStKL, listCurrentStatuses, listDisplayValues_ , list_listStatuses_ },
                     JsonRequestBehavior = JsonRequestBehavior.AllowGet
                 };
             }

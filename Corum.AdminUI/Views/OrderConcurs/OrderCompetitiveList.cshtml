@@ -73,7 +73,7 @@
                     @if (Model.DisplayValues.Count() > 0)
                     {
                         @Html.Partial("_SetListStatusButton")
-                        @Html.ActionLink("Тайм-лайн", "GetListTimeline", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })}
+                        @Html.ActionLink("Тайм-лайн", "GetListTimeline", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @id = "btnTaimLine", @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })}
 
                 </div>
                 @Html.Partial("_OrderCompetitiveTarifInfo")
@@ -656,6 +656,11 @@
             GetSpecification(1);
             $("#tabs").tabs();
             $("#BtnReestTendersKL").toggle(false);
+            let listCurrentStatuses = @Html.Raw(Json.Encode(@Model.listCurrentStatuses));
+            let listDisplayValues_ = @Html.Raw(Json.Encode(@Model.listDisplayValues_));
+            let list_listStatuses_ = @Html.Raw(Json.Encode(@Model.list_listStatuses_));
+            SetSessionDataAboutListTendersOfOrder(listCurrentStatuses, listDisplayValues_, list_listStatuses_);  // Запись данных о всех тендерах, конкретной заявки в хранилище сессии на клиенте
+
             let dropDownListTender = document.getElementById('drpDwnListTend');
             let tenderNumber;
             @{
@@ -709,6 +714,7 @@
                                 @:dateEnd = Number(dateEnd.replace(/\D+/g, ''));
                                 @:sessionStorage.setItem('dataEnd', JSON.stringify(dateEnd));
                             }
+                        @:tenderNumber = @Html.Raw(Json.Encode(@Model.tenderNumber.ToString()));
                         }
                         else
                         {
@@ -1400,6 +1406,29 @@
                 }
             }
             InitialDataStatusTender(itemDropDown);
+
+                let DisplayValues;
+                let listDisplayValues = JSON.parse(sessionStorage.getItem('listDisplayValues'));
+                DisplayValues = listDisplayValues[itemDropDown];
+            if (itemDropDown != "Новый тендер" && DisplayValues.length != 0) {
+                let CompetitiveListInfo;
+                let currentStatus;
+                let listStatuses;
+                let listCurrentStatuses = JSON.parse(sessionStorage.getItem('listCurrentStatuses'));
+                let list_listStatuses = JSON.parse(sessionStorage.getItem('list_listStatuses'));
+                CompetitiveListInfo = @Html.Raw(Json.Encode(@Model.CompetitiveListInfo));
+                listCurrentStatuses.forEach(function (el) {
+                    if (el.tenderNumber == itemDropDown) {
+                        currentStatus = el;
+                    }
+                });
+                listStatuses = list_listStatuses[itemDropDown];
+
+                InsertDataContragentsInKL(DisplayValues, CompetitiveListInfo, currentStatus, listStatuses);
+            }
+            else {
+                DeleteTableContragentsForNewTender();
+            }
         });
 
         function ModifClickDropDownList()
@@ -1654,6 +1683,7 @@
         {
             let DropDownListTender = document.getElementById('drpDwnListTend');
             let tendNumber = Number(DropDownListTender.textContent.replace(" ", ""));
+            $('#loading-indicator').show();
             $.ajax({
                 type: "GET",
                 async: true,
@@ -1667,6 +1697,7 @@
                 success: function (data) {
                     if (Number(data.updateDeserializedClass.process) >= 8)
                     {
+                            SetSessionDataAboutListTendersOfOrder(data.listCurrentStatuses, data.listDisplayValues_, data.list_listStatuses_);  // Запись данных о всех тендерах, конкретной заявки в хранилище сессии на клиенте
                             InsertDataContragentsInKL(data.DisplayValues, data.CompetitiveListInfo, data.currentStatus, data.listStKL);
                     }
                     listTendersOrder(data.updateDeserializedClass, tendNumber);
@@ -1736,6 +1767,7 @@
                         else {
                             $("#contResTen").toggle(false);
                         }
+                        $('#loading-indicator').hide();
                     }
                     else
                     {
@@ -1781,6 +1813,7 @@
                             $("#contResTen").toggle(false);
                         }
                     }
+                    $('#loading-indicator').hide();
                 },
                 error: function () {
                     CreateNotification("errorStatuse", null);
@@ -1789,6 +1822,7 @@
                         autoOpen: true, autoClose: true, template: "error"
                     });
                     DeleteNotification();
+                    $('#loading-indicator').hide();
                 }
             });
         });
@@ -1807,7 +1841,7 @@
             $(table).attr("style", "height: 100%;");
             var th = document.createElement('thead');
             var tbody = document.createElement('tbody');
-
+            $(tbody).attr("id", "tbContr");
 
             var item;
             var OrdId;
@@ -1873,7 +1907,7 @@
                 tdDataContrSeven.appendChild(aTDSeven);
                 trDataContr.appendChild(tdDataContrSeven);
 
-                if (CompetitiveListInfo.currentStep.StepId >= 2) {
+                if (currentStatus.StepId >= 2) {
                     var tdDataContrEight = document.createElement('td');
                     $(tdDataContrEight).addClass("grid-cell rigth_column");
                     $(tdDataContrEight).text(item.CarCost7);
@@ -1887,7 +1921,7 @@
                     trDataContr.appendChild(tdDataContrEight_);
                 }
 
-                if (CompetitiveListInfo.currentStep.StepId >= 3) {
+                if (currentStatus.StepId >= 3) {
                     var tdDataContrNine = document.createElement('td');
                     $(tdDataContrNine).addClass("grid-cell rigth_column");
                     $(tdDataContrNine).text(item.CarCost);
@@ -2038,18 +2072,56 @@
             });
             var tableContrMain = document.getElementById('tablContr');
             var tbodyMain = document.getElementById('tbContr');
+            if (tbodyMain == null) {
+                tbodyMain = document.createElement('tbody');
+                $(tbodyMain).attr('id', 'tbContr');
+                tableContrMain.appendChild(tbodyMain);
+            }
             tableContrMain.replaceChild(tbody, tbodyMain);
 
 
+            if (currentStatus.StepId >= 2) {
+                var thOneStKL = document.getElementById('thOneStKL');
+                thOneStKL.removeAttribute("style");
+                $(thOneStKL).attr("style", "display:normal;");
+            }
+            else {
+                var thOneStKL = document.getElementById('thOneStKL');
+                thOneStKL.removeAttribute("style");
+                $(thOneStKL).attr("style", "display:none;");
+            }
+            if (currentStatus.StepId >= 3) {
+                var thTwoStKL = document.getElementById('thTwoStKL');
+                thTwoStKL.removeAttribute("style");
+                 $(thTwoStKL).attr("style", "display:normal;");
+            }
+            else {
+                var thTwoStKL = document.getElementById('thTwoStKL');
+                thTwoStKL.removeAttribute("style");
+                 $(thTwoStKL).attr("style", "display:none;");
+            }
+            if (currentStatus.StepId >= 3) {
+                var thThreeSTKl = document.getElementById('thThreeSTKl');
+                thThreeSTKl.removeAttribute("style");
+                $(thThreeSTKl).attr("style", "display:normal;");
+            }
+            else {
+                var thThreeSTKl = document.getElementById('thThreeSTKl');
+                thThreeSTKl.removeAttribute("style");
+                 $(thThreeSTKl).attr("style", "display:none;");
+            }
+            if (currentStatus.StepId >= 2) {
+                var thFourSTKl = document.getElementById('thFourSTKl');
+                thFourSTKl.removeAttribute("style");
+                $(thFourSTKl).attr("style", "display:normal;");
+            }
+            else {
+                var thFourSTKl = document.getElementById('thFourSTKl');
+                thFourSTKl.removeAttribute("style");
+                $(thFourSTKl).attr("style", "display:none;");
+            }
 
-            var thOneStKL = document.getElementById('thOneStKL');
-            thOneStKL.removeAttribute("style");
-            var thTwoStKL = document.getElementById('thTwoStKL');
-            thTwoStKL.removeAttribute("style");
-            var thThreeSTKl = document.getElementById('thThreeSTKl');
-            thThreeSTKl.removeAttribute("style");
-            var thFourSTKl = document.getElementById('thFourSTKl');
-            thFourSTKl.removeAttribute("style");
+
 
 
             var h2mainList = document.getElementById('KoncListCurStatus');
@@ -2091,15 +2163,18 @@
 
             DivBtnChangeStatusKL.appendChild(divST);
 
+            var tymeLineSt = document.getElementById('btnTaimLine');
+            if (tymeLineSt == null) {
+                var tymeLineSt = document.createElement('a');
+                var linkTymeLine = '/OrderConcurs/GetListTimeline?OrderId=' + OrdId;
+                $(tymeLineSt).addClass("delete_link btn btn-success");
+                $(tymeLineSt).attr("style", "margin-bottom:10px; margin-left:10px;");
+                $(tymeLineSt).attr("href", linkTymeLine);
+                $(tymeLineSt).attr('id', 'btnTaimLine');
+                $(tymeLineSt).text("Тайм-лайн");
 
-            var tymeLineSt = document.createElement('a');
-            var linkTymeLine = '/OrderConcurs/GetListTimeline?OrderId=' + OrdId;
-            $(tymeLineSt).addClass("delete_link btn btn-success");
-            $(tymeLineSt).attr("style", "margin-bottom:10px; margin-left:10px;");
-            $(tymeLineSt).attr("href", linkTymeLine);
-            $(tymeLineSt).text("Тайм-лайн");
-
-            DivBtnChangeStatusKL.appendChild(tymeLineSt);
+                DivBtnChangeStatusKL.appendChild(tymeLineSt);
+            }
 
 
         }
@@ -2114,6 +2189,49 @@
             let DropDownListTender = document.getElementById('drpDwnListTend');
             let tendNumber = Number(DropDownListTender.textContent.replace(" ", ""));
             return tendNumber;
+        }
+
+        function SetSessionDataAboutListTendersOfOrder(listCurrentStatuses, listDisplayValues_, list_listStatuses_) {
+            sessionStorage.setItem('listCurrentStatuses', JSON.stringify(listCurrentStatuses));
+            sessionStorage.setItem('listDisplayValues', listDisplayValues_);
+            sessionStorage.setItem('list_listStatuses', list_listStatuses_);
+        }
+
+        function DeleteTableContragentsForNewTender() {
+             let h2mainList = document.getElementById('KoncListCurStatus');
+            h2mainList.innerHTML = "";
+            $(h2mainList).text('Конкурентный лист (Начальный)');
+
+            let table = document.getElementById('tablContr');
+            let tbody = document.getElementById('tbContr');
+            if (tbody == null) {
+                tbody = document.createElement('tbody');
+                $(tbody).attr("id", "tbContr");
+                table.appendChild(tbody);
+            }
+            table.removeChild(tbody);
+
+            let divBtnChangeStatus = document.getElementById('BtnChangeStatusKL');
+            let buttonListStatusConckList = document.getElementById('divST');
+                        if (buttonListStatusConckList == null) {
+                            buttonListStatusConckList = document.createElement('div');
+                            $(buttonListStatusConckList).attr('id', 'divST');
+                            $(buttonListStatusConckList).addClass('dropdown');
+                            $(buttonListStatusConckList).attr('style', "display:inline-block;");
+                            divBtnChangeStatus.appendChild(buttonListStatusConckList);
+                        }
+            divBtnChangeStatus.removeChild(buttonListStatusConckList);
+
+            let buttonTaimLine = document.getElementById('btnTaimLine');
+            if (buttonTaimLine == null) {
+                buttonTaimLine = document.createElement('a');
+                $(buttonTaimLine).attr('id', 'btnTaimLine');
+                $(buttonTaimLine).addClass('delete_link btn btn-success');
+                $(buttonTaimLine).attr('style', "margin-bottom:10px");
+                divBtnChangeStatus.appendChild(buttonTaimLine);
+            }
+            divBtnChangeStatus.removeChild(buttonTaimLine);
+
         }
     </script>
 }

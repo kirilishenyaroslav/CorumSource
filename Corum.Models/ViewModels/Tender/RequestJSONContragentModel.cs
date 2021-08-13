@@ -11,6 +11,7 @@ namespace Corum.Models.ViewModels.Tender
     {
         [JsonProperty("data")]
         public List<ContragentModel> Data { get; set; }
+        
     }
     public class ContragentModel
     {
@@ -28,6 +29,7 @@ namespace Corum.Models.ViewModels.Tender
 
         [JsonProperty("isWinner")]
         public bool? IsWinner { get; set; }
+        
     }
     public class CriteriaValues
     {

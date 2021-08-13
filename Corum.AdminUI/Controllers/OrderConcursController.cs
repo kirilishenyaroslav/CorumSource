@@ -29,6 +29,8 @@ namespace CorumAdminUI.Controllers
         {
             OrderID = navInfo.OrderId;
             int? tenderNum = context.getTenderNumber(navInfo.OrderId);
+            var listDisplayValues = context.listDisplayValues(navInfo.OrderId, userId);
+            var list_listStatuses = context.list_listStatuses(navInfo.OrderId);
 
             var model = new OrderNavigationResult<OrderCompetitiveListViewModel>(navInfo, userId)
             {
@@ -39,6 +41,10 @@ namespace CorumAdminUI.Controllers
                 orderInfo = context.getOrder(navInfo.OrderId),
                 currentStatus = context.getCurrentStatusForList(navInfo.OrderId, tenderNum),
                 listCurrentStatuses = context.listCurrentStatuses(navInfo.OrderId),
+                listDisplayValues = listDisplayValues,
+                list_listStatuses = list_listStatuses,
+                listDisplayValues_ = JsonConvert.SerializeObject(listDisplayValues),
+                list_listStatuses_ = JsonConvert.SerializeObject(list_listStatuses),
                 tenderServices = context.GetTenderServices(),
                 specificationNames = context.GetSpecificationNames(),
                 orderTruckData = context.GetOrderTruckTransport(navInfo.OrderId),

@@ -36,6 +36,7 @@ namespace Corum.DAL.Entity
         public Nullable<decimal> CarCost7 { get; set; }
         public Nullable<int> DaysDelayStep1 { get; set; }
         public Nullable<int> DaysDelayStep2 { get; set; }
+        public Nullable<int> tenderNumber { get; set; }
     
         public virtual ContractSpecifications ContractSpecifications { get; set; }
         public virtual OrdersBase OrdersBase { get; set; }

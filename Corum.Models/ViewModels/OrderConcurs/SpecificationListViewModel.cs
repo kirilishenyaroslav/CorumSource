@@ -22,6 +22,8 @@ namespace Corum.Models.ViewModels.OrderConcurs
         public bool IsForwarder { get; set; }
 
         public string tripTypeName { get; set; }
+        public Nullable<long> edrpou_aps { get; set; }
+        public string email_aps { get; set; }
 
         [Required(ErrorMessage = "Введите название спецификации")]
         [Display(Name = "Название спецификации")]
@@ -126,6 +128,7 @@ namespace Corum.Models.ViewModels.OrderConcurs
         public bool UseRouteFilter { get; set; }
 
         public string FilterPayerId { get; set; }
+        public int? tenderNumber { get; set; }
 
     }
 

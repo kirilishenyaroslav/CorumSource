@@ -491,14 +491,16 @@ namespace Corum.DAL
             updateDeserializedClass.resultsTender = result;
             updateDeserializedClass.lotStateName = myDeserializedClass.data.lots[0].lotStateName;
             updateDeserializedClass.lotResultNote = myDeserializedClass.data.lots[0].lotResultNote;
+            updateDeserializedClass.uuidFile = registerTender.uuidFile;
             return updateDeserializedClass;
         }
 
-        public List<ContrAgentModel> GetAgentModels(List<RequestJSONContragentMainData> listRequestJSONContragent)
+        public List<ContrAgentModel> GetAgentModels(List<RequestJSONContragentMainData> listRequestJSONContragent, RequestJSONContragentModel myDeserializedClassContragent)
         {
             List<ContrAgentModel> listContrAgents = new List<ContrAgentModel>();
             try
             {
+                int count = 0;
                 foreach (var item in listRequestJSONContragent)
                 {
                     ContrAgentModel contrAgentModel = new ContrAgentModel()
@@ -552,6 +554,7 @@ namespace Corum.DAL
                             Phone = item.Data.SupplierCEO.Phone,
                             FullName = item.Data.SupplierCEO.FullName
                         },
+                        listCritariaValues = new List<Criteriavalues>(),
                         SupplierUsers = new List<ContrAgentModel.SupplierUser>(),
                         RegDocsConsent = item.Data.RegDocsConsent,
                         StateId = item.Data.StateId,
@@ -585,13 +588,66 @@ namespace Corum.DAL
                             SuppUserId = item.Data.SupplierUsers[i].SuppUserId,
                             UserId = item.Data.SupplierUsers[i].UserId
                         });
+                        List<Criteriavalues> criteriaValues = new List<Criteriavalues>();
+                        foreach (var items in myDeserializedClassContragent.Data[count].CriteriaValues)
+                        {
+                            criteriaValues.Add(new Criteriavalues()
+                            {
+                                Id = items.id,
+                                Name = items.name,
+                                Value = items.value
+                            });
+                        }
+                        contrAgentModel.listCritariaValues = criteriaValues;
                     }
                     listContrAgents.Add(contrAgentModel);
+                    count++;
                 }
             }
             catch { return null; }
-            
+
             return listContrAgents;
+        }
+
+        public void UpdateDataRegisterContragents(Dictionary<long, List<RegisterTenderContragent>> regisContragents)
+        {
+            foreach (var item in regisContragents)
+            {
+                var regContr = db.RegisterTenderContragents.Where(x => x.itemExternalNumber == item.Key).FirstOrDefault();
+                if (regContr == null)
+                {
+                    foreach (var items in item.Value)
+                    {
+                        try
+                        {
+                            db.RegisterTenderContragents.Add(new Entity.RegisterTenderContragents()
+                            {
+                                OrderId = items.OrderId,
+                                tenderNumber = items.tenderNumber,
+                                itemExternalNumber = items.itemExternalNumber,
+                                acceptedTransportUnits = items.acceptedTransportUnits,
+                                ContragentIdAps = items.ContragentIdAps,
+                                ContragentName = items.ContragentName,
+                                costOfCarWithNDS = items.costOfCarWithNDS,
+                                costOfCarWithoutNDS = items.costOfCarWithoutNDS,
+                                DateUpdateInfo = items.DateUpdateInfo,
+                                EDRPOUContragent = items.EDRPOUContragent,
+                                emailContragent = items.emailContragent,
+                                IsWinner = items.IsWinner,
+                                nmcName = items.nmcName,
+                                PaymentDelay = items.PaymentDelay,
+                                tenderItemUuid = items.tenderItemUuid,
+                                transportUnitsProposed = items.transportUnitsProposed
+                            });
+                            db.SaveChanges();
+                        }
+                        catch (Exception e)
+                        {
+
+                        }
+                    }
+                }
+            }
         }
 
         public ContrAgentModel GetWinnerContragent(List<ContrAgentModel> listAllContragents, int SupplierIdWinnerContragent)

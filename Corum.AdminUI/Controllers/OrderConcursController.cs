@@ -28,14 +28,23 @@ namespace CorumAdminUI.Controllers
         public ActionResult OrderCompetitiveList(OrderNavigationInfo navInfo)
         {
             OrderID = navInfo.OrderId;
+            int? tenderNum = context.getTenderNumber(navInfo.OrderId);
+            var listDisplayValues = context.listDisplayValues(navInfo.OrderId, userId);
+            var list_listStatuses = context.list_listStatuses(navInfo.OrderId);
 
             var model = new OrderNavigationResult<OrderCompetitiveListViewModel>(navInfo, userId)
             {
-                DisplayValues = context.getOrderCompetitiveList(userId, navInfo.OrderId),
-                CompetitiveListInfo = context.getCompetitiveListInfo(navInfo.OrderId),
-                listStatuses = context.getAvialiableStepsForList(navInfo.OrderId),
+                tenderNumber = tenderNum,
+                DisplayValues = context.getOrderCompetitiveList(userId, navInfo.OrderId, tenderNum),
+                CompetitiveListInfo = context.getCompetitiveListInfo(navInfo.OrderId, tenderNum),
+                listStatuses = context.getAvialiableStepsForList(navInfo.OrderId, tenderNum),
                 orderInfo = context.getOrder(navInfo.OrderId),
-                currentStatus = context.getCurrentStatusForList(navInfo.OrderId),
+                currentStatus = context.getCurrentStatusForList(navInfo.OrderId, tenderNum),
+                listCurrentStatuses = context.listCurrentStatuses(navInfo.OrderId),
+                listDisplayValues = listDisplayValues,
+                list_listStatuses = list_listStatuses,
+                listDisplayValues_ = JsonConvert.SerializeObject(listDisplayValues),
+                list_listStatuses_ = JsonConvert.SerializeObject(list_listStatuses),
                 tenderServices = context.GetTenderServices(),
                 specificationNames = context.GetSpecificationNames(),
                 orderTruckData = context.GetOrderTruckTransport(navInfo.OrderId),
@@ -44,7 +53,10 @@ namespace CorumAdminUI.Controllers
             return View(model);
         }
 
-
+        void GetContragentsFromTender()
+        { 
+        
+        }
         [HttpGet]
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult GetSpecifications(long OrderId, bool UseTripTypeFilter, string FilterTripTypeId,
@@ -61,13 +73,14 @@ namespace CorumAdminUI.Controllers
 
         [HttpGet]
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
-        public ActionResult SetListStatus(long OrderId, int StepId)
+        public ActionResult SetListStatus(long OrderId, int StepId, long? tenderNumber)
         {
             context.SaveListStatus(new CompetetiveListStepsInfoViewModel()
             {
                 StepId = StepId,
                 OrderId = OrderId,
-                userId = this.userId
+                userId = this.userId,
+                tenderNumber = tenderNumber
             });
 
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = OrderId });
@@ -95,7 +108,7 @@ namespace CorumAdminUI.Controllers
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public ActionResult AddSpecificationsInfo(SpecificationListViewModel model)
         {
-            var result = context.NewSpecification(model, this.userId);
+            var result = context.NewSpecification(model, this.userId, model.tenderNumber);
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = model.OrderId });
         }
 

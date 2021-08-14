@@ -18,7 +18,7 @@ namespace Corum.Models.ViewModels.Tender
     public class LegalAddress
     {
         [JsonProperty("countryId")]
-        public int CountryId { get; set; }
+        public int? CountryId { get; set; }
 
         [JsonProperty("countryName")]
         public string CountryName { get; set; }
@@ -173,15 +173,6 @@ namespace Corum.Models.ViewModels.Tender
         [JsonProperty("registrationDate")]
         public DateTime RegistrationDate { get; set; }
 
-        [JsonProperty("webSiteUrl")]
-        public string WebSiteUrl { get; set; }
-
-        [JsonProperty("contactEmail")]
-        public string ContactEmail { get; set; }
-
-        [JsonProperty("contactPhone")]
-        public string ContactPhone { get; set; }
-
         [JsonProperty("legalAddress")]
         public LegalAddress LegalAddress { get; set; }
 
@@ -226,5 +217,16 @@ namespace Corum.Models.ViewModels.Tender
 
         [JsonProperty("companyType")]
         public int CompanyType { get; set; }
+
+
+        [JsonProperty("webSiteUrl")]
+        public string WebSiteUrl { get; set; }
+
+        [JsonProperty("contactEmail")]
+        public string ContactEmail { get; set; }
+
+        [JsonProperty("contactPhone")]
+        public string ContactPhone { get; set; }
+
     }
 }

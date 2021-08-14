@@ -64,7 +64,7 @@
         </EntityType>
         <EntityType Name="BalanceKeepers">
           <Key>
-            <PropertyRef Name="Id" />            
+            <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="BalanceKeeper" Type="nvarchar" MaxLength="500" Nullable="false" />
@@ -120,6 +120,8 @@
           <Property Name="ContactPerson" Type="varchar" MaxLength="100" />
           <Property Name="parentId" Type="int" />
           <Property Name="IsForwarder" Type="bit" />
+          <Property Name="edrpou_aps" Type="bigint" />
+          <Property Name="email_aps" Type="nvarchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="Cars">
           <Key>
@@ -457,6 +459,7 @@
           <Property Name="CarCost7" Type="decimal" Precision="16" Scale="2" />
           <Property Name="DaysDelayStep1" Type="int" />
           <Property Name="DaysDelayStep2" Type="int" />
+          <Property Name="tenderNumber" Type="int" />
         </EntityType>
         <EntityType Name="OrderConcursListsSteps">
           <Key>
@@ -467,6 +470,7 @@
           <Property Name="Datetimevalue" Type="datetime" />
           <Property Name="UserId" Type="nvarchar" MaxLength="128" Nullable="false" />
           <Property Name="OrderId" Type="bigint" />
+          <Property Name="tenderNumber" Type="bigint" />
         </EntityType>
         <EntityType Name="OrderConcursSteps">
           <Key>
@@ -859,6 +863,28 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
         </EntityType>
+        <EntityType Name="RegisterTenderContragents">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="OrderId" Type="bigint" Nullable="false" />
+          <Property Name="tenderNumber" Type="int" Nullable="false" />
+          <Property Name="itemExternalNumber" Type="bigint" Nullable="false" />
+          <Property Name="ContragentName" Type="nvarchar" MaxLength="350" Nullable="false" />
+          <Property Name="ContragentIdAps" Type="int" Nullable="false" />
+          <Property Name="DateUpdateInfo" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="IsWinner" Type="bit" Nullable="false" />
+          <Property Name="EDRPOUContragent" Type="bigint" Nullable="false" />
+          <Property Name="emailContragent" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="transportUnitsProposed" Type="int" Nullable="false" />
+          <Property Name="acceptedTransportUnits" Type="int" />
+          <Property Name="costOfCarWithoutNDS" Type="float" Nullable="false" />
+          <Property Name="costOfCarWithNDS" Type="float" Nullable="false" />
+          <Property Name="PaymentDelay" Type="int" Nullable="false" />
+          <Property Name="tenderItemUuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="nmcName" Type="nvarchar" MaxLength="500" Nullable="false" />
+        </EntityType>
         <EntityType Name="RegisterTenders">
           <Key>
             <PropertyRef Name="Id" />
@@ -1032,6 +1058,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="SpecificationType" Type="nvarchar" MaxLength="256" />
+          <Property Name="TypeSpecId" Type="int" />
         </EntityType>
         <EntityType Name="StatusTenders">
           <Key>
@@ -1083,7 +1110,7 @@
           <Property Name="PageSize" Type="int" Nullable="false" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
-        <Association Name="FK__OrdersBas__Proje__1446FBA6">
+        <Association Name="FK__OrdersBas__Proje__2D12A970">
           <End Role="Projects" Type="Self.Projects" Multiplicity="0..1" />
           <End Role="OrdersBase" Type="Self.OrdersBase" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1095,7 +1122,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__5AD97420">
+        <Association Name="FK__Projects__Projec__73A521EA">
           <End Role="Centers" Type="Self.Centers" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1107,7 +1134,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__5BCD9859">
+        <Association Name="FK__Projects__Projec__74994623">
           <End Role="ProjectTypes" Type="Self.ProjectTypes" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1140,6 +1167,18 @@
             </Principal>
             <Dependent Role="AdditionalRoutePoints">
               <PropertyRef Name="RoutePointId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Contracts_BalanceKeepers">
+          <End Role="BalanceKeepers" Type="Self.BalanceKeepers" Multiplicity="0..1" />
+          <End Role="Contracts" Type="Self.Contracts" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BalanceKeepers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="Contracts">
+              <PropertyRef Name="BalanceKeeperId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1810,6 +1849,18 @@
             </Principal>
             <Dependent Role="OrdersBase">
               <PropertyRef Name="OrderExecuter" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_OrdersBase_BalanceKeepers">
+          <End Role="BalanceKeepers" Type="Self.BalanceKeepers" Multiplicity="0..1" />
+          <End Role="OrdersBase" Type="Self.OrdersBase" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="BalanceKeepers">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="OrdersBase">
+              <PropertyRef Name="PayerId" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -3339,6 +3390,7 @@
           <EntitySet Name="AspNetRoles" EntityType="Self.AspNetRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUserRoles" EntityType="Self.AspNetUserRoles" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="AspNetUsers" EntityType="Self.AspNetUsers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="BalanceKeepers" EntityType="Self.BalanceKeepers" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BucketDocumentRows" EntityType="Self.BucketDocumentRows" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="BucketDocuments" EntityType="Self.BucketDocuments" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="CarCarryCapacity" EntityType="Self.CarCarryCapacity" Schema="dbo" store:Type="Tables" />
@@ -3391,6 +3443,7 @@
           <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Projects" EntityType="Self.Projects" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProjectTypes" EntityType="Self.ProjectTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RegisterTenderContragents" EntityType="Self.RegisterTenderContragents" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RegisterTenders" EntityType="Self.RegisterTenders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RestsSnapshot" EntityType="Self.RestsSnapshot" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoleGroups" EntityType="Self.RoleGroups" Schema="dbo" store:Type="Tables" />
@@ -3407,23 +3460,15 @@
           <EntitySet Name="UserMessages" EntityType="Self.UserMessages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserSettings" EntityType="Self.UserSettings" Schema="dbo" store:Type="Tables" />
-          <EntitySet Name="BalanceKeepers" EntityType="Self.BalanceKeepers" store:Type="Tables" store:Schema="dbo">
-            <DefiningQuery>SELECT 
-    [BalanceKeepers].[Id] AS [Id], 
-    [BalanceKeepers].[BalanceKeeper] AS [BalanceKeeper], 
-    [BalanceKeepers].[subCompanyId] AS [subCompanyId], 
-    [BalanceKeepers].[subCompanyId_Test] AS [subCompanyId_Test]
-    FROM [dbo].[BalanceKeepers] AS [BalanceKeepers]</DefiningQuery>
-          </EntitySet>
-          <AssociationSet Name="FK__OrdersBas__Proje__1446FBA6" Association="Self.FK__OrdersBas__Proje__1446FBA6">
+          <AssociationSet Name="FK__OrdersBas__Proje__2D12A970" Association="Self.FK__OrdersBas__Proje__2D12A970">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="OrdersBase" EntitySet="OrdersBase" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__5AD97420" Association="Self.FK__Projects__Projec__5AD97420">
+          <AssociationSet Name="FK__Projects__Projec__73A521EA" Association="Self.FK__Projects__Projec__73A521EA">
             <End Role="Centers" EntitySet="Centers" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__5BCD9859" Association="Self.FK__Projects__Projec__5BCD9859">
+          <AssociationSet Name="FK__Projects__Projec__74994623" Association="Self.FK__Projects__Projec__74994623">
             <End Role="ProjectTypes" EntitySet="ProjectTypes" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
@@ -3434,6 +3479,10 @@
           <AssociationSet Name="FK_AdditionalRoutePoints_Organization" Association="Self.FK_AdditionalRoutePoints_Organization">
             <End Role="Organization" EntitySet="Organization" />
             <End Role="AdditionalRoutePoints" EntitySet="AdditionalRoutePoints" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Contracts_BalanceKeepers" Association="Self.FK_Contracts_BalanceKeepers">
+            <End Role="BalanceKeepers" EntitySet="BalanceKeepers" />
+            <End Role="Contracts" EntitySet="Contracts" />
           </AssociationSet>
           <AssociationSet Name="FK_Contracts_CarOwners" Association="Self.FK_Contracts_CarOwners">
             <End Role="CarOwners" EntitySet="CarOwners" />
@@ -3645,6 +3694,10 @@
           </AssociationSet>
           <AssociationSet Name="FK_OrdersBase_AspNetUsers1" Association="Self.FK_OrdersBase_AspNetUsers1">
             <End Role="AspNetUsers" EntitySet="AspNetUsers" />
+            <End Role="OrdersBase" EntitySet="OrdersBase" />
+          </AssociationSet>
+          <AssociationSet Name="FK_OrdersBase_BalanceKeepers" Association="Self.FK_OrdersBase_BalanceKeepers">
+            <End Role="BalanceKeepers" EntitySet="BalanceKeepers" />
             <End Role="OrdersBase" EntitySet="OrdersBase" />
           </AssociationSet>
           <AssociationSet Name="FK_OrdersBase_OrderClients" Association="Self.FK_OrdersBase_OrderClients">
@@ -5092,6 +5145,7 @@
           <EntitySet Name="TenderServices" EntityType="CorumModel.TenderServices" />
           <EntitySet Name="RegisterTenders" EntityType="CorumModel.RegisterTenders" />
           <EntitySet Name="StatusTenders" EntityType="CorumModel.StatusTenders" />
+          <EntitySet Name="RegisterTenderContragents" EntityType="CorumModel.RegisterTenderContragents" />
           </EntityContainer>
         <ComplexType Name="SelectFieldsOfStuctureForImport_Result">
           <Property Type="String" Name="ColumnName" Nullable="true" />
@@ -5897,6 +5951,8 @@
           <NavigationProperty Name="Contracts" Relationship="CorumModel.FK_Contracts_CarOwners" FromRole="CarOwners" ToRole="Contracts" />
           <NavigationProperty Name="Contracts1" Relationship="CorumModel.FKContracts_CarOwners" FromRole="CarOwners" ToRole="Contracts" />
           <NavigationProperty Name="OrderUsedCars" Relationship="CorumModel.FK_OrderUsedCars_CarOwners" FromRole="CarOwners" ToRole="OrderUsedCars" />
+          <Property Name="edrpou_aps" Type="Int64" />
+          <Property Name="email_aps" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="Cars">
           <Key>
@@ -6422,6 +6478,7 @@
           <NavigationProperty Name="OrderBaseSpecification" Relationship="CorumModel.FK_OrderBaseSpecification_SpecificationTypes" FromRole="SpecificationTypes" ToRole="OrderBaseSpecification" />
           <NavigationProperty Name="ContractSpecifications" Relationship="CorumModel.FK_Specifications_Types" FromRole="SpecificationTypes" ToRole="ContractSpecifications" />
           <NavigationProperty Name="OrdersBase" Relationship="CorumModel.FK_OrdersBase_SpecificationTypes" FromRole="SpecificationTypes" ToRole="OrdersBase" />
+          <Property Name="TypeSpecId" Type="Int32" />
         </EntityType>
         <EntityType Name="SpecificationNames">
           <Key>
@@ -6713,6 +6770,7 @@
           <NavigationProperty Name="OrderConcursSteps" Relationship="CorumModel.FK_OrderConcursListsSteps" FromRole="OrderConcursListsSteps" ToRole="OrderConcursSteps" />
           <NavigationProperty Name="OrdersBase" Relationship="CorumModel.FK_OrderConcursListsSteps2" FromRole="OrderConcursListsSteps" ToRole="OrdersBase" />
           <NavigationProperty Name="AspNetUsers" Relationship="CorumModel.FK_OrderConcursListsUsers" FromRole="OrderConcursListsSteps" ToRole="AspNetUsers" />
+          <Property Name="tenderNumber" Type="Int64" />
         </EntityType>
         <Association Name="FK_OrderConcursListsSteps">
           <End Type="CorumModel.OrderConcursSteps" Role="OrderConcursSteps" Multiplicity="1" />
@@ -6893,6 +6951,7 @@
           <Property Name="DaysDelayStep2" Type="Int32" />
           <NavigationProperty Name="ContractSpecifications" Relationship="CorumModel.FK_OrderCompetitiveList_ContractSpecifications" FromRole="OrderCompetitiveList" ToRole="ContractSpecifications" />
           <NavigationProperty Name="OrdersBase" Relationship="CorumModel.FK_OrderCompetitiveList_OrdersBase" FromRole="OrderCompetitiveList" ToRole="OrdersBase" />
+          <Property Name="tenderNumber" Type="Int32" />
         </EntityType>
         <Association Name="FK_OrderCompetitiveList_ContractSpecifications">
           <End Type="CorumModel.ContractSpecifications" Role="ContractSpecifications" Multiplicity="0..1" />
@@ -8662,6 +8721,28 @@
           <Property Name="statusID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="processValue" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
         </EntityType>
+        <EntityType Name="RegisterTenderContragents">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="OrderId" Type="Int64" Nullable="false" />
+          <Property Name="tenderNumber" Type="Int32" Nullable="false" />
+          <Property Name="itemExternalNumber" Type="Int64" Nullable="false" />
+          <Property Name="ContragentName" Type="String" Nullable="false" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="ContragentIdAps" Type="Int32" Nullable="false" />
+          <Property Name="DateUpdateInfo" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="IsWinner" Type="Boolean" Nullable="false" />
+          <Property Name="EDRPOUContragent" Type="Int64" Nullable="false" />
+          <Property Name="emailContragent" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="transportUnitsProposed" Type="Int32" Nullable="false" />
+          <Property Name="acceptedTransportUnits" Type="Int32" />
+          <Property Name="costOfCarWithoutNDS" Type="Double" Nullable="false" />
+          <Property Name="costOfCarWithNDS" Type="Double" Nullable="false" />
+          <Property Name="PaymentDelay" Type="Int32" Nullable="false" />
+          <Property Name="tenderItemUuid" Type="Guid" Nullable="false" />
+          <Property Name="nmcName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -9276,6 +9357,8 @@
           <EntitySetMapping Name="CarOwners">
             <EntityTypeMapping TypeName="CorumModel.CarOwners">
               <MappingFragment StoreEntitySet="CarOwners">
+                <ScalarProperty Name="email_aps" ColumnName="email_aps" />
+                <ScalarProperty Name="edrpou_aps" ColumnName="edrpou_aps" />
                 <ScalarProperty Name="IsForwarder" ColumnName="IsForwarder" />
                 <ScalarProperty Name="parentId" ColumnName="parentId" />
                 <ScalarProperty Name="ContactPerson" ColumnName="ContactPerson" />
@@ -9652,6 +9735,7 @@
           <EntitySetMapping Name="SpecificationTypes">
             <EntityTypeMapping TypeName="CorumModel.SpecificationTypes">
               <MappingFragment StoreEntitySet="SpecificationTypes">
+                <ScalarProperty Name="TypeSpecId" ColumnName="TypeSpecId" />
                 <ScalarProperty Name="SpecificationType" ColumnName="SpecificationType" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
@@ -9819,6 +9903,7 @@
           <EntitySetMapping Name="OrderConcursListsSteps">
             <EntityTypeMapping TypeName="CorumModel.OrderConcursListsSteps">
               <MappingFragment StoreEntitySet="OrderConcursListsSteps">
+                <ScalarProperty Name="tenderNumber" ColumnName="tenderNumber" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="Datetimevalue" ColumnName="Datetimevalue" />
@@ -9875,6 +9960,7 @@
           <EntitySetMapping Name="OrderCompetitiveList">
             <EntityTypeMapping TypeName="CorumModel.OrderCompetitiveList">
               <MappingFragment StoreEntitySet="OrderCompetitiveList">
+                <ScalarProperty Name="tenderNumber" ColumnName="tenderNumber" />
                 <ScalarProperty Name="DaysDelayStep2" ColumnName="DaysDelayStep2" />
                 <ScalarProperty Name="DaysDelayStep1" ColumnName="DaysDelayStep1" />
                 <ScalarProperty Name="CarCost7" ColumnName="CarCost7" />
@@ -10760,6 +10846,29 @@
               <MappingFragment StoreEntitySet="StatusTenders">
                 <ScalarProperty Name="processValue" ColumnName="processValue" />
                 <ScalarProperty Name="statusID" ColumnName="statusID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RegisterTenderContragents">
+            <EntityTypeMapping TypeName="CorumModel.RegisterTenderContragents">
+              <MappingFragment StoreEntitySet="RegisterTenderContragents">
+                <ScalarProperty Name="nmcName" ColumnName="nmcName" />
+                <ScalarProperty Name="tenderItemUuid" ColumnName="tenderItemUuid" />
+                <ScalarProperty Name="PaymentDelay" ColumnName="PaymentDelay" />
+                <ScalarProperty Name="costOfCarWithNDS" ColumnName="costOfCarWithNDS" />
+                <ScalarProperty Name="costOfCarWithoutNDS" ColumnName="costOfCarWithoutNDS" />
+                <ScalarProperty Name="acceptedTransportUnits" ColumnName="acceptedTransportUnits" />
+                <ScalarProperty Name="transportUnitsProposed" ColumnName="transportUnitsProposed" />
+                <ScalarProperty Name="emailContragent" ColumnName="emailContragent" />
+                <ScalarProperty Name="EDRPOUContragent" ColumnName="EDRPOUContragent" />
+                <ScalarProperty Name="IsWinner" ColumnName="IsWinner" />
+                <ScalarProperty Name="DateUpdateInfo" ColumnName="DateUpdateInfo" />
+                <ScalarProperty Name="ContragentIdAps" ColumnName="ContragentIdAps" />
+                <ScalarProperty Name="ContragentName" ColumnName="ContragentName" />
+                <ScalarProperty Name="itemExternalNumber" ColumnName="itemExternalNumber" />
+                <ScalarProperty Name="tenderNumber" ColumnName="tenderNumber" />
+                <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

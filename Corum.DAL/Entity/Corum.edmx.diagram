@@ -200,6 +200,7 @@
         <EntityTypeShape EntityType="CorumModel.TenderServices" Width="1.5" PointX="7.375" PointY="7.75" />
         <EntityTypeShape EntityType="CorumModel.RegisterTenders" Width="1.5" PointX="7.375" PointY="10.75" />
         <EntityTypeShape EntityType="CorumModel.StatusTenders" Width="1.5" PointX="3.375" PointY="16.75" />
+        <EntityTypeShape EntityType="CorumModel.RegisterTenderContragents" Width="1.5" PointX="21.375" PointY="0.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

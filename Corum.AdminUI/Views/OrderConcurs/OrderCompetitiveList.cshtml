@@ -42,7 +42,7 @@
 <div class="container-fluid">
     <div class="row">
         <div class="col-lg-12 main">
-            <h2 style="margin-top: 0px !important;">Конкурентный лист (@Model.currentStatus.StepShortCode)</h2> <br>
+            <h2 id="KoncListCurStatus" style="margin-top: 0px !important;">Конкурентный лист (@Model.currentStatus.StepShortCode)</h2> <br>
 
             @Html.Partial("_OrderCompetitiveListInfo", Model.CompetitiveListInfo)
 
@@ -50,7 +50,7 @@
 
             <div class="table-header clearfix">
 
-                <div class="col-md-8">
+                <div id="BtnChangeStatusKL" class="col-md-8">
                     @Html.Partial("_ResultsTendersKL")
                     @Html.ActionLink("В заявку", "UpdateOrder", "Orders", new { Id = Model.CompetitiveListInfo.Id }, new { @class = "btn btn-success", @style = "margin-bottom:10px" })
                     @Html.ActionLink("Реестр заявок", "Orders", "Orders", null, new { @class = "btn btn-success", @style = "margin-bottom:10px" })
@@ -73,7 +73,7 @@
                     @if (Model.DisplayValues.Count() > 0)
                     {
                         @Html.Partial("_SetListStatusButton")
-                        @Html.ActionLink("Тайм-лайн", "GetListTimeline", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })}
+                        @Html.ActionLink("Тайм-лайн", "GetListTimeline", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @id = "btnTaimLine", @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })}
 
                 </div>
                 @Html.Partial("_OrderCompetitiveTarifInfo")
@@ -82,7 +82,7 @@
                 <img src="/Content/images/ajax-loader-gray.gif" id="loading-indicator" style="position: fixed; left: 45%; top: 45%; display: none" />
                 <div id="detailValuesGrid" class="table-header clearfix col-md-12" style="font-size: 11px;">
 
-                    <table class="table table-striped table-bordered no-footer grid-table" style="height: 100%;">
+                    <table id="tablContr" class="table table-striped table-bordered no-footer grid-table" style="height: 100%;">
                         <thead>
                             <tr>
                                 <th rowspan="2" class="grid-header centered_column new_columns_block_start" style="white-space: nowrap;">
@@ -111,7 +111,7 @@
 
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
                                 {
-                                    <th rowspan="2" class="grid-header centered_column">
+                                    <th id="thFourSTKl" rowspan="2" class="grid-header centered_column">
                                         <a class="tarash-i update_link tooltips" href="#">
                                             <span class="tooltip-message">
                                                 Стоимость одного автомобиля, грн. без  НДС (согласно КП-1)<br>
@@ -124,7 +124,7 @@
                                 }
                                 else
                                 {
-                                    <th rowspan="2" class="grid-header centered_column" style="display: none;">
+                                    <th id="thFourSTKl" rowspan="2" class="grid-header centered_column" style="display: none;">
                                         <a class="tarash-i update_link tooltips" href="#">
                                             <span class="tooltip-message">
                                                 Стоимость одного автомобиля, грн. без  НДС (согласно КП-1)<br>
@@ -137,7 +137,7 @@
                                 }
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                 {
-                                    <th rowspan="2" class="grid-header centered_column">
+                                    <th id="thThreeSTKl" rowspan="2" class="grid-header centered_column">
                                         <a class="tarash-i update_link tooltips" href="#">
                                             <span class="tooltip-message">
                                                 Стоимость одного автомобиля, грн. без  НДС (согласно КП-2)<br>
@@ -150,7 +150,7 @@
                                 }
                                 else
                                 {
-                                    <th rowspan="2" class="grid-header centered_column" style="display: none;">
+                                    <th id="thThreeSTKl" rowspan="2" class="grid-header centered_column" style="display: none;">
                                         <a class="tarash-i update_link tooltips" href="#">
                                             <span class="tooltip-message">
                                                 Стоимость одного автомобиля, грн. без  НДС (согласно КП-2)<br>
@@ -229,7 +229,7 @@
                                     </a>
                                 </th>
                             </tr>
-                            <tr style="padding: 0px!important;">
+                            <tr id="trThead" style="padding: 0px!important;">
                                 <th class="grid-header centered_column new_columns_block_start">
                                     1
                                 </th>
@@ -254,26 +254,26 @@
 
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
                                 {
-                                    <th class="grid-header centered_column">
+                                    <th id="thOneStKL" class="grid-header centered_column">
                                         8
                                     </th>
                                 }
                                 else
                                 {
-                                    <th class="grid-header centered_column" style="display:none;">
+                                    <th id="thOneStKL" class="grid-header centered_column" style="display:none;">
                                         8
                                     </th>
                                 }
 
                                 @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
                                 {
-                                    <th class="grid-header centered_column">
+                                    <th id="thTwoStKL" class="grid-header centered_column">
                                         9
                                     </th>
                                 }
                                 else
                                 {
-                                    <th class="grid-header centered_column" style="display:none;">
+                                    <th id="thTwoStKL" class="grid-header centered_column" style="display:none;">
                                         9
                                     </th>
                                 }
@@ -314,7 +314,7 @@
 
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody id="tbContr">
                             @foreach (var item in Model.DisplayValues)
                             {
 
@@ -411,6 +411,7 @@
                     </table>
 
                 </div>
+
             </div>
         </div>
     </div>
@@ -497,6 +498,7 @@
                                         filter.MovingTypeName = _MovingTypeName;
                                         filter.UsedRateId = _UsedRateId;
                                         filter.OrderId = _OrderId;
+                                        filter.tenderNumber = GetTenderNumber();
                                         var json = JSON.stringify(filter);
 
 
@@ -654,6 +656,11 @@
             GetSpecification(1);
             $("#tabs").tabs();
             $("#BtnReestTendersKL").toggle(false);
+            let listCurrentStatuses = @Html.Raw(Json.Encode(@Model.listCurrentStatuses));
+            let listDisplayValues_ = @Html.Raw(Json.Encode(@Model.listDisplayValues_));
+            let list_listStatuses_ = @Html.Raw(Json.Encode(@Model.list_listStatuses_));
+            SetSessionDataAboutListTendersOfOrder(listCurrentStatuses, listDisplayValues_, list_listStatuses_);  // Запись данных о всех тендерах, конкретной заявки в хранилище сессии на клиенте
+
             let dropDownListTender = document.getElementById('drpDwnListTend');
             let tenderNumber;
             @{
@@ -707,6 +714,7 @@
                                 @:dateEnd = Number(dateEnd.replace(/\D+/g, ''));
                                 @:sessionStorage.setItem('dataEnd', JSON.stringify(dateEnd));
                             }
+                        @:tenderNumber = @Html.Raw(Json.Encode(@Model.tenderNumber.ToString()));
                         }
                         else
                         {
@@ -1099,6 +1107,7 @@
                                             InitialDataStatusTender(data.modifRegisterTenders.tenderNumber);
                                             console.log(data.response);
                                             if (dataJS.success != false) {
+                                                DeleteTableContragentsForNewTender();
                                                 CreateNotification("success", data.modifRegisterTenders.tenderNumber);
                                                 $("#jqxNotification").jqxNotification({
                                                     position: "bottom-right", opacity: 0.8, animationCloseDelay: 1000, autoCloseDelay: 5000,
@@ -1398,6 +1407,29 @@
                 }
             }
             InitialDataStatusTender(itemDropDown);
+
+                let DisplayValues;
+                let listDisplayValues = JSON.parse(sessionStorage.getItem('listDisplayValues'));
+                DisplayValues = listDisplayValues[itemDropDown];
+            if (itemDropDown != "Новый тендер" && DisplayValues.length != 0) {
+                let CompetitiveListInfo;
+                let currentStatus;
+                let listStatuses;
+                let listCurrentStatuses = JSON.parse(sessionStorage.getItem('listCurrentStatuses'));
+                let list_listStatuses = JSON.parse(sessionStorage.getItem('list_listStatuses'));
+                CompetitiveListInfo = @Html.Raw(Json.Encode(@Model.CompetitiveListInfo));
+                listCurrentStatuses.forEach(function (el) {
+                    if (el.tenderNumber == itemDropDown) {
+                        currentStatus = el;
+                    }
+                });
+                listStatuses = list_listStatuses[itemDropDown];
+
+                InsertDataContragentsInKL(DisplayValues, CompetitiveListInfo, currentStatus, listStatuses);
+            }
+            else {
+                DeleteTableContragentsForNewTender();
+            }
         });
 
         function ModifClickDropDownList()
@@ -1421,6 +1453,28 @@
             $(dropDownListTender).text(itemDropDown);
             $(dropDownListTender).append(" <span class='caret'></span>");
             InitialDataStatusTender(itemDropDown);
+            let DisplayValues;
+                let listDisplayValues = JSON.parse(sessionStorage.getItem('listDisplayValues'));
+                DisplayValues = listDisplayValues[itemDropDown];
+            if (DisplayValues != null && itemDropDown != "Новый тендер" && DisplayValues.length != 0) {
+                let CompetitiveListInfo;
+                let currentStatus;
+                let listStatuses;
+                let listCurrentStatuses = JSON.parse(sessionStorage.getItem('listCurrentStatuses'));
+                let list_listStatuses = JSON.parse(sessionStorage.getItem('list_listStatuses'));
+                CompetitiveListInfo = @Html.Raw(Json.Encode(@Model.CompetitiveListInfo));
+                listCurrentStatuses.forEach(function (el) {
+                    if (el.tenderNumber == itemDropDown) {
+                        currentStatus = el;
+                    }
+                });
+                listStatuses = list_listStatuses[itemDropDown];
+
+                InsertDataContragentsInKL(DisplayValues, CompetitiveListInfo, currentStatus, listStatuses);
+            }
+            else {
+                DeleteTableContragentsForNewTender();
+            }
         }
 
         var listTendersOrder = function InitModelRegisTender(params, tenderNumber)
@@ -1652,6 +1706,7 @@
         {
             let DropDownListTender = document.getElementById('drpDwnListTend');
             let tendNumber = Number(DropDownListTender.textContent.replace(" ", ""));
+            $('#loading-indicator').show();
             $.ajax({
                 type: "GET",
                 async: true,
@@ -1663,7 +1718,12 @@
                 dataType: "json",
                 contentType: 'application/json; charset=utf-8',
                 success: function (data) {
-                    listTendersOrder(data, tendNumber);
+                    if (Number(data.updateDeserializedClass.process) >= 8)
+                    {
+                            SetSessionDataAboutListTendersOfOrder(data.listCurrentStatuses, data.listDisplayValues_, data.list_listStatuses_);  // Запись данных о всех тендерах, конкретной заявки в хранилище сессии на клиенте
+                            InsertDataContragentsInKL(data.DisplayValues, data.CompetitiveListInfo, data.currentStatus, data.listStKL);
+                    }
+                    listTendersOrder(data.updateDeserializedClass, tendNumber);
                     var options = {
                         day: 'numeric',
                         month: 'numeric',
@@ -1688,12 +1748,12 @@
                     var childtdBtnPostOne = tdBtnPostOne.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
                     var childtdBtnPostTwo = tdBtnPostTwo.getElementsByClassName('delete_link btn btn-success col-md-12 btn-sm btn-tend');
 
-                    if (data.processValue != "Завершен") {
+                    if (data.updateDeserializedClass.processValue != "Завершен") {
                         $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
-                        $(thfStatusTender).text(data.processValue);
-                        $(childTh).text(data.stageNumber);
-                        let dateStr = Number(data.dateStart.replace(/\D+/g, ''));
-                        let dateEnd = Number(data.dateEnd.replace(/\D+/g, ''));
+                        $(thfStatusTender).text(data.updateDeserializedClass.processValue);
+                        $(childTh).text(data.updateDeserializedClass.stageNumber);
+                        let dateStr = Number(data.updateDeserializedClass.dateStart.replace(/\D+/g, ''));
+                        let dateEnd = Number(data.updateDeserializedClass.dateEnd.replace(/\D+/g, ''));
                         let dateModalFormStart = new Date(dateStr);
                         let dateModalFormEnd = new Date(dateEnd);
                         var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
@@ -1703,17 +1763,17 @@
                         $(childthEndStartTender).text(dateToFormatEnd);
 
                         thRemainingTM.innerHTML = "";
-                        $(thRemainingTM).append("До завершения: <span class='badge'>" + data.remainingTime + '</span>');
+                        $(thRemainingTM).append("До завершения: <span class='badge'>" + data.updateDeserializedClass.remainingTime + '</span>');
 
                         $(childtdBtnPostOne).attr("style", "display: none;");
                         $(childtdBtnPostTwo).attr("style", "display: initial;");
 
                         $("#contResTen").toggle(true);
                         tdResulttend.innerHTML = "";
-                        if (item[i].lotStateName != null || item[i].lotResultNote != null || item[i].resultsTender != null) {
-                            var valueLotState = (item[i].lotStateName != null) ? (item[i].lotResultNote != null) ? '<b>' + item[i].lotStateName + '. </b>' : '<b>' + item[i].lotStateName + '. </b><br/>' : "";
-                            var valueLotResult = (item[i].lotResultNote != null) ? '<b>' + item[i].lotResultNote + '. </b>' + '<br/>' : "";
-                            var resultTen = (item[i].resultsTender != null) ? item[i].resultsTender.split("Контрагент-победитель: ") : "";
+                        if (data.updateDeserializedClass.lotStateName != null || data.updateDeserializedClass.lotResultNote != null || data.updateDeserializedClass.resultsTender != null) {
+                            var valueLotState = (data.updateDeserializedClass.lotStateName != null) ? (data.updateDeserializedClass.lotResultNote != null) ? '<b>' + data.updateDeserializedClass.lotStateName + '. </b>' : '<b>' + data.updateDeserializedClass.lotStateName + '. </b><br/>' : "";
+                            var valueLotResult = (data.updateDeserializedClass.lotResultNote != null) ? '<b>' + data.updateDeserializedClass.lotResultNote + '. </b>' + '<br/>' : "";
+                            var resultTen = (data.updateDeserializedClass.resultsTender != null) ? data.updateDeserializedClass.resultsTender.split("Контрагент-победитель: ") : "";
                             var joinResultTen = "";
                             if (resultTen.length != 0) {
                                 joinResultTen += "</br>";
@@ -1723,21 +1783,22 @@
                                 }
                             }
                             $(tdResulttend).append("<span>" + valueLotState + valueLotResult + "<span style='font-size:12px;'>" + joinResultTen + "</span>" + "<\span>");
-                            if (item[i].uuidFile != null) {
-                                $(tdResulttend).append("<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a href="/ExportToExcel/ConcursListTenderAsExcel?tenderUuid=' + item[i].uuidFile + '"style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>");
+                            if (data.updateDeserializedClass.uuidFile != null) {
+                                $(tdResulttend).append("<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a href="/ExportToExcel/ConcursListTenderAsExcel?tenderUuid=' + data.updateDeserializedClass.uuidFile + '"style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>");
                             }
                         }
                         else {
                             $("#contResTen").toggle(false);
                         }
+                        $('#loading-indicator').hide();
                     }
                     else
                     {
                         $(thfStatusTender).attr("style", "font-size: 12px; padding:7px 7px 7px 7px; font-weight: 900;");
-                        $(thfStatusTender).text(data.processValue);
-                        $(childTh).text(data.stageNumber);
-                        let dateStr = Number(data.dateStart.replace(/\D+/g, ''));
-                        let dateEnd = Number(data.dateEnd.replace(/\D+/g, ''));
+                        $(thfStatusTender).text(data.updateDeserializedClass.processValue);
+                        $(childTh).text(data.updateDeserializedClass.stageNumber);
+                        let dateStr = Number(data.updateDeserializedClass.dateStart.replace(/\D+/g, ''));
+                        let dateEnd = Number(data.updateDeserializedClass.dateEnd.replace(/\D+/g, ''));
                         let dateModalFormStart = new Date(dateStr);
                         let dateModalFormEnd = new Date(dateEnd);
                         var dateToFormatStr = dateModalFormStart.toLocaleString('ru', options).replace(',', '');
@@ -1746,7 +1807,7 @@
                         $(childthEndStartTender).text(dateToFormatEnd);
 
                         thRemainingTM.innerHTML = "";
-                        $(thRemainingTM).append("До завершения: <span class='badge'>" + data.remainingTime + '</span>');
+                        $(thRemainingTM).append("До завершения: <span class='badge'>" + data.updateDeserializedClass.remainingTime + '</span>');
                         $(childtdBtnPostOne).attr("onclick", "ThBottonOne()");
                         $(childtdBtnPostOne).text("Аннулировать");
                         $(childtdBtnPostOne).attr("style", "display: initial;");
@@ -1754,10 +1815,10 @@
 
                         $("#contResTen").toggle(true);
                         tdResulttend.innerHTML = "";
-                        if (item[i].lotStateName != null || item[i].lotResultNote != null || item[i].resultsTender != null) {
-                            var valueLotState = (item[i].lotStateName != null) ? (item[i].lotResultNote != null) ? '<b>' + item[i].lotStateName + '. </b>' : '<b>' + item[i].lotStateName + '. </b><br/>' : "";
-                            var valueLotResult = (item[i].lotResultNote != null) ? '<b>' + item[i].lotResultNote + '. </b>' + '<br/>' : "";
-                            var resultTen = (item[i].resultsTender != null) ? item[i].resultsTender.split("Контрагент-победитель: ") : "";
+                        if (data.updateDeserializedClass.lotStateName != null || data.updateDeserializedClass.lotResultNote != null || data.updateDeserializedClass.resultsTender != null) {
+                            var valueLotState = (data.updateDeserializedClass.lotStateName != null) ? (data.updateDeserializedClass.lotResultNote != null) ? '<b>' + data.updateDeserializedClass.lotStateName + '. </b>' : '<b>' + data.updateDeserializedClass.lotStateName + '. </b><br/>' : "";
+                            var valueLotResult = (data.updateDeserializedClass.lotResultNote != null) ? '<b>' + data.updateDeserializedClass.lotResultNote + '. </b>' + '<br/>' : "";
+                            var resultTen = (data.updateDeserializedClass.resultsTender != null) ? data.updateDeserializedClass.resultsTender.split("Контрагент-победитель: ") : "";
                             var joinResultTen = "";
                             if (resultTen.length != 0) {
                                 joinResultTen += "</br>";
@@ -1767,14 +1828,15 @@
                                 }
                             }
                             $(tdResulttend).append("<span>" + valueLotState + valueLotResult + "<span style='font-size:12px;'>" + joinResultTen + "</span>" + "<\span>");
-                            if (item[i].uuidFile != null) {
-                                $(tdResulttend).append("<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a href="/ExportToExcel/ConcursListTenderAsExcel?tenderUuid=' + item[i].uuidFile + '"style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>");
+                            if (data.updateDeserializedClass.uuidFile != null) {
+                                $(tdResulttend).append("<div><button style='display: initial; margin-top:5px;' class='btn btn-primary'>" + '<a href="/ExportToExcel/ConcursListTenderAsExcel?tenderUuid=' + data.updateDeserializedClass.uuidFile + '"style="color: white">' + 'Конк.лист тендера' + '</a>' + "</button></div>");
                             }
                         }
                         else {
                             $("#contResTen").toggle(false);
                         }
                     }
+                    $('#loading-indicator').hide();
                 },
                 error: function () {
                     CreateNotification("errorStatuse", null);
@@ -1783,20 +1845,416 @@
                         autoOpen: true, autoClose: true, template: "error"
                     });
                     DeleteNotification();
+                    $('#loading-indicator').hide();
                 }
             });
         });
-
-        function ThBottonOne()
-        {
-
-        }
 
         function OnIndexCall(elem) {
             var orderId = Number(JSON.parse(sessionStorage.getItem('OrderIdKL')));
             var dataStart = Number(JSON.parse(sessionStorage.getItem('dataStart')));
             var dataEnd = Number(JSON.parse(sessionStorage.getItem('dataEnd')));
             return $(elem).attr('href', $(elem).attr('href') + '?orderId=' + orderId + '&dataStart=' + dataStart + '&dataEnd=' + dataEnd + '&active=' + true);
+        }
+
+        function InsertDataContragentsInKL(DisplayValues, CompetitiveListInfo, currentStatus, listStatuses) {
+            var rootDiv = document.getElementById('detailValuesGridContragents');
+            var table = document.createElement('table');
+            $(table).addClass("class", "table table-striped table-bordered no-footer grid-table");
+            $(table).attr("style", "height: 100%;");
+            var th = document.createElement('thead');
+            var tbody = document.createElement('tbody');
+            $(tbody).attr("id", "tbContr");
+
+            var item;
+            var OrdId;
+            DisplayValues.forEach(function (item) {
+                OrdId = item.OrderId;
+                var style = item.IsSelectedId ? "font-weight: bold" : "";
+                var stylecolor = item.GenId == 1 ? "color: blue" : item.GenId == 2 ? "color: black" : item.GenId == 3 ? "color: black" : item.GenId == 5 ? "color: green" : "";
+                var backgroundColor = item.IsZeroTarif ? "background : red" : "";
+                style = style + "; " + stylecolor + "; " + backgroundColor;
+
+                //Создание строки 1. Добавление ее в tbody
+                var trDataContr = document.createElement('tr');
+                trDataContr.id = 'trDataContr';
+                $(trDataContr).attr("style", style);
+
+                // Создание ячеек и добавление их в строку 1
+                var tdDataContrOne = document.createElement('td');
+                $(tdDataContrOne).addClass("grid-cell rigth_column new_columns_block_start");
+                $(tdDataContrOne).attr("style", "width:20%");
+                $(tdDataContrOne).text(item.NameSpecification);
+                trDataContr.appendChild(tdDataContrOne);
+
+                var tdDataContrTwo = document.createElement('td');
+                $(tdDataContrTwo).addClass("grid-cell rigth_column");
+                $(tdDataContrTwo).text(item.ExpeditorName);
+                trDataContr.appendChild(tdDataContrTwo);
+
+
+                var tdDataContrThree = document.createElement('td');
+                $(tdDataContrThree).addClass("grid-cell rigth_column");
+                $(tdDataContrThree).text(item.CarryCapacity);
+                trDataContr.appendChild(tdDataContrThree);
+
+
+                var tdDataContrFour = document.createElement('td');
+                $(tdDataContrFour).addClass("grid-cell rigth_column");
+                $(tdDataContrFour).text(item.CarsOffered);
+                trDataContr.appendChild(tdDataContrFour);
+
+
+                var tdDataContrFive = document.createElement('td');
+                $(tdDataContrFive).addClass("grid-cell rigth_column");
+                $(tdDataContrFive).text(item.CarsAccepted);
+                trDataContr.appendChild(tdDataContrFive);
+
+
+                var tdDataContrSix = document.createElement('td');
+                $(tdDataContrSix).addClass("grid-cell rigth_column");
+                $(tdDataContrSix).text(item.NDS);
+                trDataContr.appendChild(tdDataContrSix);
+
+
+                var tdDataContrSeven = document.createElement('td');
+                $(tdDataContrSeven).addClass("grid-cell rigth_column");
+                var aTDSeven = document.createElement('a');
+                $(aTDSeven).addClass("tarash-i update_link tooltips");
+                $(aTDSeven).attr("href", "#");
+                var spanTDSeven = document.createElement('span');
+                $(spanTDSeven).addClass("tooltip200down-message");
+                $(spanTDSeven).text(item.NameCarCostDog);
+                aTDSeven.appendChild(spanTDSeven);
+                $(aTDSeven).text(item.CarCostDog);
+                tdDataContrSeven.appendChild(aTDSeven);
+                trDataContr.appendChild(tdDataContrSeven);
+
+                if (currentStatus.StepId >= 2) {
+                    var tdDataContrEight = document.createElement('td');
+                    $(tdDataContrEight).addClass("grid-cell rigth_column");
+                    $(tdDataContrEight).text(item.CarCost7);
+                    trDataContr.appendChild(tdDataContrEight);
+                }
+                else {
+                    var tdDataContrEight_ = document.createElement('td');
+                    $(tdDataContrEight_).addClass("grid-cell rigth_column");
+                    $(tdDataContrEight_).attr("style", "display:none;");
+                    $(tdDataContrEight_).text(item.CarCost7);
+                    trDataContr.appendChild(tdDataContrEight_);
+                }
+
+                if (currentStatus.StepId >= 3) {
+                    var tdDataContrNine = document.createElement('td');
+                    $(tdDataContrNine).addClass("grid-cell rigth_column");
+                    $(tdDataContrNine).text(item.CarCost);
+                    trDataContr.appendChild(tdDataContrNine);
+                }
+                else {
+                    var tdDataContrNine_ = document.createElement('td');
+                    $(tdDataContrNine_).addClass("grid-cell rigth_column");
+                    $(tdDataContrNine_).attr("style", "display:none;");
+                    $(tdDataContrNine_).text(item.CarCost);
+                    trDataContr.appendChild(tdDataContrNine_);
+                }
+
+
+                var tdDataContrTen = document.createElement('td');
+                $(tdDataContrTen).addClass("grid-cell rigth_column");
+                $(tdDataContrTen).text(item.DaysDelaySteps);
+                trDataContr.appendChild(tdDataContrTen);
+
+
+                var tdDataContrEleven = document.createElement('td');
+                $(tdDataContrEleven).addClass("grid-cell rigth_column");
+                $(tdDataContrEleven).text(item.DelayEffect);
+                trDataContr.appendChild(tdDataContrEleven);
+
+
+                var tdDataContrTwelve = document.createElement('td');
+                $(tdDataContrTwelve).addClass("grid-cell rigth_column");
+                $(tdDataContrTwelve).text(item.Prepayment);
+                trDataContr.appendChild(tdDataContrTwelve);
+
+
+                var tdDataContrThirteen = document.createElement('td');
+                $(tdDataContrThirteen).addClass("grid-cell rigth_column");
+                trDataContr.appendChild(tdDataContrThirteen);
+
+
+                var tdDataContrFourteen = document.createElement('td');
+                $(tdDataContrFourteen).addClass("grid-cell rigth_column");
+                $(tdDataContrFourteen).text(item.PrepaymentEffect);
+                trDataContr.appendChild(tdDataContrFourteen);
+
+
+                var tdDataContrFiftheen = document.createElement('td');
+                $(tdDataContrFiftheen).addClass("grid-cell rigth_column");
+                $(tdDataContrFiftheen).text(item.CarCostWithMoneyCost);
+                trDataContr.appendChild(tdDataContrFiftheen);
+
+
+                var tdDataContrSexteen = document.createElement('td');
+                $(tdDataContrSexteen).addClass("grid-cell rigth_column");
+                var aTDSixteen = document.createElement('a');
+                $(aTDSixteen).addClass("tarash-i update_link tooltips");
+                $(aTDSixteen).attr("href", "#");
+                var spanTDSixteen = document.createElement('span');
+                $(spanTDSixteen).addClass("tooltip200down-message");
+                $(spanTDSixteen).text(item.Comments);
+                aTDSixteen.appendChild(spanTDSixteen);
+                $(aTDSixteen).text(item.Comments_Cut);
+                tdDataContrSexteen.appendChild(aTDSixteen);
+                trDataContr.appendChild(tdDataContrSexteen);
+
+
+                var tdDataContrSeventeen = document.createElement('td');
+                $(tdDataContrSeventeen).addClass("grid-cell rigth_column");
+                var averageCost = (item.AverageCost != null) ? item.AverageCost : "";
+                $(tdDataContrSeventeen).text(averageCost);
+                trDataContr.appendChild(tdDataContrSeventeen);
+
+
+                var tdDataContrEighteen = document.createElement('td');
+                $(tdDataContrEighteen).addClass("grid-cell rigth_column");
+                var aTDEighteen = document.createElement('a');
+                $(aTDEighteen).addClass("tarash-i update_link tooltips");
+                $(aTDEighteen).attr("href", "#");
+                var spanTDEighteen = document.createElement('span');
+                $(spanTDEighteen).addClass("tooltip200down-message");
+                $(spanTDEighteen).text(item.NameSpecification);
+                aTDEighteen.appendChild(spanTDEighteen);
+                $(aTDEighteen).text(item.SelectedItem);
+                tdDataContrEighteen.appendChild(aTDEighteen);
+                trDataContr.appendChild(tdDataContrEighteen);
+
+                var tdDataContrNineteen = document.createElement('td');
+                $(tdDataContrNineteen).addClass("grid-cell rigth_column new_columns_block_end");
+
+                var linkOne = "/OrderConcurs/UpdateConcurs/" + item.Id + "?OrderId=" + item.OrderId;
+                var linkTwo = "/OrderConcurs/CloneConcurs/" + item.Id + "?OrderId=" + item.OrderId;
+                var linkThree = "/OrderConcurs/ConcursHistory/" + item.Id + "?ShowAll=" + false + "&OrderId=" + item.OrderId;
+                var linkFour = "/OrderConcurs/DeleteConcurs/" + item.Id + "?OrderId=" + item.OrderId;
+
+                if (currentStatus.StepId < 4) {
+                    var aTDNineteen = document.createElement('a');
+                    $(aTDNineteen).addClass("tarash-i update_link tooltips");
+                    $(aTDNineteen).attr("href", linkOne);
+                    var spanTDNineteen = document.createElement('span');
+                    $(spanTDNineteen).addClass("tooltip-message");
+                    $(spanTDNineteen).text("Изменить запись");
+                    var spanTDTwenty = document.createElement('span');
+                    $(spanTDTwenty).addClass("glyphicon glyphicon-pencil");
+                    aTDNineteen.appendChild(spanTDNineteen);
+                    aTDNineteen.appendChild(spanTDTwenty);
+                    tdDataContrNineteen.appendChild(aTDNineteen);
+
+
+                    var aTDTwentyOne = document.createElement('a');
+                    $(aTDTwentyOne).addClass("tarash-i tooltips");
+                    $(aTDTwentyOne).attr("href", linkTwo);
+                    var spanTDTwentyTwo = document.createElement('span');
+                    $(spanTDTwentyTwo).addClass("tooltip-message");
+                    $(spanTDTwentyTwo).text("Клонировать запись");
+                    var spanTDTwentyThree = document.createElement('span');
+                    $(spanTDTwentyThree).addClass("glyphicon glyphicon-plus-sign");
+                    aTDTwentyOne.appendChild(spanTDTwentyTwo);
+                    aTDTwentyOne.appendChild(spanTDTwentyThree);
+                    tdDataContrNineteen.appendChild(aTDTwentyOne);
+
+
+                    var aTDTwentyFour = document.createElement('a');
+                    $(aTDTwentyFour).addClass("tarash-i tooltips");
+                    $(aTDTwentyFour).attr("onclick", "window.open('"+linkThree +"'" + ",'_blank'," + "'location=false, scrollbars=yes, status=yes')");
+                    var spanTDTwentyFive = document.createElement('span');
+                    $(spanTDTwentyFive).addClass("tooltip-message");
+                    $(spanTDTwentyFive).text("История конкурентных листов");
+                    var spanTDTwentySix = document.createElement('span');
+                    $(spanTDTwentySix).addClass("glyphicon glyphicon-th-list");
+                    aTDTwentyFour.appendChild(spanTDTwentyFive);
+                    aTDTwentyFour.appendChild(spanTDTwentySix);
+                    tdDataContrNineteen.appendChild(aTDTwentyFour);
+
+
+                    var aTDTwentySeven = document.createElement('a');
+                    $(aTDTwentySeven).addClass("tarash-i tooltips");
+                    $(aTDTwentySeven).attr("href", linkFour);
+                    $(aTDTwentySeven).attr("onclick", "return confirm('Хотите удалить запись?');");
+                    var spanTDTwentyEight = document.createElement('span');
+                    $(spanTDTwentyEight).addClass("tooltip-message");
+                    $(spanTDTwentyEight).text("Удалить запись");
+                    var spanTDTwentyNine = document.createElement('span');
+                    $(spanTDTwentyNine).addClass("glyphicon glyphicon-trash");
+                    aTDTwentySeven.appendChild(spanTDTwentyEight);
+                    aTDTwentySeven.appendChild(spanTDTwentyNine);
+                    tdDataContrNineteen.appendChild(aTDTwentySeven);
+
+                }
+                trDataContr.appendChild(tdDataContrNineteen);
+                tbody.appendChild(trDataContr);
+            });
+            var tableContrMain = document.getElementById('tablContr');
+            var tbodyMain = document.getElementById('tbContr');
+            if (tbodyMain == null) {
+                tbodyMain = document.createElement('tbody');
+                $(tbodyMain).attr('id', 'tbContr');
+                tableContrMain.appendChild(tbodyMain);
+            }
+            tableContrMain.replaceChild(tbody, tbodyMain);
+
+
+            if (currentStatus.StepId >= 2) {
+                var thOneStKL = document.getElementById('thOneStKL');
+                thOneStKL.removeAttribute("style");
+                $(thOneStKL).attr("style", "display:normal;");
+            }
+            else {
+                var thOneStKL = document.getElementById('thOneStKL');
+                thOneStKL.removeAttribute("style");
+                $(thOneStKL).attr("style", "display:none;");
+            }
+            if (currentStatus.StepId >= 3) {
+                var thTwoStKL = document.getElementById('thTwoStKL');
+                thTwoStKL.removeAttribute("style");
+                 $(thTwoStKL).attr("style", "display:normal;");
+            }
+            else {
+                var thTwoStKL = document.getElementById('thTwoStKL');
+                thTwoStKL.removeAttribute("style");
+                 $(thTwoStKL).attr("style", "display:none;");
+            }
+            if (currentStatus.StepId >= 3) {
+                var thThreeSTKl = document.getElementById('thThreeSTKl');
+                thThreeSTKl.removeAttribute("style");
+                $(thThreeSTKl).attr("style", "display:normal;");
+            }
+            else {
+                var thThreeSTKl = document.getElementById('thThreeSTKl');
+                thThreeSTKl.removeAttribute("style");
+                 $(thThreeSTKl).attr("style", "display:none;");
+            }
+            if (currentStatus.StepId >= 2) {
+                var thFourSTKl = document.getElementById('thFourSTKl');
+                thFourSTKl.removeAttribute("style");
+                $(thFourSTKl).attr("style", "display:normal;");
+            }
+            else {
+                var thFourSTKl = document.getElementById('thFourSTKl');
+                thFourSTKl.removeAttribute("style");
+                $(thFourSTKl).attr("style", "display:none;");
+            }
+
+
+
+
+            var h2mainList = document.getElementById('KoncListCurStatus');
+            h2mainList.innerHTML = "";
+            $(h2mainList).text('Конкурентный лист (' + currentStatus.StepShortCode + ')');
+
+
+            var DivBtnChangeStatusKL = document.getElementById('BtnChangeStatusKL');
+
+            var IsdivST = document.getElementById('divST');
+            if (IsdivST != null) {
+                DivBtnChangeStatusKL.removeChild(IsdivST);
+                DivBtnChangeStatusKL.removeChild(DivBtnChangeStatusKL.lastChild);
+            }
+
+            var divST = document.createElement('div');
+            $(divST).addClass('dropdown');
+            $(divST).attr("id", "divST");
+            $(divST).attr("style", "display:inline-block;");
+
+            $(divST).append("<button class='btn btn-info dropdown-toggle' style='margin-bottom:10px; margin-left:10px;' type='button' id='dropdownMenu1' data-toggle='dropdown' aria-haspopup='true' aria-expanded='true'><span class='glyphicon glyphicon-plus-sign' aria-hidden='true' style='margin-right:3px;'></span>Этап&nbsp;<span class='caret'></span></button>");
+
+            var ulSt = document.createElement('ul');
+            $(ulSt).addClass("dropdown-menu");
+            $(ulSt).attr("aria-labelledby", "dropdownMenu1");
+            $(ulSt).attr("style", "top:80% !important; font-size:12px;")
+
+            listStatuses.forEach(function (el) {
+                var liSt = document.createElement("li");
+                var aInnerLiST = document.createElement("a");
+                var link = '/OrderConcurs/SetListStatus?StepId=' + el.Id + '&OrderId=' + OrdId;
+                $(aInnerLiST).attr("href", link);
+                $(aInnerLiST).text(el.StepShortName);
+                liSt.appendChild(aInnerLiST);
+                ulSt.appendChild(liSt);
+            });
+
+            divST.appendChild(ulSt);
+
+            DivBtnChangeStatusKL.appendChild(divST);
+
+            var tymeLineSt = document.getElementById('btnTaimLine');
+            if (tymeLineSt == null) {
+                var tymeLineSt = document.createElement('a');
+                var linkTymeLine = '/OrderConcurs/GetListTimeline?OrderId=' + OrdId;
+                $(tymeLineSt).addClass("delete_link btn btn-success");
+                $(tymeLineSt).attr("style", "margin-bottom:10px; margin-left:10px;");
+                $(tymeLineSt).attr("href", linkTymeLine);
+                $(tymeLineSt).attr('id', 'btnTaimLine');
+                $(tymeLineSt).text("Тайм-лайн");
+
+                DivBtnChangeStatusKL.appendChild(tymeLineSt);
+            }
+
+
+        }
+
+        function OnIndexCallStatus(elem) {
+            let DropDownListTender = document.getElementById('drpDwnListTend');
+            let tendNumber = Number(DropDownListTender.textContent.replace(" ", ""));
+            return $(elem).attr('href', $(elem).attr('href') + '&tenderNumber=' + tendNumber);
+        }
+
+        function GetTenderNumber() {
+            let DropDownListTender = document.getElementById('drpDwnListTend');
+            let tendNumber = Number(DropDownListTender.textContent.replace(" ", ""));
+            return tendNumber;
+        }
+
+        function SetSessionDataAboutListTendersOfOrder(listCurrentStatuses, listDisplayValues_, list_listStatuses_) {
+            sessionStorage.setItem('listCurrentStatuses', JSON.stringify(listCurrentStatuses));
+            sessionStorage.setItem('listDisplayValues', listDisplayValues_);
+            sessionStorage.setItem('list_listStatuses', list_listStatuses_);
+        }
+
+        function DeleteTableContragentsForNewTender() {
+             let h2mainList = document.getElementById('KoncListCurStatus');
+            h2mainList.innerHTML = "";
+            $(h2mainList).text('Конкурентный лист (Начальный)');
+
+            let table = document.getElementById('tablContr');
+            let tbody = document.getElementById('tbContr');
+            if (tbody == null) {
+                tbody = document.createElement('tbody');
+                $(tbody).attr("id", "tbContr");
+                table.appendChild(tbody);
+            }
+            table.removeChild(tbody);
+
+            let divBtnChangeStatus = document.getElementById('BtnChangeStatusKL');
+            let buttonListStatusConckList = document.getElementById('divST');
+                        if (buttonListStatusConckList == null) {
+                            buttonListStatusConckList = document.createElement('div');
+                            $(buttonListStatusConckList).attr('id', 'divST');
+                            $(buttonListStatusConckList).addClass('dropdown');
+                            $(buttonListStatusConckList).attr('style', "display:inline-block;");
+                            divBtnChangeStatus.appendChild(buttonListStatusConckList);
+                        }
+            divBtnChangeStatus.removeChild(buttonListStatusConckList);
+
+            let buttonTaimLine = document.getElementById('btnTaimLine');
+            if (buttonTaimLine == null) {
+                buttonTaimLine = document.createElement('a');
+                $(buttonTaimLine).attr('id', 'btnTaimLine');
+                $(buttonTaimLine).addClass('delete_link btn btn-success');
+                $(buttonTaimLine).attr('style', "margin-bottom:10px");
+                divBtnChangeStatus.appendChild(buttonTaimLine);
+            }
+            divBtnChangeStatus.removeChild(buttonTaimLine);
+
         }
     </script>
 }

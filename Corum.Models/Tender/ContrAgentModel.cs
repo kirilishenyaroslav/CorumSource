@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Corum.Models.ViewModels.Tender;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -55,9 +56,10 @@ namespace Corum.Models.Tender
         public string ComplianceStateName { get; set; }
 
         public int CompanyType { get; set; }
+        public List<Criteriavalues> listCritariaValues {get; set;}
         public class LegalAddress
         {
-            public int CountryId { get; set; }
+            public int? CountryId { get; set; }
 
             public string CountryName { get; set; }
 

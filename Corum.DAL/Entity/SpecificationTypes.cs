@@ -24,6 +24,7 @@ namespace Corum.DAL.Entity
     
         public int Id { get; set; }
         public string SpecificationType { get; set; }
+        public Nullable<int> TypeSpecId { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<OrderBaseSpecification> OrderBaseSpecification { get; set; }

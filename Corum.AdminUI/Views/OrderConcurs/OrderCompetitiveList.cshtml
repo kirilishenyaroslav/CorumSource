@@ -1107,6 +1107,7 @@
                                             InitialDataStatusTender(data.modifRegisterTenders.tenderNumber);
                                             console.log(data.response);
                                             if (dataJS.success != false) {
+                                                DeleteTableContragentsForNewTender();
                                                 CreateNotification("success", data.modifRegisterTenders.tenderNumber);
                                                 $("#jqxNotification").jqxNotification({
                                                     position: "bottom-right", opacity: 0.8, animationCloseDelay: 1000, autoCloseDelay: 5000,
@@ -1452,6 +1453,28 @@
             $(dropDownListTender).text(itemDropDown);
             $(dropDownListTender).append(" <span class='caret'></span>");
             InitialDataStatusTender(itemDropDown);
+            let DisplayValues;
+                let listDisplayValues = JSON.parse(sessionStorage.getItem('listDisplayValues'));
+                DisplayValues = listDisplayValues[itemDropDown];
+            if (DisplayValues != null && itemDropDown != "Новый тендер" && DisplayValues.length != 0) {
+                let CompetitiveListInfo;
+                let currentStatus;
+                let listStatuses;
+                let listCurrentStatuses = JSON.parse(sessionStorage.getItem('listCurrentStatuses'));
+                let list_listStatuses = JSON.parse(sessionStorage.getItem('list_listStatuses'));
+                CompetitiveListInfo = @Html.Raw(Json.Encode(@Model.CompetitiveListInfo));
+                listCurrentStatuses.forEach(function (el) {
+                    if (el.tenderNumber == itemDropDown) {
+                        currentStatus = el;
+                    }
+                });
+                listStatuses = list_listStatuses[itemDropDown];
+
+                InsertDataContragentsInKL(DisplayValues, CompetitiveListInfo, currentStatus, listStatuses);
+            }
+            else {
+                DeleteTableContragentsForNewTender();
+            }
         }
 
         var listTendersOrder = function InitModelRegisTender(params, tenderNumber)

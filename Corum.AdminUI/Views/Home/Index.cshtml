@@ -40,13 +40,16 @@
             </div>
         </div>
     }
-    <div class="col-xs-12 col-sm-12 col-md-10 col-lg-12">
-        <div @Html.Raw("id='chart_div_TendStatus' style='height: 200px;'")></div>
-        <br>
-        <div>
-            <a id="title_TendStatus" class="title_overlay barnivann_text_color" href="/OrderTender/UpdateAllStatusOrderTender">Статусы тендеров</a>
+    @if (Model.PermissionToCompetetiveList)
+    {
+        <div class="col-xs-12 col-sm-12 col-md-10 col-lg-12">
+            <div @Html.Raw("id='chart_div_TendStatus' style='height: 200px;'")></div>
+            <br>
+            <div>
+                <a id="title_TendStatus" class="title_overlay barnivann_text_color" href="/OrderTender/UpdateAllStatusOrderTender">Статусы тендеров</a>
+            </div>
         </div>
-    </div>
+    }
 </div>
 
 

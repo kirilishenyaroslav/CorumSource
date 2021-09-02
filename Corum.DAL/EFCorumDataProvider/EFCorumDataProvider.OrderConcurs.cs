@@ -970,8 +970,14 @@ namespace Corum.DAL
                     GenId = model.UsedRateId,
                     IsChange = false,
                     NDS = cs.NDSTax ?? 0,
-                    Comments = Comments,
-                    tenderNumber = tenderNumber
+                    tenderNumber = tenderNumber,
+                    CarsOffered = model.transportUnitsProposed,
+                    CarsAccepted = model.acceptedTransportUnits,
+                    CarCost7 = 0,
+                    DaysDelayStep2 = model.DaysDelay,
+                    CarCost = (decimal)model.costOfCarWithoutNDS,
+                    Comments = model.note,
+                    IsSelectedId = model.IsWinner
                 };
 
                 db.OrderCompetitiveList.Add(concurs);
@@ -1005,13 +1011,18 @@ namespace Corum.DAL
                         CarryCapacity = model.CarryCapacity,
                         DaysDelay = model.DaysDelay,
                         CarCostDog = 0,
-                        CarCost = 0,
                         SpecificationId = model.Id,
                         GenId = model.UsedRateId,
                         IsChange = false,
-                        NDS = (model.NDSTax != null) ? Decimal.Parse(model.NDSTax) : 0,
-                        Comments = null,
-                        tenderNumber = tenderNumber
+                        NDS = (cs != null)? cs.NDSTax ?? 0: 0,
+                        tenderNumber = tenderNumber,
+                        CarsOffered = model.transportUnitsProposed,
+                        CarsAccepted = model.acceptedTransportUnits,
+                        CarCost7 = 0,
+                        DaysDelayStep2 = model.DaysDelay,
+                        CarCost = (decimal)model.costOfCarWithoutNDS,
+                        Comments = model.note,
+                        IsSelectedId = model.IsWinner
                     };
                 }
                 catch (Exception e)

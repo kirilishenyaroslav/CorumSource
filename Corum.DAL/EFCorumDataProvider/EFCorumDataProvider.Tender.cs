@@ -628,7 +628,7 @@ namespace Corum.DAL
                                 acceptedTransportUnits = items.acceptedTransportUnits,
                                 ContragentIdAps = items.ContragentIdAps,
                                 ContragentName = items.ContragentName,
-                                costOfCarWithNDS = items.costOfCarWithNDS,
+                                costOfCarWithoutNDSToNull = items.costOfCarWithoutNDSToNull,
                                 costOfCarWithoutNDS = items.costOfCarWithoutNDS,
                                 DateUpdateInfo = items.DateUpdateInfo,
                                 EDRPOUContragent = items.EDRPOUContragent,
@@ -637,7 +637,8 @@ namespace Corum.DAL
                                 nmcName = items.nmcName,
                                 PaymentDelay = items.PaymentDelay,
                                 tenderItemUuid = items.tenderItemUuid,
-                                transportUnitsProposed = items.transportUnitsProposed
+                                transportUnitsProposed = items.transportUnitsProposed,
+                                note = items.note
                             });
                             db.SaveChanges();
                         }

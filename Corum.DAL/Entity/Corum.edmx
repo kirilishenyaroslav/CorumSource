@@ -880,10 +880,11 @@
           <Property Name="transportUnitsProposed" Type="int" Nullable="false" />
           <Property Name="acceptedTransportUnits" Type="int" />
           <Property Name="costOfCarWithoutNDS" Type="float" Nullable="false" />
-          <Property Name="costOfCarWithNDS" Type="float" Nullable="false" />
+          <Property Name="costOfCarWithoutNDSToNull" Type="float" Nullable="false" />
           <Property Name="PaymentDelay" Type="int" Nullable="false" />
           <Property Name="tenderItemUuid" Type="uniqueidentifier" Nullable="false" />
           <Property Name="nmcName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="note" Type="text" />
         </EntityType>
         <EntityType Name="RegisterTenders">
           <Key>
@@ -1110,7 +1111,7 @@
           <Property Name="PageSize" Type="int" Nullable="false" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
-        <Association Name="FK__OrdersBas__Proje__2D12A970">
+        <Association Name="FK__OrdersBas__Proje__2EFAF1E2">
           <End Role="Projects" Type="Self.Projects" Multiplicity="0..1" />
           <End Role="OrdersBase" Type="Self.OrdersBase" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1122,7 +1123,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__73A521EA">
+        <Association Name="FK__Projects__Projec__758D6A5C">
           <End Role="Centers" Type="Self.Centers" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1134,7 +1135,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__74994623">
+        <Association Name="FK__Projects__Projec__76818E95">
           <End Role="ProjectTypes" Type="Self.ProjectTypes" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -3460,15 +3461,15 @@
           <EntitySet Name="UserMessages" EntityType="Self.UserMessages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserSettings" EntityType="Self.UserSettings" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__OrdersBas__Proje__2D12A970" Association="Self.FK__OrdersBas__Proje__2D12A970">
+          <AssociationSet Name="FK__OrdersBas__Proje__2EFAF1E2" Association="Self.FK__OrdersBas__Proje__2EFAF1E2">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="OrdersBase" EntitySet="OrdersBase" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__73A521EA" Association="Self.FK__Projects__Projec__73A521EA">
+          <AssociationSet Name="FK__Projects__Projec__758D6A5C" Association="Self.FK__Projects__Projec__758D6A5C">
             <End Role="Centers" EntitySet="Centers" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__74994623" Association="Self.FK__Projects__Projec__74994623">
+          <AssociationSet Name="FK__Projects__Projec__76818E95" Association="Self.FK__Projects__Projec__76818E95">
             <End Role="ProjectTypes" EntitySet="ProjectTypes" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
@@ -8738,10 +8739,11 @@
           <Property Name="transportUnitsProposed" Type="Int32" Nullable="false" />
           <Property Name="acceptedTransportUnits" Type="Int32" />
           <Property Name="costOfCarWithoutNDS" Type="Double" Nullable="false" />
-          <Property Name="costOfCarWithNDS" Type="Double" Nullable="false" />
           <Property Name="PaymentDelay" Type="Int32" Nullable="false" />
           <Property Name="tenderItemUuid" Type="Guid" Nullable="false" />
           <Property Name="nmcName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="costOfCarWithoutNDSToNull" Type="Double" Nullable="false" />
+          <Property Name="note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -10852,10 +10854,11 @@
           <EntitySetMapping Name="RegisterTenderContragents">
             <EntityTypeMapping TypeName="CorumModel.RegisterTenderContragents">
               <MappingFragment StoreEntitySet="RegisterTenderContragents">
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="costOfCarWithoutNDSToNull" ColumnName="costOfCarWithoutNDSToNull" />
                 <ScalarProperty Name="nmcName" ColumnName="nmcName" />
                 <ScalarProperty Name="tenderItemUuid" ColumnName="tenderItemUuid" />
                 <ScalarProperty Name="PaymentDelay" ColumnName="PaymentDelay" />
-                <ScalarProperty Name="costOfCarWithNDS" ColumnName="costOfCarWithNDS" />
                 <ScalarProperty Name="costOfCarWithoutNDS" ColumnName="costOfCarWithoutNDS" />
                 <ScalarProperty Name="acceptedTransportUnits" ColumnName="acceptedTransportUnits" />
                 <ScalarProperty Name="transportUnitsProposed" ColumnName="transportUnitsProposed" />

@@ -21,9 +21,11 @@ namespace Corum.Models.Tender
         public int transportUnitsProposed { get; set; }
         public Nullable<int> acceptedTransportUnits { get; set; }
         public double costOfCarWithoutNDS { get; set; }
-        public double costOfCarWithNDS { get; set; }
         public int PaymentDelay { get; set; }
         public System.Guid tenderItemUuid { get; set; }
         public string nmcName { get; set; }
+        public double costOfCarWithoutNDSToNull { get; set; }
+        public string note { get; set; }
+
     }
 }

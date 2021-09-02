@@ -61,6 +61,8 @@ namespace CorumAdminUI.HangFireTasks
                             var response = new GetApiTender().GetCallAsync(client).Result.ResponseMessage;
                             RequestJSONDeserializedToModel resultDeserializedClass = JsonConvert.DeserializeObject<RequestJSONDeserializedToModel>(response);
                             context.UpdateStatusRegisterTender(numberTender, myDeserializedClass.data.process, dateUpdateStatus, resultDeserializedClass);
+                            UpdateDataTableContragents updateContragents = new UpdateDataTableContragents();
+                            updateContragents.UpdateStatusContragentsData(numberTender);
                         }
                         catch (Exception e)
                         {

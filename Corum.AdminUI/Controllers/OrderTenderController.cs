@@ -118,19 +118,28 @@ namespace CorumAdminUI.Controllers
                                 foreach (var el in listContragentModels)
                                 {
                                     double costOfCarWithoutNDS = 0d;
-                                    double costOfCarWithNDS = 0d;
+                                    double costOfCarWithoutNDSToNull = 0d;
                                     int paymentDelay = 0;
+                                    string note = null;
                                     try
                                     {
                                         for (int i = 0; i < el.listCritariaValues.Count; i++)
                                         {
                                             if (costOfCarWithoutNDS == 0)
                                             {
-                                                costOfCarWithoutNDS = (el.listCritariaValues[i].Id == 61) ? Int64.Parse(el.listCritariaValues[i].Value.ToString()) : 0d;
+                                                costOfCarWithoutNDS = (el.listCritariaValues[i].Id == 61) ? Double.Parse(el.listCritariaValues[i].Value.ToString()) : 0d;
+                                            }
+                                            if (costOfCarWithoutNDSToNull == 0)
+                                            {
+                                                costOfCarWithoutNDSToNull = (el.listCritariaValues[i].Id == 64) ? Double.Parse(el.listCritariaValues[i].Value.ToString()) : 0d;
                                             }
                                             if (paymentDelay == 0)
                                             {
                                                 paymentDelay = (el.listCritariaValues[i].Id == 66) ? Int32.Parse(el.listCritariaValues[i].Value.ToString()) : 0;
+                                            }
+                                            if (note == null)
+                                            {
+                                                note = (el.listCritariaValues[i].Id == 510) ? el.listCritariaValues[i].Value.ToString() : null;
                                             }
                                         }
                                     }
@@ -151,12 +160,13 @@ namespace CorumAdminUI.Controllers
                                             EDRPOUContragent = Int64.Parse(el.SupplierEdrpou),
                                             emailContragent = (el.ContactEmail != null) ? el.ContactEmail : el.SupplierCEOContragent.EMail,
                                             transportUnitsProposed = 1,
-                                            acceptedTransportUnits = null,
+                                            acceptedTransportUnits = 0,
                                             costOfCarWithoutNDS = costOfCarWithoutNDS,
-                                            costOfCarWithNDS = costOfCarWithNDS,
+                                            costOfCarWithoutNDSToNull = costOfCarWithoutNDSToNull,
                                             PaymentDelay = paymentDelay,
                                             tenderItemUuid = Guid.Parse(items.tenderItemUuid),
-                                            nmcName = items.nmcName
+                                            nmcName = items.nmcName,
+                                            note = note
                                         };
                                         tenderContragents.Add(registerTenderContragent);
                                     }
@@ -174,12 +184,13 @@ namespace CorumAdminUI.Controllers
                                             EDRPOUContragent = Int64.Parse(el.SupplierEdrpou),
                                             emailContragent = (el.ContactEmail != null) ? el.ContactEmail : el.SupplierCEOContragent.EMail,
                                             transportUnitsProposed = 1,
-                                            acceptedTransportUnits = null,
+                                            acceptedTransportUnits = 1,
                                             costOfCarWithoutNDS = costOfCarWithoutNDS,
-                                            costOfCarWithNDS = costOfCarWithNDS,
+                                            costOfCarWithoutNDSToNull = costOfCarWithoutNDSToNull,
                                             PaymentDelay = paymentDelay,
                                             tenderItemUuid = Guid.Parse(items.tenderItemUuid),
-                                            nmcName = items.nmcName
+                                            nmcName = items.nmcName,
+                                            note = note
                                         };
                                         tenderContragents.Add(registerTenderContragent);
                                     }
@@ -210,15 +221,76 @@ namespace CorumAdminUI.Controllers
                         {
                             for (int i = 0; i < it.Value.Count; i++)
                             {
-                                SpecificationListViewModel model = specificationList.Find(x => x.edrpou_aps == it.Value[i].EDRPOUContragent);
-                                if (model != null)
+                                SpecificationListViewModel model = new SpecificationListViewModel();
+                                
+                                var spec = specificationList.Find(x => x.edrpou_aps == it.Value[i].EDRPOUContragent);
+                                if (spec != null)
                                 {
                                     model.OrderId = (int)OrderId;
                                     model.tenderNumber = tenderNumber;
+                                    model.CarryCapacity = specificationList[0].CarryCapacity;
                                     model.DaysDelay = it.Value[i].PaymentDelay;
                                     model.ExpeditorName = it.Value[i].ContragentName;
                                     model.NameSpecification = it.Value[i].nmcName;
-
+                                    model.itemExternalNumber = it.Value[i].itemExternalNumber;
+                                    model.ContragentIdAps = it.Value[i].ContragentIdAps;
+                                    model.DateUpdateInfo = it.Value[i].DateUpdateInfo;
+                                    model.IsWinner = it.Value[i].IsWinner;
+                                    model.EDRPOUContragent = it.Value[i].EDRPOUContragent;
+                                    model.emailContragent = it.Value[i].emailContragent;
+                                    model.transportUnitsProposed = it.Value[i].transportUnitsProposed;
+                                    model.acceptedTransportUnits = it.Value[i].acceptedTransportUnits;
+                                    model.costOfCarWithoutNDS = it.Value[i].costOfCarWithoutNDS;
+                                    model.tenderItemUuid = it.Value[i].tenderItemUuid;
+                                    model.costOfCarWithoutNDSToNull = it.Value[i].costOfCarWithoutNDSToNull;
+                                    model.note = it.Value[i].note;
+                                    model.ArrivalPoint = spec.ArrivalPoint;
+                                    model.CanBeDelete = spec.CanBeDelete;
+                                    model.CarryCapacityId = spec.CarryCapacityId;
+                                    model.CarryCapacityVal = spec.CarryCapacityVal;
+                                    model.ContragentName = spec.ContragentName;
+                                    model.DeparturePoint = spec.DeparturePoint;
+                                    model.edrpou_aps = spec.edrpou_aps;
+                                    model.email_aps = spec.email_aps;
+                                    model.FilterPayerId = spec.FilterPayerId;
+                                    model.FilterSpecificationTypeId = spec.FilterSpecificationTypeId;
+                                    model.FilterTripTypeId = spec.FilterTripTypeId;
+                                    model.FilterVehicleTypeId = spec.FilterVehicleTypeId;
+                                    model.FreightName = spec.FreightName;
+                                    model.GenId = spec.GenId;
+                                    model.GroupeSpecId = spec.GroupeSpecId;
+                                    model.Id = spec.Id;
+                                    model.IntervalTypeId = spec.IntervalTypeId;
+                                    model.IntervalTypeName = spec.IntervalTypeName;
+                                    model.IsForwarder = spec.IsForwarder;
+                                    model.IsFreight = spec.IsFreight;
+                                    model.isTruck = spec.isTruck;
+                                    model.MovingType = spec.MovingType;
+                                    model.MovingTypeName = spec.MovingTypeName;
+                                    model.NameGroupeSpecification = spec.NameGroupeSpecification;
+                                    model.NameIntervalType = spec.NameIntervalType;
+                                    model.NDSTax = spec.NDSTax;
+                                    model.nmcName = spec.nmcName;
+                                    model.PaymentDelay = spec.PaymentDelay;
+                                    model.RateHour = spec.RateHour;
+                                    model.RateKm = spec.RateKm;
+                                    model.RateMachineHour = spec.RateMachineHour;
+                                    model.RateTotalFreight = spec.RateTotalFreight;
+                                    model.RateValue = spec.RateValue;
+                                    model.returnurl = spec.returnurl;
+                                    model.RouteLength = spec.RouteLength;
+                                    model.RouteName = spec.RouteName;
+                                    model.RouteTypeId = spec.RouteTypeId;
+                                    model.RouteTypeName = spec.RouteTypeName;
+                                    model.tripTypeName = spec.tripTypeName;
+                                    model.UsedRateId = spec.UsedRateId;
+                                    model.UsedRateName = spec.UsedRateName;
+                                    model.UsePayerFilter = spec.UsePayerFilter;
+                                    model.UseRouteFilter = spec.UseRouteFilter;
+                                    model.UseSpecificationTypeFilter = spec.UseSpecificationTypeFilter;
+                                    model.UseTripTypeFilter = spec.UseTripTypeFilter;
+                                    model.UseVehicleTypeFilter = spec.UseVehicleTypeFilter;
+                                    model.VehicleTypeName = spec.VehicleTypeName;
                                     specificationListViews.Add(model);
                                 }
                                 else
@@ -255,7 +327,19 @@ namespace CorumAdminUI.Controllers
                                         VehicleTypeName = specificationList[0].VehicleTypeName,
                                         edrpou_aps = it.Value[i].EDRPOUContragent,
                                         email_aps = it.Value[i].emailContragent,
-                                        isTruck = specificationList[0].isTruck
+                                        isTruck = specificationList[0].isTruck,
+                                        itemExternalNumber = it.Value[i].itemExternalNumber,
+                                        ContragentIdAps = it.Value[i].ContragentIdAps,
+                                        DateUpdateInfo = it.Value[i].DateUpdateInfo,
+                                        IsWinner = it.Value[i].IsWinner,
+                                        EDRPOUContragent = it.Value[i].EDRPOUContragent,
+                                        emailContragent = it.Value[i].emailContragent,
+                                        transportUnitsProposed = it.Value[i].transportUnitsProposed,
+                                        acceptedTransportUnits = it.Value[i].acceptedTransportUnits,
+                                        costOfCarWithoutNDS = it.Value[i].costOfCarWithoutNDS,
+                                        tenderItemUuid = it.Value[i].tenderItemUuid,
+                                        costOfCarWithoutNDSToNull = it.Value[i].costOfCarWithoutNDSToNull,
+                                        note = it.Value[i].note
                                     };
                                     specificationListViews.Add(instance);
                                 }
@@ -390,8 +474,9 @@ namespace CorumAdminUI.Controllers
                                 foreach (var el in listContragentModels)
                                 {
                                     double costOfCarWithoutNDS = 0d;
-                                    double costOfCarWithNDS = 0d;
+                                    double costOfCarWithoutNDSToNull = 0d;
                                     int paymentDelay = 0;
+                                    string note = null;
                                     try
                                     {
                                         for (int i = 0; i < el.listCritariaValues.Count; i++)
@@ -400,9 +485,17 @@ namespace CorumAdminUI.Controllers
                                             {
                                                 costOfCarWithoutNDS = (el.listCritariaValues[i].Id == 61) ? Int64.Parse(el.listCritariaValues[i].Value.ToString()) : 0d;
                                             }
+                                            if (costOfCarWithoutNDSToNull == 0)
+                                            {
+                                                costOfCarWithoutNDSToNull = (el.listCritariaValues[i].Id == 64) ? Int64.Parse(el.listCritariaValues[i].Value.ToString()) : 0d;
+                                            }
                                             if (paymentDelay == 0)
                                             {
                                                 paymentDelay = (el.listCritariaValues[i].Id == 66) ? Int32.Parse(el.listCritariaValues[i].Value.ToString()) : 0;
+                                            }
+                                            if (note == null)
+                                            {
+                                                note = (el.listCritariaValues[i].Id == 510) ? el.listCritariaValues[i].Value.ToString() : null;
                                             }
                                         }
                                     }
@@ -425,10 +518,11 @@ namespace CorumAdminUI.Controllers
                                             transportUnitsProposed = 1,
                                             acceptedTransportUnits = null,
                                             costOfCarWithoutNDS = costOfCarWithoutNDS,
-                                            costOfCarWithNDS = costOfCarWithNDS,
+                                            costOfCarWithoutNDSToNull = costOfCarWithoutNDSToNull,
                                             PaymentDelay = paymentDelay,
                                             tenderItemUuid = Guid.Parse(items.tenderItemUuid),
-                                            nmcName = items.nmcName
+                                            nmcName = items.nmcName,
+                                            note = note
                                         };
                                         tenderContragents.Add(registerTenderContragent);
                                     }
@@ -448,10 +542,11 @@ namespace CorumAdminUI.Controllers
                                             transportUnitsProposed = 1,
                                             acceptedTransportUnits = null,
                                             costOfCarWithoutNDS = costOfCarWithoutNDS,
-                                            costOfCarWithNDS = costOfCarWithNDS,
+                                            costOfCarWithoutNDSToNull = costOfCarWithoutNDSToNull,
                                             PaymentDelay = paymentDelay,
                                             tenderItemUuid = Guid.Parse(items.tenderItemUuid),
-                                            nmcName = items.nmcName
+                                            nmcName = items.nmcName,
+                                            note = note
                                         };
                                         tenderContragents.Add(registerTenderContragent);
                                     }
@@ -482,15 +577,76 @@ namespace CorumAdminUI.Controllers
                         {
                             for (int i = 0; i < it.Value.Count; i++)
                             {
-                                SpecificationListViewModel model = specificationList.Find(x => x.edrpou_aps == it.Value[i].EDRPOUContragent);
-                                if (model != null)
+                                SpecificationListViewModel model = new SpecificationListViewModel();
+
+                                var spec = specificationList.Find(x => x.edrpou_aps == it.Value[i].EDRPOUContragent);
+                                if (spec != null)
                                 {
                                     model.OrderId = (int)OrderId;
                                     model.tenderNumber = tenderNumber;
+                                    model.CarryCapacity = specificationList[0].CarryCapacity;
                                     model.DaysDelay = it.Value[i].PaymentDelay;
                                     model.ExpeditorName = it.Value[i].ContragentName;
                                     model.NameSpecification = it.Value[i].nmcName;
-
+                                    model.itemExternalNumber = it.Value[i].itemExternalNumber;
+                                    model.ContragentIdAps = it.Value[i].ContragentIdAps;
+                                    model.DateUpdateInfo = it.Value[i].DateUpdateInfo;
+                                    model.IsWinner = it.Value[i].IsWinner;
+                                    model.EDRPOUContragent = it.Value[i].EDRPOUContragent;
+                                    model.emailContragent = it.Value[i].emailContragent;
+                                    model.transportUnitsProposed = it.Value[i].transportUnitsProposed;
+                                    model.acceptedTransportUnits = it.Value[i].acceptedTransportUnits;
+                                    model.costOfCarWithoutNDS = it.Value[i].costOfCarWithoutNDS;
+                                    model.tenderItemUuid = it.Value[i].tenderItemUuid;
+                                    model.costOfCarWithoutNDSToNull = it.Value[i].costOfCarWithoutNDSToNull;
+                                    model.note = it.Value[i].note;
+                                    model.ArrivalPoint = spec.ArrivalPoint;
+                                    model.CanBeDelete = spec.CanBeDelete;
+                                    model.CarryCapacityId = spec.CarryCapacityId;
+                                    model.CarryCapacityVal = spec.CarryCapacityVal;
+                                    model.ContragentName = spec.ContragentName;
+                                    model.DeparturePoint = spec.DeparturePoint;
+                                    model.edrpou_aps = spec.edrpou_aps;
+                                    model.email_aps = spec.email_aps;
+                                    model.FilterPayerId = spec.FilterPayerId;
+                                    model.FilterSpecificationTypeId = spec.FilterSpecificationTypeId;
+                                    model.FilterTripTypeId = spec.FilterTripTypeId;
+                                    model.FilterVehicleTypeId = spec.FilterVehicleTypeId;
+                                    model.FreightName = spec.FreightName;
+                                    model.GenId = spec.GenId;
+                                    model.GroupeSpecId = spec.GroupeSpecId;
+                                    model.Id = spec.Id;
+                                    model.IntervalTypeId = spec.IntervalTypeId;
+                                    model.IntervalTypeName = spec.IntervalTypeName;
+                                    model.IsForwarder = spec.IsForwarder;
+                                    model.IsFreight = spec.IsFreight;
+                                    model.isTruck = spec.isTruck;
+                                    model.MovingType = spec.MovingType;
+                                    model.MovingTypeName = spec.MovingTypeName;
+                                    model.NameGroupeSpecification = spec.NameGroupeSpecification;
+                                    model.NameIntervalType = spec.NameIntervalType;
+                                    model.NDSTax = spec.NDSTax;
+                                    model.nmcName = spec.nmcName;
+                                    model.PaymentDelay = spec.PaymentDelay;
+                                    model.RateHour = spec.RateHour;
+                                    model.RateKm = spec.RateKm;
+                                    model.RateMachineHour = spec.RateMachineHour;
+                                    model.RateTotalFreight = spec.RateTotalFreight;
+                                    model.RateValue = spec.RateValue;
+                                    model.returnurl = spec.returnurl;
+                                    model.RouteLength = spec.RouteLength;
+                                    model.RouteName = spec.RouteName;
+                                    model.RouteTypeId = spec.RouteTypeId;
+                                    model.RouteTypeName = spec.RouteTypeName;
+                                    model.tripTypeName = spec.tripTypeName;
+                                    model.UsedRateId = spec.UsedRateId;
+                                    model.UsedRateName = spec.UsedRateName;
+                                    model.UsePayerFilter = spec.UsePayerFilter;
+                                    model.UseRouteFilter = spec.UseRouteFilter;
+                                    model.UseSpecificationTypeFilter = spec.UseSpecificationTypeFilter;
+                                    model.UseTripTypeFilter = spec.UseTripTypeFilter;
+                                    model.UseVehicleTypeFilter = spec.UseVehicleTypeFilter;
+                                    model.VehicleTypeName = spec.VehicleTypeName;
                                     specificationListViews.Add(model);
                                 }
                                 else
@@ -527,7 +683,19 @@ namespace CorumAdminUI.Controllers
                                         VehicleTypeName = specificationList[0].VehicleTypeName,
                                         edrpou_aps = it.Value[i].EDRPOUContragent,
                                         email_aps = it.Value[i].emailContragent,
-                                        isTruck = specificationList[0].isTruck
+                                        isTruck = specificationList[0].isTruck,
+                                        itemExternalNumber = it.Value[i].itemExternalNumber,
+                                        ContragentIdAps = it.Value[i].ContragentIdAps,
+                                        DateUpdateInfo = it.Value[i].DateUpdateInfo,
+                                        IsWinner = it.Value[i].IsWinner,
+                                        EDRPOUContragent = it.Value[i].EDRPOUContragent,
+                                        emailContragent = it.Value[i].emailContragent,
+                                        transportUnitsProposed = it.Value[i].transportUnitsProposed,
+                                        acceptedTransportUnits = it.Value[i].acceptedTransportUnits,
+                                        costOfCarWithoutNDS = it.Value[i].costOfCarWithoutNDS,
+                                        tenderItemUuid = it.Value[i].tenderItemUuid,
+                                        costOfCarWithoutNDSToNull = it.Value[i].costOfCarWithoutNDSToNull,
+                                        note = it.Value[i].note
                                     };
                                     specificationListViews.Add(instance);
                                 }
@@ -768,7 +936,7 @@ namespace CorumAdminUI.Controllers
 
                 return new JsonpResult
                 {
-                    Data = new { modifRegisterTenders, response},
+                    Data = new { modifRegisterTenders, response },
                     JsonRequestBehavior = JsonRequestBehavior.AllowGet
                 };
             }

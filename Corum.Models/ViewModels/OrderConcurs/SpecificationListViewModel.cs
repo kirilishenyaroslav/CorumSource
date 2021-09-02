@@ -129,6 +129,21 @@ namespace Corum.Models.ViewModels.OrderConcurs
 
         public string FilterPayerId { get; set; }
         public int? tenderNumber { get; set; }
+        public long itemExternalNumber { get; set; }
+        public string ContragentName { get; set; }
+        public int ContragentIdAps { get; set; }
+        public System.DateTime DateUpdateInfo { get; set; }
+        public bool IsWinner { get; set; }
+        public long EDRPOUContragent { get; set; }
+        public string emailContragent { get; set; }
+        public int transportUnitsProposed { get; set; }
+        public Nullable<int> acceptedTransportUnits { get; set; }
+        public double costOfCarWithoutNDS { get; set; }
+        public int PaymentDelay { get; set; }
+        public System.Guid tenderItemUuid { get; set; }
+        public string nmcName { get; set; }
+        public double costOfCarWithoutNDSToNull { get; set; }
+        public string note { get; set; }
 
     }
 

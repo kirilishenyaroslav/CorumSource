@@ -791,7 +791,7 @@ namespace CorumAdminUI.Controllers
         {
             Debug.WriteLine("Вход в асинхронный метод");
             HangFireTasks.HangFireTasks task = new HangFireTasks.HangFireTasks();
-            await task.ListTasks();
+            await task.ListTasks(false);
             Debug.WriteLine("Выход из асинхронного метода");
         }
 

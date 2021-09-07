@@ -3699,7 +3699,7 @@ namespace Corum.DAL
 
             }
 
-            return OrdersInfo.AsQueryable();
+            return OrdersInfo.OrderByDescending(o=>DateTime.Parse(o.AcceptDate).Ticks).AsQueryable();
             //return result;
         }
 

@@ -22,6 +22,7 @@
 </style>
 
 @Html.Partial("_PartialModul", Model.tenderForma)
+@Html.Partial("_MessageToContragents", Model)
 
 
 @helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
@@ -68,13 +69,17 @@
                    @class = "delete_link btn btn-success",
                    @style = "margin-bottom:10px",
                    @onclick = "OnIndexCall(this)"
-               })
-
+               })              
                     @if (Model.DisplayValues.Count() > 0)
                     {
                         @Html.Partial("_SetListStatusButton")
                         @Html.ActionLink("Тайм-лайн", "GetListTimeline", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @id = "btnTaimLine", @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })}
 
+                    <div id="BtnSendMessageCont" style="display:inline-block">
+                        <a onclick="SendMessageToContragents(@Model.Id)" class="delete_link btn btn-success" style="margin-bottom:10px">
+                            Отправить уведомление
+                        </a>
+                    </div>
                 </div>
                 @Html.Partial("_OrderCompetitiveTarifInfo")
 
@@ -742,8 +747,50 @@
                     tags: true,
                     title: "Запрос на тендер",
                     modal: true,
-                    open: function(event, ui) {
-                    InitFilterDropDowns();
+                    open: function (event, ui) {
+                        let DateStart = document.getElementById('DateStart');
+                        let DateEnd = document.getElementById('DateEnd');
+                        var options = {
+                            year: 'numeric',
+                            month: 'numeric',
+                            day: 'numeric',                           
+                            hour: 'numeric',
+                            minute: 'numeric'
+                        };
+
+                        // Метод для форматирования даты в нужную локаль (yyyy-mm-dd'T'hh:MM)
+                        function GetFormattedDate(date) {
+                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            var day  = ("0" + (date.getDate())).slice(-2);
+                            var year = date.getFullYear();
+                            var hour =  ("0" + (date.getHours())).slice(-2);
+                            var min =  ("0" + (date.getMinutes())).slice(-2);
+                            var seg = ("0" + (date.getSeconds())).slice(-2);
+                            return year + "-" + month + "-" + day + "T" + hour + ":" +  min;
+                        }
+
+                        function RecalculateDateForModalWindow(flag) {
+                            if (flag) {
+                                let T = new Date;
+                                T.setMinutes(T.getMinutes() + 15);
+                                let getTime = T.getTime();
+                                let newDate = new Date(getTime);                              
+                                let time = GetFormattedDate(newDate);
+                                let mod = @Html.Raw(Json.Encode(Model.tenderForma.data.dateStart));
+                                return time;
+                            }
+                            else {
+                                let T = new Date;
+                                T.setHours(T.getHours() + 3);
+                                let getTime = T.getTime();
+                                let newDate = new Date(getTime);
+                                let time = GetFormattedDate(newDate);
+                                return time;
+                            }
+                        }
+                        DateStart.value = RecalculateDateForModalWindow(true);
+                        DateEnd.value = RecalculateDateForModalWindow(false);
+                        InitFilterDropDowns();
 
                     CreateJqxGrid();
                     FormInputErrorChecking(); // Метод валидации полей формы тендера

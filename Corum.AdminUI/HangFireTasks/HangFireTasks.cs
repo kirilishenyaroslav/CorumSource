@@ -21,6 +21,7 @@ namespace CorumAdminUI.HangFireTasks
         ParallelOptions options;
         List<Task> listTask;
         NameValueCollection allAppSettings;
+        bool flag;
 
         public HangFireTasks()
         {
@@ -30,6 +31,7 @@ namespace CorumAdminUI.HangFireTasks
             options.MaxDegreeOfParallelism = Environment.ProcessorCount > 3 ? Environment.ProcessorCount - 1 : 1;
             listTask = new List<Task>();
             allAppSettings = ConfigurationManager.AppSettings;
+            this.flag = true;
         }
         public async Task AsyncStatusTender(RegisterTenders item)
         {
@@ -62,7 +64,10 @@ namespace CorumAdminUI.HangFireTasks
                             RequestJSONDeserializedToModel resultDeserializedClass = JsonConvert.DeserializeObject<RequestJSONDeserializedToModel>(response);
                             context.UpdateStatusRegisterTender(numberTender, myDeserializedClass.data.process, dateUpdateStatus, resultDeserializedClass);
                             UpdateDataTableContragents updateContragents = new UpdateDataTableContragents();
-                            updateContragents.UpdateStatusContragentsData(numberTender);
+                            if (flag)
+                            {
+                                updateContragents.UpdateStatusContragentsData(numberTender);
+                            }
                         }
                         catch (Exception e)
                         {
@@ -93,8 +98,9 @@ namespace CorumAdminUI.HangFireTasks
             catch { }
         }
 
-        public async Task ListTasks()
+        public async Task ListTasks(bool flag)
         {
+            this.flag = flag;
             listRegistryTenders = context.GetRegisterTenders();
             foreach (var item in listRegistryTenders)
             {

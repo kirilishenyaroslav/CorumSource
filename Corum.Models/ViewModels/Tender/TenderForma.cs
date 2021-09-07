@@ -381,7 +381,8 @@ namespace Corum.Models.ViewModels.Tender
 
         //public string[] props { get; set; }  //  Атрибуты лота тендера
         public string[] propAliases { get; set; } // Алиасы словарных атрибутов (необязательное поле)
-
+        public string tenderCurrency { get; set; }     // Валюта тендера
+        public int tenderCurrencyRate { get; set; }  // Курс валюты
 
         //public List<Props> props { get; set; }  // массив атрибутов (необязательное поле)
         //public List<PropAliases> propAliases { get; set; }  // массив алиасов словарных атрибутов (необязательное поле)
@@ -390,6 +391,9 @@ namespace Corum.Models.ViewModels.Tender
         public Lots()
         {
             this.lotName = "Лот №1";
+            tenderCurrency = "UAH";
+            tenderCurrencyRate = 1;
+
             //props = new string[]
             //{
             //    "ДопТочкаЗагрузки2", "ДопТочкаВыгрузки2", "ДопТочкаЗагрузки3", "ДопТочкаВыгрузки3", "ДопТочкаЗагрузки4", "ДопТочкаВыгрузки4",
@@ -476,7 +480,7 @@ namespace Corum.Models.ViewModels.Tender
             var subCompanyIdn = InitializeData.listBalanceKeepers.Find((x) => x.BalanceKeeper.Contains(subCompanyName)).subCompanyId;
             subCompanyId = (subCompanyIdn == null) ? 10 : Convert.ToInt64(subCompanyIdn);
 
-            typeTures = new string[] { "Тендер RFx", "Аукцион/Редукцион" };
+            typeTures = new string[] { "Аукцион/Редукцион", "Тендер RFx"};
             listTures = new SelectList(typeTures);
 
             depName = "Департамент по логистике";
@@ -487,8 +491,8 @@ namespace Corum.Models.ViewModels.Tender
                 listTenderCategor[item.industryId] = item.industryName;
             }
             listServices = new SelectList(listTenderCategor.Values);
-            dateStartDef = date.AddHours(2).ToString("yyyy-MM-dd'T'HH:mm");
-            dateEndDef = date.AddDays(10).ToString("yyyy-MM-dd'T'HH:mm");
+            dateStartDef = date.AddMinutes(15).ToString("yyyy-MM-dd'T'HH:mm");
+            dateEndDef = date.AddHours(3).ToString("yyyy-MM-dd'T'HH:mm");
             dateStart = dateStartDef;
             dateEnd = dateEndDef;
 
@@ -502,6 +506,9 @@ namespace Corum.Models.ViewModels.Tender
             this.otherParams.Add("UNLOADINGDATEREQUIRED", $"{InitializeData.competitiveListViewModel.ToDateRaw}");
             this.otherParams.Add("ROUTE", $"[{ InitializeData.competitiveListViewModel.ShipperCountryName}]|{InitializeData.competitiveListViewModel.CityFrom}({ InitializeData.orderTruckTransport.Shipper}) - [‎{InitializeData.competitiveListViewModel.ConsigneeCountryName}]|{InitializeData.competitiveListViewModel.CityTo}({InitializeData.orderTruckTransport.Consignee})".Trim());
             this.otherParams.Add("CARGO_NAME", $"{InitializeData.competitiveListViewModel.TruckDescription.Trim()}");
+
+            tenderCurrency = "UAH";
+            tenderCurrencyRate = 1;
         }
 
 
@@ -614,6 +621,9 @@ namespace Corum.Models.ViewModels.Tender
                 tenderEXTERNALN = (value.Length > 20) ? value.Substring(0, 19) : value;
             }
         }
+
+        public string tenderCurrency { get; set; }     // Валюта тендера
+        public int tenderCurrencyRate { get; set; }  // Курс валюты
 
 
         [Display(Name = "Тип тура")]

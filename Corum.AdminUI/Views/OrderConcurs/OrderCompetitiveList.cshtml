@@ -22,6 +22,7 @@
 </style>
 
 @Html.Partial("_PartialModul", Model.tenderForma)
+@Html.Partial("_MessageToContragents", Model)
 
 
 @helper TPagging(string action, string controller, Corum.Models.NavigationInfo navInfo, WebViewPage page)
@@ -68,13 +69,17 @@
                    @class = "delete_link btn btn-success",
                    @style = "margin-bottom:10px",
                    @onclick = "OnIndexCall(this)"
-               })
-
+               })              
                     @if (Model.DisplayValues.Count() > 0)
                     {
                         @Html.Partial("_SetListStatusButton")
                         @Html.ActionLink("Тайм-лайн", "GetListTimeline", "OrderConcurs", new { OrderId = Model.CompetitiveListInfo.Id }, new { @id = "btnTaimLine", @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })}
 
+                    <div id="BtnSendMessageCont" style="display:inline-block">
+                        <a onclick="SendMessageToContragents(@Model.Id)" class="delete_link btn btn-success" style="margin-bottom:10px">
+                            Отправить уведомление
+                        </a>
+                    </div>
                 </div>
                 @Html.Partial("_OrderCompetitiveTarifInfo")
 

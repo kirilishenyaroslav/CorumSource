@@ -1,0 +1,113 @@
+﻿@model Corum.Models.OrderNavigationResult<Corum.Models.ViewModels.OrderConcurs.OrderCompetitiveListViewModel>
+
+<link type="text/css" rel="stylesheet" href="~/Content/Tender/_MessageToContr.css"/>
+<container style="display:none;">
+    <div id="partialMessageToContr" class="PartMess">
+        <table>
+            <tbody>
+                @*<tr>
+                    <td>
+                        Hello
+                    </td>                
+                </tr>
+                <tr>
+                    <td>
+                        Hello
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Hello
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Hello
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Hello
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Hello
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Hello
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Hello
+                    </td>
+                </tr>*@
+            </tbody>
+        </table>
+    </div>
+    
+</container>
+
+
+<script>
+    function SendMessageToContragents(orderId) {
+        
+
+            $('#partialMessageToContr')
+                .dialog(
+                {
+                    dialogClass: "jq-dialog-window-custom  modal_dialog",
+                    autoOpen: false,
+                    width: 800,
+                    top: 50,
+                    resizable: true,
+                    tags: true,
+                    title: "Уведомление контрагентам",
+                    modal: true,
+                        open: function (event, ui) {
+                            let btnFocus = document.getElementById('btnCancelFoc');
+                            $(btnFocus).blur();
+
+                    },
+
+                    close: function(event, ui) {
+
+                        $(this).dialog('destroy');
+                    },
+                    create: function(event, ui) {
+                        $("#disable_all").addClass("disable_all");
+                    },
+                    beforeClose: function(event, ui) {
+                        $("#disable_all").removeClass("disable_all");
+                    },
+                    buttons:
+                    [
+                        {
+                            text: "Отмена",
+                            "class": 'cancel-btn btn btn-primary',
+                            id: "btnCancelFoc",
+                            click: function() {
+                                $(this).dialog("close");
+                            }
+                        },
+                        {
+                            text: "Отправить",
+                            "class": 'btn btn-success',
+                            click: function() {
+
+                                $(this).dialog("close");
+
+                            }
+                        }
+                    ]
+                });
+
+            $('#partialMessageToContr').dialog('open');
+
+            return;
+    }
+
+</script>

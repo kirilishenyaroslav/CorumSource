@@ -977,7 +977,9 @@ namespace Corum.DAL
                     DaysDelayStep2 = model.DaysDelay,
                     CarCost = (decimal)model.costOfCarWithoutNDS,
                     Comments = model.note,
-                    IsSelectedId = model.IsWinner
+                    IsSelectedId = model.IsWinner,
+                    itemDescription = model.itemDescription,
+                    cargoWeight = model.cargoWeight
                 };
 
                 db.OrderCompetitiveList.Add(concurs);
@@ -1022,7 +1024,9 @@ namespace Corum.DAL
                         DaysDelayStep2 = model.DaysDelay,
                         CarCost = (decimal)model.costOfCarWithoutNDS,
                         Comments = model.note,
-                        IsSelectedId = model.IsWinner
+                        IsSelectedId = model.IsWinner,
+                        itemDescription = model.itemDescription,
+                        cargoWeight = model.cargoWeight
                     };
                 }
                 catch (Exception e)

@@ -32,5 +32,7 @@ namespace Corum.DAL.Entity
         public string nmcName { get; set; }
         public double costOfCarWithoutNDSToNull { get; set; }
         public string note { get; set; }
+        public string itemDescription { get; set; }
+        public string cargoWeight { get; set; }
     }
 }

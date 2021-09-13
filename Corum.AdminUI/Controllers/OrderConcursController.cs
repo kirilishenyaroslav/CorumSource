@@ -54,8 +54,8 @@ namespace CorumAdminUI.Controllers
         }
 
         void GetContragentsFromTender()
-        { 
-        
+        {
+
         }
         [HttpGet]
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]

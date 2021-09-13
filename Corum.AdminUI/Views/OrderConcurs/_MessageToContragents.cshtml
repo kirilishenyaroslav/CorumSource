@@ -1,113 +1,567 @@
 ﻿@model Corum.Models.OrderNavigationResult<Corum.Models.ViewModels.OrderConcurs.OrderCompetitiveListViewModel>
 
-<link type="text/css" rel="stylesheet" href="~/Content/Tender/_MessageToContr.css"/>
+<link type="text/css" rel="stylesheet" href="~/Content/Tender/MessageStyle.css" />
 <container style="display:none;">
-    <div id="partialMessageToContr" class="PartMess">
-        <table>
-            <tbody>
-                @*<tr>
-                    <td>
-                        Hello
-                    </td>                
-                </tr>
-                <tr>
-                    <td>
-                        Hello
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Hello
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Hello
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Hello
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Hello
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Hello
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        Hello
-                    </td>
-                </tr>*@
-            </tbody>
-        </table>
+    <div class="contSendMessage" id="partialMessageToContr">
+        <p class="pWinner">Победителям:</p>
+        <div id="sectOtherWinner" class="sectOtherColor">
+            <p class="preWin">Уважаемый партнер.</p>
+            <p class="preWin">Спасибо за участие.</p>
+            <p class="preWin">Вы стали победителем.</p>
+            <p class="preWin">Прошу заполнить <a id="linkToFormContr" class="linkToForm" href="#" title="link">форму</a> по транспортному/ым средствам.</p>
+            <p class="selectMessContr">
+                <label class="spanSendForm">Отправить на email:</label>
+                <select name="selectMenedger" id="selMened">
+                    <option selected disabled>Выбрать...</option>
+                    <option value="Yalovega">yalovega.denis@corum.com</option>
+                    <option value="Vlasov">vlasov.yuriy@corum.com</option>
+                </select>
+            </p>
+        </div>
+
+
+        <p class="pWinner">Проигравшим:</p>
+        <div id="sectOtherColor" class="sectOtherColor">
+            <p class="preWin">Уважаемый партнер.</p>
+            <p class="preWin">Спасибо за участие.</p>
+            <p class="preWin">Ваше предложение по данной заявке/тендеру не конкурентоспособно.</p>
+        </div>
     </div>
-    
+
 </container>
 
 
 <script>
-    function SendMessageToContragents(orderId) {
-        
+    let allContragents = [];
+    let competitiveListInfo = JSON.parse(sessionStorage.getItem('CompetitiveListInfo'));
+    class Winner {
+        constructor(expeditorName, numberTender, order, transportationType, route, nameOfCargo, cargoWeight, dowloadingDate,
+            unloadingDate, description, price, paymentDeferment) {
+            this.expeditorName = expeditorName;
+            this.numberTender = numberTender;
+            this.order = order;
+            this.transportationType = transportationType;
+            this.route = route;
+            this.nameOfCargo = nameOfCargo;
+            this.cargoWeight = cargoWeight;
+            this.dowloadingDate = dowloadingDate;
+            this.unloadingDate = unloadingDate;
+            this.description = description;
+            this.price = price;
+            this.paymentDeferment = paymentDeferment;
+            this.isWinner = true;
+        }
+        numberOfVehicles = 1;
+        countWinner = 1;
+    };
+    class Loser {
+        constructor(expeditorName, numberTender, order, transportationType, route, nameOfCargo, cargoWeight, price) {
+            this.expeditorName = expeditorName;
+            this.numberTender = numberTender;
+            this.order = order;
+            this.transportationType = transportationType;
+            this.route = route;
+            this.nameOfCargo = nameOfCargo;
+            this.cargoWeight = cargoWeight;
+            this.price = price;
+        }
+        countLoser = 1;
+    };
+    let listWinners = [];
+    let listLosers = [];
+    let listSameWinners = [];
+    let listSameLosers = [];
 
-            $('#partialMessageToContr')
-                .dialog(
+
+    function SendMessageToContragents(orderId) {
+
+
+        $('#partialMessageToContr')
+            .dialog(
                 {
                     dialogClass: "jq-dialog-window-custom  modal_dialog",
                     autoOpen: false,
                     width: 800,
                     top: 50,
-                    resizable: true,
+                    resizable: false,
                     tags: true,
                     title: "Уведомление контрагентам",
                     modal: true,
-                        open: function (event, ui) {
-                            let btnFocus = document.getElementById('btnCancelFoc');
-                            $(btnFocus).blur();
+                    open: function (event, ui) {
+                        let btnFocus = document.getElementById('btnCancelFoc');
+                        let linkToFormContr = document.getElementById('linkToFormContr');
+                        $(linkToFormContr).blur();
+                        $(btnFocus).blur();
+
+                        let DropDownListTender = document.getElementById('drpDwnListTend');
+                        let tendNumber = Number(DropDownListTender.textContent.replace(" ", ""));
+                        DeleteOldDataContragents();
+                        SetDataMessageToContragents(tendNumber);
+
 
                     },
 
-                    close: function(event, ui) {
+                    close: function (event, ui) {
 
                         $(this).dialog('destroy');
                     },
-                    create: function(event, ui) {
+                    create: function (event, ui) {
                         $("#disable_all").addClass("disable_all");
                     },
-                    beforeClose: function(event, ui) {
+                    beforeClose: function (event, ui) {
                         $("#disable_all").removeClass("disable_all");
                     },
                     buttons:
-                    [
-                        {
-                            text: "Отмена",
-                            "class": 'cancel-btn btn btn-primary',
-                            id: "btnCancelFoc",
-                            click: function() {
-                                $(this).dialog("close");
-                            }
-                        },
-                        {
-                            text: "Отправить",
-                            "class": 'btn btn-success',
-                            click: function() {
+                        [
+                            {
+                                text: "Отмена",
+                                "class": 'cancel-btn btn btn-primary',
+                                id: "btnCancelFoc",
+                                click: function () {
+                                    $(this).dialog("close");
+                                }
+                            },
+                            {
+                                text: "Отправить",
+                                "class": 'btn btn-success',
+                                click: function () {
 
-                                $(this).dialog("close");
+                                    $(this).dialog("close");
 
+                                }
                             }
-                        }
-                    ]
+                        ]
                 });
 
-            $('#partialMessageToContr').dialog('open');
+        $('#partialMessageToContr').dialog('open');
 
-            return;
+        return;
+    }
+
+
+    // Заполнение данных о победителях и проигравших контрагентах в модальное окно
+    function SetDataMessageToContragents(tenderNumber) {
+        allContragents = (JSON.parse(sessionStorage.getItem('listDisplayValues')))[tenderNumber];
+        if (allContragents != null && allContragents.length != 0) {
+            for (const val of allContragents) {
+                switch (val.IsSelectedId) {
+                    case false: {
+                        listLosers.push(val);
+                        break;
+                    }
+                    case true: {
+                        listWinners.push(val);
+                        break;
+                    }
+                }
+            };
+
+            for (let x = 0; x < listWinners.length; x++) {
+                if (listWinners[x] != undefined) {
+                    listSameWinners.push(new Winner(listWinners[x].ExpeditorName, listWinners[x].tenderNumber, listWinners[x].OrderId,
+                        listWinners[x].NameSpecification, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.Route)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.TruckDescription)),
+                        listWinners[x].cargoWeight, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.FromDate)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.ToDate)), listWinners[x].itemDescription,
+                        listWinners[x].CarCost, listWinners[x].DaysDelayStep2));
+                    for (let y = x + 1; y < listWinners.length; y++) {
+                        if (listWinners[y] != undefined && listWinners[x].ExpeditorName == listWinners[y].ExpeditorName &&
+                            listWinners[x].NameSpecification == listWinners[y].NameSpecification &&
+                            listWinners[x].CarCost == listWinners[y].CarCost) {
+                            if (listSameWinners != null && listSameWinners != 0) {
+                                listSameWinners.forEach(function (val) {
+                                    if (listWinners[y] != undefined && val.expeditorName == listWinners[y].ExpeditorName) {
+                                        ++val.countWinner;
+                                        ++val.numberOfVehicles;
+                                        delete listWinners[y];
+                                        return;
+                                    }
+                                });
+                            }
+                        }
+                    }
+                }
+            }
+
+            for (let x = 0; x < listLosers.length; x++) {
+                if (listLosers[x] != undefined) {
+                    listSameLosers.push(new Loser(listLosers[x].ExpeditorName, listLosers[x].tenderNumber, listLosers[x].OrderId,
+                        listLosers[x].NameSpecification, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.Route)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.TruckDescription)),
+                        listLosers[x].cargoWeight, listLosers[x].CarCost));
+                    for (let y = x + 1; y < listLosers.length; y++) {
+                        if (listLosers[y] != undefined) {
+                            if (listLosers[y] != undefined && listLosers[x].ExpeditorName == listLosers[y].ExpeditorName &&
+                                listLosers[x].NameSpecification == listLosers[y].NameSpecification &&
+                                listLosers[x].CarCost == listLosers[y].CarCost) {
+                                if (listSameLosers != null && listSameLosers != 0) {
+                                    listSameLosers.forEach(function (val) {
+                                        if (listLosers[y] != undefined && val.expeditorName == listLosers[y].ExpeditorName) {
+                                            ++val.countLoser;
+                                            delete listLosers[y];
+                                            return;
+                                        }
+                                    });
+                                }
+                            }
+                        }
+
+                    }
+                }
+            }
+
+        }
+        CreateHTMLTableWithDataWinnersContragents();
+        CreateHTMLTableWithDataLosersContragents();
+    }
+    // Метод для создания и вывода данных о победителях контрагентах в модальное окно
+    function CreateHTMLTableWithDataWinnersContragents() {
+        let sectOtherWinner = document.getElementById('sectOtherWinner');
+
+        // Создание приветствия
+        let parhWinnerOne = document.createElement('p');
+        $(parhWinnerOne).addClass('preWin');
+        $(parhWinnerOne).text('Уважаемый партнер.');
+        sectOtherWinner.appendChild(parhWinnerOne);
+
+        let parhWinnerTwo = document.createElement('p');
+        $(parhWinnerTwo).addClass('preWin');
+        $(parhWinnerTwo).text('Спасибо за участие.');
+        sectOtherWinner.appendChild(parhWinnerTwo);
+
+        let parhWinnerThree = document.createElement('p');
+        $(parhWinnerThree).addClass('preWin');
+        $(parhWinnerThree).text('Вы стали победителем.');
+        sectOtherWinner.appendChild(parhWinnerThree);
+
+        let parhWinnerFour = document.createElement('p');
+        $(parhWinnerFour).addClass('preWin');
+        $(parhWinnerFour).append(`Прошу заполнить <a id="linkToFormContr" class="linkToForm" href="#" title="link">форму</a> по транспортному/ым средствам.`);
+        sectOtherWinner.appendChild(parhWinnerFour);
+
+        let parhWinnerFive = document.createElement('p');
+        $(parhWinnerFive).addClass('selectMessContr');
+        let label = document.createElement('label');
+        $(label).addClass('spanSendForm');
+        $(label).text('Отправить на email:');
+        parhWinnerFive.appendChild(label);
+        let select = document.createElement('select');
+        $(select).attr('id', 'selMened');
+        $(select).attr('name', 'selectMenedger');
+        let optionOne = document.createElement('option');
+        $(optionOne).attr('selected', 'selected');
+        $(optionOne).attr('disabled', 'disabled');
+        $(optionOne).text('Выбрать...');
+        select.appendChild(optionOne);
+        let optionTwo = document.createElement('option');
+        $(optionTwo).attr('value','Yalovega');
+        $(optionTwo).text('yalovega.denis@corum.com');
+        select.appendChild(optionTwo);
+        let optionThree = document.createElement('option');
+        $(optionThree).attr('value','Vlasov');
+        $(optionThree).text('vlasov.yuriy@corum.com');
+        select.appendChild(optionThree);
+        parhWinnerFive.appendChild(select);
+       
+
+        sectOtherWinner.appendChild(parhWinnerFive);
+
+
+        for (const val of listSameWinners) {
+            let detWinner = document.createElement('details');
+            $(detWinner).attr('id', 'detWinner');
+
+            let summary = document.createElement('summary');
+            let prepos = `${val.expeditorName} (${val.countWinner} ${(val.countWinner > 1)?'предложения':'предложение'})`;
+            $(summary).text(prepos);
+            detWinner.appendChild(summary);
+
+            // Создание таблицы
+            let tableWinner = document.createElement('table');
+            $(tableWinner).addClass('tbWinner');
+
+            // Создание тела таблицы tbody
+            let tbody = document.createElement('tbody');
+
+            // Создание первой строки таблицы
+            let trOne = document.createElement('tr');
+            let thOne = document.createElement('th');
+            $(thOne).addClass('thMessCont tdThMessCont');
+            $(thOne).text('Заявка/номер');
+            trOne.appendChild(thOne);
+            let tdOne = document.createElement('td');
+            $(tdOne).addClass('tdThMessCont');
+            $(tdOne).text(`Тендер №${val.numberTender}, Заявка №${val.order}`);
+            trOne.appendChild(tdOne);
+            tbody.appendChild(trOne);
+
+            // Создание второй строки таблицы
+            let trTwo = document.createElement('tr');
+            let thTwo = document.createElement('th');
+            $(thTwo).addClass('thMessCont tdThMessCont');
+            $(thTwo).text('Тип перевозки');
+            trTwo.appendChild(thTwo);
+            let tdTwo = document.createElement('td');
+            $(tdTwo).addClass('tdThMessCont');
+            $(tdTwo).text(`${val.transportationType}`);
+            trTwo.appendChild(tdTwo);
+            tbody.appendChild(trTwo);
+
+
+            // Создание третьей строки таблицы
+            let trThree = document.createElement('tr');
+            let thThree = document.createElement('th');
+            $(thThree).addClass('thMessCont tdThMessCont');
+            $(thThree).text('Маршрут');
+            trThree.appendChild(thThree);
+            let tdThree = document.createElement('td');
+            $(tdThree).addClass('tdThMessCont');
+            $(tdThree).text(`${val.route}`);
+            trThree.appendChild(tdThree);
+            tbody.appendChild(trThree);
+
+
+            // Создание четвертой строки таблицы
+            let trFour = document.createElement('tr');
+            let thFour = document.createElement('th');
+            $(thFour).addClass('thMessCont tdThMessCont');
+            $(thFour).text('Наименование груза/ Вес, т');
+            trFour.appendChild(thFour);
+            let tdFour = document.createElement('td');
+            $(tdFour).addClass('tdThMessCont');
+            $(tdFour).text(`${val.nameOfCargo} / ${val.cargoWeight}`);
+            trFour.appendChild(tdFour);
+            tbody.appendChild(trFour);
+
+
+            // Создание пятой строки таблицы
+            let trFive = document.createElement('tr');
+            let thFive = document.createElement('th');
+            $(thFive).addClass('thMessCont tdThMessCont');
+            $(thFive).text('Дата загрузки требуемая');
+            trFive.appendChild(thFive);
+            let tdFive = document.createElement('td');
+            $(tdFive).addClass('tdThMessCont');
+            $(tdFive).text(`${val.dowloadingDate}`);
+            trFive.appendChild(tdFive);
+            tbody.appendChild(trFive);
+
+            // Создание шестой строки таблицы
+            let trSix = document.createElement('tr');
+            let thSix = document.createElement('th');
+            $(thSix).addClass('thMessCont tdThMessCont');
+            $(thSix).text('Дата выгрузки требуемая');
+            trSix.appendChild(thSix);
+            let tdSix = document.createElement('td');
+            $(tdSix).addClass('tdThMessCont');
+            $(tdSix).text(`${val.unloadingDate}`);
+            trSix.appendChild(tdSix);
+            tbody.appendChild(trSix);
+
+
+            // Создание седьмой строки таблицы
+            let trSeven = document.createElement('tr');
+            let thSeven = document.createElement('th');
+            $(thSeven).addClass('thMessCont tdThMessCont');
+            $(thSeven).text('Описание');
+            trSeven.appendChild(thSeven);
+            let tdSeven = document.createElement('td');
+            $(tdSeven).addClass('tdThMessCont');
+            $(tdSeven).text(`${val.description}`);
+            trSeven.appendChild(tdSeven);
+            tbody.appendChild(trSeven);
+
+
+            // Создание восьмой строки таблицы
+            let trEight = document.createElement('tr');
+            let thEight = document.createElement('th');
+            $(thEight).addClass('thMessCont tdThMessCont');
+            $(thEight).text('Кол-во транспортных средств акцептовано');
+            trEight.appendChild(thEight);
+            let tdEight = document.createElement('td');
+            $(tdEight).addClass('tdThMessCont');
+            $(tdEight).text(`${val.numberOfVehicles}`);
+            trEight.appendChild(tdEight);
+            tbody.appendChild(trEight);
+
+
+            // Создание девятой строки таблицы
+            let trNine = document.createElement('tr');
+            let thNine = document.createElement('th');
+            $(thNine).addClass('thMessCont tdThMessCont');
+            $(thNine).text('Цена фрахт, без НДС/ТС');
+            trNine.appendChild(thNine);
+            let tdNine = document.createElement('td');
+            $(tdNine).addClass('tdThMessCont');
+            $(tdNine).text(`${val.price}`);
+            trNine.appendChild(tdNine);
+            tbody.appendChild(trNine);
+
+
+            // Создание десятой строки таблицы
+            let trTen = document.createElement('tr');
+            let thTen = document.createElement('th');
+            $(thTen).addClass('thMessCont tdThMessCont');
+            $(thTen).text('Отсрочка платежа, дней');
+            trTen.appendChild(thTen);
+            let tdTen = document.createElement('td');
+            $(tdTen).addClass('tdThMessCont');
+            $(tdTen).text(`${val.paymentDeferment}`);
+            trTen.appendChild(tdTen);
+            tbody.appendChild(trTen);
+
+            // Добавление tbody в table
+            tableWinner.appendChild(tbody);
+
+            // Добавление table в details
+            detWinner.appendChild(tableWinner);
+
+            // Добавление details в секцию div
+            sectOtherWinner.appendChild(detWinner);
+        };
+
+        let parhWinnerFooterOne = document.createElement('p');
+        let parhWinnerFooterTwo = document.createElement('p');
+        $(parhWinnerFooterOne).addClass('preWin addMarg');
+        $(parhWinnerFooterOne).text('С уважением,');
+        $(parhWinnerFooterTwo).addClass('preWin addMargBottom');
+        $(parhWinnerFooterTwo).text('Департамент по логистике КОРУМ ГРУП');
+
+        // Добавление параграфов в секцию div
+        sectOtherWinner.appendChild(parhWinnerFooterOne);
+        sectOtherWinner.appendChild(parhWinnerFooterTwo);
+    }
+
+
+    // Метод для создания и вывода данных о проигравших контрагентах в модальное окно
+    function CreateHTMLTableWithDataLosersContragents() {
+        let sectOtherColor = document.getElementById('sectOtherColor');
+
+        // Создание приветствия
+        let parhLoserOne = document.createElement('p');
+        $(parhLoserOne).addClass('preWin');
+        $(parhLoserOne).text('Уважаемый партнер.');
+        sectOtherColor.appendChild(parhLoserOne);
+
+        let parhLoserTwo = document.createElement('p');
+        $(parhLoserTwo).addClass('preWin');
+        $(parhLoserTwo).text('Спасибо за участие.');
+        sectOtherColor.appendChild(parhLoserTwo);
+
+        let parhLoserThree = document.createElement('p');
+        $(parhLoserThree).addClass('preWin');
+        $(parhLoserThree).text('Ваше предложение по данной заявке/тендеру не конкурентоспособно.');
+        sectOtherColor.appendChild(parhLoserThree);
+
+        for (const val of listSameLosers) {
+            let detWinner = document.createElement('details');
+            $(detWinner).attr('id', 'detWinner');
+
+            let summary = document.createElement('summary');
+            let prepos = `${val.expeditorName} (${val.countLoser} ${(val.countLoser > 1)?'предложения':'предложение'})`;
+            $(summary).text(prepos);
+            detWinner.appendChild(summary);
+
+            // Создание таблицы
+            let tableWinner = document.createElement('table');
+            $(tableWinner).addClass('tbWinner');
+
+            // Создание тела таблицы tbody
+            let tbody = document.createElement('tbody');
+
+            // Создание первой строки таблицы
+            let trOne = document.createElement('tr');
+            let thOne = document.createElement('th');
+            $(thOne).addClass('thMessCont tdThMessCont');
+            $(thOne).text('Заявка/номер');
+            trOne.appendChild(thOne);
+            let tdOne = document.createElement('td');
+            $(tdOne).addClass('tdThMessCont');
+            $(tdOne).text(`Тендер №${val.numberTender}, Заявка №${val.order}`);
+            trOne.appendChild(tdOne);
+            tbody.appendChild(trOne);
+
+            // Создание второй строки таблицы
+            let trTwo = document.createElement('tr');
+            let thTwo = document.createElement('th');
+            $(thTwo).addClass('thMessCont tdThMessCont');
+            $(thTwo).text('Тип перевозки');
+            trTwo.appendChild(thTwo);
+            let tdTwo = document.createElement('td');
+            $(tdTwo).addClass('tdThMessCont');
+            $(tdTwo).text(`${val.transportationType}`);
+            trTwo.appendChild(tdTwo);
+            tbody.appendChild(trTwo);
+
+
+            // Создание третьей строки таблицы
+            let trThree = document.createElement('tr');
+            let thThree = document.createElement('th');
+            $(thThree).addClass('thMessCont tdThMessCont');
+            $(thThree).text('Маршрут');
+            trThree.appendChild(thThree);
+            let tdThree = document.createElement('td');
+            $(tdThree).addClass('tdThMessCont');
+            $(tdThree).text(`${val.route}`);
+            trThree.appendChild(tdThree);
+            tbody.appendChild(trThree);
+
+
+            // Создание четвертой строки таблицы
+            let trFour = document.createElement('tr');
+            let thFour = document.createElement('th');
+            $(thFour).addClass('thMessCont tdThMessCont');
+            $(thFour).text('Наименование груза/ Вес, т');
+            trFour.appendChild(thFour);
+            let tdFour = document.createElement('td');
+            $(tdFour).addClass('tdThMessCont');
+            $(tdFour).text(`${val.nameOfCargo} / ${val.cargoWeight}`);
+            trFour.appendChild(tdFour);
+            tbody.appendChild(trFour);
+
+            // Создание девятой строки таблицы
+            let trNine = document.createElement('tr');
+            let thNine = document.createElement('th');
+            $(thNine).addClass('thMessCont tdThMessCont');
+            $(thNine).text('Цена фрахт, без НДС/ТС');
+            trNine.appendChild(thNine);
+            let tdNine = document.createElement('td');
+            $(tdNine).addClass('tdThMessCont');
+            $(tdNine).text(`${val.price}`);
+            trNine.appendChild(tdNine);
+            tbody.appendChild(trNine);
+
+            // Добавление tbody в table
+            tableWinner.appendChild(tbody);
+
+            // Добавление table в details
+            detWinner.appendChild(tableWinner);
+
+            // Добавление details в секцию div
+            sectOtherColor.appendChild(detWinner);
+
+        };
+
+        let parhWinnerFooterOne = document.createElement('p');
+        let parhWinnerFooterTwo = document.createElement('p');
+        $(parhWinnerFooterOne).addClass('preWin addMarg');
+        $(parhWinnerFooterOne).text('С уважением,');
+        $(parhWinnerFooterTwo).addClass('preWin');
+        $(parhWinnerFooterTwo).text('Департамент по логистике КОРУМ ГРУП');
+
+        // Добавление параграфов в секцию div
+        sectOtherColor.appendChild(parhWinnerFooterOne);
+        sectOtherColor.appendChild(parhWinnerFooterTwo);
+    }
+
+    function DeleteOldDataContragents() {
+        let sectOtherWinner = document.getElementById('sectOtherWinner');
+        let sectOtherColor = document.getElementById('sectOtherColor');
+        sectOtherWinner.innerHTML = "";
+        sectOtherColor.innerHTML = "";
+
+        allContragents = [];
+        listWinners = [];
+        listLosers = [];
+        listSameWinners = [];
+        listSameLosers = [];
     }
 
 </script>

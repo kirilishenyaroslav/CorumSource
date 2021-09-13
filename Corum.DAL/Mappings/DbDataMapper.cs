@@ -1284,7 +1284,10 @@ namespace Corum.DAL.Mappings
                 IsSelectedId = o.IsSelectedId ?? false,
                 SpecificationId = o.SpecificationId ?? 0,
                 IsChange = o.IsChange ?? false,
-                GenId = o.GenId ?? 0
+                GenId = o.GenId ?? 0,
+                tenderNumber = o.tenderNumber,
+                itemDescription = o.itemDescription,
+                cargoWeight = o.cargoWeight
             };
         }
 

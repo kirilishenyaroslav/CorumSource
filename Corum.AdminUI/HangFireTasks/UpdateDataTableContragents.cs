@@ -53,6 +53,7 @@ namespace CorumAdminUI.HangFireTasks
                     updateDeserializedClass = context.UpdateCLStatusTenderOrder(myDeserializedClass, tenderNumber);
                     if (Int32.Parse(updateDeserializedClass.process) >= 8)
                     {
+                        string cargoWeight = null;
                         // Вытягивание данных о контрагентах из aps tender
                         Dictionary<long, List<RegisterTenderContragent>> contragents = new Dictionary<long, List<RegisterTenderContragent>>();
                         if (myDeserializedClass.data.lots[0].items.Count != 0 && Int32.Parse(myDeserializedClass.data.process) >= 8)
@@ -92,8 +93,18 @@ namespace CorumAdminUI.HangFireTasks
                                     double costOfCarWithoutNDSToNull = 0d;
                                     int paymentDelay = 0;
                                     string note = null;
+                                    string itemsDescription = items.itemNote;
                                     try
                                     {
+                                        foreach (var it in items.propValues)
+                                        {
+                                            if (it.ВесТ != null)
+                                            {
+                                                cargoWeight = it.ВесТ;
+                                                break;
+                                            }
+                                        }
+
                                         for (int i = 0; i < el.listCritariaValues.Count; i++)
                                         {
                                             if (costOfCarWithoutNDS == 0)
@@ -119,6 +130,7 @@ namespace CorumAdminUI.HangFireTasks
                                     }
                                     if (isWinnerContragent != null && el.SupplierId != isWinnerContragent.SupplierId)
                                     {
+
                                         RegisterTenderContragent registerTenderContragent = new RegisterTenderContragent()
                                         {
                                             OrderId = Int64.Parse(myDeserializedClass.data.tenderExternalN.Remove(myDeserializedClass.data.tenderExternalN.IndexOf('-'))),
@@ -137,7 +149,9 @@ namespace CorumAdminUI.HangFireTasks
                                             PaymentDelay = paymentDelay,
                                             tenderItemUuid = Guid.Parse(items.tenderItemUuid),
                                             nmcName = items.nmcName,
-                                            note = note
+                                            note = note,
+                                            itemDescription = itemsDescription,
+                                            cargoWeight = cargoWeight
                                         };
                                         tenderContragents.Add(registerTenderContragent);
                                     }
@@ -161,7 +175,9 @@ namespace CorumAdminUI.HangFireTasks
                                             PaymentDelay = paymentDelay,
                                             tenderItemUuid = Guid.Parse(items.tenderItemUuid),
                                             nmcName = items.nmcName,
-                                            note = note
+                                            note = note,
+                                            itemDescription = itemsDescription,
+                                            cargoWeight = cargoWeight
                                         };
                                         tenderContragents.Add(registerTenderContragent);
                                     }
@@ -262,6 +278,8 @@ namespace CorumAdminUI.HangFireTasks
                                     model.UseTripTypeFilter = spec.UseTripTypeFilter;
                                     model.UseVehicleTypeFilter = spec.UseVehicleTypeFilter;
                                     model.VehicleTypeName = spec.VehicleTypeName;
+                                    model.itemDescription = it.Value[i].itemDescription;
+                                    model.cargoWeight = cargoWeight;
                                     specificationListViews.Add(model);
                                 }
                                 else
@@ -310,7 +328,9 @@ namespace CorumAdminUI.HangFireTasks
                                         costOfCarWithoutNDS = it.Value[i].costOfCarWithoutNDS,
                                         tenderItemUuid = it.Value[i].tenderItemUuid,
                                         costOfCarWithoutNDSToNull = it.Value[i].costOfCarWithoutNDSToNull,
-                                        note = it.Value[i].note
+                                        note = it.Value[i].note,
+                                        itemDescription = it.Value[i].itemDescription,
+                                        cargoWeight = cargoWeight
                                     };
                                     specificationListViews.Add(instance);
                                 }

@@ -158,7 +158,10 @@ namespace Corum.Models.ViewModels.OrderConcurs
         public long HistoryOrderId { get; set; }
 
         public CompetitiveListViewModel CompetitiveListInfo { get; set; }
-}
+        public Nullable<int> tenderNumber { get; set; }
+        public string itemDescription { get; set; }
+        public string cargoWeight { get; set; }
+    }
 
 }
 

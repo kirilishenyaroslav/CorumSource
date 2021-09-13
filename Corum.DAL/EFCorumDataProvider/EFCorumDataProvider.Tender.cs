@@ -638,7 +638,9 @@ namespace Corum.DAL
                                 PaymentDelay = items.PaymentDelay,
                                 tenderItemUuid = items.tenderItemUuid,
                                 transportUnitsProposed = items.transportUnitsProposed,
-                                note = items.note
+                                note = items.note,
+                                itemDescription = items.itemDescription,
+                                cargoWeight = items.cargoWeight
                             });
                             db.SaveChanges();
                         }

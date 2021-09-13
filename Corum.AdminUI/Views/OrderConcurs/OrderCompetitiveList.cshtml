@@ -69,7 +69,7 @@
                    @class = "delete_link btn btn-success",
                    @style = "margin-bottom:10px",
                    @onclick = "OnIndexCall(this)"
-               })              
+               })
                     @if (Model.DisplayValues.Count() > 0)
                     {
                         @Html.Partial("_SetListStatusButton")
@@ -77,7 +77,7 @@
 
                     <div id="BtnSendMessageCont" style="display:inline-block">
                         <a onclick="SendMessageToContragents(@Model.Id)" class="delete_link btn btn-success" style="margin-bottom:10px">
-                            Отправить уведомление
+                            Уведомление контр-м
                         </a>
                     </div>
                 </div>
@@ -664,6 +664,9 @@
             let listCurrentStatuses = @Html.Raw(Json.Encode(@Model.listCurrentStatuses));
             let listDisplayValues_ = @Html.Raw(Json.Encode(@Model.listDisplayValues_));
             let list_listStatuses_ = @Html.Raw(Json.Encode(@Model.list_listStatuses_));
+            let CompetitiveListInfo = @Html.Raw(Json.Encode(@Model.CompetitiveListInfo));
+            sessionStorage.setItem('CompetitiveListInfo', JSON.stringify(CompetitiveListInfo));
+
             SetSessionDataAboutListTendersOfOrder(listCurrentStatuses, listDisplayValues_, list_listStatuses_);  // Запись данных о всех тендерах, конкретной заявки в хранилище сессии на клиенте
 
             let dropDownListTender = document.getElementById('drpDwnListTend');
@@ -753,7 +756,7 @@
                         var options = {
                             year: 'numeric',
                             month: 'numeric',
-                            day: 'numeric',                           
+                            day: 'numeric',
                             hour: 'numeric',
                             minute: 'numeric'
                         };
@@ -774,7 +777,7 @@
                                 let T = new Date;
                                 T.setMinutes(T.getMinutes() + 15);
                                 let getTime = T.getTime();
-                                let newDate = new Date(getTime);                              
+                                let newDate = new Date(getTime);
                                 let time = GetFormattedDate(newDate);
                                 let mod = @Html.Raw(Json.Encode(Model.tenderForma.data.dateStart));
                                 return time;

@@ -516,7 +516,7 @@ namespace Corum.Models.ViewModels.Tender
         {
             Random random = new Random();
             typeTrure = InitializeData.formDeserializedJSON.TypeTure;
-            mode = (typeTures[0].Contains(typeTrure)) ? 1 : 2;
+            mode = (typeTures[0].Contains(typeTrure)) ? 2 : 1;
 
             budget = Convert.ToDouble(InitializeData.formDeserializedJSON.Budget);
 

@@ -460,6 +460,8 @@
           <Property Name="DaysDelayStep1" Type="int" />
           <Property Name="DaysDelayStep2" Type="int" />
           <Property Name="tenderNumber" Type="int" />
+          <Property Name="itemDescription" Type="text" />
+          <Property Name="cargoWeight" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="OrderConcursListsSteps">
           <Key>
@@ -885,6 +887,8 @@
           <Property Name="tenderItemUuid" Type="uniqueidentifier" Nullable="false" />
           <Property Name="nmcName" Type="nvarchar" MaxLength="500" Nullable="false" />
           <Property Name="note" Type="text" />
+          <Property Name="itemDescription" Type="text" />
+          <Property Name="cargoWeight" Type="varchar" MaxLength="50" />
         </EntityType>
         <EntityType Name="RegisterTenders">
           <Key>
@@ -6953,6 +6957,8 @@
           <NavigationProperty Name="ContractSpecifications" Relationship="CorumModel.FK_OrderCompetitiveList_ContractSpecifications" FromRole="OrderCompetitiveList" ToRole="ContractSpecifications" />
           <NavigationProperty Name="OrdersBase" Relationship="CorumModel.FK_OrderCompetitiveList_OrdersBase" FromRole="OrderCompetitiveList" ToRole="OrdersBase" />
           <Property Name="tenderNumber" Type="Int32" />
+          <Property Name="itemDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="cargoWeight" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         <Association Name="FK_OrderCompetitiveList_ContractSpecifications">
           <End Type="CorumModel.ContractSpecifications" Role="ContractSpecifications" Multiplicity="0..1" />
@@ -8744,6 +8750,8 @@
           <Property Name="nmcName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
           <Property Name="costOfCarWithoutNDSToNull" Type="Double" Nullable="false" />
           <Property Name="note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="itemDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="cargoWeight" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -9962,6 +9970,8 @@
           <EntitySetMapping Name="OrderCompetitiveList">
             <EntityTypeMapping TypeName="CorumModel.OrderCompetitiveList">
               <MappingFragment StoreEntitySet="OrderCompetitiveList">
+                <ScalarProperty Name="cargoWeight" ColumnName="cargoWeight" />
+                <ScalarProperty Name="itemDescription" ColumnName="itemDescription" />
                 <ScalarProperty Name="tenderNumber" ColumnName="tenderNumber" />
                 <ScalarProperty Name="DaysDelayStep2" ColumnName="DaysDelayStep2" />
                 <ScalarProperty Name="DaysDelayStep1" ColumnName="DaysDelayStep1" />
@@ -10854,6 +10864,8 @@
           <EntitySetMapping Name="RegisterTenderContragents">
             <EntityTypeMapping TypeName="CorumModel.RegisterTenderContragents">
               <MappingFragment StoreEntitySet="RegisterTenderContragents">
+                <ScalarProperty Name="cargoWeight" ColumnName="cargoWeight" />
+                <ScalarProperty Name="itemDescription" ColumnName="itemDescription" />
                 <ScalarProperty Name="note" ColumnName="note" />
                 <ScalarProperty Name="costOfCarWithoutNDSToNull" ColumnName="costOfCarWithoutNDSToNull" />
                 <ScalarProperty Name="nmcName" ColumnName="nmcName" />

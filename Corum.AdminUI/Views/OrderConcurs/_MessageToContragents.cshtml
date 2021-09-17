@@ -5,26 +5,13 @@
     <div class="contSendMessage" id="partialMessageToContr">
         <p class="pWinner">Победителям:</p>
         <div id="sectOtherWinner" class="sectOtherColor">
-            <p class="preWin">Уважаемый партнер.</p>
-            <p class="preWin">Спасибо за участие.</p>
-            <p class="preWin">Вы стали победителем.</p>
-            <p class="preWin">Прошу заполнить <a id="linkToFormContr" class="linkToForm" href="#" title="link">форму</a> по транспортному/ым средствам.</p>
-            <p class="selectMessContr">
-                <label class="spanSendForm">Отправить на email:</label>
-                <select name="selectMenedger" id="selMened">
-                    <option selected disabled>Выбрать...</option>
-                    <option value="Yalovega">yalovega.denis@corum.com</option>
-                    <option value="Vlasov">vlasov.yuriy@corum.com</option>
-                </select>
-            </p>
+
         </div>
 
 
         <p class="pWinner">Проигравшим:</p>
         <div id="sectOtherColor" class="sectOtherColor">
-            <p class="preWin">Уважаемый партнер.</p>
-            <p class="preWin">Спасибо за участие.</p>
-            <p class="preWin">Ваше предложение по данной заявке/тендеру не конкурентоспособно.</p>
+
         </div>
     </div>
 
@@ -36,7 +23,7 @@
     let competitiveListInfo = JSON.parse(sessionStorage.getItem('CompetitiveListInfo'));
     class Winner {
         constructor(expeditorName, numberTender, order, transportationType, route, nameOfCargo, cargoWeight, dowloadingDate,
-            unloadingDate, description, price, paymentDeferment) {
+            unloadingDate, description, price, paymentDeferment, emailContragent) {
             this.expeditorName = expeditorName;
             this.numberTender = numberTender;
             this.order = order;
@@ -50,12 +37,13 @@
             this.price = price;
             this.paymentDeferment = paymentDeferment;
             this.isWinner = true;
+            this.emailContragent = emailContragent;
         }
         numberOfVehicles = 1;
         countWinner = 1;
     };
     class Loser {
-        constructor(expeditorName, numberTender, order, transportationType, route, nameOfCargo, cargoWeight, price) {
+        constructor(expeditorName, numberTender, order, transportationType, route, nameOfCargo, cargoWeight, price, emailContragent) {
             this.expeditorName = expeditorName;
             this.numberTender = numberTender;
             this.order = order;
@@ -64,6 +52,7 @@
             this.nameOfCargo = nameOfCargo;
             this.cargoWeight = cargoWeight;
             this.price = price;
+            this.emailContragent = emailContragent;
         }
         countLoser = 1;
     };
@@ -161,7 +150,7 @@
                     listSameWinners.push(new Winner(listWinners[x].ExpeditorName, listWinners[x].tenderNumber, listWinners[x].OrderId,
                         listWinners[x].NameSpecification, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.Route)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.TruckDescription)),
                         listWinners[x].cargoWeight, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.FromDate)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.ToDate)), listWinners[x].itemDescription,
-                        listWinners[x].CarCost, listWinners[x].DaysDelayStep2));
+                        listWinners[x].CarCost, listWinners[x].DaysDelayStep2, listWinners[x].emailContragent));
                     for (let y = x + 1; y < listWinners.length; y++) {
                         if (listWinners[y] != undefined && listWinners[x].ExpeditorName == listWinners[y].ExpeditorName &&
                             listWinners[x].NameSpecification == listWinners[y].NameSpecification &&
@@ -185,7 +174,7 @@
                 if (listLosers[x] != undefined) {
                     listSameLosers.push(new Loser(listLosers[x].ExpeditorName, listLosers[x].tenderNumber, listLosers[x].OrderId,
                         listLosers[x].NameSpecification, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.Route)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.TruckDescription)),
-                        listLosers[x].cargoWeight, listLosers[x].CarCost));
+                        listLosers[x].cargoWeight, listLosers[x].CarCost, listLosers[x].emailContragent));
                     for (let y = x + 1; y < listLosers.length; y++) {
                         if (listLosers[y] != undefined) {
                             if (listLosers[y] != undefined && listLosers[x].ExpeditorName == listLosers[y].ExpeditorName &&
@@ -215,63 +204,98 @@
     function CreateHTMLTableWithDataWinnersContragents() {
         let sectOtherWinner = document.getElementById('sectOtherWinner');
 
-        // Создание приветствия
-        let parhWinnerOne = document.createElement('p');
-        $(parhWinnerOne).addClass('preWin');
-        $(parhWinnerOne).text('Уважаемый партнер.');
-        sectOtherWinner.appendChild(parhWinnerOne);
-
-        let parhWinnerTwo = document.createElement('p');
-        $(parhWinnerTwo).addClass('preWin');
-        $(parhWinnerTwo).text('Спасибо за участие.');
-        sectOtherWinner.appendChild(parhWinnerTwo);
-
-        let parhWinnerThree = document.createElement('p');
-        $(parhWinnerThree).addClass('preWin');
-        $(parhWinnerThree).text('Вы стали победителем.');
-        sectOtherWinner.appendChild(parhWinnerThree);
-
-        let parhWinnerFour = document.createElement('p');
-        $(parhWinnerFour).addClass('preWin');
-        $(parhWinnerFour).append(`Прошу заполнить <a id="linkToFormContr" class="linkToForm" href="#" title="link">форму</a> по транспортному/ым средствам.`);
-        sectOtherWinner.appendChild(parhWinnerFour);
-
-        let parhWinnerFive = document.createElement('p');
-        $(parhWinnerFive).addClass('selectMessContr');
-        let label = document.createElement('label');
-        $(label).addClass('spanSendForm');
-        $(label).text('Отправить на email:');
-        parhWinnerFive.appendChild(label);
-        let select = document.createElement('select');
-        $(select).attr('id', 'selMened');
-        $(select).attr('name', 'selectMenedger');
-        let optionOne = document.createElement('option');
-        $(optionOne).attr('selected', 'selected');
-        $(optionOne).attr('disabled', 'disabled');
-        $(optionOne).text('Выбрать...');
-        select.appendChild(optionOne);
-        let optionTwo = document.createElement('option');
-        $(optionTwo).attr('value','Yalovega');
-        $(optionTwo).text('yalovega.denis@corum.com');
-        select.appendChild(optionTwo);
-        let optionThree = document.createElement('option');
-        $(optionThree).attr('value','Vlasov');
-        $(optionThree).text('vlasov.yuriy@corum.com');
-        select.appendChild(optionThree);
-        parhWinnerFive.appendChild(select);
-       
-
-        sectOtherWinner.appendChild(parhWinnerFive);
 
 
         for (const val of listSameWinners) {
+
+            // Создание вложенного контейнера div
+            let forcheckBoxContrDIV = document.createElement('div');
+            $(forcheckBoxContrDIV).addClass('forcheckBoxContr');
+
+            // Создание чекбокса для выбора контрагента
+            let checkboxContragent = document.createElement('input');
+            $(checkboxContragent).attr('type', 'checkbox');
+            $(checkboxContragent).attr('checked', 'checked');
+            forcheckBoxContrDIV.appendChild(checkboxContragent);
             let detWinner = document.createElement('details');
             $(detWinner).attr('id', 'detWinner');
+            $(detWinner).attr('style', 'margin-top: 1px;');
 
+            // Создание выпадающего заголовка контрагента
             let summary = document.createElement('summary');
             let prepos = `${val.expeditorName} (${val.countWinner} ${(val.countWinner > 1)?'предложения':'предложение'})`;
             $(summary).text(prepos);
             detWinner.appendChild(summary);
+
+            // Создание контейнера в выпадающем элементе
+            let messageToContragents = document.createElement('div');
+            $(messageToContragents).attr('id', 'messageToContragents');
+            $(messageToContragents).addClass('messageToContrag');
+
+            // Создание вложенного контейнера в messageToContragents
+            let messFromTo = document.createElement('div');
+            $(messFromTo).attr('id', 'messFromTo');
+            $(messFromTo).addClass('messFromTo');
+
+            // Создание вложенного контейнера в messFromTo
+            let messFrTo = document.createElement('div');
+            $(messFrTo).addClass('messFrTo');
+
+            // Создание labels
+            let labelOne = document.createElement('label');
+            $(labelOne).attr('style', 'margin-bottom: 8px;');
+            $(labelOne).text('Отправитель:');
+            messFrTo.appendChild(labelOne);
+            let labelTwo = document.createElement('label');
+            $(labelTwo).text('Получатель:');
+            $(labelTwo).attr('style', 'margin-bottom: 0px;');
+            messFrTo.appendChild(labelTwo);
+            messFromTo.appendChild(messFrTo);
+
+            // Создание вложенного контейнера в messFromTo
+            let messFrToSelect = document.createElement('div');
+            $(messFrToSelect).addClass('messFrToSelect');
+
+            let select = document.createElement('select');
+            $(select).attr('id', 'selMened');
+            $(select).attr('name', 'selectMenedger');
+            $(select).addClass('inpMess');
+            $(select).attr('style', 'max-width: 100%; margin-bottom: 5px;');
+
+            let optionOne = document.createElement('option');
+            $(optionOne).attr('selected', 'selected');
+            $(optionOne).attr('value', 'Autogruz');
+            $(optionOne).text('avtogruz@corum.com');
+            select.appendChild(optionOne);
+            let optionTwo = document.createElement('option');
+            $(optionTwo).attr('value','Yalovega');
+            $(optionTwo).text('yalovega.denis@corum.com');
+            select.appendChild(optionTwo);
+            let optionThree = document.createElement('option');
+            $(optionThree).attr('value','Vlasov');
+            $(optionThree).text('vlasov.yuriy@corum.com');
+            select.appendChild(optionThree);
+            messFrToSelect.appendChild(select);
+
+            let inpMess = document.createElement('input');
+            $(inpMess).addClass('inpMess');
+            $(inpMess).attr('type', 'text');
+            $(inpMess).attr('name', 'From');
+            $(inpMess).attr('value', `${val.emailContragent}`);
+            $(inpMess).attr('style', 'max-width: 100%; padding-left: 2px; padding-right: 0px; border: 1px solid gray;');
+            messFrToSelect.appendChild(inpMess);
+            messFromTo.appendChild(messFrToSelect);
+            messageToContragents.appendChild(messFromTo);
+
+            // Создание вложенного контейнера в messageToContragents
+            let messBody = document.createElement('div');
+            $(messBody).addClass('messBody');
+
+            // Создание параграфа, вложенного в объект messBody
+            let preWinParh = document.createElement('p');
+            $(preWinParh).addClass('preWin');
+            $(preWinParh).append('Уважаемый партнер.<br>Спасибо за участие.<br>Вы стали победителем.<br>Прошу направить данные по автомобилю/ям, водителю в течение 30 минут,<br>заполнив форму перейдя по <a id="linkToFormContr" class="linkToForm" href="#" title="ссылка на форму">ссылке</a>');
+            messBody.appendChild(preWinParh);
 
             // Создание таблицы
             let tableWinner = document.createElement('table');
@@ -410,54 +434,123 @@
             // Добавление tbody в table
             tableWinner.appendChild(tbody);
 
-            // Добавление table в details
-            detWinner.appendChild(tableWinner);
+            // Добавление table в messBody
+            messBody.appendChild(tableWinner);
 
-            // Добавление details в секцию div
-            sectOtherWinner.appendChild(detWinner);
+            // Создание параграфа-футера в messBody
+            let preWinParhTwo = document.createElement('p');
+            $(preWinParhTwo).addClass('preWin');
+            $(preWinParhTwo).append('С уважением,<br>Департамент по логистике КОРУМ ГРУП');
+            messBody.appendChild(preWinParhTwo);
+
+            messageToContragents.appendChild(messBody);
+            detWinner.appendChild(messageToContragents);
+
+            forcheckBoxContrDIV.appendChild(detWinner);
+            sectOtherWinner.appendChild(forcheckBoxContrDIV);
+            messageToContragents.contentEditable = 'true';
+            messFromTo.contentEditable = 'false';
         };
-
-        let parhWinnerFooterOne = document.createElement('p');
-        let parhWinnerFooterTwo = document.createElement('p');
-        $(parhWinnerFooterOne).addClass('preWin addMarg');
-        $(parhWinnerFooterOne).text('С уважением,');
-        $(parhWinnerFooterTwo).addClass('preWin addMargBottom');
-        $(parhWinnerFooterTwo).text('Департамент по логистике КОРУМ ГРУП');
-
-        // Добавление параграфов в секцию div
-        sectOtherWinner.appendChild(parhWinnerFooterOne);
-        sectOtherWinner.appendChild(parhWinnerFooterTwo);
     }
 
 
     // Метод для создания и вывода данных о проигравших контрагентах в модальное окно
     function CreateHTMLTableWithDataLosersContragents() {
+
         let sectOtherColor = document.getElementById('sectOtherColor');
 
-        // Создание приветствия
-        let parhLoserOne = document.createElement('p');
-        $(parhLoserOne).addClass('preWin');
-        $(parhLoserOne).text('Уважаемый партнер.');
-        sectOtherColor.appendChild(parhLoserOne);
-
-        let parhLoserTwo = document.createElement('p');
-        $(parhLoserTwo).addClass('preWin');
-        $(parhLoserTwo).text('Спасибо за участие.');
-        sectOtherColor.appendChild(parhLoserTwo);
-
-        let parhLoserThree = document.createElement('p');
-        $(parhLoserThree).addClass('preWin');
-        $(parhLoserThree).text('Ваше предложение по данной заявке/тендеру не конкурентоспособно.');
-        sectOtherColor.appendChild(parhLoserThree);
 
         for (const val of listSameLosers) {
-            let detWinner = document.createElement('details');
-            $(detWinner).attr('id', 'detWinner');
 
+            // Создание вложенного контейнера div
+            let forcheckBoxContrDIV = document.createElement('div');
+            $(forcheckBoxContrDIV).addClass('forcheckBoxContr');
+
+            // Создание чекбокса для выбора контрагента
+            let checkboxContragent = document.createElement('input');
+            $(checkboxContragent).attr('type', 'checkbox');
+            $(checkboxContragent).attr('checked', 'checked');
+            forcheckBoxContrDIV.appendChild(checkboxContragent);
+
+            let detWinner = document.createElement('details');
+            $(detWinner).attr('id', 'detWinnerLosers');
+            $(detWinner).attr('style', 'margin-top: 1px;');
+
+            // Создание выпадающего заголовка контрагента
             let summary = document.createElement('summary');
             let prepos = `${val.expeditorName} (${val.countLoser} ${(val.countLoser > 1)?'предложения':'предложение'})`;
             $(summary).text(prepos);
             detWinner.appendChild(summary);
+
+            // Создание контейнера в выпадающем элементе
+            let messageToContragents = document.createElement('div');
+            $(messageToContragents).attr('id', 'messageToContragentsLosers');
+            $(messageToContragents).addClass('messageToContrag');
+
+            // Создание вложенного контейнера в messageToContragents
+            let messFromTo = document.createElement('div');
+            $(messFromTo).attr('id', 'messFromToLoser');
+            $(messFromTo).addClass('messFromTo');
+
+            // Создание вложенного контейнера в messFromTo
+            let messFrTo = document.createElement('div');
+            $(messFrTo).addClass('messFrTo');
+
+            // Создание labels
+            let labelOne = document.createElement('label');
+            $(labelOne).attr('style', 'margin-bottom: 8px;');
+            $(labelOne).text('Отправитель:');
+            messFrTo.appendChild(labelOne);
+            let labelTwo = document.createElement('label');
+            $(labelTwo).text('Получатель:');
+            $(labelTwo).attr('style', 'margin-bottom: 0px;');
+            messFrTo.appendChild(labelTwo);
+            messFromTo.appendChild(messFrTo);
+
+            // Создание вложенного контейнера в messFromTo
+            let messFrToSelect = document.createElement('div');
+            $(messFrToSelect).addClass('messFrToSelect');
+
+            let select = document.createElement('select');
+            $(select).attr('id', 'selMenedLosers');
+            $(select).attr('name', 'selectMenedger');
+            $(select).addClass('inpMess');
+            $(select).attr('style', 'max-width: 100%; margin-bottom: 5px;');
+
+            let optionOne = document.createElement('option');
+            $(optionOne).attr('selected', 'selected');
+            $(optionOne).attr('value', 'Autogruz');
+            $(optionOne).text('avtogruz@corum.com');
+            select.appendChild(optionOne);
+            let optionTwo = document.createElement('option');
+            $(optionTwo).attr('value','Yalovega');
+            $(optionTwo).text('yalovega.denis@corum.com');
+            select.appendChild(optionTwo);
+            let optionThree = document.createElement('option');
+            $(optionThree).attr('value','Vlasov');
+            $(optionThree).text('vlasov.yuriy@corum.com');
+            select.appendChild(optionThree);
+            messFrToSelect.appendChild(select);
+
+            let inpMess = document.createElement('input');
+            $(inpMess).addClass('inpMess');
+            $(inpMess).attr('type', 'text');
+            $(inpMess).attr('name', 'From');
+            $(inpMess).attr('value', `${val.emailContragent}`);
+            $(inpMess).attr('style', 'max-width: 100%; padding-left: 2px; padding-right: 0px; border: 1px solid gray;');
+            messFrToSelect.appendChild(inpMess);
+            messFromTo.appendChild(messFrToSelect);
+            messageToContragents.appendChild(messFromTo);
+
+            // Создание вложенного контейнера в messageToContragents
+            let messBody = document.createElement('div');
+            $(messBody).addClass('messBody');
+
+            // Создание параграфа, вложенного в объект messBody
+            let preWinParh = document.createElement('p');
+            $(preWinParh).addClass('preWin');
+            $(preWinParh).append('Уважаемый партнер.<br>Спасибо за участие.<br>Ваше предложение по данной заявке/тендеру не конкурентоспособно.');
+            messBody.appendChild(preWinParh);
 
             // Создание таблицы
             let tableWinner = document.createElement('table');
@@ -531,24 +624,24 @@
             // Добавление tbody в table
             tableWinner.appendChild(tbody);
 
-            // Добавление table в details
-            detWinner.appendChild(tableWinner);
+            // Добавление table в messBody
+            messBody.appendChild(tableWinner);
 
-            // Добавление details в секцию div
-            sectOtherColor.appendChild(detWinner);
+            // Создание параграфа-футера в messBody
+            let preWinParhTwo = document.createElement('p');
+            $(preWinParhTwo).addClass('preWin');
+            $(preWinParhTwo).append('С уважением,<br>Департамент по логистике КОРУМ ГРУП');
+            messBody.appendChild(preWinParhTwo);
 
+            messageToContragents.appendChild(messBody);
+            detWinner.appendChild(messageToContragents);
+
+            forcheckBoxContrDIV.appendChild(detWinner);
+            sectOtherColor.appendChild(forcheckBoxContrDIV);
+
+            messageToContragents.contentEditable = 'true';
+            messFromTo.contentEditable = 'false';
         };
-
-        let parhWinnerFooterOne = document.createElement('p');
-        let parhWinnerFooterTwo = document.createElement('p');
-        $(parhWinnerFooterOne).addClass('preWin addMarg');
-        $(parhWinnerFooterOne).text('С уважением,');
-        $(parhWinnerFooterTwo).addClass('preWin');
-        $(parhWinnerFooterTwo).text('Департамент по логистике КОРУМ ГРУП');
-
-        // Добавление параграфов в секцию div
-        sectOtherColor.appendChild(parhWinnerFooterOne);
-        sectOtherColor.appendChild(parhWinnerFooterTwo);
     }
 
     function DeleteOldDataContragents() {

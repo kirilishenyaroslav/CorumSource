@@ -39,6 +39,7 @@ namespace Corum.DAL.Entity
         public Nullable<int> tenderNumber { get; set; }
         public string itemDescription { get; set; }
         public string cargoWeight { get; set; }
+        public string emailContragent { get; set; }
     
         public virtual ContractSpecifications ContractSpecifications { get; set; }
         public virtual OrdersBase OrdersBase { get; set; }

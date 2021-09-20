@@ -26,6 +26,7 @@ using System.Threading;
 using System.Diagnostics;
 using System.IO;
 using System.Text.RegularExpressions;
+using Corum.Models.ViewModels.Email;
 
 namespace CorumAdminUI.Controllers
 {
@@ -62,6 +63,20 @@ namespace CorumAdminUI.Controllers
                 ViewBag.active = "false";
             }
             return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult SendMessageToContragents(InfoToContragentsAfterChange listInfoToCont) 
+        {
+
+            SendEmailContragents testEmail = new SendEmailContragents();
+            testEmail.SendMessage(listInfoToCont);
+            return new JsonpResult
+            {
+                Data = new { listInfoToCont },
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+
         }
 
         [HttpGet]

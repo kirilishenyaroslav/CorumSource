@@ -979,7 +979,8 @@ namespace Corum.DAL
                     Comments = model.note,
                     IsSelectedId = model.IsWinner,
                     itemDescription = model.itemDescription,
-                    cargoWeight = model.cargoWeight
+                    cargoWeight = model.cargoWeight,
+                    emailContragent = model.emailContragent
                 };
 
                 db.OrderCompetitiveList.Add(concurs);
@@ -1026,7 +1027,8 @@ namespace Corum.DAL
                         Comments = model.note,
                         IsSelectedId = model.IsWinner,
                         itemDescription = model.itemDescription,
-                        cargoWeight = model.cargoWeight
+                        cargoWeight = model.cargoWeight,
+                        emailContragent = model.emailContragent
                     };
                 }
                 catch (Exception e)

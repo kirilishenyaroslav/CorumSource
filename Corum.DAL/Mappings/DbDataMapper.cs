@@ -1287,7 +1287,8 @@ namespace Corum.DAL.Mappings
                 GenId = o.GenId ?? 0,
                 tenderNumber = o.tenderNumber,
                 itemDescription = o.itemDescription,
-                cargoWeight = o.cargoWeight
+                cargoWeight = o.cargoWeight,
+                emailContragent = o.emailContragent
             };
         }
 

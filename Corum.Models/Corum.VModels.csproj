@@ -125,6 +125,7 @@
     <Compile Include="Tender\BalanceKeepers.cs" />
     <Compile Include="Tender\ContrAgentModel.cs" />
     <Compile Include="Tender\Countries.cs" />
+    <Compile Include="Tender\InfoToContragentsAfterChange.cs" />
     <Compile Include="Tender\OrderTruckTransport.cs" />
     <Compile Include="Tender\RegisterTenderContragent.cs" />
     <Compile Include="Tender\RegisterTenders.cs" />
@@ -152,6 +153,7 @@
     <Compile Include="ViewModels\Customers\RoutePointTypeViewModel.cs" />
     <Compile Include="ViewModels\Customers\RouteViewModel.cs" />
     <Compile Include="ViewModels\Dashboard\DashboardViewModel.cs" />
+    <Compile Include="ViewModels\Email\SendEmailContragents.cs" />
     <Compile Include="ViewModels\ModelsResources.Designer.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

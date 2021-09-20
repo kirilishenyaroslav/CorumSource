@@ -224,7 +224,7 @@
                                     $('#loading-indicator').show();
                                     $.ajax({
                                         type: "POST",
-                                        async: false,
+                                        async: true,
                                         url: "/OrderTender/SendMessageToContragents",
                                         data: listInfoToCont,
                                         dataType: "json",

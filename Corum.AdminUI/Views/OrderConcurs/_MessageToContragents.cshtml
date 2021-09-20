@@ -61,6 +61,69 @@
     let listSameWinners = [];
     let listSameLosers = [];
 
+    // Функция-конструктор (класс) для получения данных HTML элементов из формы для контрагента-победителя
+    function WinnersIdHTMLElements() {
+        this.isSelected = undefined;
+        this.expeditorName = undefined;
+        this.numberOfVehicles = undefined;
+        this.countWinner = undefined;
+        this.senderEmail = undefined;
+        this.recipientEmail = undefined;
+        this.upperpartOfTheMessage = undefined;
+        this.dataTable = undefined;
+        this.messageFooter = undefined;
+    }
+
+    // Функция-конструктор (класс) для получения данных HTML элементов из формы для проигравшего контрагента
+    function LoserIdHTMLElements() {
+        this.isSelected = undefined;
+        this.expeditorName = undefined;
+        this.numberOfVehicles = undefined;
+        this.countWinner = undefined;
+        this.senderEmail = undefined;
+        this.recipientEmail = undefined;
+        this.upperartOfTheMessage = undefined;
+        this.dataTable = undefined;
+        this.messageFooter = undefined;
+    }
+    // Класс для инкапсуляции всех данных, которые нужно отправить контрагентам после изменений в модальном окне
+    class InfoToContragentsAfterChange{
+        constructor() {
+        this.listWinnersInfoAfterChange = [];
+        this.listLosersInfoAfterChange = [];
+        }
+    }
+    class WinnersInfoAfterChange {
+        constructor() {
+        this.isSelected = undefined;
+        this.expeditorName = undefined;
+        this.numberOfVehicles = undefined;
+        this.count = undefined;
+        this.senderEmail = undefined;
+        this.recipientEmail = undefined;
+        this.upperartOfTheMessage = undefined;
+        this.dataTable = undefined;
+        this.messageFooter = undefined;
+        }
+    }
+    class LosersInfoAfterChange {
+        constructor() {
+        this.isSelected = undefined;
+        this.expeditorName = undefined;
+        this.numberOfVehicles = undefined;
+        this.count= undefined;
+        this.senderEmail = undefined;
+        this.recipientEmail = undefined;
+        this.upperartOfTheMessage = undefined;
+        this.dataTable = undefined;
+        this.messageFooter = undefined;
+        }
+    }
+
+
+    let listWinnersIdHTMLElements = [];
+    let listLoserIdHTMLElements = [];
+
 
     function SendMessageToContragents(orderId) {
 
@@ -114,7 +177,67 @@
                                 text: "Отправить",
                                 "class": 'btn btn-success',
                                 click: function () {
+                                    let InfoToContragentsAfterCh = new InfoToContragentsAfterChange();
+                                    let modelWinnders = listWinnersIdHTMLElements;
+                                    for (const item of modelWinnders) {
+                                        let winnerAfterChange = new WinnersInfoAfterChange();
+                                        winnerAfterChange.isSelected = item.isSelected.checked;
+                                        winnerAfterChange.expeditorName = item.expeditorName;
+                                        winnerAfterChange.numberOfVehicles = item.numberOfVehicles;
+                                        winnerAfterChange.count = item.countWinner;
+                                        for(const value of item.senderEmail){
+                                            if (value.selected) {
+                                                winnerAfterChange.senderEmail = value.text;
+                                            }
+                                        };
+                                        winnerAfterChange.recipientEmail = item.recipientEmail.value;
+                                        winnerAfterChange.upperartOfTheMessage = item.upperpartOfTheMessage.outerHTML;
+                                        winnerAfterChange.dataTable = item.dataTable.outerHTML;
+                                        winnerAfterChange.messageFooter = item.messageFooter.outerHTML;
+                                        if (winnerAfterChange.isSelected) {
+                                        InfoToContragentsAfterCh.listWinnersInfoAfterChange.push(winnerAfterChange);    
+                                        }
+                                    }
 
+                                    let modelLosers = listLoserIdHTMLElements;
+                                    for (const item of modelLosers) {
+                                        let loserAfterChange = new LosersInfoAfterChange();
+                                        loserAfterChange.isSelected = item.isSelected.checked;
+                                        loserAfterChange.expeditorName = item.expeditorName;
+                                        loserAfterChange.numberOfVehicles = item.numberOfVehicles;
+                                        loserAfterChange.count = item.countWinner;
+                                        for(const value of item.senderEmail){
+                                            if (value.selected) {
+                                                loserAfterChange.senderEmail = value.text;
+                                            }
+                                        };
+                                        loserAfterChange.recipientEmail = item.recipientEmail.value;
+                                        loserAfterChange.upperartOfTheMessage = item.upperartOfTheMessage.outerHTML;
+                                        loserAfterChange.dataTable = item.dataTable.outerHTML;
+                                        loserAfterChange.messageFooter = item.messageFooter.outerHTML;
+                                        if (loserAfterChange.isSelected) {
+                                        InfoToContragentsAfterCh.listLosersInfoAfterChange.push(loserAfterChange);    
+                                        }
+                                    }
+
+                                    let listInfoToCont = JSON.stringify(InfoToContragentsAfterCh);
+                                    $('#loading-indicator').show();
+                                    $.ajax({
+                                        type: "POST",
+                                        async: false,
+                                        url: "/OrderTender/SendMessageToContragents",
+                                        data: listInfoToCont,
+                                        dataType: "json",
+                                        contentType: 'application/json; charset=utf-8',
+                                        success: function (data) {
+                                            $('#loading-indicator').hide();
+                                            
+                                            
+                                        },
+                                        error: function () {
+                                            $('#loading-indicator').hide();
+                                        }
+                                    });
                                     $(this).dialog("close");
 
                                 }
@@ -207,6 +330,11 @@
 
 
         for (const val of listSameWinners) {
+            let winnerObj = new WinnersIdHTMLElements();
+            winnerObj.expeditorName = val.expeditorName;
+            winnerObj.numberOfVehicles = val.numberOfVehicles;
+            winnerObj.countWinner = val.countWinner;
+
 
             // Создание вложенного контейнера div
             let forcheckBoxContrDIV = document.createElement('div');
@@ -217,8 +345,8 @@
             $(checkboxContragent).attr('type', 'checkbox');
             $(checkboxContragent).attr('checked', 'checked');
             forcheckBoxContrDIV.appendChild(checkboxContragent);
+            winnerObj.isSelected = checkboxContragent;
             let detWinner = document.createElement('details');
-            $(detWinner).attr('id', 'detWinner');
             $(detWinner).attr('style', 'margin-top: 1px;');
 
             // Создание выпадающего заголовка контрагента
@@ -229,12 +357,10 @@
 
             // Создание контейнера в выпадающем элементе
             let messageToContragents = document.createElement('div');
-            $(messageToContragents).attr('id', 'messageToContragents');
             $(messageToContragents).addClass('messageToContrag');
 
             // Создание вложенного контейнера в messageToContragents
             let messFromTo = document.createElement('div');
-            $(messFromTo).attr('id', 'messFromTo');
             $(messFromTo).addClass('messFromTo');
 
             // Создание вложенного контейнера в messFromTo
@@ -257,7 +383,6 @@
             $(messFrToSelect).addClass('messFrToSelect');
 
             let select = document.createElement('select');
-            $(select).attr('id', 'selMened');
             $(select).attr('name', 'selectMenedger');
             $(select).addClass('inpMess');
             $(select).attr('style', 'max-width: 100%; margin-bottom: 5px;');
@@ -276,6 +401,7 @@
             $(optionThree).text('vlasov.yuriy@corum.com');
             select.appendChild(optionThree);
             messFrToSelect.appendChild(select);
+            winnerObj.senderEmail = select;
 
             let inpMess = document.createElement('input');
             $(inpMess).addClass('inpMess');
@@ -286,6 +412,7 @@
             messFrToSelect.appendChild(inpMess);
             messFromTo.appendChild(messFrToSelect);
             messageToContragents.appendChild(messFromTo);
+            winnerObj.recipientEmail = inpMess;
 
             // Создание вложенного контейнера в messageToContragents
             let messBody = document.createElement('div');
@@ -296,6 +423,7 @@
             $(preWinParh).addClass('preWin');
             $(preWinParh).append('Уважаемый партнер.<br>Спасибо за участие.<br>Вы стали победителем.<br>Прошу направить данные по автомобилю/ям, водителю в течение 30 минут,<br>заполнив форму перейдя по <a id="linkToFormContr" class="linkToForm" href="#" title="ссылка на форму">ссылке</a>');
             messBody.appendChild(preWinParh);
+            winnerObj.upperpartOfTheMessage = preWinParh;
 
             // Создание таблицы
             let tableWinner = document.createElement('table');
@@ -436,12 +564,14 @@
 
             // Добавление table в messBody
             messBody.appendChild(tableWinner);
+            winnerObj.dataTable = tableWinner;
 
             // Создание параграфа-футера в messBody
             let preWinParhTwo = document.createElement('p');
             $(preWinParhTwo).addClass('preWin');
             $(preWinParhTwo).append('С уважением,<br>Департамент по логистике КОРУМ ГРУП');
             messBody.appendChild(preWinParhTwo);
+            winnerObj.messageFooter = preWinParhTwo;
 
             messageToContragents.appendChild(messBody);
             detWinner.appendChild(messageToContragents);
@@ -450,6 +580,8 @@
             sectOtherWinner.appendChild(forcheckBoxContrDIV);
             messageToContragents.contentEditable = 'true';
             messFromTo.contentEditable = 'false';
+
+            listWinnersIdHTMLElements.push(winnerObj);
         };
     }
 
@@ -461,6 +593,10 @@
 
 
         for (const val of listSameLosers) {
+            let loserObj = new LoserIdHTMLElements();
+            loserObj.expeditorName = val.expeditorName;
+            loserObj.numberOfVehicles = val.numberOfVehicles;
+            loserObj.countWinner = val.countLoser;
 
             // Создание вложенного контейнера div
             let forcheckBoxContrDIV = document.createElement('div');
@@ -470,10 +606,10 @@
             let checkboxContragent = document.createElement('input');
             $(checkboxContragent).attr('type', 'checkbox');
             $(checkboxContragent).attr('checked', 'checked');
+            loserObj.isSelected = checkboxContragent;
             forcheckBoxContrDIV.appendChild(checkboxContragent);
 
             let detWinner = document.createElement('details');
-            $(detWinner).attr('id', 'detWinnerLosers');
             $(detWinner).attr('style', 'margin-top: 1px;');
 
             // Создание выпадающего заголовка контрагента
@@ -484,12 +620,10 @@
 
             // Создание контейнера в выпадающем элементе
             let messageToContragents = document.createElement('div');
-            $(messageToContragents).attr('id', 'messageToContragentsLosers');
             $(messageToContragents).addClass('messageToContrag');
 
             // Создание вложенного контейнера в messageToContragents
             let messFromTo = document.createElement('div');
-            $(messFromTo).attr('id', 'messFromToLoser');
             $(messFromTo).addClass('messFromTo');
 
             // Создание вложенного контейнера в messFromTo
@@ -512,7 +646,6 @@
             $(messFrToSelect).addClass('messFrToSelect');
 
             let select = document.createElement('select');
-            $(select).attr('id', 'selMenedLosers');
             $(select).attr('name', 'selectMenedger');
             $(select).addClass('inpMess');
             $(select).attr('style', 'max-width: 100%; margin-bottom: 5px;');
@@ -531,6 +664,7 @@
             $(optionThree).text('vlasov.yuriy@corum.com');
             select.appendChild(optionThree);
             messFrToSelect.appendChild(select);
+            loserObj.senderEmail = select;
 
             let inpMess = document.createElement('input');
             $(inpMess).addClass('inpMess');
@@ -541,6 +675,7 @@
             messFrToSelect.appendChild(inpMess);
             messFromTo.appendChild(messFrToSelect);
             messageToContragents.appendChild(messFromTo);
+            loserObj.recipientEmail = inpMess;
 
             // Создание вложенного контейнера в messageToContragents
             let messBody = document.createElement('div');
@@ -551,6 +686,7 @@
             $(preWinParh).addClass('preWin');
             $(preWinParh).append('Уважаемый партнер.<br>Спасибо за участие.<br>Ваше предложение по данной заявке/тендеру не конкурентоспособно.');
             messBody.appendChild(preWinParh);
+            loserObj.upperartOfTheMessage = preWinParh;
 
             // Создание таблицы
             let tableWinner = document.createElement('table');
@@ -624,6 +760,7 @@
             // Добавление tbody в table
             tableWinner.appendChild(tbody);
 
+            loserObj.dataTable = tableWinner;
             // Добавление table в messBody
             messBody.appendChild(tableWinner);
 
@@ -632,6 +769,7 @@
             $(preWinParhTwo).addClass('preWin');
             $(preWinParhTwo).append('С уважением,<br>Департамент по логистике КОРУМ ГРУП');
             messBody.appendChild(preWinParhTwo);
+            loserObj.messageFooter = preWinParhTwo;
 
             messageToContragents.appendChild(messBody);
             detWinner.appendChild(messageToContragents);
@@ -641,6 +779,8 @@
 
             messageToContragents.contentEditable = 'true';
             messFromTo.contentEditable = 'false';
+
+            listLoserIdHTMLElements.push(loserObj);
         };
     }
 
@@ -655,6 +795,13 @@
         listLosers = [];
         listSameWinners = [];
         listSameLosers = [];
+        listWinnersIdHTMLElements = [];
+        listLoserIdHTMLElements = [];
+    }
+
+    // Вытягивание данных для рассылки на имейлы победителям и проигравшим контрагентам из формы модального окна
+    function GetDataAboutMessageContragents() {
+
     }
 
 </script>

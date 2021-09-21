@@ -21,14 +21,14 @@ namespace Corum.Models.ViewModels.Email
                 {
                     foreach (var item in model.listWinnersInfoAfterChange)
                     {
-                        SendToContragents(item as ListInfoAfterChange);
+                        SendToContragentsAsync(item as ListInfoAfterChange).GetAwaiter();
                     }
                 }
                 if (model.listLosersInfoAfterChange != null)
                 {
                     foreach (var item in model.listLosersInfoAfterChange)
                     {
-                        SendToContragents(item as ListInfoAfterChange);
+                        SendToContragentsAsync(item as ListInfoAfterChange).GetAwaiter();
                     }
                 }
 
@@ -39,24 +39,25 @@ namespace Corum.Models.ViewModels.Email
             }
         }
 
-        private void SendToContragents(ListInfoAfterChange model)
+        private async Task SendToContragentsAsync(ListInfoAfterChange model)
         {
             try
             {
-                string from = ConfigurationManager.AppSettings["SmtpAccountLogin"];
-                using (MailMessage mail = new MailMessage(from, "corumsourcetest@gmail.com"))
+                MailAddress from = new MailAddress(ConfigurationManager.AppSettings["SmtpAccountLogin"], "Corum Source", Encoding.UTF8);
+                MailAddress to = new MailAddress("corumsourcetest@gmail.com");
+                using (MailMessage mail = new MailMessage(from, to))
                 {
-                    mail.Subject = (model.count > 1) ? $"{model.expeditorName}(предложения {model.count})" : $"{model.expeditorName}(предложений {model.count})";
-                    mail.Body = $"{model.upperartOfTheMessage}<br>{model.dataTable}<br>{model.messageFooter}";
+                    mail.Subject = model.subject;
+                    mail.Body = $"{model.bodyHTML}";
                     mail.IsBodyHtml = true;
                     SmtpClient smtp = new SmtpClient();
                     smtp.Host = ConfigurationManager.AppSettings["SmtpServer"];
                     smtp.EnableSsl = false;
-                    NetworkCredential networkCredential = new NetworkCredential(from, ConfigurationManager.AppSettings["SmtpAccountPassw"]);
+                    NetworkCredential networkCredential = new NetworkCredential(from.Address, ConfigurationManager.AppSettings["SmtpAccountPassw"]);
                     smtp.UseDefaultCredentials = false;
                     smtp.Credentials = networkCredential;
                     smtp.Port = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpServerPort"]);
-                    smtp.Send(mail);
+                    await Task.Run(() => { smtp.Send(mail); });
                 }
             }
 

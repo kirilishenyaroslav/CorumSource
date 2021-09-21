@@ -21,6 +21,8 @@
 <script>
     let allContragents = [];
     let competitiveListInfo = JSON.parse(sessionStorage.getItem('CompetitiveListInfo'));
+    let dataAllTender = JSON.parse(sessionStorage.getItem('data'));
+    let downloadingDateForTender = undefined;
     class Winner {
         constructor(expeditorName, numberTender, order, transportationType, route, nameOfCargo, cargoWeight, dowloadingDate,
             unloadingDate, description, price, paymentDeferment, emailContragent) {
@@ -32,12 +34,14 @@
             this.nameOfCargo = nameOfCargo;
             this.cargoWeight = cargoWeight;
             this.dowloadingDate = dowloadingDate;
+            downloadingDateForTender = dowloadingDate;
             this.unloadingDate = unloadingDate;
             this.description = description;
             this.price = price;
             this.paymentDeferment = paymentDeferment;
             this.isWinner = true;
             this.emailContragent = emailContragent;
+            this.routeShort = GetInfoAboutShortRoute(numberTender);
         }
         numberOfVehicles = 1;
         countWinner = 1;
@@ -53,6 +57,7 @@
             this.cargoWeight = cargoWeight;
             this.price = price;
             this.emailContragent = emailContragent;
+            this.routeShort = GetInfoAboutShortRoute(numberTender);
         }
         countLoser = 1;
     };
@@ -72,6 +77,7 @@
         this.upperpartOfTheMessage = undefined;
         this.dataTable = undefined;
         this.messageFooter = undefined;
+        this.routeShort = undefined;
     }
 
     // Функция-конструктор (класс) для получения данных HTML элементов из формы для проигравшего контрагента
@@ -85,6 +91,7 @@
         this.upperartOfTheMessage = undefined;
         this.dataTable = undefined;
         this.messageFooter = undefined;
+        this.routeShort = undefined;
     }
     // Класс для инкапсуляции всех данных, которые нужно отправить контрагентам после изменений в модальном окне
     class InfoToContragentsAfterChange{
@@ -104,6 +111,11 @@
         this.upperartOfTheMessage = undefined;
         this.dataTable = undefined;
         this.messageFooter = undefined;
+        this.tr = [];
+        this.thContent = [];
+        this.tdContent = [];
+        this.bodyHTML = undefined;
+        this.subject = undefined;
         }
     }
     class LosersInfoAfterChange {
@@ -117,6 +129,11 @@
         this.upperartOfTheMessage = undefined;
         this.dataTable = undefined;
         this.messageFooter = undefined;
+        this.tr = [];
+        this.thContent = [];
+        this.tdContent = [];
+        this.bodyHTML = undefined;
+        this.subject = undefined;
         }
     }
 
@@ -177,6 +194,9 @@
                                 text: "Отправить",
                                 "class": 'btn btn-success',
                                 click: function () {
+                                    let orderId = JSON.parse(sessionStorage.getItem('OrderIdKL'));
+                                    let DropDownListTender = document.getElementById('drpDwnListTend');
+                                    let tendNumber = Number(DropDownListTender.textContent.replace(" ", ""));
                                     let InfoToContragentsAfterCh = new InfoToContragentsAfterChange();
                                     let modelWinnders = listWinnersIdHTMLElements;
                                     for (const item of modelWinnders) {
@@ -190,12 +210,24 @@
                                                 winnerAfterChange.senderEmail = value.text;
                                             }
                                         };
+                                        for (const value of item.dataTable.childNodes[0].childNodes) {
+                                            winnerAfterChange.tr.push(value);
+                                        }
+                                        for (const value of winnerAfterChange.tr) {
+                                            winnerAfterChange.thContent.push(value.childNodes[0].outerText);
+                                            winnerAfterChange.tdContent.push(value.childNodes[1].outerText);
+                                        }
+                                        winnerAfterChange.thContent.push('Экспедитор');
+                                        winnerAfterChange.tdContent.push(item.expeditorName);
                                         winnerAfterChange.recipientEmail = item.recipientEmail.value;
                                         winnerAfterChange.upperartOfTheMessage = item.upperpartOfTheMessage.outerHTML;
                                         winnerAfterChange.dataTable = item.dataTable.outerHTML;
                                         winnerAfterChange.messageFooter = item.messageFooter.outerHTML;
+                                        winnerAfterChange.subject = `№${tendNumber}, (${orderId}) ${item.routeShort}, погрузка ${downloadingDateForTender}`;
+                                        winnerAfterChange.bodyHTML = CreateHTMLBody(winnerAfterChange.tr, winnerAfterChange.thContent,
+                                            winnerAfterChange.tdContent, winnerAfterChange.upperartOfTheMessage, winnerAfterChange.messageFooter);
                                         if (winnerAfterChange.isSelected) {
-                                        InfoToContragentsAfterCh.listWinnersInfoAfterChange.push(winnerAfterChange);    
+                                        InfoToContragentsAfterCh.listWinnersInfoAfterChange.push(winnerAfterChange);
                                         }
                                     }
 
@@ -211,12 +243,24 @@
                                                 loserAfterChange.senderEmail = value.text;
                                             }
                                         };
+                                        for (const value of item.dataTable.childNodes[0].childNodes) {
+                                            loserAfterChange.tr.push(value);
+                                        }
+                                        for (const value of loserAfterChange.tr) {
+                                            loserAfterChange.thContent.push(value.childNodes[0].outerText);
+                                            loserAfterChange.tdContent.push(value.childNodes[1].outerText);
+                                        }
+                                        loserAfterChange.thContent.push('Экспедитор');
+                                        loserAfterChange.tdContent.push(item.expeditorName);
                                         loserAfterChange.recipientEmail = item.recipientEmail.value;
                                         loserAfterChange.upperartOfTheMessage = item.upperartOfTheMessage.outerHTML;
                                         loserAfterChange.dataTable = item.dataTable.outerHTML;
                                         loserAfterChange.messageFooter = item.messageFooter.outerHTML;
+                                        loserAfterChange.subject = `№${tendNumber}, (${orderId}) ${item.routeShort}, погрузка ${downloadingDateForTender}`;
+                                        loserAfterChange.bodyHTML = CreateHTMLBody(loserAfterChange.tr, loserAfterChange.thContent,
+                                            loserAfterChange.tdContent, loserAfterChange.upperartOfTheMessage, loserAfterChange.messageFooter);
                                         if (loserAfterChange.isSelected) {
-                                        InfoToContragentsAfterCh.listLosersInfoAfterChange.push(loserAfterChange);    
+                                        InfoToContragentsAfterCh.listLosersInfoAfterChange.push(loserAfterChange);
                                         }
                                     }
 
@@ -231,8 +275,8 @@
                                         contentType: 'application/json; charset=utf-8',
                                         success: function (data) {
                                             $('#loading-indicator').hide();
-                                            
-                                            
+
+
                                         },
                                         error: function () {
                                             $('#loading-indicator').hide();
@@ -250,6 +294,66 @@
         return;
     }
 
+    // Вытягивание краткой информации о маршруте перевозки по заявке
+    function GetInfoAboutShortRoute(numberTender) {
+        let shortRoute = '';
+        if (dataAllTender != null) {
+            for (const item of dataAllTender) {
+                if (item.tenderNumber == numberTender) {
+                    shortRoute = `${item.downloadAddress} - ${item.unloadAddress}`;
+                }
+            }
+        }
+        return shortRoute;
+    }
+
+
+    // Формирование тела сообщения для контрагента на уровне почтового мессенджера
+    function CreateHTMLBody(tr, thContent, tdContent, parhHeader, parhFooter) {
+        let bodyHTML = "";
+        let parhHead = jQuery.parseHTML(parhHeader);
+        parhHead[0].className = "";
+        $(parhHead).attr('style', 'line-height: 1.5;');
+
+        let table = document.createElement('table');
+        $(table).attr('style', 'text-align: left;');
+        let tbody = document.createElement('tbody');
+        for (let i = 0; i < tr.length+1; i++) {
+            let tr = document.createElement('tr');
+            let th = document.createElement('th');
+            th.innerText = thContent[i];
+            if ((i + 1) % 2 != 0) {
+                $(th).attr('style', "padding: 3px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(212, 212, 212);");
+            }
+            else {
+                $(th).attr('style', "padding: 3px; font-size: 16px; font-family: 'Times New Roman', Times, serif;");
+            }
+            tr.appendChild(th);
+
+            let td = document.createElement('td');
+            td.innerText = tdContent[i];
+            if ((i + 1) % 2 != 0) {
+                $(td).attr('style', "margin-left: 2px; padding: 3px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(212, 212, 212);");
+            }
+            else {
+                $(td).attr('style', "margin-left: 2px; padding: 3px; font-size: 16px; font-family: 'Times New Roman', Times, serif;");
+            }
+            tr.appendChild(td);
+            tbody.appendChild(tr);
+        }
+        table.appendChild(tbody);
+
+        let parhAfterTable = document.createElement('p');
+        parhAfterTable.innerHTML = 'Данное письмо сгенерировано автоматически. ПОЖАЛУЙСТА, НЕ ОТВЕЧАЙТЕ НА НЕГО!<br>В случае возникновения вопросов - обратитесь по адресу Заказ грузовых перевозок <a href="mailto:avtogruz@corum.com" style="text-decoration: none;">avtogruz@corum.com</a>,<br>подругим вопросам – к контактному лицу заказчика.';
+        $(parhAfterTable).attr('style', 'font-style: italic;');
+
+        let parhFoot = jQuery.parseHTML(parhFooter);
+        parhFoot[0].className = "";
+        $(parhFoot).attr('style', 'line-height: 1.5; margin-top: 40px;');
+        bodyHTML = parhHead[0].outerHTML + table.outerHTML + parhAfterTable.outerHTML + parhFoot[0].outerHTML;
+
+        return bodyHTML;
+    }
 
     // Заполнение данных о победителях и проигравших контрагентах в модальное окно
     function SetDataMessageToContragents(tenderNumber) {
@@ -334,7 +438,7 @@
             winnerObj.expeditorName = val.expeditorName;
             winnerObj.numberOfVehicles = val.numberOfVehicles;
             winnerObj.countWinner = val.countWinner;
-
+            winnerObj.routeShort = val.routeShort;
 
             // Создание вложенного контейнера div
             let forcheckBoxContrDIV = document.createElement('div');
@@ -597,6 +701,7 @@
             loserObj.expeditorName = val.expeditorName;
             loserObj.numberOfVehicles = val.numberOfVehicles;
             loserObj.countWinner = val.countLoser;
+            loserObj.routeShort = val.routeShort;
 
             // Создание вложенного контейнера div
             let forcheckBoxContrDIV = document.createElement('div');

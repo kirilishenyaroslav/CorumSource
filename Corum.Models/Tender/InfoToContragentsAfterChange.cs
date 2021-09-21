@@ -17,6 +17,8 @@ namespace Corum.Models.Tender
         public string upperartOfTheMessage { get; set; }
         public string dataTable { get; set; }
         public string messageFooter { get; set; }
+        public string subject { get; set; }
+        public string bodyHTML { get; set; }
     }
     public class ListWinnersInfoAfterChange : ListInfoAfterChange
     {

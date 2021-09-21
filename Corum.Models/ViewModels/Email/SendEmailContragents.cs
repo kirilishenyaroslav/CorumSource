@@ -17,29 +17,36 @@ namespace Corum.Models.ViewModels.Email
         {
             try
             {
-                foreach (var item in model.listWinnersInfoAfterChange)
+                if (model.listWinnersInfoAfterChange != null)
                 {
-                    SendToContragents(item as ListInfoAfterChange);
+                    foreach (var item in model.listWinnersInfoAfterChange)
+                    {
+                        SendToContragents(item as ListInfoAfterChange);
+                    }
                 }
-                foreach (var item in model.listLosersInfoAfterChange)
+                if (model.listLosersInfoAfterChange != null)
                 {
-                    SendToContragents(item as ListInfoAfterChange);
+                    foreach (var item in model.listLosersInfoAfterChange)
+                    {
+                        SendToContragents(item as ListInfoAfterChange);
+                    }
                 }
+
             }
-            catch (Exception e) 
-            { 
-            
+            catch (Exception e)
+            {
+
             }
         }
 
-        private void SendToContragents(ListInfoAfterChange model) 
+        private void SendToContragents(ListInfoAfterChange model)
         {
             try
             {
                 string from = ConfigurationManager.AppSettings["SmtpAccountLogin"];
                 using (MailMessage mail = new MailMessage(from, "corumsourcetest@gmail.com"))
                 {
-                    mail.Subject = (model.count > 1)?$"{model.expeditorName}(предложения {model.count})": $"{model.expeditorName}(предложений {model.count})";
+                    mail.Subject = (model.count > 1) ? $"{model.expeditorName}(предложения {model.count})" : $"{model.expeditorName}(предложений {model.count})";
                     mail.Body = $"{model.upperartOfTheMessage}<br>{model.dataTable}<br>{model.messageFooter}";
                     mail.IsBodyHtml = true;
                     SmtpClient smtp = new SmtpClient();

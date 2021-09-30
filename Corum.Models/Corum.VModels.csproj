@@ -127,6 +127,8 @@
     <Compile Include="Tender\Countries.cs" />
     <Compile Include="Tender\InfoToContragentsAfterChange.cs" />
     <Compile Include="Tender\OrderTruckTransport.cs" />
+    <Compile Include="Tender\RegisterFormFromContragents.cs" />
+    <Compile Include="Tender\RegisterMessageToContragents.cs" />
     <Compile Include="Tender\RegisterTenderContragent.cs" />
     <Compile Include="Tender\RegisterTenders.cs" />
     <Compile Include="Tender\SpecificationNames.cs" />

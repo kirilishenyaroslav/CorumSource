@@ -201,6 +201,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Controllers\FormContragentsController.cs" />
     <Compile Include="Controllers\OrderTenderController.cs" />
     <Compile Include="HangFireTasks\HangFireAuthorizationFilter.cs" />
     <Compile Include="HangFireTasks\HangFireTasks.cs" />
@@ -249,6 +250,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Attachments\readme.html" />
+    <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\icons\Icon1.png" />
     <Content Include="Content\icons\Icon10.png" />
     <Content Include="Content\icons\Icon11.png" />
@@ -284,6 +286,9 @@
     <Content Include="Content\images\ajax-loader.gif" />
     <Content Include="Content\images\busket.jpg" />
     <Content Include="Content\images\busket.png" />
+    <Content Include="Content\images\del.png" />
+    <Content Include="Content\images\logo_icon.png" />
+    <Content Include="Content\images\pngwing.com.png" />
     <Content Include="Content\images\select2.png" />
     <Content Include="Content\img\arrow_back.png" />
     <Content Include="Content\img\bg_dashboard.jpg" />
@@ -294,6 +299,7 @@
     <Content Include="Content\select2-spinner.gif" />
     <Content Include="Content\select2.png" />
     <Content Include="Content\select2x2.png" />
+    <Content Include="Content\Tender\formFromContragents.css" />
     <Content Include="Content\Tender\MessageStyle.css" />
     <Content Include="Content\Tender\_MessageToContr.css" />
     <Content Include="Content\Tender\TableTender.css" />
@@ -523,6 +529,7 @@
     <Content Include="Scripts\bootbox.min.js" />
     <Content Include="Scripts\bootstrap-datepicker.js" />
     <Content Include="Scripts\bootstrap-datepicker.nb.js" />
+    <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\corum.js" />
@@ -535,6 +542,7 @@
     <None Include="Scripts\jquery-1.12.4.intellisense.js" />
     <Content Include="Scripts\jquery-1.12.4.js" />
     <Content Include="Scripts\jquery-1.12.4.min.js" />
+    <Content Include="Scripts\jquery-3.6.0.min.js" />
     <Content Include="Scripts\jquery-ui-1.12.0.js" />
     <Content Include="Scripts\jquery-ui-1.12.0.min.js" />
     <Content Include="Scripts\jquery.blockUI.js" />
@@ -1124,6 +1132,7 @@
     <Content Include="Views\OrderTender\TenderReport.cshtml" />
     <Content Include="Views\OrderConcurs\_ResultsTendersKL.cshtml" />
     <Content Include="Views\OrderConcurs\_MessageToContragents.cshtml" />
+    <Content Include="Views\FormContragents\SendFormToCorumSource.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -201,6 +201,9 @@
         <EntityTypeShape EntityType="CorumModel.RegisterTenders" Width="1.5" PointX="7.375" PointY="10.75" />
         <EntityTypeShape EntityType="CorumModel.StatusTenders" Width="1.5" PointX="3.375" PointY="16.75" />
         <EntityTypeShape EntityType="CorumModel.RegisterTenderContragents" Width="1.5" PointX="21.375" PointY="0.75" />
+        <EntityTypeShape EntityType="CorumModel.RegisterFormFromContragents" Width="1.5" PointX="24.625" PointY="18.125" />
+        <EntityTypeShape EntityType="CorumModel.RegisterMessageToContragents" Width="1.5" PointX="22.375" PointY="19" />
+        <AssociationConnector Association="CorumModel.FK_RegisterFormFromContragents_RegisterMessageToContragents" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

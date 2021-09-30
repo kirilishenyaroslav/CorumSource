@@ -100,6 +100,8 @@ namespace Corum.DAL.Entity
         public virtual DbSet<RegisterTenders> RegisterTenders { get; set; }
         public virtual DbSet<StatusTenders> StatusTenders { get; set; }
         public virtual DbSet<RegisterTenderContragents> RegisterTenderContragents { get; set; }
+        public virtual DbSet<RegisterFormFromContragents> RegisterFormFromContragents { get; set; }
+        public virtual DbSet<RegisterMessageToContragents> RegisterMessageToContragents { get; set; }
     
         public virtual ObjectResult<SelectFieldsOfStuctureForImport_Result> SelectFieldsOfStuctureForImport(Nullable<bool> isRests)
         {

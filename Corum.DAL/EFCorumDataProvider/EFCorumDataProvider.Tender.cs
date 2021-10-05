@@ -657,5 +657,122 @@ namespace Corum.DAL
         {
             return listAllContragents.Find(x => x.SupplierId == SupplierIdWinnerContragent);
         }
+
+
+        public bool FormMessageToContragents(InfoToContragentsAfterChange listInfoToCont)
+        {
+            var listWinners = listInfoToCont.listWinnersInfoAfterChange;
+            bool flag = false;
+            try
+            {
+                foreach (var model in listWinners)
+                {
+                    var IsContragent = (db.RegisterMessageToContragents.Where(x => x.tenderNumber == model.tenderNumber && x.contragentName == model.expeditorName).FirstOrDefault() != null) ? false : true;
+                    
+                    if (IsContragent)
+                    {
+                        db.RegisterMessageToContragents.Add(new Entity.RegisterMessageToContragents()
+                        {
+                            acceptedTransportUnits = model.numberOfVehicles,
+                            contragentName = model.expeditorName,
+                            cost = model.price,
+                            dateCreate = model.dateCreate,
+                            dateUpdate = model.dateUpdate,
+                            descriptionTender = model.description,
+                            emailContragent = model.recipientEmail,
+                            emailOperacionist = model.senderEmail,
+                            formUuid = model.formUuid,
+                            industryId = model.industryId,
+                            orderId = model.orderId,
+                            tenderItemUuid = model.tenderItemUuid,
+                            tenderNumber = model.tenderNumber,
+                            flag = model.flag
+                        });
+                        db.SaveChanges();
+                        flag = true;
+                        continue;
+                    }
+                    var item = db.RegisterMessageToContragents.Where(x => x.tenderNumber == model.tenderNumber && x.contragentName == model.expeditorName).FirstOrDefault();
+                    if (!IsContragent && item != null && item.flag == true)
+                    {
+
+                        item.acceptedTransportUnits = model.numberOfVehicles;
+                        item.contragentName = model.expeditorName;
+                             item.cost = model.price;
+                        item.dateCreate = model.dateCreate;
+                        item.dateUpdate = model.dateUpdate;
+                        item.descriptionTender = model.description;
+                        item.emailContragent = model.recipientEmail;
+                        item.emailOperacionist = model.senderEmail;
+                        item.formUuid = model.formUuid;
+                        item.industryId = model.industryId;
+                        item.orderId = model.orderId;
+                        item.tenderItemUuid = model.tenderItemUuid;
+                        item.tenderNumber = model.tenderNumber;
+                        item.flag = model.flag;
+                        db.SaveChanges();
+                        flag = true;
+                        continue;
+                    }
+                    else
+                    {
+                        continue;
+
+                    }
+                }
+                return flag;
+            }
+            catch (Exception e)
+            {
+                return flag;
+            }
+        }
+
+
+        public List<RegisterMessageToContragents> GetListFormUuidToContragents(long orderId)
+        {
+            List<RegisterMessageToContragents> list = new List<RegisterMessageToContragents>();
+            var listWinnersList = db.RegisterMessageToContragents.ToList();
+            try
+            {
+                foreach (var item in listWinnersList)
+                {
+                    if (item.orderId == orderId)
+                    {
+                        RegisterMessageToContragents model = new RegisterMessageToContragents()
+                        {
+                            Id = item.Id,
+                            acceptedTransportUnits = item.acceptedTransportUnits,
+                            orderId = item.orderId,
+                            contragentName = item.contragentName,
+                            cost = item.cost,
+                            dateCreate = item.dateCreate,
+                            dateUpdate = item.dateUpdate,
+                            descriptionTender = item.descriptionTender,
+                            emailContragent = item.emailContragent,
+                            emailOperacionist = item.emailOperacionist,
+                            formUuid = item.formUuid,
+                            industryId = item.industryId,
+                            RegisterFormFromContragents = item.RegisterFormFromContragents as ICollection<RegisterFormFromContragents>,
+                            tenderItemUuid = item.tenderItemUuid,
+                            tenderNumber = item.tenderNumber,
+                            flag = (bool)((item.flag != null) ? item.flag : false)
+                        };
+                        list.Add(model);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+            return list;
+        }
+
+        public bool CheckFormUuid(Guid formUuid)
+        {
+            var IsContragent = (db.RegisterMessageToContragents.Where(x => x.formUuid == formUuid).FirstOrDefault() != null) ? true : false;
+            return IsContragent;
+        }
     }
 }

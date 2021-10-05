@@ -900,18 +900,19 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="orderId" Type="bigint" Nullable="false" />
-          <Property Name="formId" Type="bigint" Nullable="false" />
+          <Property Name="formUuid" Type="uniqueidentifier" Nullable="false" />
           <Property Name="tenderNumber" Type="int" Nullable="false" />
           <Property Name="contragentName" Type="nvarchar" MaxLength="350" Nullable="false" />
           <Property Name="emailOperacionist" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="emailContragent" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="dateCreate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="dateUpdate" Type="datetime2" Precision="7" Nullable="false" />
-          <Property Name="industryName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="industryId" Type="int" Nullable="false" />
           <Property Name="descriptionTender" Type="text" />
           <Property Name="acceptedTransportUnits" Type="int" />
           <Property Name="cost" Type="float" />
           <Property Name="tenderItemUuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="flag" Type="bit" />
         </EntityType>
         <EntityType Name="RegisterTenderContragents">
           <Key>
@@ -8863,19 +8864,20 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="orderId" Type="Int64" Nullable="false" />
-          <Property Name="formId" Type="Int64" Nullable="false" />
           <Property Name="tenderNumber" Type="Int32" Nullable="false" />
           <Property Name="contragentName" Type="String" Nullable="false" MaxLength="350" FixedLength="false" Unicode="true" />
           <Property Name="emailOperacionist" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="emailContragent" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="dateCreate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="dateUpdate" Type="DateTime" Nullable="false" Precision="7" />
-          <Property Name="industryName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
           <Property Name="descriptionTender" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="acceptedTransportUnits" Type="Int32" />
           <Property Name="cost" Type="Double" />
           <Property Name="tenderItemUuid" Type="Guid" Nullable="false" />
           <NavigationProperty Name="RegisterFormFromContragents" Relationship="CorumModel.FK_RegisterFormFromContragents_RegisterMessageToContragents" FromRole="RegisterMessageToContragents" ToRole="RegisterFormFromContragents" />
+          <Property Name="formUuid" Type="Guid" Nullable="false" />
+          <Property Name="industryId" Type="Int32" Nullable="false" />
+          <Property Name="flag" Type="Boolean" />
         </EntityType>
         <Association Name="FK_RegisterFormFromContragents_RegisterMessageToContragents">
           <End Type="CorumModel.RegisterMessageToContragents" Role="RegisterMessageToContragents" Multiplicity="1">
@@ -11058,18 +11060,19 @@
           <EntitySetMapping Name="RegisterMessageToContragents">
             <EntityTypeMapping TypeName="CorumModel.RegisterMessageToContragents">
               <MappingFragment StoreEntitySet="RegisterMessageToContragents">
+                <ScalarProperty Name="flag" ColumnName="flag" />
+                <ScalarProperty Name="industryId" ColumnName="industryId" />
+                <ScalarProperty Name="formUuid" ColumnName="formUuid" />
                 <ScalarProperty Name="tenderItemUuid" ColumnName="tenderItemUuid" />
                 <ScalarProperty Name="cost" ColumnName="cost" />
                 <ScalarProperty Name="acceptedTransportUnits" ColumnName="acceptedTransportUnits" />
                 <ScalarProperty Name="descriptionTender" ColumnName="descriptionTender" />
-                <ScalarProperty Name="industryName" ColumnName="industryName" />
                 <ScalarProperty Name="dateUpdate" ColumnName="dateUpdate" />
                 <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />
                 <ScalarProperty Name="emailContragent" ColumnName="emailContragent" />
                 <ScalarProperty Name="emailOperacionist" ColumnName="emailOperacionist" />
                 <ScalarProperty Name="contragentName" ColumnName="contragentName" />
                 <ScalarProperty Name="tenderNumber" ColumnName="tenderNumber" />
-                <ScalarProperty Name="formId" ColumnName="formId" />
                 <ScalarProperty Name="orderId" ColumnName="orderId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

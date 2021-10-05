@@ -248,6 +248,7 @@ namespace Corum.Models
         public string listDisplayValues_;
         public string list_listStatuses_;
 
+        public List<RegisterMessageToContragents> ListFormUuidToContragents { get; set; }
         public List<TenderServices> tenderServices { get; set; }
         public List<SpecificationNames> specificationNames { get; set; }
         public List<BalanceKeepers> balanceKeepers { get; set; }

@@ -18,10 +18,17 @@ namespace CorumAdminUI.Controllers
 {
     public class FormContragentsController : CorumBaseController
     {
-        // GET: FormContragents
-        public ActionResult SendFormToCorumSource()
+        [HttpGet]
+        public ActionResult SendFormToCorumSource(Guid formUuid)
         {
-            return View();
+            if (context.CheckFormUuid(formUuid))
+            {
+                return View();
+            }
+            else
+            {
+                return new HttpStatusCodeResult(404);
+            }
         }
     }
 }

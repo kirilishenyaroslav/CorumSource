@@ -66,14 +66,37 @@ namespace CorumAdminUI.Controllers
         }
 
         [HttpPost]
-        public ActionResult SendMessageToContragents(InfoToContragentsAfterChange listInfoToCont) 
+        public ActionResult AsyncInitDataMessageToContragents(InfoToContragentsAfterChange listInfoToCont)
         {
-
-            SendEmailContragents testEmail = new SendEmailContragents();
-            testEmail.SendMessage(listInfoToCont);
+            bool isAvaliable = false;
+            if (listInfoToCont.listLosersInfoAfterChange != null || listInfoToCont.listWinnersInfoAfterChange != null)
+            {
+                isAvaliable = context.FormMessageToContragents(listInfoToCont);
+            }
             return new JsonpResult
             {
-                Data = new { listInfoToCont },
+                Data = new { listInfoToCont, isAvaliable },
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
+
+
+        [HttpPost]
+        public ActionResult SendMessageToContragents(InfoToContragentsAfterChange listInfoToCont)
+        {
+            bool isAvaliable = false;
+            if (listInfoToCont.listLosersInfoAfterChange != null || listInfoToCont.listWinnersInfoAfterChange != null)
+            {
+                isAvaliable = context.FormMessageToContragents(listInfoToCont);
+                if (isAvaliable)
+                {
+                    SendEmailContragents testEmail = new SendEmailContragents();
+                    testEmail.SendMessage(listInfoToCont);
+                }
+            }
+            return new JsonpResult
+            {
+                Data = new { listInfoToCont, isAvaliable },
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
 
@@ -146,9 +169,9 @@ namespace CorumAdminUI.Controllers
                                             {
                                                 cargoWeight = it.ВесТ;
                                                 break;
-                                            }                                        
+                                            }
                                         }
-                                        
+
                                         for (int i = 0; i < el.listCritariaValues.Count; i++)
                                         {
                                             if (costOfCarWithoutNDS == 0)
@@ -174,7 +197,7 @@ namespace CorumAdminUI.Controllers
                                     }
                                     if (isWinnerContragent != null && el.SupplierId != isWinnerContragent.SupplierId)
                                     {
-                                        
+
                                         RegisterTenderContragent registerTenderContragent = new RegisterTenderContragent()
                                         {
                                             OrderId = Int64.Parse(myDeserializedClass.data.tenderExternalN.Remove(myDeserializedClass.data.tenderExternalN.IndexOf('-'))),
@@ -253,7 +276,7 @@ namespace CorumAdminUI.Controllers
                             for (int i = 0; i < it.Value.Count; i++)
                             {
                                 SpecificationListViewModel model = new SpecificationListViewModel();
-                                
+
                                 var spec = specificationList.Find(x => x.edrpou_aps == it.Value[i].EDRPOUContragent);
                                 if (spec != null)
                                 {
@@ -375,7 +398,7 @@ namespace CorumAdminUI.Controllers
                                         note = it.Value[i].note,
                                         itemDescription = it.Value[i].itemDescription,
                                         cargoWeight = cargoWeight
-                                };
+                                    };
                                     specificationListViews.Add(instance);
                                 }
                             }

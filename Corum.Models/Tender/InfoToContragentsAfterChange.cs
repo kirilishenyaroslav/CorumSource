@@ -19,10 +19,23 @@ namespace Corum.Models.Tender
         public string messageFooter { get; set; }
         public string subject { get; set; }
         public string bodyHTML { get; set; }
+        public long orderId { get; set; }
+        public Guid formUuid { get; set; }
+        public int tenderNumber { get; set; }
+        public DateTime dateCreate { get; set; }
+        public DateTime dateUpdate { get; set; }
+        public int industryId { get; set; }
+        public string description { get; set; }
+        public float price { get; set; }
+        public Guid tenderItemUuid { get; set; }
+        public bool flag { get; set; }
     }
     public class ListWinnersInfoAfterChange : ListInfoAfterChange
     {
-
+        public ListWinnersInfoAfterChange() 
+        {
+            this.dateCreate = DateTime.Now;
+        }
     }
 
     public class ListLosersInfoAfterChange: ListInfoAfterChange

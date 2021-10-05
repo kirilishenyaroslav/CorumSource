@@ -31,6 +31,7 @@ namespace Corum.Models.Tender
         public System.DateTime dateCreate { get; set; }
         public System.DateTime dateUpdate { get; set; }
         public System.Guid tenderItemUuid { get; set; }
+        public Nullable<bool> flag { get; set; }
 
         public virtual RegisterMessageToContragents RegisterMessageToContragents { get; set; }
     }

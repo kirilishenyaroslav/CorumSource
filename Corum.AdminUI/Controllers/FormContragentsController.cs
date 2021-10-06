@@ -13,6 +13,7 @@ using System.Web.Script.Serialization;
 using CorumAdminUI;
 using Newtonsoft.Json;
 using System.Web.Mvc;
+using System.Collections.Generic;
 
 namespace CorumAdminUI.Controllers
 {
@@ -23,7 +24,9 @@ namespace CorumAdminUI.Controllers
         {
             if (context.CheckFormUuid(formUuid))
             {
-                return View();
+                List<RegisterFormFromContragents> listDataToForm = new List<RegisterFormFromContragents>();
+                listDataToForm = context.GetRegisterFormFromContragents(formUuid);
+                return View(listDataToForm);
             }
             else
             {

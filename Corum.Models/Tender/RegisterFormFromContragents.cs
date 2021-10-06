@@ -33,6 +33,23 @@ namespace Corum.Models.Tender
         public System.Guid tenderItemUuid { get; set; }
         public Nullable<bool> flag { get; set; }
 
+        public long orderId { get; set; }
+        public int tenderNumber { get; set; }
+        public string emailOperacionist { get; set; }
+        public string emailContragent { get; set; }
+        public System.DateTime dateDownloading { get; set; }
+        public System.DateTime dateUnloading { get; set; }
+        public string industryName { get; set; }
+        public string descriptionTender { get; set; }
+        public Nullable<int> acceptedTransportUnits { get; set; }
+        public Nullable<double> cost { get; set; }
+        public System.Guid formUuid { get; set; }
+        public int industryId { get; set; }
+        public string routeShort { get; set; }
+        public string nameCargo { get; set; }
+        public double weightCargo { get; set; }
+        public int DelayPayment { get; set; }
+
         public virtual RegisterMessageToContragents RegisterMessageToContragents { get; set; }
     }
 }

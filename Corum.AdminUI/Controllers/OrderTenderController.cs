@@ -68,16 +68,16 @@ namespace CorumAdminUI.Controllers
         [HttpPost]
         public ActionResult AsyncInitDataMessageToContragents(InfoToContragentsAfterChange listInfoToCont)
         {
-            bool isAvaliable = false;
             if (listInfoToCont.listLosersInfoAfterChange != null || listInfoToCont.listWinnersInfoAfterChange != null)
             {
-                isAvaliable = context.FormMessageToContragents(listInfoToCont);
+                context.FormInitMessageToContragents(ref listInfoToCont);
             }
             return new JsonpResult
             {
-                Data = new { listInfoToCont, isAvaliable },
+                Data = new { listInfoToCont },
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
+
         }
 
 
@@ -87,7 +87,7 @@ namespace CorumAdminUI.Controllers
             bool isAvaliable = false;
             if (listInfoToCont.listLosersInfoAfterChange != null || listInfoToCont.listWinnersInfoAfterChange != null)
             {
-                isAvaliable = context.FormMessageToContragents(listInfoToCont);
+                isAvaliable = context.FormMessageToSendContragents(listInfoToCont);
                 if (isAvaliable)
                 {
                     SendEmailContragents testEmail = new SendEmailContragents();

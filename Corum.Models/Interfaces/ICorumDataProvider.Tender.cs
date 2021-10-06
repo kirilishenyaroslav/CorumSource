@@ -31,8 +31,10 @@ namespace Corum.Models
         List<ContrAgentModel> GetAgentModels(List<RequestJSONContragentMainData> listRequestJSONContragent, RequestJSONContragentModel myDeserializedClassContragent);
         ContrAgentModel GetWinnerContragent(List<ContrAgentModel> listAllContragents, int SupplierIdWinnerContragent);
         void UpdateDataRegisterContragents(Dictionary<long, List<RegisterTenderContragent>> regisContragents);
-        bool FormMessageToContragents(InfoToContragentsAfterChange listInfoToCont);
+        void FormInitMessageToContragents(ref InfoToContragentsAfterChange listInfoToCont);
+        bool FormMessageToSendContragents(InfoToContragentsAfterChange listInfoToCont);
         List<RegisterMessageToContragents> GetListFormUuidToContragents(long orderId);
         bool CheckFormUuid(Guid formUuid);
+        List<RegisterFormFromContragents> GetRegisterFormFromContragents(Guid formUuid);
     }
 }

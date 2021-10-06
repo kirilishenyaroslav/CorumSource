@@ -35,6 +35,14 @@ namespace Corum.DAL.Entity
         public System.Guid formUuid { get; set; }
         public int industryId { get; set; }
         public Nullable<bool> flag { get; set; }
+        public string industryName { get; set; }
+        public string routeShort { get; set; }
+        public string nameCargo { get; set; }
+        public Nullable<double> weightCargo { get; set; }
+        public Nullable<System.DateTime> dataDownload { get; set; }
+        public Nullable<System.DateTime> dataUnload { get; set; }
+        public Nullable<int> DelayPayment { get; set; }
+        public bool flagCreate { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RegisterFormFromContragents> RegisterFormFromContragents { get; set; }

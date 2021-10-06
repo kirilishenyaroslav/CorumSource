@@ -913,6 +913,14 @@
           <Property Name="cost" Type="float" />
           <Property Name="tenderItemUuid" Type="uniqueidentifier" Nullable="false" />
           <Property Name="flag" Type="bit" />
+          <Property Name="industryName" Type="nvarchar" MaxLength="350" />
+          <Property Name="routeShort" Type="text" />
+          <Property Name="nameCargo" Type="text" />
+          <Property Name="weightCargo" Type="float" />
+          <Property Name="dataDownload" Type="datetime2" Precision="7" />
+          <Property Name="dataUnload" Type="datetime2" Precision="7" />
+          <Property Name="DelayPayment" Type="int" />
+          <Property Name="flagCreate" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="RegisterTenderContragents">
           <Key>
@@ -8878,6 +8886,14 @@
           <Property Name="formUuid" Type="Guid" Nullable="false" />
           <Property Name="industryId" Type="Int32" Nullable="false" />
           <Property Name="flag" Type="Boolean" />
+          <Property Name="industryName" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="routeShort" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="nameCargo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="weightCargo" Type="Double" />
+          <Property Name="dataDownload" Type="DateTime" Precision="7" />
+          <Property Name="dataUnload" Type="DateTime" Precision="7" />
+          <Property Name="DelayPayment" Type="Int32" />
+          <Property Name="flagCreate" Type="Boolean" Nullable="false" />
         </EntityType>
         <Association Name="FK_RegisterFormFromContragents_RegisterMessageToContragents">
           <End Type="CorumModel.RegisterMessageToContragents" Role="RegisterMessageToContragents" Multiplicity="1">
@@ -11060,6 +11076,14 @@
           <EntitySetMapping Name="RegisterMessageToContragents">
             <EntityTypeMapping TypeName="CorumModel.RegisterMessageToContragents">
               <MappingFragment StoreEntitySet="RegisterMessageToContragents">
+                <ScalarProperty Name="flagCreate" ColumnName="flagCreate" />
+                <ScalarProperty Name="DelayPayment" ColumnName="DelayPayment" />
+                <ScalarProperty Name="dataUnload" ColumnName="dataUnload" />
+                <ScalarProperty Name="dataDownload" ColumnName="dataDownload" />
+                <ScalarProperty Name="weightCargo" ColumnName="weightCargo" />
+                <ScalarProperty Name="nameCargo" ColumnName="nameCargo" />
+                <ScalarProperty Name="routeShort" ColumnName="routeShort" />
+                <ScalarProperty Name="industryName" ColumnName="industryName" />
                 <ScalarProperty Name="flag" ColumnName="flag" />
                 <ScalarProperty Name="industryId" ColumnName="industryId" />
                 <ScalarProperty Name="formUuid" ColumnName="formUuid" />

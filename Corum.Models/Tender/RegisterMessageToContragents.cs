@@ -30,6 +30,13 @@ namespace Corum.Models.Tender
         public System.Guid formUuid { get; set; }
         public int industryId { get; set; }
         public bool flag { get; set; }
+        public string routeShort { get; set; }
+        public string nameCargo { get; set; }
+        public Nullable<double> weightCargo { get; set; }
+        public DateTime dataDownload { get; set; }
+        public DateTime dataUnload { get; set; }
+        public Nullable<int> DelayPayment { get; set; }
+
 
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RegisterFormFromContragents> RegisterFormFromContragents { get; set; }

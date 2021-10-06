@@ -659,67 +659,117 @@ namespace Corum.DAL
         }
 
 
-        public bool FormMessageToContragents(InfoToContragentsAfterChange listInfoToCont)
+        public void FormInitMessageToContragents(ref InfoToContragentsAfterChange listInfoToCont)
+        {
+            var listWinners = listInfoToCont.listWinnersInfoAfterChange;
+            
+            try
+            {
+                if (listWinners != null)
+                {
+                    foreach (var model in listWinners)
+                    {
+                        var IsContragent = (db.RegisterMessageToContragents.Where(x => x.tenderNumber == model.tenderNumber && x.contragentName == model.expeditorName && x.flagCreate == true).FirstOrDefault() != null) ? false : true;
+
+                        if (IsContragent)
+                        {
+                            db.RegisterMessageToContragents.Add(new Entity.RegisterMessageToContragents()
+                            {
+                                acceptedTransportUnits = model.numberOfVehicles,
+                                contragentName = model.expeditorName,
+                                cost = model.price,
+                                dateCreate = model.dateCreate,
+                                dateUpdate = model.dateUpdate,
+                                descriptionTender = model.description,
+                                emailContragent = model.recipientEmail,
+                                emailOperacionist = model.senderEmail,
+                                formUuid = model.formUuid,
+                                industryId = model.industryId,
+                                orderId = model.orderId,
+                                tenderItemUuid = model.tenderItemUuid,
+                                tenderNumber = model.tenderNumber,
+                                flag = model.flag,
+                                dataDownload = model.dataDownload,
+                                dataUnload = model.dataUnload,
+                                DelayPayment = model.DelayPayment,
+                                industryName = model.industryName,
+                                nameCargo = model.nameCargo,
+                                routeShort = model.routeShort,
+                                weightCargo = model.weightCargo
+                            });
+                            db.SaveChanges();
+
+                        }
+                    }
+                    var list = db.RegisterMessageToContragents.ToList();
+                    for(int item = 0; item < list.Count; item++)
+                    {
+                        if (list[item].tenderNumber == listWinners[0].tenderNumber)
+                        {
+                            int tendNumber = list[item].tenderNumber;
+                            var value = db.RegisterMessageToContragents.Where(x => x.tenderNumber == tendNumber && x.flagCreate != true).FirstOrDefault();
+                            if (value != null)
+                            {
+                                listWinners[item].flagCreate = true;
+                                listWinners[item].formUuid = value.formUuid;
+                                value.flagCreate = true;
+                                db.SaveChanges();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        public bool FormMessageToSendContragents(InfoToContragentsAfterChange listInfoToCont)
         {
             var listWinners = listInfoToCont.listWinnersInfoAfterChange;
             bool flag = false;
             try
             {
-                foreach (var model in listWinners)
+                if (listWinners != null)
                 {
-                    var IsContragent = (db.RegisterMessageToContragents.Where(x => x.tenderNumber == model.tenderNumber && x.contragentName == model.expeditorName).FirstOrDefault() != null) ? false : true;
-                    
-                    if (IsContragent)
+                    foreach (var model in listWinners)
                     {
-                        db.RegisterMessageToContragents.Add(new Entity.RegisterMessageToContragents()
+                        var item = db.RegisterMessageToContragents.Where(x => x.tenderNumber == model.tenderNumber && x.contragentName == model.expeditorName && x.formUuid== model.formUuid).FirstOrDefault();
+                        if (item != null && item.flag == true)
                         {
-                            acceptedTransportUnits = model.numberOfVehicles,
-                            contragentName = model.expeditorName,
-                            cost = model.price,
-                            dateCreate = model.dateCreate,
-                            dateUpdate = model.dateUpdate,
-                            descriptionTender = model.description,
-                            emailContragent = model.recipientEmail,
-                            emailOperacionist = model.senderEmail,
-                            formUuid = model.formUuid,
-                            industryId = model.industryId,
-                            orderId = model.orderId,
-                            tenderItemUuid = model.tenderItemUuid,
-                            tenderNumber = model.tenderNumber,
-                            flag = model.flag
-                        });
-                        db.SaveChanges();
-                        flag = true;
-                        continue;
-                    }
-                    var item = db.RegisterMessageToContragents.Where(x => x.tenderNumber == model.tenderNumber && x.contragentName == model.expeditorName).FirstOrDefault();
-                    if (!IsContragent && item != null && item.flag == true)
-                    {
-
-                        item.acceptedTransportUnits = model.numberOfVehicles;
-                        item.contragentName = model.expeditorName;
-                             item.cost = model.price;
-                        item.dateCreate = model.dateCreate;
-                        item.dateUpdate = model.dateUpdate;
-                        item.descriptionTender = model.description;
-                        item.emailContragent = model.recipientEmail;
-                        item.emailOperacionist = model.senderEmail;
-                        item.formUuid = model.formUuid;
-                        item.industryId = model.industryId;
-                        item.orderId = model.orderId;
-                        item.tenderItemUuid = model.tenderItemUuid;
-                        item.tenderNumber = model.tenderNumber;
-                        item.flag = model.flag;
-                        db.SaveChanges();
-                        flag = true;
-                        continue;
-                    }
-                    else
-                    {
-                        continue;
-
+                            item.acceptedTransportUnits = model.numberOfVehicles;
+                            item.contragentName = model.expeditorName;
+                            item.cost = model.price;
+                            item.dateCreate = model.dateCreate;
+                            item.dateUpdate = model.dateUpdate;
+                            item.descriptionTender = model.description;
+                            item.emailContragent = model.recipientEmail;
+                            item.emailOperacionist = model.senderEmail;
+                            item.formUuid = model.formUuid;
+                            item.industryId = model.industryId;
+                            item.orderId = model.orderId;
+                            item.tenderItemUuid = model.tenderItemUuid;
+                            item.tenderNumber = model.tenderNumber;
+                            item.flag = model.flag;
+                            item.dataDownload = model.dataDownload;
+                            item.dataUnload = model.dataUnload;
+                            item.DelayPayment = model.DelayPayment;
+                            item.industryName = model.industryName;
+                            item.nameCargo = model.nameCargo;
+                            item.routeShort = model.routeShort;
+                            item.weightCargo = model.weightCargo;
+                            db.SaveChanges();
+                            flag = true;
+                            continue;
+                        }
+                        else
+                        {
+                            continue;
+                        }
                     }
                 }
+
                 return flag;
             }
             catch (Exception e)
@@ -727,8 +777,6 @@ namespace Corum.DAL
                 return flag;
             }
         }
-
-
         public List<RegisterMessageToContragents> GetListFormUuidToContragents(long orderId)
         {
             List<RegisterMessageToContragents> list = new List<RegisterMessageToContragents>();
@@ -756,6 +804,13 @@ namespace Corum.DAL
                             RegisterFormFromContragents = item.RegisterFormFromContragents as ICollection<RegisterFormFromContragents>,
                             tenderItemUuid = item.tenderItemUuid,
                             tenderNumber = item.tenderNumber,
+                            dataDownload = (DateTime)item.dataDownload,
+                            dataUnload = (DateTime)item.dataUnload,
+                            DelayPayment = item.DelayPayment,
+                            industryName = item.industryName,
+                            nameCargo = item.nameCargo,
+                            routeShort = item.routeShort,
+                            weightCargo = item.weightCargo,
                             flag = (bool)((item.flag != null) ? item.flag : false)
                         };
                         list.Add(model);
@@ -773,6 +828,38 @@ namespace Corum.DAL
         {
             var IsContragent = (db.RegisterMessageToContragents.Where(x => x.formUuid == formUuid).FirstOrDefault() != null) ? true : false;
             return IsContragent;
+        }
+
+
+        public List<RegisterFormFromContragents> GetRegisterFormFromContragents(Guid formUuid)
+        {
+            List<RegisterFormFromContragents> listDataToForm = new List<RegisterFormFromContragents>();
+            var modelRegisterToContragents = db.RegisterMessageToContragents.Where(x => x.formUuid == formUuid).FirstOrDefault();
+            for (int i = 0; i < modelRegisterToContragents.acceptedTransportUnits; i++)
+            {
+                RegisterFormFromContragents model = new RegisterFormFromContragents();
+                model.contragentName = modelRegisterToContragents.contragentName;
+                model.tenderNumber = modelRegisterToContragents.tenderNumber;
+                model.orderId = modelRegisterToContragents.orderId;
+                model.emailContragent = modelRegisterToContragents.emailContragent;
+                model.emailOperacionist = modelRegisterToContragents.emailOperacionist;
+                model.dateDownloading = (DateTime)modelRegisterToContragents.dataDownload;
+                model.dateUnloading = (DateTime)modelRegisterToContragents.dataUnload;
+                model.industryName = modelRegisterToContragents.industryName;
+                model.descriptionTender = modelRegisterToContragents.descriptionTender;
+                model.acceptedTransportUnits = 1;
+                model.cost = modelRegisterToContragents.cost;
+                model.formUuid = modelRegisterToContragents.formUuid;
+                model.industryId = modelRegisterToContragents.industryId;
+                model.routeShort = modelRegisterToContragents.routeShort;
+                model.nameCargo = modelRegisterToContragents.nameCargo;
+                model.weightCargo = (double)modelRegisterToContragents.weightCargo;
+                model.DelayPayment = (int)modelRegisterToContragents.DelayPayment;
+                listDataToForm.Add(model);
+            }
+
+
+            return listDataToForm;
         }
     }
 }

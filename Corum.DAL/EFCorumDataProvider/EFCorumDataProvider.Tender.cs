@@ -12,7 +12,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Globalization;
 using Corum.Models.ViewModels.Tender;
-
+using System.Web;
 
 namespace Corum.DAL
 {
@@ -662,7 +662,7 @@ namespace Corum.DAL
         public void FormInitMessageToContragents(ref InfoToContragentsAfterChange listInfoToCont)
         {
             var listWinners = listInfoToCont.listWinnersInfoAfterChange;
-            
+
             try
             {
                 if (listWinners != null)
@@ -702,7 +702,7 @@ namespace Corum.DAL
                         }
                     }
                     var list = db.RegisterMessageToContragents.ToList();
-                    for(int item = 0; item < list.Count; item++)
+                    for (int item = 0; item < list.Count; item++)
                     {
                         if (list[item].tenderNumber == listWinners[0].tenderNumber)
                         {
@@ -735,7 +735,7 @@ namespace Corum.DAL
                 {
                     foreach (var model in listWinners)
                     {
-                        var item = db.RegisterMessageToContragents.Where(x => x.tenderNumber == model.tenderNumber && x.contragentName == model.expeditorName && x.formUuid== model.formUuid).FirstOrDefault();
+                        var item = db.RegisterMessageToContragents.Where(x => x.tenderNumber == model.tenderNumber && x.contragentName == model.expeditorName && x.formUuid == model.formUuid).FirstOrDefault();
                         if (item != null && item.flag == true)
                         {
                             item.acceptedTransportUnits = model.numberOfVehicles;
@@ -835,6 +835,7 @@ namespace Corum.DAL
         {
             List<RegisterFormFromContragents> listDataToForm = new List<RegisterFormFromContragents>();
             var modelRegisterToContragents = db.RegisterMessageToContragents.Where(x => x.formUuid == formUuid).FirstOrDefault();
+            var modelForm = db.RegisterFormFromContragents.Where(x => x.tenderItemUuid == formUuid).FirstOrDefault();
             for (int i = 0; i < modelRegisterToContragents.acceptedTransportUnits; i++)
             {
                 RegisterFormFromContragents model = new RegisterFormFromContragents();
@@ -855,11 +856,96 @@ namespace Corum.DAL
                 model.nameCargo = modelRegisterToContragents.nameCargo;
                 model.weightCargo = (double)modelRegisterToContragents.weightCargo;
                 model.DelayPayment = (int)modelRegisterToContragents.DelayPayment;
+                model.IsEditable = false;
+                if (modelForm != null)
+                {
+                    model.carBrand = modelForm.carBrand;
+                    model.stateNumberCar = modelForm.stateNumberCar;
+                    model.trailerNumber = modelForm.trailerNumber;
+                    model.loadCapacity = modelForm.loadCapacity;
+                    model.distance = modelForm.distance;
+                    model.fullNameOfDriver = modelForm.fullNameOfDriver;
+                    model.phoneNumber = modelForm.phoneNumber;
+                    model.drivingLicenseNumber = modelForm.drivingLicenseNumber;
+                    model.note = modelForm.note;
+                    model.stateBorderCrossingPoint = modelForm.stateBorderCrossingPoint;
+                    model.seriesPassportNumber = modelForm.seriesPassportNumber;
+                    model.IsEditable = true;
+                }
                 listDataToForm.Add(model);
             }
 
 
             return listDataToForm;
+        }
+
+        public void SetRegisterFormFromContragent(List<HttpPostedFileBase> listFiles, Dictionary<string, string> dic)
+        {
+            Guid formUuid = Guid.Parse(dic["tenderItemUuid"]);
+            var modelRegisterToContragents = db.RegisterMessageToContragents.Where(x => x.formUuid == formUuid).FirstOrDefault();
+
+            var IsContragent = (db.RegisterFormFromContragents.Where(x => x.tenderItemUuid == formUuid).FirstOrDefault() != null) ? false : true;
+            try
+            {
+                if (IsContragent)
+                {
+                    db.RegisterFormFromContragents.Add(new Entity.RegisterFormFromContragents()
+                    {
+                        RegisterMessageToContragentId = modelRegisterToContragents.Id,
+                        carBrand = dic["carBrand"],
+                        stateNumberCar = dic["stateNumberCar"],
+                        trailerNumber = dic["trailerNumber"],
+                        loadCapacity = Double.Parse(dic["loadCapacity"]),
+                        distance = Double.Parse(dic["distance"]),
+                        fullNameOfDriver = dic["fullNameOfDriver"],
+                        phoneNumber = dic["phoneNumber"],
+                        drivingLicenseNumber = dic["drivingLicenseNumber"],
+                        contragentName = dic["contragentName"],
+                        note = dic["note"],
+                        stateBorderCrossingPoint = dic["stateBorderCrossingPoint"],
+                        seriesPassportNumber = dic["seriesPassportNumber"],
+                        scannedCopyOfSignedOrder = Boolean.Parse(dic["scannedCopyOfSignedOrder"]),
+                        scannedCopyOfRegistrationCertificate = Boolean.Parse(dic["scannedCopyOfRegistrationCertificate"]),
+                        scanCopyOfPassport = Boolean.Parse(dic["scanCopyOfPassport"]),
+                        scannedCopyOfAdmissionToTransportation = Boolean.Parse(dic["scannedCopyOfAdmissionToTransportation"]),
+                        scannedCopyOfCivilPassport = Boolean.Parse(dic["scannedCopyOfCivilPassport"]),
+                        IsUpdate = Boolean.Parse(dic["checkFronContragents"]),
+                        dateCreate = DateTime.Now,
+                        dateUpdate = DateTime.Now,
+                        tenderItemUuid = formUuid,
+                        RegisterMessageToContragents = modelRegisterToContragents
+                    });
+                    db.SaveChanges();
+                }
+                else if (Boolean.Parse(dic["checkFronContragents"]) == true && !IsContragent)
+                {
+                    var item = db.RegisterFormFromContragents.Where(x => x.tenderItemUuid == formUuid).FirstOrDefault();
+                    item.carBrand = dic["carBrand"];
+                    item.stateNumberCar = dic["stateNumberCar"];
+                    item.trailerNumber = dic["trailerNumber"];
+                    item.loadCapacity = Double.Parse(dic["loadCapacity"]);
+                    item.distance = Double.Parse(dic["distance"]);
+                    item.fullNameOfDriver = dic["fullNameOfDriver"];
+                    item.phoneNumber = dic["phoneNumber"];
+                    item.drivingLicenseNumber = dic["drivingLicenseNumber"];
+                    item.contragentName = dic["contragentName"];
+                    item.note = dic["note"];
+                    item.stateBorderCrossingPoint = dic["stateBorderCrossingPoint"];
+                    item.seriesPassportNumber = dic["seriesPassportNumber"];
+                    item.scannedCopyOfSignedOrder = (item.scannedCopyOfSignedOrder != true) ? Boolean.Parse(dic["scannedCopyOfSignedOrder"]) : item.scannedCopyOfSignedOrder;
+                    item.scannedCopyOfRegistrationCertificate = (item.scannedCopyOfRegistrationCertificate != true) ? Boolean.Parse(dic["scannedCopyOfRegistrationCertificate"]) : item.scannedCopyOfRegistrationCertificate;
+                    item.scanCopyOfPassport = (item.scanCopyOfPassport != true) ? Boolean.Parse(dic["scanCopyOfPassport"]) : item.scanCopyOfPassport;
+                    item.scannedCopyOfAdmissionToTransportation = (item.scannedCopyOfAdmissionToTransportation != true) ? Boolean.Parse(dic["scannedCopyOfAdmissionToTransportation"]) : item.scannedCopyOfAdmissionToTransportation;
+                    item.scannedCopyOfCivilPassport = (item.scannedCopyOfCivilPassport != true) ? Boolean.Parse(dic["scannedCopyOfCivilPassport"]) : item.scannedCopyOfCivilPassport;
+                    item.IsUpdate = Boolean.Parse(dic["checkFronContragents"]);
+                    item.dateUpdate = DateTime.Now;
+                    db.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
         }
     }
 }

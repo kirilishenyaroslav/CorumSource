@@ -13,8 +13,8 @@ namespace Corum.Models.Tender
         public string carBrand { get; set; }
         public string stateNumberCar { get; set; }
         public string trailerNumber { get; set; }
-        public double loadCapacity { get; set; }
-        public double distance { get; set; }
+        public Nullable<double> loadCapacity { get; set; }
+        public Nullable<double> distance { get; set; }
         public string fullNameOfDriver { get; set; }
         public string phoneNumber { get; set; }
         public string drivingLicenseNumber { get; set; }
@@ -49,6 +49,8 @@ namespace Corum.Models.Tender
         public string nameCargo { get; set; }
         public double weightCargo { get; set; }
         public int DelayPayment { get; set; }
+
+        public bool IsEditable { get; set; }
 
         public virtual RegisterMessageToContragents RegisterMessageToContragents { get; set; }
     }

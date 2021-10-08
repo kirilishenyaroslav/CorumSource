@@ -872,18 +872,18 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="RegisterMessageToContragentId" Type="int" Nullable="false" />
-          <Property Name="carBrand" Type="nvarchar" MaxLength="350" Nullable="false" />
-          <Property Name="stateNumberCar" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="trailerNumber" Type="nvarchar" MaxLength="100" Nullable="false" />
-          <Property Name="loadCapacity" Type="float" Nullable="false" />
-          <Property Name="distance" Type="float" Nullable="false" />
-          <Property Name="fullNameOfDriver" Type="nvarchar" MaxLength="350" Nullable="false" />
-          <Property Name="phoneNumber" Type="nvarchar" MaxLength="350" Nullable="false" />
-          <Property Name="drivingLicenseNumber" Type="nvarchar" MaxLength="350" Nullable="false" />
-          <Property Name="contragentName" Type="nvarchar" MaxLength="350" Nullable="false" />
+          <Property Name="carBrand" Type="nvarchar" MaxLength="350" />
+          <Property Name="stateNumberCar" Type="nvarchar" MaxLength="100" />
+          <Property Name="trailerNumber" Type="nvarchar" MaxLength="100" />
+          <Property Name="loadCapacity" Type="float" />
+          <Property Name="distance" Type="float" />
+          <Property Name="fullNameOfDriver" Type="nvarchar" MaxLength="350" />
+          <Property Name="phoneNumber" Type="nvarchar" MaxLength="350" />
+          <Property Name="drivingLicenseNumber" Type="nvarchar" MaxLength="350" />
+          <Property Name="contragentName" Type="nvarchar" MaxLength="350" />
           <Property Name="note" Type="text" />
           <Property Name="stateBorderCrossingPoint" Type="text" />
-          <Property Name="seriesPassportNumber" Type="nvarchar" MaxLength="350" Nullable="false" />
+          <Property Name="seriesPassportNumber" Type="nvarchar" MaxLength="350" />
           <Property Name="scannedCopyOfSignedOrder" Type="bit" />
           <Property Name="scannedCopyOfRegistrationCertificate" Type="bit" />
           <Property Name="scanCopyOfPassport" Type="bit" />
@@ -8843,18 +8843,18 @@
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="RegisterMessageToContragentId" Type="Int32" Nullable="false" />
-          <Property Name="carBrand" Type="String" Nullable="false" MaxLength="350" FixedLength="false" Unicode="true" />
-          <Property Name="stateNumberCar" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="trailerNumber" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
-          <Property Name="loadCapacity" Type="Double" Nullable="false" />
-          <Property Name="distance" Type="Double" Nullable="false" />
-          <Property Name="fullNameOfDriver" Type="String" Nullable="false" MaxLength="350" FixedLength="false" Unicode="true" />
-          <Property Name="phoneNumber" Type="String" Nullable="false" MaxLength="350" FixedLength="false" Unicode="true" />
-          <Property Name="drivingLicenseNumber" Type="String" Nullable="false" MaxLength="350" FixedLength="false" Unicode="true" />
-          <Property Name="contragentName" Type="String" Nullable="false" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="carBrand" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="stateNumberCar" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="trailerNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="loadCapacity" Type="Double" />
+          <Property Name="distance" Type="Double" />
+          <Property Name="fullNameOfDriver" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="phoneNumber" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="drivingLicenseNumber" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="contragentName" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
           <Property Name="note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="stateBorderCrossingPoint" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
-          <Property Name="seriesPassportNumber" Type="String" Nullable="false" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="seriesPassportNumber" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
           <Property Name="scannedCopyOfSignedOrder" Type="Boolean" />
           <Property Name="scannedCopyOfRegistrationCertificate" Type="Boolean" />
           <Property Name="scanCopyOfPassport" Type="Boolean" />

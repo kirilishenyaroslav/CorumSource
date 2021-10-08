@@ -19,8 +19,8 @@ namespace Corum.DAL.Entity
         public string carBrand { get; set; }
         public string stateNumberCar { get; set; }
         public string trailerNumber { get; set; }
-        public double loadCapacity { get; set; }
-        public double distance { get; set; }
+        public Nullable<double> loadCapacity { get; set; }
+        public Nullable<double> distance { get; set; }
         public string fullNameOfDriver { get; set; }
         public string phoneNumber { get; set; }
         public string drivingLicenseNumber { get; set; }

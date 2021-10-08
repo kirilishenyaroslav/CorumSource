@@ -21,14 +21,14 @@
     <header class="headFromContr">
         <div class="logo-icon pull-left"></div>
     </header>
-    <form action="">
+    <form id="SendDataFromContragen" action="">
         <div class="containTC">
             <div class="contTCOne">
                 <p>Форма запроса данных по транспортному средству</p>
-                @for(int i = 0; i < Model.Count; i++)
+                @for (int i = 0; i < Model.Count; i++)
                 {
                     <table class="tbFromContragents">
-                        <caption class="captTC">ТС@(i+1)</caption>
+                        <caption class="captTC">ТС@(i + 1)</caption>
                         <tbody>
                             <tr>
                                 <th class="thMessCont tdThMessCont changeFontLink" colspan="2">
@@ -91,76 +91,76 @@
                             <tr>
                                 <th class="thMessCont tdThMessCont">Марка авто<span class="redFont">*</span></th>
                                 <td class="tdForm">
-                                    <input class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" required title="Марка транспортного средства из
+                                    <input name="carBrand" class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" value="@Model[0].carBrand" required title="Марка транспортного средства из
                                 свидетельства регистрации транспортного средства" placeholder="Введите данные">
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Гос.номер ТС<span class="redFont">*</span></th>
                                 <td class="tdForm">
-                                    <input class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" required title="Номер регистрации транспортного средства
+                                    <input name="stateNumberCar" class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" value="@Model[0].stateNumberCar" required title="Номер регистрации транспортного средства
                                 из свидетельства регистрации транспортного средства" placeholder="Введите данные">
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Гос.номер прицепа<span class="redFont">*</span></th>
                                 <td class="tdForm">
-                                    <input class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" required title="При отсутствии прицепа ставим «-»(дефис).
+                                    <input name="trailerNumber" class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" value="@Model[0].trailerNumber" required title="При отсутствии прицепа ставим «-»(дефис).
                                 Номер регистрации прицепа из свидетельства регистрации транспортного средства/прицепа." placeholder="Введите данные">
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Грузоподъемность, т<span class="redFont">*</span></th>
                                 <td class="tdForm">
-                                    <input class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" required title="Грузоподъемность автомобиля" placeholder="Введите данные">
+                                    <input name="loadCapacity" class="inputTxt" type="text" data-toggle="tooltip" value="@Model[0].loadCapacity" data-placement="auto" required title="Грузоподъемность автомобиля" placeholder="Введите данные">
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Расстояние маршрута, км<span class="redFont">*</span></th>
                                 <td class="tdForm">
-                                    <input class="inputTxt" type="text" required placeholder="Введите данные">
+                                    <input name="distance" class="inputTxt" value="@Model[0].distance" type="text" required placeholder="Введите данные">
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">ФИО водителя<span class="redFont">*</span></th>
                                 <td class="tdForm">
-                                    <input class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" required title="Ввести ФИО водителя транспортного средства." placeholder="Введите данные">
+                                    <input name="fullNameOfDriver" class="inputTxt" value="@Model[0].fullNameOfDriver" type="text" data-toggle="tooltip" data-placement="auto" required title="Ввести ФИО водителя транспортного средства." placeholder="Введите данные">
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">№ телефона<span class="redFont">*</span></th>
                                 <td class="tdForm">
-                                    <input class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" required title="Ввести номер мобильного телефона водителя транспортного средства." placeholder="Введите данные">
+                                    <input name="phoneNumber" class="inputTxt" type="text" value="@Model[0].phoneNumber" data-toggle="tooltip" data-placement="auto" required title="Ввести номер мобильного телефона водителя транспортного средства." placeholder="Введите данные">
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">№ водительского удостоверения<span class="redFont">*</span></th>
                                 <td class="tdForm">
-                                    <input class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" required title="Ввести номер водительского удостоверения водителя транспортного средства." placeholder="Введите данные">
+                                    <input name="drivingLicenseNumber" class="inputTxt" value="@Model[0].drivingLicenseNumber" type="text" data-toggle="tooltip" data-placement="auto" required title="Ввести номер водительского удостоверения водителя транспортного средства." placeholder="Введите данные">
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Экспедитор</th>
                                 <td class="tdForm">
-                                    <input class="inputTxt" type="text" value='@Model[i].contragentName' readonly>
+                                    <input name="contragentName" class="inputTxt" type="text" value='@Model[i].contragentName' readonly>
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Примечание</th>
                                 <td class="tdForm">
-                                    <input class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" title="Можете указать дополнительную информацию" placeholder="Введите данные">
+                                    <input name="note" class="inputTxt" type="text" value="@Model[0].note" data-toggle="tooltip" data-placement="auto" title="Можете указать дополнительную информацию" placeholder="Введите данные">
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Пункт перехода гос.границы<span class="redFont">*</span></th>
                                 <td class="tdForm">
-                                    <input class="inputTxt" type="text" data-toggle="tooltip" required data-placement="auto" title="Указать Пункт перехода гос.границы для международных перевозок" placeholder="Введите данные">
+                                    <input name="stateBorderCrossingPoint" value="@Model[0].stateBorderCrossingPoint" class="inputTxt" type="text" data-toggle="tooltip" required data-placement="auto" title="Указать Пункт перехода гос.границы для международных перевозок" placeholder="Введите данные">
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Серия, номер заграничного паспорта</th>
                                 <td class="tdForm">
-                                    <input class="inputTxt" type="text" data-toggle="tooltip" required data-placement="auto" title="Ввести номер заграничного паспорта водителя транспортного средства." placeholder="Введите данные">
+                                    <input name="seriesPassportNumber" value="@Model[0].seriesPassportNumber" class="inputTxt" type="text" data-toggle="tooltip" required data-placement="auto" title="Ввести номер заграничного паспорта водителя транспортного средства." placeholder="Введите данные">
                                 </td>
                             </tr>
                             <tr>
@@ -170,7 +170,7 @@
                                 <th class="thMessCont tdThMessCont">- Сканкопия подписанной ЗАЯВКИ Экспедитором или заверенная КЭП/ЭЦП</th>
                                 <td class="tdForm" data-toggle="tooltip" data-placement="auto" title="Вложите сканкопию или документ заверенный электронной цифровой подписью Экспедитора">
                                     <label for="inpFileOne" id="btnChooseOne" class="labBtn">Выбрать файл</label>
-                                    <input id="inpFileOne" type="file" class="inpFile" multiple style="display: none;">
+                                    <input id="inpFileOne" name="inpFileOne" type="file" class="inpFile" multiple style="display: none;">
                                     <label id="labChooseOne" class="labChoose">Файл не выбран</label>
                                     <p class="parhChoose"></p>
                                 </td>
@@ -179,7 +179,7 @@
                                 <th class="thMessCont tdThMessCont">- Сканкопия Свидетельство о регистрации ТС</th>
                                 <td class="tdForm" data-toggle="tooltip" data-placement="auto" title="Вложите сканкопию Свидетельство о регистрации ТС">
                                     <label for="inpFileTwo" id="btnChooseTwo" class="labBtn">Выбрать файл</label>
-                                    <input id="inpFileTwo" type="file" class="inpFile" style="display: none;" multiple>
+                                    <input id="inpFileTwo" name="inpFileTwo" type="file" class="inpFile" style="display: none;" multiple>
                                     <label id="labChooseTwo" class="labChoose">Файл не выбран</label>
                                     <p class="parhChoose"></p>
                                 </td>
@@ -188,7 +188,7 @@
                                 <th class="thMessCont tdThMessCont">- Сканкопия Загран. паспорта водителя</th>
                                 <td class="tdForm" data-toggle="tooltip" data-placement="auto" title="Вложите сканкопию Загранпаспорта водителя">
                                     <label for="inpFileThree" id="btnChooseThree" class="labBtn">Выбрать файл</label>
-                                    <input id="inpFileThree" type="file" class="inpFile" style="display: none;" multiple>
+                                    <input id="inpFileThree" name="inpFileThree" type="file" class="inpFile" style="display: none;" multiple>
                                     <label id="labChooseThree" class="labChoose">Файл не выбран</label>
                                     <p class="parhChoose"></p>
                                 </td>
@@ -197,7 +197,7 @@
                                 <th class="thMessCont tdThMessCont">- Сканкопия свидетельства о допуске ТС к перевозкам грузов под таможенными пломбами</th>
                                 <td class="tdForm" data-toggle="tooltip" data-placement="auto" title="Вложите сканкопию свидетельства о допуске ТС к перевозкам грузов под таможенными пломбами">
                                     <label for="inpFileFour" id="btnChooseFour" class="labBtn">Выбрать файл</label>
-                                    <input id="inpFileFour" type="file" class="inpFile" style="display: none;" multiple>
+                                    <input id="inpFileFour" name="inpFileFourName" type="file" class="inpFile" style="display: none;" multiple>
                                     <label id="labChooseFour" class="labChoose">Файл не выбран</label>
                                     <p class="parhChoose"></p>
                                 </td>
@@ -206,7 +206,7 @@
                                 <th class="thMessCont tdThMessCont">- Сканкопия Гражданского паспорта Перевозчика - собственника ТС для ФОП</th>
                                 <td class="tdForm" data-toggle="tooltip" data-placement="auto" title="Вложите сканкопию Гражданского паспорта Перевозчика - собственника ТС для ФОП">
                                     <label for="inpFileFive" id="btnChooseFive" class="labBtn">Выбрать файл</label>
-                                    <input id="inpFileFive" type="file" class="inpFile" style="display: none;" multiple>
+                                    <input id="inpFileFive" name="inpFileFiveName" type="file" class="inpFile" style="display: none;" multiple>
                                     <label id="labChooseFive" class="labChoose">Файл не выбран</label>
                                     <p class="parhChoose"></p>
                                 </td>
@@ -219,10 +219,15 @@
             </div>
             <div class="contTCTwo">
                 <div class="chFromContr">
-                    <input id="checkFronContragents" type="checkbox">
+                    <input id="checkFronContragents" name="checkFronContragents" type="checkbox" disabled>
                     <label style="padding-left: 10px; font-size: 16px; font-weight: bold;" for="checkFronContragents" data-toggle="tooltip" data-placement="auto" title="Если есть необходимость обновить ранее отправленные данные по Заявке, то установить признак">Обновить ранее отправленные данные по Заявке</label>
                 </div>
-                <input id="submTC" class="btn btn-success" type="submit" value="Отправить">
+                <div class="buttonsMS">
+                    <button style="width: 150px; margin-right:3%;" id="editTC" class="btn btn-danger" disabled>Редактировать</button>
+                    <input style="width: 150px; margin-left:3%;" id="submTC" class="btn btn-success" type="submit" value="Отправить">
+                </div>
+
+
             </div>
         </div>
     </form>
@@ -231,6 +236,40 @@
         let inpChoose = document.getElementsByClassName('inpFile');
         let inpChooseBooferFiles = [new Array(), new Array(), new Array(), new Array(), new Array()];
         let flagCollapse = false;
+        let listHtmlFields = [];
+        let carBrand = document.getElementsByName('carBrand')[0];
+        listHtmlFields.push(carBrand);
+        let stateNumberCar = document.getElementsByName('stateNumberCar')[0];
+        listHtmlFields.push(stateNumberCar);
+        let trailerNumber = document.getElementsByName('trailerNumber')[0];
+        listHtmlFields.push(trailerNumber);
+        let loadCapacity = document.getElementsByName('loadCapacity')[0];
+        listHtmlFields.push(loadCapacity);
+        let distance = document.getElementsByName('distance')[0];
+        listHtmlFields.push(distance);
+        let fullNameOfDriver = document.getElementsByName('fullNameOfDriver')[0];
+        listHtmlFields.push(fullNameOfDriver);
+        let phoneNumber = document.getElementsByName('phoneNumber')[0];
+        listHtmlFields.push(phoneNumber);
+        let drivingLicenseNumber = document.getElementsByName('drivingLicenseNumber')[0];
+        listHtmlFields.push(drivingLicenseNumber);
+        let contragentName = document.getElementsByName('contragentName')[0];
+        let note = document.getElementsByName('note')[0];
+        listHtmlFields.push(note);
+        let stateBorderCrossingPoint = document.getElementsByName('stateBorderCrossingPoint')[0];
+        listHtmlFields.push(stateBorderCrossingPoint);
+        let seriesPassportNumber = document.getElementsByName('seriesPassportNumber')[0];
+        listHtmlFields.push(seriesPassportNumber);
+        let scannedCopyOfSignedOrder = document.getElementById('inpFileOne');
+        listHtmlFields.push(scannedCopyOfSignedOrder);
+        let scannedCopyOfRegistrationCertificate = document.getElementById('inpFileTwo');
+        listHtmlFields.push(scannedCopyOfRegistrationCertificate);
+        let scanCopyOfPassport = document.getElementById('inpFileThree');
+        listHtmlFields.push(scanCopyOfPassport);
+        let scannedCopyOfAdmissionToTransportation = document.getElementById('inpFileFour');
+        listHtmlFields.push(scannedCopyOfAdmissionToTransportation);
+        let scannedCopyOfCivilPassport = document.getElementById('inpFileFive');
+        listHtmlFields.push(scannedCopyOfCivilPassport);
 
         window.onload = function () {
             for (let i = 0; i < inpChoose.length; i++) {
@@ -295,7 +334,179 @@
             };
 
             $('[data-toggle="tooltip"]').tooltip();
+
+
+
+            let SendDataFromContragen = document.getElementById('SendDataFromContragen');
+            SendDataFromContragen.onsubmit = function (e) {
+                e.preventDefault();
+                let formaData = new FormData();
+                let listHtmlFields = [];
+
+                let RegisterMessageToContragentId = @Model[0].RegisterMessageToContragentId;
+                formaData.append('RegisterMessageToContragentId', RegisterMessageToContragentId);
+                let IsUpdate = document.getElementById('checkFronContragents');
+                formaData.append(IsUpdate.name, IsUpdate.checked);
+                let tenderItemUuid = @Html.Raw(Json.Encode(@Model[0].formUuid));
+                formaData.append('tenderItemUuid', tenderItemUuid);
+
+                let carBrand = document.getElementsByName('carBrand')[0];
+                formaData.append(carBrand.name, carBrand.value);
+                listHtmlFields.push(carBrand);
+                let stateNumberCar = document.getElementsByName('stateNumberCar')[0];
+                formaData.append(stateNumberCar.name, stateNumberCar.value);
+                listHtmlFields.push(stateNumberCar);
+                let trailerNumber = document.getElementsByName('trailerNumber')[0];
+                formaData.append(trailerNumber.name, trailerNumber.value);
+                listHtmlFields.push(trailerNumber);
+                let loadCapacity = document.getElementsByName('loadCapacity')[0];
+                formaData.append(loadCapacity.name, loadCapacity.value);
+                listHtmlFields.push(loadCapacity);
+                let distance = document.getElementsByName('distance')[0];
+                formaData.append(distance.name, distance.value);
+                listHtmlFields.push(distance);
+                let fullNameOfDriver = document.getElementsByName('fullNameOfDriver')[0];
+                formaData.append(fullNameOfDriver.name, fullNameOfDriver.value);
+                listHtmlFields.push(fullNameOfDriver);
+                let phoneNumber = document.getElementsByName('phoneNumber')[0];
+                formaData.append(phoneNumber.name, phoneNumber.value);
+                listHtmlFields.push(phoneNumber);
+                let drivingLicenseNumber = document.getElementsByName('drivingLicenseNumber')[0];
+                formaData.append(drivingLicenseNumber.name, drivingLicenseNumber.value);
+                listHtmlFields.push(drivingLicenseNumber);
+                let contragentName = document.getElementsByName('contragentName')[0];
+                formaData.append(contragentName.name, contragentName.value);
+                let note = document.getElementsByName('note')[0];
+                formaData.append(note.name, note.value);
+                listHtmlFields.push(note);
+                let stateBorderCrossingPoint = document.getElementsByName('stateBorderCrossingPoint')[0];
+                formaData.append(stateBorderCrossingPoint.name, stateBorderCrossingPoint.value);
+                listHtmlFields.push(stateBorderCrossingPoint);
+                let seriesPassportNumber = document.getElementsByName('seriesPassportNumber')[0];
+                formaData.append(seriesPassportNumber.name, seriesPassportNumber.value);
+                listHtmlFields.push(seriesPassportNumber);
+                let scannedCopyOfSignedOrder = document.getElementById('inpFileOne');
+                for (let i = 0; i < scannedCopyOfSignedOrder.files.length; i++) {
+                    formaData.append(scannedCopyOfSignedOrder.files[i].name, scannedCopyOfSignedOrder.files[i]);
+                }
+                listHtmlFields.push(scannedCopyOfSignedOrder);
+                if (scannedCopyOfSignedOrder.files.length != 0) {
+                    formaData.append('scannedCopyOfSignedOrder', true);
+                }
+                else {
+                    formaData.append('scannedCopyOfSignedOrder', false);
+                }
+                let scannedCopyOfRegistrationCertificate = document.getElementById('inpFileTwo');
+                for (let i = 0; i < scannedCopyOfRegistrationCertificate.files.length; i++) {
+                    formaData.append(scannedCopyOfRegistrationCertificate.files[i].name, scannedCopyOfRegistrationCertificate.files[i]);
+                }
+                listHtmlFields.push(scannedCopyOfRegistrationCertificate);
+                if (scannedCopyOfRegistrationCertificate.files.length != 0) {
+                    formaData.append('scannedCopyOfRegistrationCertificate', true);
+                }
+                else {
+                    formaData.append('scannedCopyOfRegistrationCertificate', false);
+                }
+                let scanCopyOfPassport = document.getElementById('inpFileThree');
+                for (let i = 0; i < scanCopyOfPassport.files.length; i++) {
+                    formaData.append(scanCopyOfPassport.files[i].name, scanCopyOfPassport.files[i]);
+                }
+                listHtmlFields.push(scanCopyOfPassport);
+                if (scanCopyOfPassport.files.length != 0) {
+                    formaData.append('scanCopyOfPassport', true);
+                }
+                else {
+                    formaData.append('scanCopyOfPassport', false);
+                }
+                let scannedCopyOfAdmissionToTransportation = document.getElementById('inpFileFour');
+                for (let i = 0; i < scannedCopyOfAdmissionToTransportation.files.length; i++) {
+                    formaData.append(scannedCopyOfAdmissionToTransportation.files[i].name, scannedCopyOfAdmissionToTransportation.files[i]);
+                }
+                listHtmlFields.push(scannedCopyOfAdmissionToTransportation);
+                if (scannedCopyOfAdmissionToTransportation.files.length != 0) {
+                    formaData.append('scannedCopyOfAdmissionToTransportation', true);
+                }
+                else {
+                    formaData.append('scannedCopyOfAdmissionToTransportation', false);
+                }
+                let scannedCopyOfCivilPassport = document.getElementById('inpFileFive');
+                for (let i = 0; i < scannedCopyOfCivilPassport.files.length; i++) {
+                    formaData.append(scannedCopyOfCivilPassport.files[i].name, scannedCopyOfCivilPassport.files[i]);
+                }
+                listHtmlFields.push(scannedCopyOfCivilPassport);
+                if (scannedCopyOfCivilPassport.files.length != 0) {
+                    formaData.append('scannedCopyOfCivilPassport', true);
+                }
+                else {
+                    formaData.append('scannedCopyOfCivilPassport', false);
+                }
+
+
+                $.ajax({
+                    type: "POST",
+                    async: false,
+                    url: "/FormContragents/SendDataFromForm",
+                    data: formaData,
+                    dataType: "json",
+                    mimeType: 'multipart/form-data',
+                    contentType: false,
+                    cache: false,
+                    processData: false,
+                    success: function (data) {
+                        window.location.reload();
+                    },
+                    error: function () {
+
+                    }
+                });
+
+            };
+
+
+
         }
+
+        function InitFielsEditabled() {
+            let flag = @Html.Raw(Json.Encode(@Model[0].IsEditable));
+            if (flag) {
+                listHtmlFields.forEach(value => {
+                    if (value.type == 'text') {
+                        value.setAttribute('readonly', 'readonly');
+                    }
+                });
+                for(const value of inpChoose){
+                    value.setAttribute('disabled', 'disabled');
+                };
+
+                let edit = document.getElementById('editTC');
+                edit.removeAttribute('disabled');
+                let submit = document.getElementById('submTC');
+                submit.setAttribute('disabled', 'disabled');
+            }
+        };
+       
+        InitFielsEditabled();
+
+        let edit = document.getElementById('editTC');
+        edit.onclick = EditFielsEnabled;
+
+        function EditFielsEnabled() {      
+                listHtmlFields.forEach(value => {
+                    if (value.type == 'text') {
+                        value.removeAttribute('readonly');
+                    }
+                });
+                for(const value of inpChoose){
+                    value.removeAttribute('disabled');
+                };
+
+                let check = document.getElementsByName('checkFronContragents')[0];
+                check.removeAttribute('disabled');
+                let edit = document.getElementById('editTC');
+                edit.setAttribute('disabled','disabled');
+                let submit = document.getElementById('submTC');
+                submit.removeAttribute('disabled');
+        };
 
         function DeleteFilePath(e) {
             let i = Number(e.dataset.formId);

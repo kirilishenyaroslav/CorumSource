@@ -871,6 +871,7 @@ namespace Corum.DAL
                     model.stateBorderCrossingPoint = modelForm.stateBorderCrossingPoint;
                     model.seriesPassportNumber = modelForm.seriesPassportNumber;
                     model.IsEditable = true;
+                    model.transportDimensions = modelForm.transportDimensions;
                 }
                 listDataToForm.Add(model);
             }
@@ -879,9 +880,10 @@ namespace Corum.DAL
             return listDataToForm;
         }
 
-        public void SetRegisterFormFromContragent(List<HttpPostedFileBase> listFiles, Dictionary<string, string> dic)
+        public bool SetRegisterFormFromContragent(List<HttpPostedFileBase> listFiles, Dictionary<string, string> dic)
         {
             Guid formUuid = Guid.Parse(dic["tenderItemUuid"]);
+            bool flag = false;
             var modelRegisterToContragents = db.RegisterMessageToContragents.Where(x => x.formUuid == formUuid).FirstOrDefault();
 
             var IsContragent = (db.RegisterFormFromContragents.Where(x => x.tenderItemUuid == formUuid).FirstOrDefault() != null) ? false : true;
@@ -913,9 +915,11 @@ namespace Corum.DAL
                         dateCreate = DateTime.Now,
                         dateUpdate = DateTime.Now,
                         tenderItemUuid = formUuid,
+                        transportDimensions = dic["transportDimensions"],
                         RegisterMessageToContragents = modelRegisterToContragents
                     });
                     db.SaveChanges();
+                    flag = true;
                 }
                 else if (Boolean.Parse(dic["checkFronContragents"]) == true && !IsContragent)
                 {
@@ -939,13 +943,16 @@ namespace Corum.DAL
                     item.scannedCopyOfCivilPassport = (item.scannedCopyOfCivilPassport != true) ? Boolean.Parse(dic["scannedCopyOfCivilPassport"]) : item.scannedCopyOfCivilPassport;
                     item.IsUpdate = Boolean.Parse(dic["checkFronContragents"]);
                     item.dateUpdate = DateTime.Now;
+                    item.transportDimensions = dic["transportDimensions"];
                     db.SaveChanges();
+                    flag = true;
                 }
             }
             catch (Exception e)
             {
 
             }
+            return flag;
         }
     }
 }

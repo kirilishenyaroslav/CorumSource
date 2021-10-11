@@ -41,58 +41,62 @@ namespace CorumAdminUI.Controllers
 
         [HttpPost]
         public JsonpResult SendDataFromForm()
-     {
+        {
             List<HttpPostedFileBase> listFiles = new List<HttpPostedFileBase>();
             Dictionary<string, string> dic = new Dictionary<string, string>();
-            foreach (var key in Request.Form.AllKeys) 
+            foreach (var key in Request.Form.AllKeys)
             {
                 dic[key] = Request.Form[key];
             }
-            
-            for(int i = 0; i < Request.Files.Count; i++)
+
+            for (int i = 0; i < Request.Files.Count; i++)
             {
                 HttpPostedFileBase file = Request.Files[i];
-                listFiles.Add(file);                                      
+                listFiles.Add(file);
             }
-            context.SetRegisterFormFromContragent(listFiles, dic);
-
+            bool flag = false;
+            bool error = false;
             try
             {
-                MailAddress from = new MailAddress(ConfigurationManager.AppSettings["SmtpAccountLogin"], $"{dic["contragentName"]}", Encoding.UTF8);
-                MailAddress to = new MailAddress("corumsourcetest@gmail.com");
-                using (MailMessage mail = new MailMessage(from, to))
+                if (context.SetRegisterFormFromContragent(listFiles, dic))
                 {
-                    mail.Subject = $"Тестовое сообщение от контрагента";
-                    mail.Body = $"{11}";
-                    mail.IsBodyHtml = true;
-                    if (listFiles.Count != 0)
+                    MailAddress from = new MailAddress(ConfigurationManager.AppSettings["SmtpAccountLogin"], $"{dic["contragentName"]}", Encoding.UTF8);
+                    MailAddress to = new MailAddress("corumsourcetest@gmail.com");
+                    using (MailMessage mail = new MailMessage(from, to))
                     {
-                        foreach (var item in listFiles)
+                        mail.Subject = $"Тестовое сообщение от контрагента";
+                        mail.Body = $"{11}";
+                        mail.IsBodyHtml = true;
+                        if (listFiles.Count != 0)
                         {
-                            string fileName = Path.GetFileName(item.FileName);
-                            mail.Attachments.Add(new Attachment(item.InputStream, fileName));
+                            foreach (var item in listFiles)
+                            {
+                                string fileName = Path.GetFileName(item.FileName);
+                                mail.Attachments.Add(new Attachment(item.InputStream, fileName));
+                            }
                         }
+                        SmtpClient smtp = new SmtpClient();
+                        smtp.Host = ConfigurationManager.AppSettings["SmtpServer"];
+                        smtp.EnableSsl = false;
+                        NetworkCredential networkCredential = new NetworkCredential(from.Address, ConfigurationManager.AppSettings["SmtpAccountPassw"]);
+                        smtp.UseDefaultCredentials = false;
+                        smtp.Credentials = networkCredential;
+                        smtp.Port = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpServerPort"]);
+                        smtp.Send(mail);
+                        flag = true;
                     }
-                    SmtpClient smtp = new SmtpClient();
-                    smtp.Host = ConfigurationManager.AppSettings["SmtpServer"];
-                    smtp.EnableSsl = false;
-                    NetworkCredential networkCredential = new NetworkCredential(from.Address, ConfigurationManager.AppSettings["SmtpAccountPassw"]);
-                    smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = networkCredential;
-                    smtp.Port = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpServerPort"]);
-                    smtp.Send(mail);
                 }
             }
 
             catch (Exception e)
             {
-
+                error = true;
             }
 
 
             return new JsonpResult
             {
-                Data = new {  },
+                Data = new { flag, error },
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
         }

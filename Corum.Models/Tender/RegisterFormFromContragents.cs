@@ -52,6 +52,8 @@ namespace Corum.Models.Tender
 
         public bool IsEditable { get; set; }
 
+        public string transportDimensions { get; set; }
+
         public virtual RegisterMessageToContragents RegisterMessageToContragents { get; set; }
     }
 }

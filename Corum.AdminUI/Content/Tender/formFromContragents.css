@@ -210,3 +210,48 @@
     flex-flow: row nowrap;
 
 }
+.notificationFormContrSuccess {
+    position: fixed;
+    top: 30%;
+    left: 25%;
+    width: 50%;
+    height: auto;
+    background-color: #3ca574;
+    color: rgb(255, 255, 255);
+    font-size: 1.6em;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+    padding: 2%;
+    border-radius: 10px;
+    display: none;
+}
+.notificationFormContrWarning {
+    position: fixed;
+    top: 30%;
+    left: 25%;
+    width: 50%;
+    height: auto;
+    background-color: #ffc107;
+    color: rgb(14, 59, 2);
+    font-size: 1.6em;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+    padding: 2%;
+    border-radius: 10px;
+    display: none;
+}
+.notificationFormContrError {
+    position: fixed;
+    top: 30%;
+    left: 25%;
+    width: 50%;
+    height: auto;
+    background-color: #dc3545;
+    color: rgb(233, 233, 233);
+    font-size: 1.6em;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+    padding: 2%;
+    border-radius: 10px;
+    display: none;
+}

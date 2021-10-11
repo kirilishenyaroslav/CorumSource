@@ -37,6 +37,6 @@ namespace Corum.Models
         List<RegisterMessageToContragents> GetListFormUuidToContragents(long orderId);
         bool CheckFormUuid(Guid formUuid);
         List<RegisterFormFromContragents> GetRegisterFormFromContragents(Guid formUuid);
-        void SetRegisterFormFromContragent(List<HttpPostedFileBase> listFiles, Dictionary<string, string> dic);
+        bool SetRegisterFormFromContragent(List<HttpPostedFileBase> listFiles, Dictionary<string, string> dic);
     }
 }

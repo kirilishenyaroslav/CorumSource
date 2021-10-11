@@ -893,6 +893,7 @@
           <Property Name="dateCreate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="dateUpdate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="tenderItemUuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="transportDimensions" Type="nvarchar" MaxLength="350" />
         </EntityType>
         <EntityType Name="RegisterMessageToContragents">
           <Key>
@@ -8865,6 +8866,7 @@
           <Property Name="dateUpdate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="tenderItemUuid" Type="Guid" Nullable="false" />
           <NavigationProperty Name="RegisterMessageToContragents" Relationship="CorumModel.FK_RegisterFormFromContragents_RegisterMessageToContragents" FromRole="RegisterFormFromContragents" ToRole="RegisterMessageToContragents" />
+          <Property Name="transportDimensions" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="RegisterMessageToContragents">
           <Key>
@@ -11047,6 +11049,7 @@
           <EntitySetMapping Name="RegisterFormFromContragents">
             <EntityTypeMapping TypeName="CorumModel.RegisterFormFromContragents">
               <MappingFragment StoreEntitySet="RegisterFormFromContragents">
+                <ScalarProperty Name="transportDimensions" ColumnName="transportDimensions" />
                 <ScalarProperty Name="tenderItemUuid" ColumnName="tenderItemUuid" />
                 <ScalarProperty Name="dateUpdate" ColumnName="dateUpdate" />
                 <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />

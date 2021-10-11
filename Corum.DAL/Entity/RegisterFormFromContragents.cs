@@ -37,6 +37,7 @@ namespace Corum.DAL.Entity
         public System.DateTime dateCreate { get; set; }
         public System.DateTime dateUpdate { get; set; }
         public System.Guid tenderItemUuid { get; set; }
+        public string transportDimensions { get; set; }
     
         public virtual RegisterMessageToContragents RegisterMessageToContragents { get; set; }
     }

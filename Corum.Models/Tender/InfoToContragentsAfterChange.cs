@@ -41,20 +41,26 @@ namespace Corum.Models.Tender
     }
     public class ListWinnersInfoAfterChange : ListInfoAfterChange
     {
-        public ListWinnersInfoAfterChange() 
+        public ListWinnersInfoAfterChange()
         {
             this.dateCreate = DateTime.Now;
         }
     }
 
-    public class ListLosersInfoAfterChange: ListInfoAfterChange
+    public class ListLosersInfoAfterChange : ListInfoAfterChange
     {
-      
+
     }
 
     public class InfoToContragentsAfterChange
     {
         public List<ListWinnersInfoAfterChange> listWinnersInfoAfterChange { get; set; }
         public List<ListLosersInfoAfterChange> listLosersInfoAfterChange { get; set; }
+    }
+
+    public class BodyHtmlForm
+    {
+        public string body { get; set; }
+        public string subject { get; set; }
     }
 }

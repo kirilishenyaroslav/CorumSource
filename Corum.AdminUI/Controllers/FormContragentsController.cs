@@ -24,6 +24,9 @@ namespace CorumAdminUI.Controllers
 {
     public class FormContragentsController : CorumBaseController
     {
+        private static string htmlBodyForm { get; set; }
+        private static string subject { get; set; }
+
         [HttpGet]
         public ActionResult SendFormToCorumSource(Guid formUuid)
         {
@@ -40,32 +43,44 @@ namespace CorumAdminUI.Controllers
         }
 
         [HttpPost]
+        public ActionResult SendBodyHtml(BodyHtmlForm bodyHtml)
+        {
+            htmlBodyForm = bodyHtml.body;
+            subject = bodyHtml.subject;
+            return new JsonpResult
+            {
+                Data = new {  },
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
+
+        [HttpPost]
         public JsonpResult SendDataFromForm()
         {
-            List<HttpPostedFileBase> listFiles = new List<HttpPostedFileBase>();
-            Dictionary<string, string> dic = new Dictionary<string, string>();
-            foreach (var key in Request.Form.AllKeys)
-            {
-                dic[key] = Request.Form[key];
-            }
-
-            for (int i = 0; i < Request.Files.Count; i++)
-            {
-                HttpPostedFileBase file = Request.Files[i];
-                listFiles.Add(file);
-            }
             bool flag = false;
             bool error = false;
             try
             {
+                List<HttpPostedFileBase> listFiles = new List<HttpPostedFileBase>();
+                Dictionary<string, string> dic = new Dictionary<string, string>();
+                foreach (var key in Request.Form.AllKeys)
+                {
+                    dic[key] = Request.Form[key];
+                }
+
+                for (int i = 0; i < Request.Files.Count; i++)
+                {
+                    HttpPostedFileBase file = Request.Files[i];
+                    listFiles.Add(file);
+                }
                 if (context.SetRegisterFormFromContragent(listFiles, dic))
                 {
                     MailAddress from = new MailAddress(ConfigurationManager.AppSettings["SmtpAccountLogin"], $"{dic["contragentName"]}", Encoding.UTF8);
                     MailAddress to = new MailAddress("corumsourcetest@gmail.com");
                     using (MailMessage mail = new MailMessage(from, to))
                     {
-                        mail.Subject = $"Тестовое сообщение от контрагента";
-                        mail.Body = $"{11}";
+                        mail.Subject = $"{subject}";
+                        mail.Body = $"{htmlBodyForm}";
                         mail.IsBodyHtml = true;
                         if (listFiles.Count != 0)
                         {
@@ -84,6 +99,7 @@ namespace CorumAdminUI.Controllers
                         smtp.Port = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpServerPort"]);
                         smtp.Send(mail);
                         flag = true;
+                        htmlBodyForm = null;
                     }
                 }
             }

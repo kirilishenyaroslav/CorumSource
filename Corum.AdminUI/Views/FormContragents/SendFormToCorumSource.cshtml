@@ -29,8 +29,8 @@
                 {
                     <table class="tbFromContragents">
                         <caption class="captTC">ТС@(i + 1)</caption>
-                        <tbody>
-                            <tr>
+                        <tbody id="tbodyMainTable">
+                            <tr id="OneThMain">
                                 <th class="thMessCont tdThMessCont changeFontLink" colspan="2">
                                     <div class="divCollapse">
                                         <span class="changeFont" style="padding-top: 3px;">Информация по Заявке</span>
@@ -38,7 +38,7 @@
                                     </div>
 
                                     <table id="tbColapse" style="text-align: left; width: 98%; margin: 1%; border-collapse: separate;">
-                                        <tbody>
+                                        <tbody id="tbodyMainInfo">
                                             <tr>
                                                 <th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">Заявка/номер</th>
                                                 <td class="tdColl" style="margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">Тендер @Model[i].tenderNumber, Заявка @Model[i].orderId</td>
@@ -173,7 +173,7 @@
                                     </td>
                                 </tr>
                             }
-                            <tr>
+                            <tr id="LastThMain">
                                 <th class="thMessCont tdThMessCont changeFont" colspan="2">Скан.копии документов</th>
                             </tr>
                             @if (Model[0].industryId == 54)
@@ -265,6 +265,18 @@
         let flagCollapse = false;
         let listHtmlFields = [];
         let loadingIndicator = document.getElementById('loading-indicator');
+        let form = {
+            headerData: [],
+            mainDataOne: [],
+            mainDataTwo: [],
+            footerData: undefined
+        };
+        class dataForm {
+            constructor(name, value) {
+                this.name = name;
+                this.value = value;
+            }
+        };
 
         function ValidData(inputElement) {
             inputElement.oninvalid = function (e) {
@@ -586,6 +598,73 @@
                         flagInput = false;
                     }
                 });
+
+                let tbodyMainInfo = document.getElementById('tbodyMainInfo');
+                HeaderInitFromForm(tbodyMainInfo.children);
+                function HeaderInitFromForm(element) {
+                    for (const val of element) {
+                        let thValue = val.children[0].outerText;
+                        let tdValue = val.children[1].outerText;
+                        let dataHeader = new dataForm(thValue, tdValue);
+                        form.headerData.push(dataHeader);
+                    };
+                };
+
+                let tbodyMainTable = document.getElementById('tbodyMainTable');
+                MainOneInitFromForm(tbodyMainTable.children);
+                function MainOneInitFromForm(element) {
+                    for (const val of element) {
+                        if (val.id == 'LastThMain') {
+                            break;
+                        }
+                        if (val.id != 'OneThMain') {
+                            let thValue = val.children[0].outerText;
+                            let tdValue = val.children[1].children[0].value;
+                            let dataMainOne = new dataForm(thValue, tdValue);
+                            form.mainDataOne.push(dataMainOne);
+                        }
+                    };
+                };
+                MainTwoInitFromForm(tbodyMainTable.children);
+                function MainTwoInitFromForm(element) {
+                    let flag = false;
+                    for (const val of element) {
+                        if (val.id == 'LastThMain') {
+                            flag = true;
+                            continue;
+                        }
+                        if (flag) {
+                            let thValue = val.children[0].outerText;
+                            let tdValue = (val.children[1].children[1].files.length != 0)?'Файл прикреплен':'Файл отсутствует';
+                            let dataMainTwo = new dataForm(thValue, tdValue);
+                            form.mainDataTwo.push(dataMainTwo);
+                        }
+                    };
+                };
+                FooterInitFromFrom();
+                function FooterInitFromFrom() {
+                    let th = document.createElement('th');
+                    $(th).attr('style', 'font-weight: 100; text-align: center; padding-top: 1%; padding-bottom: 1%; line-height: 1.5;');
+                    $(th).attr('colspan', '2');
+                    $(th).append(`<span style="font-size: 20px; font-weight: bold; text-align: center; line-height: 2;">Краткая информация для копирования</span><br><span style="font-weight: bold;">Тендер ${@Html.Raw(Json.Encode(Model[0].tenderNumber))}, (Заявка ${@Html.Raw(Json.Encode(Model[0].orderId))})</span><br>${@Html.Raw(Json.Encode(Model[0].routeShort))}<br> <span style="font-weight: bold;">Дата подачи авто ${@Html.Raw(Json.Encode(Model[0].dateDownloading.ToString("dd.MM.yyyy")))}</span><br> Авто: ${carBrand.value}<br>
+                <span style="font-weight: bold;">Гос.номер: ${stateNumberCar.value} п/п ${trailerNumber.value}</span><br> Водитель: ${fullNameOfDriver.value} ${phoneNumber.value}<br><span style="font-weight: bold;">Водительское удостоверение: ${drivingLicenseNumber.value}</span> <br> Экспедитор
+                ${contragentName.value}<br> <span style="font-weight: bold;">Переход: ${stateBorderCrossingPoint.value}</span> (отдельное поле для международных перевозок заполняется вручную)`);
+                    form.footerData = th;
+                };
+
+                function GetSubjectToMessage() {
+                    let subject = `№${@Html.Raw(Json.Encode(Model[0].tenderNumber))}, (${@Html.Raw(Json.Encode(Model[0].orderId))}) ${@Html.Raw(Json.Encode(Model[0].routeShort))}, погрузка ${@Html.Raw(Json.Encode(Model[0].dateDownloading.ToString("yyyy-MM-dd")))}`;
+                    return subject;
+                };
+
+
+                let BodyHtmlForm = {
+                    body: CreateHTMLBody(),
+                    subject: GetSubjectToMessage()
+                };
+                let bodyHtml = JSON.stringify(BodyHtmlForm);
+                
+                SendBodyHtml(bodyHtml);
                 if (flagInput && flagValidInpFile) {
                     loadingIndicator.style.display = "block";
                     $.ajax({
@@ -612,7 +691,7 @@
                                 CreateNotificationToContragents("error");
                                 setTimeout(DeleteNotificationToContragents, 3000, 'error');
                             }
-                                            
+
                         },
                         error: function () {
 
@@ -672,6 +751,106 @@
                 let element = e.currentTarget;
             };
         }
+
+        function SendBodyHtml(bodyHtml) {
+            $.ajax({
+                                        type: "POST",
+                                        async: true,
+                                        url: "/FormContragents/SendBodyHtml",
+                                        data: bodyHtml,
+                                        dataType: "json",
+                                        contentType: 'application/json; charset=utf-8',
+                                        success: function (data) {
+
+                                        },
+                                        error: function () {
+
+                                        }
+                                    });
+        }
+
+        // Формирование тела сообщения от контрагента операционисту на почту на уровне почтового мессенджера
+    function CreateHTMLBody() {
+        let bodyHTML = "";
+        let divMain = document.createElement('div');
+        $(divMain).attr('style', 'display: flex; flex-flow: column nowrap; align-items: center;');
+
+        let divDerived = document.createElement('div');
+        $(divDerived).attr('style', 'width: 100%; display: flex; flex-flow: column nowrap; align-items: center;');
+        
+        let tableMain = document.createElement('table');
+        $(tableMain).attr('style', 'border: 3px solid rgb(239, 125, 26); margin-left: 2%; margin-right: 2%; border-collapse: collapse; border-spacing: 0;text-align: left; margin-top: 1%; width: 96%; table-layout: fixed;');
+        let tbodyMain = document.createElement('tbody');
+        let trMain = document.createElement('tr');
+        let thMain = document.createElement('th');
+        $(thMain).attr('style', 'white-space: normal; color: rgb(0, 0, 0); width: 30%; border: 1px solid rgb(239, 125, 26);font-size: 15px; padding: 0.8%; font-family: Arial, Helvetica, sans-serif; font-size: 16px;');
+        $(thMain).attr('colspan', '2');
+        $(thMain).append('<div style="display: flex; flex-flow: row nowrap; justify-content: space-between;align-items: center;"><span style="padding-top: 3px; text-decoration: underline; font-size: 18px;">Информация по Заявке</span></div>');
+        let tableDerived = document.createElement('table');
+        $(tableDerived).attr('style', 'text-align: left; width: 98%; margin: 1%; border-collapse: separate;');
+        let tbodyDerived = document.createElement('tbody');
+        for (let i = 0; i < form.headerData.length; i++) {
+            if ((i + 1) % 2 != 0) {
+                $(tbodyDerived).append(`<tr><th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">${form.headerData[i].name}</th><td style="font-weight: normal; color: black;margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">${form.headerData[i].value}</td></tr>`);
+            }
+            else {
+                $(tbodyDerived).append(`<tr><th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">${form.headerData[i].name}</th><td style="font-weight: normal; color: black;margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">${form.headerData[i].value}</td></tr>`);
+            }
+        };
+
+        tableDerived.appendChild(tbodyDerived);
+        thMain.appendChild(tableDerived);
+        trMain.appendChild(thMain);
+        tbodyMain.appendChild(trMain);
+        let trHeadTwo = document.createElement('tr');
+        let thHeadTwo = document.createElement('th');
+        $(thHeadTwo).attr('style', 'white-space: normal; color: rgb(0, 0, 0); width: 30%; border: 1px solid rgb(239, 125, 26);font-size: 15px; padding: 0.8%; font-family: Arial, Helvetica, sans-serif; font-size: 16px;');
+        $(thHeadTwo).attr('colspan', '2');
+        $(thHeadTwo).append('<div style="display: flex; flex-flow: row nowrap; justify-content: space-between;align-items: center;"><span style="padding-top: 3px; text-decoration: underline; font-size: 18px;">Информация из Формы</span></div>');
+        trHeadTwo.appendChild(thHeadTwo);
+        tbodyMain.appendChild(trHeadTwo);
+        for (const item of form.mainDataOne) {
+            $(tbodyMain).append(`<tr>
+                        <th style="white-space: normal;color: rgb(0, 0, 0);
+                        width: 30%; border: 1px solid rgb(239, 125, 26);padding: 0.8%;
+                        font-family: Arial, Helvetica, sans-serif;">${item.name}</th>
+                        <td style="border: 1px solid rgb(239, 125, 26);
+                        font-size: 15px;
+                        font-family: Arial, Helvetica, sans-serif;
+                        padding-left: 0.8%;">
+                            ${item.value}
+                        </td>
+                    </tr>`);
+        };
+        $(tbodyMain).append(`<tr>
+                        <th style="white-space: normal;color: rgb(0, 0, 0);width: 30%;
+                        border: 1px solid rgb(239, 125, 26);font-size: 15px;padding: 0.8%;font-family: Arial, Helvetica, sans-serif;
+                        font-size: 18px;text-decoration: underline;" colspan="2">Скан.копии документов</th>
+                    </tr>`);
+        for (const item of form.mainDataTwo) {
+            $(tbodyMain).append(`<tr>
+                        <th style="white-space: normal;color: rgb(0, 0, 0);
+                        width: 30%; border: 1px solid rgb(239, 125, 26);padding: 0.8%;
+                        font-family: Arial, Helvetica, sans-serif;">${item.name}</th>
+                        <td style="border: 1px solid rgb(239, 125, 26);
+                        font-size: 15px;
+                        font-family: Arial, Helvetica, sans-serif;
+                        padding-left: 0.8%;">
+                            ${item.value}
+                        </td>
+                    </tr>`);
+        };
+        let trFooter = document.createElement('tr');
+
+        trFooter.appendChild(form.footerData);
+        tbodyMain.appendChild(trFooter);
+        tableMain.appendChild(tbodyMain);
+        divDerived.appendChild(tableMain);
+        divMain.appendChild(divDerived);
+        
+        bodyHTML = divMain.outerHTML;
+        return bodyHTML;
+    }
 
         function InitFielsEditabled() {
             let flag = @Html.Raw(Json.Encode(@Model[0].IsEditable));

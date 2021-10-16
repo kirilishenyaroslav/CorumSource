@@ -6,6 +6,7 @@ using Corum.Models.Tender;
 using Corum.Models.ViewModels.Orders;
 using Corum.Models.ViewModels.Tender;
 using System;
+using System.Web;
 
 namespace Corum.Models
 {
@@ -31,5 +32,11 @@ namespace Corum.Models
         List<ContrAgentModel> GetAgentModels(List<RequestJSONContragentMainData> listRequestJSONContragent, RequestJSONContragentModel myDeserializedClassContragent);
         ContrAgentModel GetWinnerContragent(List<ContrAgentModel> listAllContragents, int SupplierIdWinnerContragent);
         void UpdateDataRegisterContragents(Dictionary<long, List<RegisterTenderContragent>> regisContragents);
+        void FormInitMessageToContragents(ref InfoToContragentsAfterChange listInfoToCont);
+        bool FormMessageToSendContragents(InfoToContragentsAfterChange listInfoToCont);
+        List<RegisterMessageToContragents> GetListFormUuidToContragents(long orderId);
+        bool CheckFormUuid(Guid formUuid);
+        List<RegisterFormFromContragents> GetRegisterFormFromContragents(Guid formUuid);
+        bool SetRegisterFormFromContragent(List<HttpPostedFileBase> listFiles, Dictionary<string, string> dic);
     }
 }

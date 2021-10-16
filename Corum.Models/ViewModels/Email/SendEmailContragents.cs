@@ -47,7 +47,7 @@ namespace Corum.Models.ViewModels.Email
                 MailAddress to = new MailAddress("corumsourcetest@gmail.com");
                 using (MailMessage mail = new MailMessage(from, to))
                 {
-                    mail.Subject = model.subject;
+                    mail.Subject = $"№{model.tenderNumber}, ({model.orderId}) {model.routeShort}, погрузка {model.dataDownload.ToString("yyyy-MM-dd")}";
                     mail.Body = $"{model.bodyHTML}";
                     mail.IsBodyHtml = true;
                     SmtpClient smtp = new SmtpClient();

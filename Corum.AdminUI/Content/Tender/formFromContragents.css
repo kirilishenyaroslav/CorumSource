@@ -1,0 +1,299 @@
+﻿.tbFromContragents {
+    border: 3px solid rgb(239, 125, 26);
+    margin-left: 2%;
+    margin-right: 2%;
+    border-collapse: collapse;
+    border-spacing: 0;
+    text-align: left;
+    margin-top: 1%;
+    width: 96%;
+    table-layout: fixed;
+}
+
+.thMessCont {
+    white-space: normal;
+    color: rgb(0, 0, 0);
+    width: 30%;
+}
+
+.tdThMessCont {
+    border: 1px solid rgb(239, 125, 26);
+    font-size: 15px;
+    padding: 0.8%;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.tdForm {
+    border: 1px solid rgb(239, 125, 26);
+    font-size: 15px;
+    font-family: Arial, Helvetica, sans-serif;
+    padding: 0%;
+}
+
+.inputTxt {
+    width: 98%;
+    border: 0px;
+    padding: 1%;
+    outline: none;
+}
+
+.labBtn {
+    border: 1px solid rgb(177, 177, 177);
+    padding: 5px;
+    background-color: rgb(223, 223, 223);
+    border-radius: 5px;
+    margin-left: 8px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    display: inline-block;
+}
+
+    .labBtn:hover {
+        background-color: rgb(204, 204, 204);
+    }
+
+    .labBtn:active {
+        background-color: rgb(146, 146, 146);
+    }
+
+.changeFont {
+    font-size: 18px;
+    text-decoration: underline;
+}
+
+.changeFontLink {
+    font-size: 16px;
+}
+
+.captTC {
+    text-align: start;
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 5px;
+    caption-side: top;
+}
+
+.containTC {
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.contTCOne {
+    width: 100%;
+    display: flex;
+    flex-flow: column nowrap;
+    align-items: center;
+}
+
+.contTCTwo {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-evenly;
+    padding-left: 0%;
+    align-items: baseline;
+    margin-bottom: 2%;
+    margin-top: 3%;
+}
+
+.submTC {
+    font-size: 16px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #55c2c2;
+    color: white;
+    border: 0px;
+    border-radius: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 2%;
+}
+
+    .submTC:hover {
+        background-color: #078f8f;
+    }
+
+    .submTC:active {
+        background-color: #55c2c2;
+    }
+
+.editTC {
+    font-size: 16px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    background-color: #ee3118;
+    color: white;
+    border: 0px;
+    border-radius: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 15px;
+    padding-right: 15px;
+    margin-top: 2%;
+}
+
+    .editTC:hover {
+        background-color: #811203;
+    }
+
+    .editTC:active {
+        background-color: #d34d3b;
+    }
+
+.parhChoose {
+    margin-left: 8px;
+    margin-top: 5px;
+    margin-bottom: 8px;
+    line-height: 1.5;
+    padding: 0px;
+    display: none;
+}
+
+.divCollapse {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#imgCollapse:active {
+    border: 2px solid rgba(29, 184, 150, 0.295);
+    border-radius: 4px;
+}
+
+.tdThMessCollapse {
+    font-weight: normal;
+    font-size: 14px;
+    color: black;
+    padding-left: 5px;
+}
+
+.tdColl {
+    font-weight: normal;
+    color: black;
+}
+
+.chFromContr {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    align-items: baseline;
+}
+
+.redFont {
+    color: red;
+    font-size: 18px;
+}
+
+.headFromContr {
+    width: 100%;
+    height: 60px;
+    background-color: rgb(239, 125, 26);
+}
+
+.logo-icon {
+    background: url(../images/logo_icon.png) no-repeat;
+    background-size: 40px auto;
+    background-position: center center;
+    margin: 0;
+    width: 60px;
+    height: 60px;
+}
+
+.pull-left {
+    float: left !important;
+}
+.contTCOne > p {
+    margin-top: 40px;
+    font-size: 25px;
+    font-weight: bold;
+    text-transform: uppercase;
+    margin-bottom: 0px;
+}
+.buttonsMS {
+    width:auto;
+    display:flex;
+    flex-flow: row nowrap;
+
+}
+.notificationFormContrSuccess {
+    position: fixed;
+    top: 30%;
+    left: 25%;
+    width: 50%;
+    height: auto;
+    background-color: #3ca574;
+    color: rgb(255, 255, 255);
+    font-size: 1.6em;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+    padding: 2%;
+    border-radius: 10px;
+    display: none;
+}
+.notificationFormContrWarning {
+    position: fixed;
+    top: 30%;
+    left: 25%;
+    width: 50%;
+    height: auto;
+    background-color: #ffc107;
+    color: rgb(14, 59, 2);
+    font-size: 1.6em;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+    padding: 2%;
+    border-radius: 10px;
+    display: none;
+}
+.notificationFormContrError {
+    position: fixed;
+    top: 30%;
+    left: 25%;
+    width: 50%;
+    height: auto;
+    background-color: #dc3545;
+    color: rgb(233, 233, 233);
+    font-size: 1.6em;
+    font-family: 'Times New Roman', Times, serif;
+    text-align: center;
+    padding: 2%;
+    border-radius: 10px;
+    display: none;
+}
+.tooltip {
+    position: relative;
+}
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 120%;
+        left: 45%;
+        margin-left: -60px;
+    }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: black transparent transparent transparent;
+        }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+    }

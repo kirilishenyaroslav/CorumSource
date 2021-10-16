@@ -866,6 +866,63 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="varchar" MaxLength="255" Nullable="false" />
         </EntityType>
+        <EntityType Name="RegisterFormFromContragents">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RegisterMessageToContragentId" Type="int" Nullable="false" />
+          <Property Name="carBrand" Type="nvarchar" MaxLength="350" />
+          <Property Name="stateNumberCar" Type="nvarchar" MaxLength="100" />
+          <Property Name="trailerNumber" Type="nvarchar" MaxLength="100" />
+          <Property Name="loadCapacity" Type="float" />
+          <Property Name="distance" Type="float" />
+          <Property Name="fullNameOfDriver" Type="nvarchar" MaxLength="350" />
+          <Property Name="phoneNumber" Type="nvarchar" MaxLength="350" />
+          <Property Name="drivingLicenseNumber" Type="nvarchar" MaxLength="350" />
+          <Property Name="contragentName" Type="nvarchar" MaxLength="350" />
+          <Property Name="note" Type="text" />
+          <Property Name="stateBorderCrossingPoint" Type="text" />
+          <Property Name="seriesPassportNumber" Type="nvarchar" MaxLength="350" />
+          <Property Name="scannedCopyOfSignedOrder" Type="bit" />
+          <Property Name="scannedCopyOfRegistrationCertificate" Type="bit" />
+          <Property Name="scanCopyOfPassport" Type="bit" />
+          <Property Name="scannedCopyOfAdmissionToTransportation" Type="bit" />
+          <Property Name="scannedCopyOfCivilPassport" Type="bit" />
+          <Property Name="IsUpdate" Type="bit" />
+          <Property Name="dateCreate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="dateUpdate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="tenderItemUuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="transportDimensions" Type="nvarchar" MaxLength="350" />
+        </EntityType>
+        <EntityType Name="RegisterMessageToContragents">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="orderId" Type="bigint" Nullable="false" />
+          <Property Name="formUuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="tenderNumber" Type="int" Nullable="false" />
+          <Property Name="contragentName" Type="nvarchar" MaxLength="350" Nullable="false" />
+          <Property Name="emailOperacionist" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="emailContragent" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="dateCreate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="dateUpdate" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="industryId" Type="int" Nullable="false" />
+          <Property Name="descriptionTender" Type="text" />
+          <Property Name="acceptedTransportUnits" Type="int" />
+          <Property Name="cost" Type="float" />
+          <Property Name="tenderItemUuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="flag" Type="bit" />
+          <Property Name="industryName" Type="nvarchar" MaxLength="350" />
+          <Property Name="routeShort" Type="text" />
+          <Property Name="nameCargo" Type="text" />
+          <Property Name="weightCargo" Type="float" />
+          <Property Name="dataDownload" Type="datetime2" Precision="7" />
+          <Property Name="dataUnload" Type="datetime2" Precision="7" />
+          <Property Name="DelayPayment" Type="int" />
+          <Property Name="flagCreate" Type="bit" Nullable="false" />
+        </EntityType>
         <EntityType Name="RegisterTenderContragents">
           <Key>
             <PropertyRef Name="Id" />
@@ -2416,6 +2473,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_RegisterFormFromContragents_RegisterMessageToContragents">
+          <End Role="RegisterMessageToContragents" Type="Self.RegisterMessageToContragents" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Role="RegisterFormFromContragents" Type="Self.RegisterFormFromContragents" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RegisterMessageToContragents">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RegisterFormFromContragents">
+              <PropertyRef Name="RegisterMessageToContragentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_RestsSnapshot_LogisticSnapshots">
           <End Role="LogisticSnapshots" Type="Self.LogisticSnapshots" Multiplicity="1">
             <OnDelete Action="Cascade" />
@@ -3449,6 +3520,8 @@
           <EntitySet Name="Permissions" EntityType="Self.Permissions" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Projects" EntityType="Self.Projects" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="ProjectTypes" EntityType="Self.ProjectTypes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RegisterFormFromContragents" EntityType="Self.RegisterFormFromContragents" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RegisterMessageToContragents" EntityType="Self.RegisterMessageToContragents" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RegisterTenderContragents" EntityType="Self.RegisterTenderContragents" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RegisterTenders" EntityType="Self.RegisterTenders" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RestsSnapshot" EntityType="Self.RestsSnapshot" Schema="dbo" store:Type="Tables" />
@@ -3885,6 +3958,10 @@
           <AssociationSet Name="FK_Projects_Projects" Association="Self.FK_Projects_Projects">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="Projects1" EntitySet="Projects" />
+          </AssociationSet>
+          <AssociationSet Name="FK_RegisterFormFromContragents_RegisterMessageToContragents" Association="Self.FK_RegisterFormFromContragents_RegisterMessageToContragents">
+            <End Role="RegisterMessageToContragents" EntitySet="RegisterMessageToContragents" />
+            <End Role="RegisterFormFromContragents" EntitySet="RegisterFormFromContragents" />
           </AssociationSet>
           <AssociationSet Name="FK_RestsSnapshot_LogisticSnapshots" Association="Self.FK_RestsSnapshot_LogisticSnapshots">
             <End Role="LogisticSnapshots" EntitySet="LogisticSnapshots" />
@@ -5152,6 +5229,12 @@
           <EntitySet Name="RegisterTenders" EntityType="CorumModel.RegisterTenders" />
           <EntitySet Name="StatusTenders" EntityType="CorumModel.StatusTenders" />
           <EntitySet Name="RegisterTenderContragents" EntityType="CorumModel.RegisterTenderContragents" />
+          <EntitySet Name="RegisterFormFromContragents" EntityType="CorumModel.RegisterFormFromContragents" />
+          <EntitySet Name="RegisterMessageToContragents" EntityType="CorumModel.RegisterMessageToContragents" />
+          <AssociationSet Name="FK_RegisterFormFromContragents_RegisterMessageToContragents" Association="CorumModel.FK_RegisterFormFromContragents_RegisterMessageToContragents">
+            <End Role="RegisterMessageToContragents" EntitySet="RegisterMessageToContragents" />
+            <End Role="RegisterFormFromContragents" EntitySet="RegisterFormFromContragents" />
+          </AssociationSet>
           </EntityContainer>
         <ComplexType Name="SelectFieldsOfStuctureForImport_Result">
           <Property Type="String" Name="ColumnName" Nullable="true" />
@@ -8755,6 +8838,79 @@
           <Property Name="itemDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="cargoWeight" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
         </EntityType>
+        <EntityType Name="RegisterFormFromContragents">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RegisterMessageToContragentId" Type="Int32" Nullable="false" />
+          <Property Name="carBrand" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="stateNumberCar" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="trailerNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="loadCapacity" Type="Double" />
+          <Property Name="distance" Type="Double" />
+          <Property Name="fullNameOfDriver" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="phoneNumber" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="drivingLicenseNumber" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="contragentName" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="note" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="stateBorderCrossingPoint" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="seriesPassportNumber" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="scannedCopyOfSignedOrder" Type="Boolean" />
+          <Property Name="scannedCopyOfRegistrationCertificate" Type="Boolean" />
+          <Property Name="scanCopyOfPassport" Type="Boolean" />
+          <Property Name="scannedCopyOfAdmissionToTransportation" Type="Boolean" />
+          <Property Name="scannedCopyOfCivilPassport" Type="Boolean" />
+          <Property Name="IsUpdate" Type="Boolean" />
+          <Property Name="dateCreate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="dateUpdate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="tenderItemUuid" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="RegisterMessageToContragents" Relationship="CorumModel.FK_RegisterFormFromContragents_RegisterMessageToContragents" FromRole="RegisterFormFromContragents" ToRole="RegisterMessageToContragents" />
+          <Property Name="transportDimensions" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="RegisterMessageToContragents">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="orderId" Type="Int64" Nullable="false" />
+          <Property Name="tenderNumber" Type="Int32" Nullable="false" />
+          <Property Name="contragentName" Type="String" Nullable="false" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="emailOperacionist" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="emailContragent" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="dateCreate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="dateUpdate" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="descriptionTender" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="acceptedTransportUnits" Type="Int32" />
+          <Property Name="cost" Type="Double" />
+          <Property Name="tenderItemUuid" Type="Guid" Nullable="false" />
+          <NavigationProperty Name="RegisterFormFromContragents" Relationship="CorumModel.FK_RegisterFormFromContragents_RegisterMessageToContragents" FromRole="RegisterMessageToContragents" ToRole="RegisterFormFromContragents" />
+          <Property Name="formUuid" Type="Guid" Nullable="false" />
+          <Property Name="industryId" Type="Int32" Nullable="false" />
+          <Property Name="flag" Type="Boolean" />
+          <Property Name="industryName" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="routeShort" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="nameCargo" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="weightCargo" Type="Double" />
+          <Property Name="dataDownload" Type="DateTime" Precision="7" />
+          <Property Name="dataUnload" Type="DateTime" Precision="7" />
+          <Property Name="DelayPayment" Type="Int32" />
+          <Property Name="flagCreate" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <Association Name="FK_RegisterFormFromContragents_RegisterMessageToContragents">
+          <End Type="CorumModel.RegisterMessageToContragents" Role="RegisterMessageToContragents" Multiplicity="1">
+            <OnDelete Action="Cascade" />
+          </End>
+          <End Type="CorumModel.RegisterFormFromContragents" Role="RegisterFormFromContragents" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="RegisterMessageToContragents">
+              <PropertyRef Name="Id" />
+            </Principal>
+            <Dependent Role="RegisterFormFromContragents">
+              <PropertyRef Name="RegisterMessageToContragentId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -10886,6 +11042,65 @@
                 <ScalarProperty Name="itemExternalNumber" ColumnName="itemExternalNumber" />
                 <ScalarProperty Name="tenderNumber" ColumnName="tenderNumber" />
                 <ScalarProperty Name="OrderId" ColumnName="OrderId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RegisterFormFromContragents">
+            <EntityTypeMapping TypeName="CorumModel.RegisterFormFromContragents">
+              <MappingFragment StoreEntitySet="RegisterFormFromContragents">
+                <ScalarProperty Name="transportDimensions" ColumnName="transportDimensions" />
+                <ScalarProperty Name="tenderItemUuid" ColumnName="tenderItemUuid" />
+                <ScalarProperty Name="dateUpdate" ColumnName="dateUpdate" />
+                <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />
+                <ScalarProperty Name="IsUpdate" ColumnName="IsUpdate" />
+                <ScalarProperty Name="scannedCopyOfCivilPassport" ColumnName="scannedCopyOfCivilPassport" />
+                <ScalarProperty Name="scannedCopyOfAdmissionToTransportation" ColumnName="scannedCopyOfAdmissionToTransportation" />
+                <ScalarProperty Name="scanCopyOfPassport" ColumnName="scanCopyOfPassport" />
+                <ScalarProperty Name="scannedCopyOfRegistrationCertificate" ColumnName="scannedCopyOfRegistrationCertificate" />
+                <ScalarProperty Name="scannedCopyOfSignedOrder" ColumnName="scannedCopyOfSignedOrder" />
+                <ScalarProperty Name="seriesPassportNumber" ColumnName="seriesPassportNumber" />
+                <ScalarProperty Name="stateBorderCrossingPoint" ColumnName="stateBorderCrossingPoint" />
+                <ScalarProperty Name="note" ColumnName="note" />
+                <ScalarProperty Name="contragentName" ColumnName="contragentName" />
+                <ScalarProperty Name="drivingLicenseNumber" ColumnName="drivingLicenseNumber" />
+                <ScalarProperty Name="phoneNumber" ColumnName="phoneNumber" />
+                <ScalarProperty Name="fullNameOfDriver" ColumnName="fullNameOfDriver" />
+                <ScalarProperty Name="distance" ColumnName="distance" />
+                <ScalarProperty Name="loadCapacity" ColumnName="loadCapacity" />
+                <ScalarProperty Name="trailerNumber" ColumnName="trailerNumber" />
+                <ScalarProperty Name="stateNumberCar" ColumnName="stateNumberCar" />
+                <ScalarProperty Name="carBrand" ColumnName="carBrand" />
+                <ScalarProperty Name="RegisterMessageToContragentId" ColumnName="RegisterMessageToContragentId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RegisterMessageToContragents">
+            <EntityTypeMapping TypeName="CorumModel.RegisterMessageToContragents">
+              <MappingFragment StoreEntitySet="RegisterMessageToContragents">
+                <ScalarProperty Name="flagCreate" ColumnName="flagCreate" />
+                <ScalarProperty Name="DelayPayment" ColumnName="DelayPayment" />
+                <ScalarProperty Name="dataUnload" ColumnName="dataUnload" />
+                <ScalarProperty Name="dataDownload" ColumnName="dataDownload" />
+                <ScalarProperty Name="weightCargo" ColumnName="weightCargo" />
+                <ScalarProperty Name="nameCargo" ColumnName="nameCargo" />
+                <ScalarProperty Name="routeShort" ColumnName="routeShort" />
+                <ScalarProperty Name="industryName" ColumnName="industryName" />
+                <ScalarProperty Name="flag" ColumnName="flag" />
+                <ScalarProperty Name="industryId" ColumnName="industryId" />
+                <ScalarProperty Name="formUuid" ColumnName="formUuid" />
+                <ScalarProperty Name="tenderItemUuid" ColumnName="tenderItemUuid" />
+                <ScalarProperty Name="cost" ColumnName="cost" />
+                <ScalarProperty Name="acceptedTransportUnits" ColumnName="acceptedTransportUnits" />
+                <ScalarProperty Name="descriptionTender" ColumnName="descriptionTender" />
+                <ScalarProperty Name="dateUpdate" ColumnName="dateUpdate" />
+                <ScalarProperty Name="dateCreate" ColumnName="dateCreate" />
+                <ScalarProperty Name="emailContragent" ColumnName="emailContragent" />
+                <ScalarProperty Name="emailOperacionist" ColumnName="emailOperacionist" />
+                <ScalarProperty Name="contragentName" ColumnName="contragentName" />
+                <ScalarProperty Name="tenderNumber" ColumnName="tenderNumber" />
+                <ScalarProperty Name="orderId" ColumnName="orderId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

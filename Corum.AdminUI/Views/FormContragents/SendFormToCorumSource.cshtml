@@ -1,0 +1,1003 @@
+﻿@model List<Corum.Models.Tender.RegisterFormFromContragents>
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="~/Scripts/bootstrap.bundle.min.js"></script>
+    <script src="~/Scripts/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="~/Content/Tender/formFromContragents.css">
+    <title>Форма запроса данных по транспортному средству</title>
+</head>
+
+<body style="width: 100%; height: auto; margin:0px;">
+    <header class="headFromContr">
+        <div class="logo-icon pull-left"></div>
+    </header>
+    <form id="SendDataFromContragen" action="">
+        <div class="containTC">
+            <div class="contTCOne">
+                <p>Форма запроса данных по транспортному средству</p>
+                @for (int i = 0; i < Model.Count; i++)
+                {
+                    <table class="tbFromContragents">
+                        <caption class="captTC">ТС@(i + 1)</caption>
+                        <tbody id="tbodyMainTable">
+                            <tr id="OneThMain">
+                                <th class="thMessCont tdThMessCont changeFontLink" colspan="2">
+                                    <div class="divCollapse">
+                                        <span class="changeFont" style="padding-top: 3px;">Информация по Заявке</span>
+                                        <img id="imgCollapse" src="~/Content/images/pngwing.com.png" style="width: 18px; height: 18px;">
+                                    </div>
+
+                                    <table id="tbColapse" style="text-align: left; width: 98%; margin: 1%; border-collapse: separate;">
+                                        <tbody id="tbodyMainInfo">
+                                            <tr>
+                                                <th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">Заявка/номер</th>
+                                                <td class="tdColl" style="margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">Тендер @Model[i].tenderNumber, Заявка @Model[i].orderId</td>
+                                            </tr>
+                                            <tr>
+                                                <th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">Тип перевозки</th>
+                                                <td class="tdColl" style="margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">@Model[i].industryName</td>
+                                            </tr>
+                                            <tr>
+                                                <th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">Маршрут</th>
+                                                <td class="tdColl" style="margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">@Model[i].routeShort</td>
+                                            </tr>
+                                            <tr>
+                                                <th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">Наименование груза/ Вес, т</th>
+                                                <td class="tdColl" style="margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">@Model[i].nameCargo / @Model[i].weightCargo тн. </td>
+                                            </tr>
+                                            <tr>
+                                                <th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">Дата загрузки требуемая</th>
+                                                <td class="tdColl" style="margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">@Model[i].dateDownloading.ToString("dd.MM.yyyy")</td>
+                                            </tr>
+                                            <tr>
+                                                <th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">Дата выгрузки требуемая</th>
+                                                <td class="tdColl" style="margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">@Model[i].dateUnloading.ToString("dd.MM.yyyy")</td>
+                                            </tr>
+                                            <tr>
+                                                <th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">Описание</th>
+                                                <td class="tdColl" style="margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">@Model[i].descriptionTender</td>
+                                            </tr>
+                                            <tr>
+                                                <th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">Кол-во транспортных средств акцептовано </th>
+                                                <td class="tdColl" style="margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">1</td>
+                                            </tr>
+                                            <tr>
+                                                <th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">Цена фрахт, без НДС/ТС</th>
+                                                <td class="tdColl" style="margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">@Model[i].cost</td>
+                                            </tr>
+                                            <tr>
+                                                <th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">Отсрочка платежа, дней</th>
+                                                <td class="tdColl" style="margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">@Model[i].DelayPayment</td>
+                                            </tr>
+                                            <tr>
+                                                <th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">Экспедитор</th>
+                                                <td class="tdColl" style="margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">@Model[i].contragentName</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+
+                                </th>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">Марка авто<span class="redFont">*</span></th>
+                                <td class="tdForm tooltip">
+                                    <input name="carBrand" class="inputTxt" type="text" data-valid="false" value="@Model[0].carBrand" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Марка транспортного средства из
+                                        свидетельства регистрации транспортного средства
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">Гос.номер ТС<span class="redFont">*</span></th>
+                                <td class="tdForm tooltip">
+                                    <input name="stateNumberCar" class="inputTxt" type="text" data-valid="false" value="@Model[0].stateNumberCar" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Номер регистрации транспортного средства
+                                        из свидетельства регистрации транспортного средства
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">Гос.номер прицепа<span class="redFont">*</span></th>
+                                <td class="tdForm tooltip">
+                                    <input name="trailerNumber" class="inputTxt" type="text" data-valid="false" value="@Model[0].trailerNumber" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        При отсутствии прицепа ставим «-»(дефис).
+                                        Номер регистрации прицепа из свидетельства регистрации транспортного средства/прицепа.
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">Габариты ТС/прицепа<span class="redFont">*</span></th>
+                                <td class="tdForm tooltip">
+                                    <input name="transportDimensions" class="inputTxt" type="text" data-valid="false" value="@Model[0].transportDimensions" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Указать габариты транспортного средства/прицепа.
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">Грузоподъемность, т<span class="redFont">*</span></th>
+                                <td class="tdForm tooltip">
+                                    <input name="loadCapacity" class="inputTxt" type="text" value="@Model[0].loadCapacity" data-valid="false" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Грузоподъемность автомобиля
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">Расстояние маршрута, км<span class="redFont">*</span></th>
+                                <td class="tdForm tooltip">
+                                    <input name="distance" class="inputTxt" value="@Model[0].distance" type="text" data-valid="false" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Укажите расстояние маршрута
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">ФИО водителя<span class="redFont">*</span></th>
+                                <td class="tdForm tooltip">
+                                    <input name="fullNameOfDriver" class="inputTxt" value="@Model[0].fullNameOfDriver" data-valid="false" type="text" required placeholder="Введите данные">
+                                    <span class="tooltiptext">Ввести ФИО водителя транспортного средства</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">№ телефона<span class="redFont">*</span></th>
+                                <td class="tdForm tooltip">
+                                    <input name="phoneNumber" class="inputTxt" type="text" value="@Model[0].phoneNumber" data-valid="false" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Ввести номер мобильного телефона водителя транспортного средства.
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">№ водительского удостоверения<span class="redFont">*</span></th>
+                                <td class="tdForm tooltip">
+                                    <input name="drivingLicenseNumber" class="inputTxt" value="@Model[0].drivingLicenseNumber" data-valid="false" type="text" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Ввести номер водительского удостоверения водителя транспортного средства.
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">Экспедитор</th>
+                                <td class="tdForm">
+                                    <input name="contragentName" class="inputTxt" type="text" value='@Model[i].contragentName' readonly>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">Примечание</th>
+                                <td class="tdForm tooltip">
+                                    <input name="note" class="inputTxt" type="text" value="@Model[0].note" placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Можете указать дополнительную информацию
+                                    </span>
+                                </td>
+                            </tr>
+                            @if (Model[0].industryId == 54)
+                            {
+                                <tr>
+                                    <th class="thMessCont tdThMessCont">Пункт перехода гос.границы<span class="redFont">*</span></th>
+                                    <td class="tdForm tooltip">
+                                        <input name="stateBorderCrossingPoint" value="@Model[0].stateBorderCrossingPoint" data-valid="false" class="inputTxt" type="text" required placeholder="Введите данные">
+                                        <span class="tooltiptext">
+                                            Указать Пункт перехода гос.границы для международных перевозок
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="thMessCont tdThMessCont">Серия, номер заграничного паспорта</th>
+                                    <td class="tdForm tooltip">
+                                        <input name="seriesPassportNumber" value="@Model[0].seriesPassportNumber" class="inputTxt" type="text" placeholder="Введите данные">
+                                        <span class="tooltiptext">
+                                            Ввести номер заграничного паспорта водителя транспортного средства.
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                            <tr id="LastThMain">
+                                <th class="thMessCont tdThMessCont changeFont" colspan="2">Скан.копии документов</th>
+                            </tr>
+                            @if (Model[0].industryId == 54)
+                            {
+                                <tr>
+                                    <th class="thMessCont tdThMessCont">
+                                        - Сканкопия подписанной ЗАЯВКИ Экспедитором или заверенная КЭП/ЭЦП @{if (Model[0].industryId == 54)
+                                            {<span class="redFont">*</span> }
+                                        }
+                                    </th>
+                                    <td id="tdFormFileOne" class="tdForm tooltip">
+                                        <label for="inpFileOne" id="btnChooseOne" class="labBtn">Выбрать файл</label>
+                                        <input id="inpFileOne" name="inpFileOne" type="file" class="inpFile" multiple style="display: none;">
+                                        <label id="labChooseOne" class="labChoose">Файл не выбран</label>
+                                        <p class="parhChoose"></p>
+                                        <span class="tooltiptext">
+                                            Вложите сканкопию или документ заверенный электронной цифровой подписью Экспедитора
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <th class="thMessCont tdThMessCont">- Сканкопия Свидетельство о регистрации ТС<span class="redFont">*</span></th>
+                                <td id="tdFormFileTwo" class="tdForm tooltip">
+                                    <label for="inpFileTwo" id="btnChooseTwo" class="labBtn">Выбрать файл</label>
+                                    <input id="inpFileTwo" name="inpFileTwo" type="file" class="inpFile" style="display: none;" multiple>
+                                    <label id="labChooseTwo" class="labChoose">Файл не выбран</label>
+                                    <p class="parhChoose"></p>
+                                    <span class="tooltiptext">
+                                        Вложите сканкопию Свидетельство о регистрации ТС
+                                    </span>
+                                </td>
+                            </tr>
+                            @if (Model[0].industryId == 54)
+                            {
+                                <tr>
+                                    <th class="thMessCont tdThMessCont">
+                                        - Сканкопия Загран. паспорта водителя@{if (Model[0].industryId == 54)
+                                            {<span class="redFont">*</span> }
+                                        }
+                                    </th>
+                                    <td id="tdFormFileThree" class="tdForm tooltip">
+                                        <label for="inpFileThree" id="btnChooseThree" class="labBtn">Выбрать файл</label>
+                                        <input id="inpFileThree" name="inpFileThree" type="file" class="inpFile" style="display: none;" multiple>
+                                        <label id="labChooseThree" class="labChoose">Файл не выбран</label>
+                                        <p class="parhChoose"></p>
+                                        <span class="tooltiptext">
+                                            Вложите сканкопию Загранпаспорта водителя
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                            <tr>
+                                <th class="thMessCont tdThMessCont">- Сканкопия свидетельства о допуске ТС к перевозкам грузов под таможенными пломбами</th>
+                                <td class="tdForm tooltip">
+                                    <label for="inpFileFour" id="btnChooseFour" class="labBtn">Выбрать файл</label>
+                                    <input id="inpFileFour" name="inpFileFourName" type="file" class="inpFile" style="display: none;" multiple>
+                                    <label id="labChooseFour" class="labChoose">Файл не выбран</label>
+                                    <p class="parhChoose"></p>
+                                    <span class="tooltiptext">
+                                        Вложите сканкопию свидетельства о допуске ТС к перевозкам грузов под таможенными пломбами
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">- Сканкопия Гражданского паспорта Перевозчика - собственника ТС для ФОП</th>
+                                <td class="tdForm tooltip">
+                                    <label for="inpFileFive" id="btnChooseFive" class="labBtn">Выбрать файл</label>
+                                    <input id="inpFileFive" name="inpFileFiveName" type="file" class="inpFile" style="display: none;" multiple>
+                                    <label id="labChooseFive" class="labChoose">Файл не выбран</label>
+                                    <p class="parhChoose"></p>
+                                    <span class="tooltiptext">
+                                        Вложите сканкопию Гражданского паспорта Перевозчика - собственника ТС для ФОП
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                }
+
+            </div>
+            <div class="contTCTwo">
+                <div class="chFromContr tooltip">
+                    <input id="checkFronContragents" name="checkFronContragents" type="checkbox" disabled>
+                    <label style="padding-left: 10px; font-size: 16px; font-weight: bold;" for="checkFronContragents">Обновить ранее отправленные данные по Заявке</label>
+                    <span class="tooltiptext">
+                        Если есть необходимость обновить ранее отправленные данные по Заявке, то установить признак
+                    </span>
+                </div>
+                <div class="buttonsMS">
+                    <input style="width: 150px; margin-left:3%;" id="submTC" class="submTC" type="submit" value="Отправить">
+                </div>
+
+
+            </div>
+        </div>
+    </form>
+    <div class="notificationFormContrSuccess">Данные успешно отправлены, спасибо!</div>
+    <div class="notificationFormContrWarning">Данные не отправлены. Обновите форму!</div>
+    <div class="notificationFormContrError">Ошибка. Данные не отправлены!</div>
+    <img src="~/Content/images/ajax-loader-gray.gif" id="loading-indicator" style="position: fixed; left: 47%; top: 40%; display: none" />
+    <script>
+        let inpChoose = document.getElementsByClassName('inpFile');
+        let inpChooseBooferFiles = [new Array(), new Array(), new Array(), new Array(), new Array()];
+        let flagCollapse = false;
+        let listHtmlFields = [];
+        let loadingIndicator = document.getElementById('loading-indicator');
+        let form = {
+            headerData: [],
+            mainDataOne: [],
+            mainDataTwo: [],
+            footerData: undefined
+        };
+        class dataForm {
+            constructor(name, value) {
+                this.name = name;
+                this.value = value;
+            }
+        };
+
+        function ValidData(inputElement) {
+            inputElement.oninvalid = function (e) {
+            let element = e.currentTarget.offsetParent;
+            element.style.border = "3px solid red";
+            e.currentTarget.style.color = "red";
+            e.currentTarget.value = "Введите данные";
+            e.currentTarget.setAttribute(`data-valid`, `false`);
+        };
+            inputElement.onmousedown = function (e) {
+                if (e.currentTarget.readOnly == false) {
+                    if (e.currentTarget.dataset.valid === 'false' && (e.currentTarget.value == '' || e.currentTarget.value == 'Введите данные')) {
+                                    let element = e.currentTarget.offsetParent;
+                                    element.style.border = "1px solid rgb(239, 125, 26)";
+                                    e.currentTarget.style.color = "black";
+                                    e.currentTarget.value = "";
+                                    e.currentTarget.setAttribute(`data-valid`, `true`);
+                                }
+                                e.currentTarget.removeAttribute('placeholder');
+                }
+
+        };
+        inputElement.onblur = function (e) {
+            e.currentTarget.setAttribute('placeholder','Введите данные');
+        };
+
+        inputElement.onkeypress = function (e) {
+            let element = e.currentTarget.offsetParent;
+            element.style.border = "1px solid rgb(239, 125, 26)";
+            };
+        };
+
+
+        let carBrand = document.getElementsByName('carBrand')[0];
+        listHtmlFields.push(carBrand);
+        ValidData(carBrand);
+        let transportDimensions = document.getElementsByName('transportDimensions')[0];
+        listHtmlFields.push(transportDimensions);
+        ValidData(transportDimensions);
+        let stateNumberCar = document.getElementsByName('stateNumberCar')[0];
+        listHtmlFields.push(stateNumberCar);
+        ValidData(stateNumberCar);
+        let trailerNumber = document.getElementsByName('trailerNumber')[0];
+        listHtmlFields.push(trailerNumber);
+        ValidData(trailerNumber);
+        let loadCapacity = document.getElementsByName('loadCapacity')[0];
+        listHtmlFields.push(loadCapacity);
+        ValidData(loadCapacity);
+        loadCapacity.onkeypress = KeyPressValidInput;
+        let distance = document.getElementsByName('distance')[0];
+        listHtmlFields.push(distance);
+        ValidData(distance);
+        distance.onkeypress = KeyPressValidInput;
+        let fullNameOfDriver = document.getElementsByName('fullNameOfDriver')[0];
+        listHtmlFields.push(fullNameOfDriver);
+        ValidData(fullNameOfDriver);
+        let phoneNumber = document.getElementsByName('phoneNumber')[0];
+        listHtmlFields.push(phoneNumber);
+        ValidData(phoneNumber);
+        let drivingLicenseNumber = document.getElementsByName('drivingLicenseNumber')[0];
+        listHtmlFields.push(drivingLicenseNumber);
+        ValidData(drivingLicenseNumber);
+        let contragentName = document.getElementsByName('contragentName')[0];
+        let note = document.getElementsByName('note')[0];
+        listHtmlFields.push(note);
+        ValidData(note);
+        let stateBorderCrossingPoint = document.getElementsByName('stateBorderCrossingPoint')[0];
+        listHtmlFields.push(stateBorderCrossingPoint);
+        ValidData(stateBorderCrossingPoint);
+        let seriesPassportNumber = document.getElementsByName('seriesPassportNumber')[0];
+        listHtmlFields.push(seriesPassportNumber);
+        ValidData(seriesPassportNumber);
+        let scannedCopyOfSignedOrder = document.getElementById('inpFileOne');
+        listHtmlFields.push(scannedCopyOfSignedOrder);
+        let scannedCopyOfRegistrationCertificate = document.getElementById('inpFileTwo');
+        listHtmlFields.push(scannedCopyOfRegistrationCertificate);
+        let scanCopyOfPassport = document.getElementById('inpFileThree');
+        listHtmlFields.push(scanCopyOfPassport);
+        let scannedCopyOfAdmissionToTransportation = document.getElementById('inpFileFour');
+        listHtmlFields.push(scannedCopyOfAdmissionToTransportation);
+        let scannedCopyOfCivilPassport = document.getElementById('inpFileFive');
+        listHtmlFields.push(scannedCopyOfCivilPassport);
+
+        function KeyPressValidInput(e) {
+                switch (String.fromCharCode(e.charCode)) {
+                    case '0':
+                    case '1':
+                    case '2':
+                    case '3':
+                    case '4':
+                    case '5':
+                    case '6':
+                    case '7':
+                    case '8':
+                    case '9':
+                        {
+                            return true;
+                        }
+                    default:
+                        {
+                            return false;
+                        }
+                }
+        };
+
+        window.onload = function () {
+            for (let i = 0; i < inpChoose.length; i++) {
+                inpChoose[i].onchange = function handleFiles() {
+                    let labChoose = document.getElementsByClassName('labChoose')[i];
+                    let parhChoose = document.getElementsByClassName('parhChoose')[i];
+                    let newFilelist;
+                    if (inpChoose[i].files.length != 0) {
+                        inpChoose[i].parentElement.style.border = "1px solid rgb(239, 125, 26)";
+                        labChoose.style.color = "black";
+                        newFilelist = new DataTransfer();
+                        const fileListArr = Array.from(inpChoose[i].files);
+                        let fileOldLisrArr;
+                        if (inpChooseBooferFiles[i].length != 0) {
+                            fileOldLisrArr = Array.from(inpChooseBooferFiles[i]);
+                            for (let el = 0; el < fileOldLisrArr.length; el++) {
+                                let file = fileOldLisrArr[el];
+                                newFilelist.items.add(file);
+                            }
+                        }
+                        for (let el = 0; el < fileListArr.length; el++) {
+                            let file = fileListArr[el];
+                            newFilelist.items.add(file);
+                        }
+                        inpChoose[i].files = newFilelist.files;
+                        inpChooseBooferFiles[i] = newFilelist.files;
+                        parhChoose.innerHTML = '';
+                        parhChoose.style.display = 'block';
+                        let listLabCh = [];
+                        let delBtnList = [];
+                        for (let b = 0; b < inpChoose[i].files.length; b++) {
+                            if (labChoose.outerText == "Файл не выбран") {
+                                labChoose.style.display = 'none';
+                            }
+                            let delBtn = document.createElement('img');
+                            delBtn.setAttribute('src', "/Content/images/del.png");
+                            delBtn.setAttribute('style', 'width:13px; height:13px;')
+                            delBtn.setAttribute('onclick', `DeleteFilePath(this)`);
+                            delBtn.setAttribute(`data-form`, `${inpChoose[i].files[b].name}`);
+                            delBtn.setAttribute(`data-form-id`, `${i}`);
+                            delBtn.setAttribute(`data-form-idb`, `${b}`);
+                            listLabCh.push(`${inpChoose[i].files[b].name}`);
+                            delBtnList.push(delBtn);
+                        }
+                        for (let s = 0; s < listLabCh.length; s++) {
+                            parhChoose.innerHTML += ` ${listLabCh[s]} ${delBtnList[s].outerHTML}<br>`;
+                        }
+
+                    }
+
+                }
+            }
+
+            let imgCollapse = document.getElementById('imgCollapse');
+            let tbCollapse = document.getElementById('tbColapse');
+
+            imgCollapse.onclick = function () {
+                if (flagCollapse) {
+                    tbCollapse.style.display = 'table';
+                } else {
+                    tbCollapse.style.display = 'none';
+                }
+                flagCollapse = !flagCollapse;
+            };
+
+            let validInpFileObj = {
+                inpOne: false,
+                inpTwo: false,
+                inpThree: false
+            };
+            function ValidInputFileButton() {
+                let inpFileOne = document.getElementById('inpFileOne');
+                let inpFileTwo = document.getElementById('inpFileTwo');
+                let inpFileThree = document.getElementById('inpFileThree');
+
+                validInpFileObj.inpOne = (inpFileOne != 'undefined' && inpFileOne.files.length != 0) ? true : false;
+                validInpFileObj.inpTwo = (inpFileTwo != 'undefined' && inpFileTwo.files.length != 0) ? true : false;
+                validInpFileObj.inpThree = (inpFileThree != 'undefined' && inpFileThree.files.length != 0) ? true : false;
+            };
+
+            function ValidDataInputFile(htmlElement) {
+                htmlElement.style.border = "3px solid red";
+                let labChoose = htmlElement.children[2];
+                labChoose.style.color = "red";
+                return false;
+            };
+
+
+            let SendDataFromContragen = document.getElementById('SendDataFromContragen');
+            SendDataFromContragen.onsubmit = function (e) {
+                e.preventDefault();
+                ValidInputFileButton();
+                let flagValidInpFile = true;
+                if (!validInpFileObj.inpOne) {
+                    let tdFormFileOne = document.getElementById('tdFormFileOne');
+                    flagValidInpFile = ValidDataInputFile(tdFormFileOne);
+                }
+                if (!validInpFileObj.inpTwo) {
+                    let tdFormFileTwo = document.getElementById('tdFormFileTwo');
+                    flagValidInpFile = ValidDataInputFile(tdFormFileTwo);
+                }
+                if (!validInpFileObj.inpThree) {
+                    let tdFormFileThree = document.getElementById('tdFormFileThree');
+                    flagValidInpFile = ValidDataInputFile(tdFormFileThree);
+                }
+
+                let formaData = new FormData();
+                let listHtmlFields = [];
+
+                let RegisterMessageToContragentId = @Model[0].RegisterMessageToContragentId;
+                formaData.append('RegisterMessageToContragentId', RegisterMessageToContragentId);
+                let IsUpdate = document.getElementById('checkFronContragents');
+                formaData.append(IsUpdate.name, IsUpdate.checked);
+                let tenderItemUuid = @Html.Raw(Json.Encode(@Model[0].formUuid));
+                formaData.append('tenderItemUuid', tenderItemUuid);
+
+                let carBrand = document.getElementsByName('carBrand')[0];
+                formaData.append(carBrand.name, carBrand.value);
+                listHtmlFields.push(carBrand);
+                let transportDimensions = document.getElementsByName('transportDimensions')[0];
+                formaData.append(transportDimensions.name, transportDimensions.value);
+                listHtmlFields.push(transportDimensions);
+                let stateNumberCar = document.getElementsByName('stateNumberCar')[0];
+                formaData.append(stateNumberCar.name, stateNumberCar.value);
+                listHtmlFields.push(stateNumberCar);
+                let trailerNumber = document.getElementsByName('trailerNumber')[0];
+                formaData.append(trailerNumber.name, trailerNumber.value);
+                listHtmlFields.push(trailerNumber);
+                let loadCapacity = document.getElementsByName('loadCapacity')[0];
+                formaData.append(loadCapacity.name, loadCapacity.value);
+                listHtmlFields.push(loadCapacity);
+                let distance = document.getElementsByName('distance')[0];
+                formaData.append(distance.name, distance.value);
+                listHtmlFields.push(distance);
+                let fullNameOfDriver = document.getElementsByName('fullNameOfDriver')[0];
+                formaData.append(fullNameOfDriver.name, fullNameOfDriver.value);
+                listHtmlFields.push(fullNameOfDriver);
+                let phoneNumber = document.getElementsByName('phoneNumber')[0];
+                formaData.append(phoneNumber.name, phoneNumber.value);
+                listHtmlFields.push(phoneNumber);
+                let drivingLicenseNumber = document.getElementsByName('drivingLicenseNumber')[0];
+                formaData.append(drivingLicenseNumber.name, drivingLicenseNumber.value);
+                listHtmlFields.push(drivingLicenseNumber);
+                let contragentName = document.getElementsByName('contragentName')[0];
+                formaData.append(contragentName.name, contragentName.value);
+                let note = document.getElementsByName('note')[0];
+                formaData.append(note.name, note.value);
+
+                let stateBorderCrossingPoint = document.getElementsByName('stateBorderCrossingPoint')[0];
+                formaData.append(stateBorderCrossingPoint.name, stateBorderCrossingPoint.value);
+                listHtmlFields.push(stateBorderCrossingPoint);
+                let seriesPassportNumber = document.getElementsByName('seriesPassportNumber')[0];
+                formaData.append(seriesPassportNumber.name, seriesPassportNumber.value);
+
+                let scannedCopyOfSignedOrder = document.getElementById('inpFileOne');
+                for (let i = 0; i < scannedCopyOfSignedOrder.files.length; i++) {
+                    formaData.append(scannedCopyOfSignedOrder.files[i].name, scannedCopyOfSignedOrder.files[i]);
+                }
+
+                if (scannedCopyOfSignedOrder.files.length != 0) {
+                    formaData.append('scannedCopyOfSignedOrder', true);
+                }
+                else {
+                    formaData.append('scannedCopyOfSignedOrder', false);
+                }
+                let scannedCopyOfRegistrationCertificate = document.getElementById('inpFileTwo');
+                for (let i = 0; i < scannedCopyOfRegistrationCertificate.files.length; i++) {
+                    formaData.append(scannedCopyOfRegistrationCertificate.files[i].name, scannedCopyOfRegistrationCertificate.files[i]);
+                }
+
+                if (scannedCopyOfRegistrationCertificate.files.length != 0) {
+                    formaData.append('scannedCopyOfRegistrationCertificate', true);
+                }
+                else {
+                    formaData.append('scannedCopyOfRegistrationCertificate', false);
+                }
+                let scanCopyOfPassport = document.getElementById('inpFileThree');
+                for (let i = 0; i < scanCopyOfPassport.files.length; i++) {
+                    formaData.append(scanCopyOfPassport.files[i].name, scanCopyOfPassport.files[i]);
+                }
+
+                if (scanCopyOfPassport.files.length != 0) {
+                    formaData.append('scanCopyOfPassport', true);
+                }
+                else {
+                    formaData.append('scanCopyOfPassport', false);
+                }
+                let scannedCopyOfAdmissionToTransportation = document.getElementById('inpFileFour');
+                for (let i = 0; i < scannedCopyOfAdmissionToTransportation.files.length; i++) {
+                    formaData.append(scannedCopyOfAdmissionToTransportation.files[i].name, scannedCopyOfAdmissionToTransportation.files[i]);
+                }
+
+                if (scannedCopyOfAdmissionToTransportation.files.length != 0) {
+                    formaData.append('scannedCopyOfAdmissionToTransportation', true);
+                }
+                else {
+                    formaData.append('scannedCopyOfAdmissionToTransportation', false);
+                }
+                let scannedCopyOfCivilPassport = document.getElementById('inpFileFive');
+                for (let i = 0; i < scannedCopyOfCivilPassport.files.length; i++) {
+                    formaData.append(scannedCopyOfCivilPassport.files[i].name, scannedCopyOfCivilPassport.files[i]);
+                }
+
+                if (scannedCopyOfCivilPassport.files.length != 0) {
+                    formaData.append('scannedCopyOfCivilPassport', true);
+                }
+                else {
+                    formaData.append('scannedCopyOfCivilPassport', false);
+                }
+                let flagInput = true;
+                listHtmlFields.forEach(item => {
+                    if (item.value == 'Введите данные') {
+                        flagInput = false;
+                    }
+                });
+
+                let tbodyMainInfo = document.getElementById('tbodyMainInfo');
+                HeaderInitFromForm(tbodyMainInfo.children);
+                function HeaderInitFromForm(element) {
+                    for (const val of element) {
+                        let thValue = val.children[0].outerText;
+                        let tdValue = val.children[1].outerText;
+                        let dataHeader = new dataForm(thValue, tdValue);
+                        form.headerData.push(dataHeader);
+                    };
+                };
+
+                let tbodyMainTable = document.getElementById('tbodyMainTable');
+                MainOneInitFromForm(tbodyMainTable.children);
+                function MainOneInitFromForm(element) {
+                    for (const val of element) {
+                        if (val.id == 'LastThMain') {
+                            break;
+                        }
+                        if (val.id != 'OneThMain') {
+                            let thValue = val.children[0].outerText;
+                            let tdValue = val.children[1].children[0].value;
+                            let dataMainOne = new dataForm(thValue, tdValue);
+                            form.mainDataOne.push(dataMainOne);
+                        }
+                    };
+                };
+                MainTwoInitFromForm(tbodyMainTable.children);
+                function MainTwoInitFromForm(element) {
+                    let flag = false;
+                    for (const val of element) {
+                        if (val.id == 'LastThMain') {
+                            flag = true;
+                            continue;
+                        }
+                        if (flag) {
+                            let thValue = val.children[0].outerText;
+                            let tdValue = (val.children[1].children[1].files.length != 0)?'Файл прикреплен':'Файл отсутствует';
+                            let dataMainTwo = new dataForm(thValue, tdValue);
+                            form.mainDataTwo.push(dataMainTwo);
+                        }
+                    };
+                };
+                FooterInitFromFrom();
+                function FooterInitFromFrom() {
+                    let th = document.createElement('th');
+                    $(th).attr('style', 'font-weight: 100; text-align: center; padding-top: 1%; padding-bottom: 1%; line-height: 1.5;');
+                    $(th).attr('colspan', '2');
+                    $(th).append(`<span style="font-size: 20px; font-weight: bold; text-align: center; line-height: 2;">Краткая информация для копирования</span><br><span style="font-weight: bold;">Тендер ${@Html.Raw(Json.Encode(Model[0].tenderNumber))}, (Заявка ${@Html.Raw(Json.Encode(Model[0].orderId))})</span><br>${@Html.Raw(Json.Encode(Model[0].routeShort))}<br> <span style="font-weight: bold;">Дата подачи авто ${@Html.Raw(Json.Encode(Model[0].dateDownloading.ToString("dd.MM.yyyy")))}</span><br> Авто: ${carBrand.value}<br>
+                <span style="font-weight: bold;">Гос.номер: ${stateNumberCar.value} п/п ${trailerNumber.value}</span><br> Водитель: ${fullNameOfDriver.value} ${phoneNumber.value}<br><span style="font-weight: bold;">Водительское удостоверение: ${drivingLicenseNumber.value}</span> <br> Экспедитор
+                ${contragentName.value}<br> <span style="font-weight: bold;">Переход: ${stateBorderCrossingPoint.value}</span> (отдельное поле для международных перевозок заполняется вручную)`);
+                    form.footerData = th;
+                };
+
+                function GetSubjectToMessage() {
+                    let subject = `№${@Html.Raw(Json.Encode(Model[0].tenderNumber))}, (${@Html.Raw(Json.Encode(Model[0].orderId))}) ${@Html.Raw(Json.Encode(Model[0].routeShort))}, погрузка ${@Html.Raw(Json.Encode(Model[0].dateDownloading.ToString("yyyy-MM-dd")))}`;
+                    return subject;
+                };
+
+
+                let BodyHtmlForm = {
+                    body: CreateHTMLBody(),
+                    subject: GetSubjectToMessage()
+                };
+                let bodyHtml = JSON.stringify(BodyHtmlForm);
+
+                SendBodyHtml(bodyHtml);
+                if (flagInput && flagValidInpFile) {
+                    loadingIndicator.style.display = "block";
+                    $.ajax({
+                        type: "POST",
+                        async: false,
+                        url: "/FormContragents/SendDataFromForm",
+                        data: formaData,
+                        dataType: "json",
+                        mimeType: 'multipart/form-data',
+                        contentType: false,
+                        cache: false,
+                        processData: false,
+                        success: function (data) {
+                            loadingIndicator.style.display = "none";
+                            if (data.flag) {
+                                CreateNotificationToContragents("success");
+                                setTimeout(DeleteNotificationToContragents, 3000, 'success');
+                            }
+                            else if (!data.flag && !data.error) {
+                                CreateNotificationToContragents("warning");
+                                setTimeout(DeleteNotificationToContragents, 3000, 'warning');
+                            }
+                            else if (!data.flag && data.error == true) {
+                                CreateNotificationToContragents("error");
+                                setTimeout(DeleteNotificationToContragents, 3000, 'error');
+                            }
+
+                        },
+                        error: function () {
+
+                        }
+                    });
+                }
+                if (!@Html.Raw(Json.Encode(@Model[0].IsEditable))) {
+                    let check = document.getElementsByName('checkFronContragents')[0];
+                    check.setAttribute('disabled', 'disabled');
+                }
+            };
+
+            // Создание Notification
+        function CreateNotificationToContragents(status) {
+            switch (status) {
+                case "success": {
+                    let div = document.getElementsByClassName('notificationFormContrSuccess')[0];
+                    div.style.display = "block";
+                    break;
+                }
+                case "warning": {
+                    let div = document.getElementsByClassName('notificationFormContrWarning')[0];
+                    div.style.display = "block";
+                    break;
+                }
+                case "error": {
+                    let div = document.getElementsByClassName('notificationFormContrError')[0];
+                    div.style.display = "block";
+                    break;
+                }
+                default: break;
+            }
+            };
+
+            function DeleteNotificationToContragents(status) {
+                switch (status) {
+                case "success": {
+                    let div = document.getElementsByClassName('notificationFormContrSuccess')[0];
+                        div.style.display = "none";
+                        window.location.reload();
+                    break;
+                }
+                case "warning": {
+                    let div = document.getElementsByClassName('notificationFormContrWarning')[0];
+                    div.style.display = "none";
+                    break;
+                }
+                case "error": {
+                    let div = document.getElementsByClassName('notificationFormContrError')[0];
+                        div.style.display = "none";
+                        window.location.reload();
+                    break;
+                }
+                default: break;
+                }
+            };
+
+
+            SendDataFromContragen.oninvalid = function (e) {
+                let element = e.currentTarget;
+            };
+        }
+
+        function SendBodyHtml(bodyHtml) {
+            $.ajax({
+                                        type: "POST",
+                                        async: true,
+                                        url: "/FormContragents/SendBodyHtml",
+                                        data: bodyHtml,
+                                        dataType: "json",
+                                        contentType: 'application/json; charset=utf-8',
+                                        success: function (data) {
+
+                                        },
+                                        error: function () {
+
+                                        }
+                                    });
+        }
+
+        // Формирование тела сообщения от контрагента операционисту на почту на уровне почтового мессенджера
+    function CreateHTMLBody() {
+        let bodyHTML = "";
+        let divMain = document.createElement('div');
+        $(divMain).attr('style', 'display: flex; flex-flow: column nowrap; align-items: center;');
+
+        let divDerived = document.createElement('div');
+        $(divDerived).attr('style', 'width: 100%; display: flex; flex-flow: column nowrap; align-items: center;');
+
+        let tableMain = document.createElement('table');
+        $(tableMain).attr('style', 'border: 3px solid rgb(239, 125, 26); margin-left: 2%; margin-right: 2%; border-collapse: collapse; border-spacing: 0;text-align: left; margin-top: 1%; width: 96%; table-layout: fixed;');
+        let tbodyMain = document.createElement('tbody');
+        let trMain = document.createElement('tr');
+        let thMain = document.createElement('th');
+        $(thMain).attr('style', 'white-space: normal; color: rgb(0, 0, 0); width: 30%; border: 1px solid rgb(239, 125, 26);font-size: 15px; padding: 0.8%; font-family: Arial, Helvetica, sans-serif; font-size: 16px;');
+        $(thMain).attr('colspan', '2');
+        $(thMain).append('<div style="display: flex; flex-flow: row nowrap; justify-content: space-between;align-items: center;"><span style="padding-top: 3px; text-decoration: underline; font-size: 18px;">Информация по Заявке</span></div>');
+        let tableDerived = document.createElement('table');
+        $(tableDerived).attr('style', 'text-align: left; width: 98%; margin: 1%; border-collapse: separate;');
+        let tbodyDerived = document.createElement('tbody');
+        for (let i = 0; i < form.headerData.length; i++) {
+            if ((i + 1) % 2 != 0) {
+                $(tbodyDerived).append(`<tr><th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">${form.headerData[i].name}</th><td style="font-weight: normal; color: black;margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif; background-color: rgb(239, 125, 26);">${form.headerData[i].value}</td></tr>`);
+            }
+            else {
+                $(tbodyDerived).append(`<tr><th style="padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">${form.headerData[i].name}</th><td style="font-weight: normal; color: black;margin-left: 2px; padding: 5px; font-size: 16px; font-family: 'Times New Roman', Times, serif;">${form.headerData[i].value}</td></tr>`);
+            }
+        };
+
+        tableDerived.appendChild(tbodyDerived);
+        thMain.appendChild(tableDerived);
+        trMain.appendChild(thMain);
+        tbodyMain.appendChild(trMain);
+        let trHeadTwo = document.createElement('tr');
+        let thHeadTwo = document.createElement('th');
+        $(thHeadTwo).attr('style', 'white-space: normal; color: rgb(0, 0, 0); width: 30%; border: 1px solid rgb(239, 125, 26);font-size: 15px; padding: 0.8%; font-family: Arial, Helvetica, sans-serif; font-size: 16px;');
+        $(thHeadTwo).attr('colspan', '2');
+        $(thHeadTwo).append('<div style="display: flex; flex-flow: row nowrap; justify-content: space-between;align-items: center;"><span style="padding-top: 3px; text-decoration: underline; font-size: 18px;">Информация из Формы</span></div>');
+        trHeadTwo.appendChild(thHeadTwo);
+        tbodyMain.appendChild(trHeadTwo);
+        for (const item of form.mainDataOne) {
+            $(tbodyMain).append(`<tr>
+                        <th style="white-space: normal;color: rgb(0, 0, 0);
+                        width: 30%; border: 1px solid rgb(239, 125, 26);padding: 0.8%;
+                        font-family: Arial, Helvetica, sans-serif;">${item.name}</th>
+                        <td style="border: 1px solid rgb(239, 125, 26);
+                        font-size: 15px;
+                        font-family: Arial, Helvetica, sans-serif;
+                        padding-left: 0.8%;">
+                            ${item.value}
+                        </td>
+                    </tr>`);
+        };
+        $(tbodyMain).append(`<tr>
+                        <th style="white-space: normal;color: rgb(0, 0, 0);width: 30%;
+                        border: 1px solid rgb(239, 125, 26);font-size: 15px;padding: 0.8%;font-family: Arial, Helvetica, sans-serif;
+                        font-size: 18px;text-decoration: underline;" colspan="2">Скан.копии документов</th>
+                    </tr>`);
+        for (const item of form.mainDataTwo) {
+            $(tbodyMain).append(`<tr>
+                        <th style="white-space: normal;color: rgb(0, 0, 0);
+                        width: 30%; border: 1px solid rgb(239, 125, 26);padding: 0.8%;
+                        font-family: Arial, Helvetica, sans-serif;">${item.name}</th>
+                        <td style="border: 1px solid rgb(239, 125, 26);
+                        font-size: 15px;
+                        font-family: Arial, Helvetica, sans-serif;
+                        padding-left: 0.8%;">
+                            ${item.value}
+                        </td>
+                    </tr>`);
+        };
+        let trFooter = document.createElement('tr');
+
+        trFooter.appendChild(form.footerData);
+        tbodyMain.appendChild(trFooter);
+        tableMain.appendChild(tbodyMain);
+        divDerived.appendChild(tableMain);
+        divMain.appendChild(divDerived);
+
+        bodyHTML = divMain.outerHTML;
+        return bodyHTML;
+    }
+
+        function InitFielsEditabled() {
+            let flag = @Html.Raw(Json.Encode(@Model[0].IsEditable));
+            if (flag) {
+                listHtmlFields.forEach(value => {
+                    if (value.type == 'text') {
+                        value.setAttribute('readonly', 'readonly');
+                    }
+                });
+                for(const value of inpChoose){
+                    value.setAttribute('disabled', 'disabled');
+                };
+
+                let submit = document.getElementById('submTC');
+                submit.className = '';
+                submit.value = 'Редактировать';
+                submit.className = 'editTC';
+            }
+        };
+
+        InitFielsEditabled();
+
+        let edit = document.getElementById('submTC');
+        edit.onclick = EditFielsEnabled;
+
+        function EditFielsEnabled(e) {
+                listHtmlFields.forEach(value => {
+                    if (value.type == 'text') {
+                        value.removeAttribute('readonly');
+                    }
+                });
+                for(const value of inpChoose){
+                    value.removeAttribute('disabled');
+                };
+
+                let check = document.getElementsByName('checkFronContragents')[0];
+            check.removeAttribute('disabled');
+            let submit = e.currentTarget;
+            submit.className = '';
+            submit.value = 'Отправить';
+            submit.className = 'submTC';
+        };
+
+        function DeleteFilePath(e) {
+            let i = Number(e.dataset.formId);
+            let b = Number(e.dataset.formIdb);
+            let nameForm = e.dataset.form;
+            let labChoose = document.getElementsByClassName('labChoose')[i];
+
+            if (inpChoose[i].files.length != 0) {
+                let parhChoose = document.getElementsByClassName('parhChoose')[i];
+                let listLabCh = [];
+                let delBtnList = [];
+                let delBtn;
+                let newFilelist;
+
+                const fileListArr = Array.from(inpChoose[i].files);
+                console.log(fileListArr);
+
+
+                if (inpChoose[i].files[b].name == nameForm) {
+                    newFilelist = new DataTransfer();
+                    for (let el = 0; el < inpChoose[i].files.length; el++) {
+                        if (el == b) {
+                            fileListArr.splice(b, 1);
+                            continue;
+                        }
+                        let file = inpChoose[i].files[el];
+                        newFilelist.items.add(file);
+                    }
+                }
+                newFilelist.files = fileListArr;
+                inpChoose[i].files = newFilelist.files;
+                inpChooseBooferFiles[i] = newFilelist.files;
+                if (inpChoose[i].files.length == 0) {
+                    labChoose.style.display = 'initial';
+                }
+
+                for (b = 0; b < newFilelist.files.length; b++) {
+                    let delBtn = document.createElement('img');
+                    delBtn.setAttribute('src', "/Content/images/del.png");
+                    delBtn.setAttribute('style', 'width:13px; height:13px;')
+                    delBtn.setAttribute('onclick', `DeleteFilePath(this)`);
+                    delBtn.setAttribute(`data-form`, `${newFilelist.files[b].name}`);
+                    delBtn.setAttribute(`data-form-id`, `${i}`);
+                    delBtn.setAttribute(`data-form-idb`, `${b}`);
+                    listLabCh.push(`${newFilelist.files[b].name}`);
+                    delBtnList.push(delBtn);
+                }
+                parhChoose.innerHTML = '';
+                for (let s = 0; s < listLabCh.length; s++) {
+                    parhChoose.innerHTML += ` ${listLabCh[s]} ${delBtnList[s].outerHTML}<br>`;
+                }
+
+            }
+        };
+    </script>
+</body>
+
+</html>

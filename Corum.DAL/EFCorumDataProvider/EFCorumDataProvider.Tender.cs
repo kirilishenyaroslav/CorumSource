@@ -12,7 +12,7 @@ using System.Data;
 using System.Data.Entity;
 using System.Globalization;
 using Corum.Models.ViewModels.Tender;
-
+using System.Web;
 
 namespace Corum.DAL
 {
@@ -656,6 +656,303 @@ namespace Corum.DAL
         public ContrAgentModel GetWinnerContragent(List<ContrAgentModel> listAllContragents, int SupplierIdWinnerContragent)
         {
             return listAllContragents.Find(x => x.SupplierId == SupplierIdWinnerContragent);
+        }
+
+
+        public void FormInitMessageToContragents(ref InfoToContragentsAfterChange listInfoToCont)
+        {
+            var listWinners = listInfoToCont.listWinnersInfoAfterChange;
+
+            try
+            {
+                if (listWinners != null)
+                {
+                    foreach (var model in listWinners)
+                    {
+                        var IsContragent = (db.RegisterMessageToContragents.Where(x => x.tenderNumber == model.tenderNumber && x.contragentName == model.expeditorName && x.flagCreate == true).FirstOrDefault() != null) ? false : true;
+
+                        if (IsContragent)
+                        {
+                            db.RegisterMessageToContragents.Add(new Entity.RegisterMessageToContragents()
+                            {
+                                acceptedTransportUnits = model.numberOfVehicles,
+                                contragentName = model.expeditorName,
+                                cost = model.price,
+                                dateCreate = model.dateCreate,
+                                dateUpdate = model.dateUpdate,
+                                descriptionTender = model.description,
+                                emailContragent = model.recipientEmail,
+                                emailOperacionist = model.senderEmail,
+                                formUuid = model.formUuid,
+                                industryId = model.industryId,
+                                orderId = model.orderId,
+                                tenderItemUuid = model.tenderItemUuid,
+                                tenderNumber = model.tenderNumber,
+                                flag = model.flag,
+                                dataDownload = model.dataDownload,
+                                dataUnload = model.dataUnload,
+                                DelayPayment = model.DelayPayment,
+                                industryName = model.industryName,
+                                nameCargo = model.nameCargo,
+                                routeShort = model.routeShort,
+                                weightCargo = model.weightCargo
+                            });
+                            db.SaveChanges();
+
+                        }
+                    }
+                    var list = db.RegisterMessageToContragents.ToList();
+                    for (int item = 0; item < list.Count; item++)
+                    {
+                        if (list[item].tenderNumber == listWinners[0].tenderNumber)
+                        {
+                            int tendNumber = list[item].tenderNumber;
+                            var value = db.RegisterMessageToContragents.Where(x => x.tenderNumber == tendNumber && x.flagCreate != true).FirstOrDefault();
+                            if (value != null)
+                            {
+                                listWinners[item].flagCreate = true;
+                                listWinners[item].formUuid = value.formUuid;
+                                value.flagCreate = true;
+                                db.SaveChanges();
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
+        public bool FormMessageToSendContragents(InfoToContragentsAfterChange listInfoToCont)
+        {
+            var listWinners = listInfoToCont.listWinnersInfoAfterChange;
+            bool flag = false;
+            try
+            {
+                if (listWinners != null)
+                {
+                    foreach (var model in listWinners)
+                    {
+                        var item = db.RegisterMessageToContragents.Where(x => x.tenderNumber == model.tenderNumber && x.contragentName == model.expeditorName && x.formUuid == model.formUuid).FirstOrDefault();
+                        if (item != null && item.flag == true)
+                        {
+                            item.acceptedTransportUnits = model.numberOfVehicles;
+                            item.contragentName = model.expeditorName;
+                            item.cost = model.price;
+                            item.dateCreate = model.dateCreate;
+                            item.dateUpdate = model.dateUpdate;
+                            item.descriptionTender = model.description;
+                            item.emailContragent = model.recipientEmail;
+                            item.emailOperacionist = model.senderEmail;
+                            item.formUuid = model.formUuid;
+                            item.industryId = model.industryId;
+                            item.orderId = model.orderId;
+                            item.tenderItemUuid = model.tenderItemUuid;
+                            item.tenderNumber = model.tenderNumber;
+                            item.flag = model.flag;
+                            item.dataDownload = model.dataDownload;
+                            item.dataUnload = model.dataUnload;
+                            item.DelayPayment = model.DelayPayment;
+                            item.industryName = model.industryName;
+                            item.nameCargo = model.nameCargo;
+                            item.routeShort = model.routeShort;
+                            item.weightCargo = model.weightCargo;
+                            db.SaveChanges();
+                            flag = true;
+                            continue;
+                        }
+                        else
+                        {
+                            continue;
+                        }
+                    }
+                }
+
+                return flag;
+            }
+            catch (Exception e)
+            {
+                return flag;
+            }
+        }
+        public List<RegisterMessageToContragents> GetListFormUuidToContragents(long orderId)
+        {
+            List<RegisterMessageToContragents> list = new List<RegisterMessageToContragents>();
+            var listWinnersList = db.RegisterMessageToContragents.ToList();
+            try
+            {
+                foreach (var item in listWinnersList)
+                {
+                    if (item.orderId == orderId)
+                    {
+                        RegisterMessageToContragents model = new RegisterMessageToContragents()
+                        {
+                            Id = item.Id,
+                            acceptedTransportUnits = item.acceptedTransportUnits,
+                            orderId = item.orderId,
+                            contragentName = item.contragentName,
+                            cost = item.cost,
+                            dateCreate = item.dateCreate,
+                            dateUpdate = item.dateUpdate,
+                            descriptionTender = item.descriptionTender,
+                            emailContragent = item.emailContragent,
+                            emailOperacionist = item.emailOperacionist,
+                            formUuid = item.formUuid,
+                            industryId = item.industryId,
+                            RegisterFormFromContragents = item.RegisterFormFromContragents as ICollection<RegisterFormFromContragents>,
+                            tenderItemUuid = item.tenderItemUuid,
+                            tenderNumber = item.tenderNumber,
+                            dataDownload = (DateTime)item.dataDownload,
+                            dataUnload = (DateTime)item.dataUnload,
+                            DelayPayment = item.DelayPayment,
+                            industryName = item.industryName,
+                            nameCargo = item.nameCargo,
+                            routeShort = item.routeShort,
+                            weightCargo = item.weightCargo,
+                            flag = (bool)((item.flag != null) ? item.flag : false)
+                        };
+                        list.Add(model);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+            return list;
+        }
+
+        public bool CheckFormUuid(Guid formUuid)
+        {
+            var IsContragent = (db.RegisterMessageToContragents.Where(x => x.formUuid == formUuid).FirstOrDefault() != null) ? true : false;
+            return IsContragent;
+        }
+
+
+        public List<RegisterFormFromContragents> GetRegisterFormFromContragents(Guid formUuid)
+        {
+            List<RegisterFormFromContragents> listDataToForm = new List<RegisterFormFromContragents>();
+            var modelRegisterToContragents = db.RegisterMessageToContragents.Where(x => x.formUuid == formUuid).FirstOrDefault();
+            var modelForm = db.RegisterFormFromContragents.Where(x => x.tenderItemUuid == formUuid).FirstOrDefault();
+            for (int i = 0; i < modelRegisterToContragents.acceptedTransportUnits; i++)
+            {
+                RegisterFormFromContragents model = new RegisterFormFromContragents();
+                model.contragentName = modelRegisterToContragents.contragentName;
+                model.tenderNumber = modelRegisterToContragents.tenderNumber;
+                model.orderId = modelRegisterToContragents.orderId;
+                model.emailContragent = modelRegisterToContragents.emailContragent;
+                model.emailOperacionist = modelRegisterToContragents.emailOperacionist;
+                model.dateDownloading = (DateTime)modelRegisterToContragents.dataDownload;
+                model.dateUnloading = (DateTime)modelRegisterToContragents.dataUnload;
+                model.industryName = modelRegisterToContragents.industryName;
+                model.descriptionTender = modelRegisterToContragents.descriptionTender;
+                model.acceptedTransportUnits = 1;
+                model.cost = modelRegisterToContragents.cost;
+                model.formUuid = modelRegisterToContragents.formUuid;
+                model.industryId = modelRegisterToContragents.industryId;
+                model.routeShort = modelRegisterToContragents.routeShort;
+                model.nameCargo = modelRegisterToContragents.nameCargo;
+                model.weightCargo = (double)modelRegisterToContragents.weightCargo;
+                model.DelayPayment = (int)modelRegisterToContragents.DelayPayment;
+                model.IsEditable = false;
+                if (modelForm != null)
+                {
+                    model.carBrand = modelForm.carBrand;
+                    model.stateNumberCar = modelForm.stateNumberCar;
+                    model.trailerNumber = modelForm.trailerNumber;
+                    model.loadCapacity = modelForm.loadCapacity;
+                    model.distance = modelForm.distance;
+                    model.fullNameOfDriver = modelForm.fullNameOfDriver;
+                    model.phoneNumber = modelForm.phoneNumber;
+                    model.drivingLicenseNumber = modelForm.drivingLicenseNumber;
+                    model.note = modelForm.note;
+                    model.stateBorderCrossingPoint = modelForm.stateBorderCrossingPoint;
+                    model.seriesPassportNumber = modelForm.seriesPassportNumber;
+                    model.IsEditable = true;
+                    model.transportDimensions = modelForm.transportDimensions;
+                }
+                listDataToForm.Add(model);
+            }
+
+
+            return listDataToForm;
+        }
+
+        public bool SetRegisterFormFromContragent(List<HttpPostedFileBase> listFiles, Dictionary<string, string> dic)
+        {
+            Guid formUuid = Guid.Parse(dic["tenderItemUuid"]);
+            bool flag = false;
+            var modelRegisterToContragents = db.RegisterMessageToContragents.Where(x => x.formUuid == formUuid).FirstOrDefault();
+
+            var IsContragent = (db.RegisterFormFromContragents.Where(x => x.tenderItemUuid == formUuid).FirstOrDefault() != null) ? false : true;
+            try
+            {
+                if (IsContragent)
+                {
+                    db.RegisterFormFromContragents.Add(new Entity.RegisterFormFromContragents()
+                    {
+                        RegisterMessageToContragentId = modelRegisterToContragents.Id,
+                        carBrand = dic["carBrand"],
+                        stateNumberCar = dic["stateNumberCar"],
+                        trailerNumber = dic["trailerNumber"],
+                        loadCapacity = Double.Parse(dic["loadCapacity"]),
+                        distance = Double.Parse(dic["distance"]),
+                        fullNameOfDriver = dic["fullNameOfDriver"],
+                        phoneNumber = dic["phoneNumber"],
+                        drivingLicenseNumber = dic["drivingLicenseNumber"],
+                        contragentName = dic["contragentName"],
+                        note = dic["note"],
+                        stateBorderCrossingPoint = dic["stateBorderCrossingPoint"],
+                        seriesPassportNumber = dic["seriesPassportNumber"],
+                        scannedCopyOfSignedOrder = Boolean.Parse(dic["scannedCopyOfSignedOrder"]),
+                        scannedCopyOfRegistrationCertificate = Boolean.Parse(dic["scannedCopyOfRegistrationCertificate"]),
+                        scanCopyOfPassport = Boolean.Parse(dic["scanCopyOfPassport"]),
+                        scannedCopyOfAdmissionToTransportation = Boolean.Parse(dic["scannedCopyOfAdmissionToTransportation"]),
+                        scannedCopyOfCivilPassport = Boolean.Parse(dic["scannedCopyOfCivilPassport"]),
+                        IsUpdate = Boolean.Parse(dic["checkFronContragents"]),
+                        dateCreate = DateTime.Now,
+                        dateUpdate = DateTime.Now,
+                        tenderItemUuid = formUuid,
+                        transportDimensions = dic["transportDimensions"],
+                        RegisterMessageToContragents = modelRegisterToContragents
+                    });
+                    db.SaveChanges();
+                    flag = true;
+                }
+                else if (Boolean.Parse(dic["checkFronContragents"]) == true && !IsContragent)
+                {
+                    var item = db.RegisterFormFromContragents.Where(x => x.tenderItemUuid == formUuid).FirstOrDefault();
+                    item.carBrand = dic["carBrand"];
+                    item.stateNumberCar = dic["stateNumberCar"];
+                    item.trailerNumber = dic["trailerNumber"];
+                    item.loadCapacity = Double.Parse(dic["loadCapacity"]);
+                    item.distance = Double.Parse(dic["distance"]);
+                    item.fullNameOfDriver = dic["fullNameOfDriver"];
+                    item.phoneNumber = dic["phoneNumber"];
+                    item.drivingLicenseNumber = dic["drivingLicenseNumber"];
+                    item.contragentName = dic["contragentName"];
+                    item.note = dic["note"];
+                    item.stateBorderCrossingPoint = dic["stateBorderCrossingPoint"];
+                    item.seriesPassportNumber = dic["seriesPassportNumber"];
+                    item.scannedCopyOfSignedOrder = (item.scannedCopyOfSignedOrder != true) ? Boolean.Parse(dic["scannedCopyOfSignedOrder"]) : item.scannedCopyOfSignedOrder;
+                    item.scannedCopyOfRegistrationCertificate = (item.scannedCopyOfRegistrationCertificate != true) ? Boolean.Parse(dic["scannedCopyOfRegistrationCertificate"]) : item.scannedCopyOfRegistrationCertificate;
+                    item.scanCopyOfPassport = (item.scanCopyOfPassport != true) ? Boolean.Parse(dic["scanCopyOfPassport"]) : item.scanCopyOfPassport;
+                    item.scannedCopyOfAdmissionToTransportation = (item.scannedCopyOfAdmissionToTransportation != true) ? Boolean.Parse(dic["scannedCopyOfAdmissionToTransportation"]) : item.scannedCopyOfAdmissionToTransportation;
+                    item.scannedCopyOfCivilPassport = (item.scannedCopyOfCivilPassport != true) ? Boolean.Parse(dic["scannedCopyOfCivilPassport"]) : item.scannedCopyOfCivilPassport;
+                    item.IsUpdate = Boolean.Parse(dic["checkFronContragents"]);
+                    item.dateUpdate = DateTime.Now;
+                    item.transportDimensions = dic["transportDimensions"];
+                    db.SaveChanges();
+                    flag = true;
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+            return flag;
         }
     }
 }

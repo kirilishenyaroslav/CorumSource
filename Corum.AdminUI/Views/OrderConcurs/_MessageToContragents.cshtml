@@ -23,9 +23,10 @@
     let competitiveListInfo = JSON.parse(sessionStorage.getItem('CompetitiveListInfo'));
     let dataAllTender = JSON.parse(sessionStorage.getItem('data'));
     let downloadingDateForTender = undefined;
+    let industryName_;
     class Winner {
         constructor(expeditorName, numberTender, order, transportationType, route, nameOfCargo, cargoWeight, dowloadingDate,
-            unloadingDate, description, price, paymentDeferment, emailContragent) {
+            unloadingDate, description, price, paymentDeferment, emailContragent, formUuid) {
             this.expeditorName = expeditorName;
             this.numberTender = numberTender;
             this.order = order;
@@ -42,6 +43,7 @@
             this.isWinner = true;
             this.emailContragent = emailContragent;
             this.routeShort = GetInfoAboutShortRoute(numberTender);
+            this.formUuid = formUuid;
         }
         numberOfVehicles = 1;
         countWinner = 1;
@@ -140,7 +142,7 @@
 
     let listWinnersIdHTMLElements = [];
     let listLoserIdHTMLElements = [];
-
+    let listLink_;
 
     function SendMessageToContragents(orderId) {
 
@@ -226,6 +228,29 @@
                                         winnerAfterChange.subject = `№${tendNumber}, (${orderId}) ${item.routeShort}, погрузка ${downloadingDateForTender}`;
                                         winnerAfterChange.bodyHTML = CreateHTMLBody(winnerAfterChange.tr, winnerAfterChange.thContent,
                                             winnerAfterChange.tdContent, winnerAfterChange.upperartOfTheMessage, winnerAfterChange.messageFooter);
+                                        winnerAfterChange.description = item.description;
+                                        winnerAfterChange.formUuid = item.formUuid;
+                                        winnerAfterChange.industryId = item.industryId;
+                                        winnerAfterChange.orderId = item.orderId;
+                                        winnerAfterChange.price = item.price;
+                                        winnerAfterChange.tenderNumber = item.tenderNumber;
+                                        winnerAfterChange.tenderItemUuid = item.tenderItemUuid;
+                                        winnerAfterChange.flag = false;
+                                        winnerAfterChange.industryName = industryName_;
+                                        winnerAfterChange.routeShort = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.Route));
+                                        winnerAfterChange.nameCargo = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.TruckDescription));
+                                        winnerAfterChange.weightCargo = parseFloat(@Html.Raw(Json.Encode(Model.CompetitiveListInfo.Weight)));
+                                        winnerAfterChange.dataDownload = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.FromDate));
+                                        winnerAfterChange.dataUnload = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.ToDate));
+                                        allContragents = (JSON.parse(sessionStorage.getItem('listDisplayValues')))[tendNumber];
+                                        for (const val of allContragents) {
+                                            if (val.emailContragent == winnerAfterChange.recipientEmail || val.ExpeditorName == item.expeditorName) {
+                                                winnerAfterChange.DelayPayment = parseInt(val.DaysDelayStep2);
+                                                break;
+                                            }
+                                        };
+
+
                                         if (winnerAfterChange.isSelected) {
                                         InfoToContragentsAfterCh.listWinnersInfoAfterChange.push(winnerAfterChange);
                                         }
@@ -259,6 +284,28 @@
                                         loserAfterChange.subject = `№${tendNumber}, (${orderId}) ${item.routeShort}, погрузка ${downloadingDateForTender}`;
                                         loserAfterChange.bodyHTML = CreateHTMLBody(loserAfterChange.tr, loserAfterChange.thContent,
                                             loserAfterChange.tdContent, loserAfterChange.upperartOfTheMessage, loserAfterChange.messageFooter);
+
+                                        loserAfterChange.description = item.description;
+                                        loserAfterChange.formUuid = item.formUuid;
+                                        loserAfterChange.industryId = item.industryId;
+                                        loserAfterChange.orderId = item.orderId;
+                                        loserAfterChange.price = item.price;
+                                        loserAfterChange.tenderNumber = item.tenderNumber;
+                                        loserAfterChange.tenderItemUuid = item.tenderItemUuid;
+                                        loserAfterChange.industryName = industryName_;
+                                        loserAfterChange.routeShort = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.Route));
+                                        loserAfterChange.nameCargo = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.TruckDescription));
+                                        loserAfterChange.weightCargo = parseFloat(@Html.Raw(Json.Encode(Model.CompetitiveListInfo.Weight)));
+                                        loserAfterChange.dataDownload = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.FromDate));
+                                        loserAfterChange.dataUnload = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.ToDate));
+                                        allContragents = (JSON.parse(sessionStorage.getItem('listDisplayValues')))[tendNumber];
+                                        for (const val of allContragents) {
+                                            if (val.emailContragent == loserAfterChange.recipientEmail || val.ExpeditorName == item.expeditorName) {
+                                                loserAfterChange.DelayPayment = parseInt(val.DaysDelayStep2);
+                                                break;
+                                            }
+                                        };
+                                        
                                         if (loserAfterChange.isSelected) {
                                         InfoToContragentsAfterCh.listLosersInfoAfterChange.push(loserAfterChange);
                                         }
@@ -268,15 +315,38 @@
                                     $('#loading-indicator').show();
                                     $.ajax({
                                         type: "POST",
-                                        async: true,
+                                        async: false,
                                         url: "/OrderTender/SendMessageToContragents",
                                         data: listInfoToCont,
                                         dataType: "json",
                                         contentType: 'application/json; charset=utf-8',
                                         success: function (data) {
+                                            var dataParse = data;
                                             $('#loading-indicator').hide();
-
-
+                                            if ((dataParse.listInfoToCont.listLosersInfoAfterChange != null || dataParse.listInfoToCont.listWinnersInfoAfterChange != null) && dataParse.isAvaliable) {
+                                                    CreateNotificationToContragents("success");
+                                                    $("#jqxNotification").jqxNotification({
+                                                        position: "bottom-right", opacity: 1, animationCloseDelay: 1000, autoCloseDelay: 5000,
+                                                        autoOpen: true, autoClose: true, template: "success"
+                                                    });
+                                                    DeleteNotification();
+                                            }
+                                            if ((dataParse.listInfoToCont.listLosersInfoAfterChange != null || dataParse.listInfoToCont.listWinnersInfoAfterChange != null) && !dataParse.isAvaliable) {
+                                                    CreateNotificationToContragents("warning");
+                                                    $("#jqxNotification").jqxNotification({
+                                                        position: "bottom-right", opacity: 1, animationCloseDelay: 1000, autoCloseDelay: 5000,
+                                                        autoOpen: true, autoClose: true, template: "warning"
+                                                    });
+                                                    DeleteNotification();
+                                            }
+                                            if ((dataParse.listInfoToCont.listLosersInfoAfterChange == null || dataParse.listInfoToCont.listWinnersInfoAfterChange == null) && !dataParse.isAvaliable) {
+                                                    CreateNotificationToContragents("error");
+                                                    $("#jqxNotification").jqxNotification({
+                                                        position: "bottom-right", opacity: 1, animationCloseDelay: 1000, autoCloseDelay: 5000,
+                                                        autoOpen: true, autoClose: true, template: "error"
+                                                    });
+                                                    DeleteNotification();
+                                            }
                                         },
                                         error: function () {
                                             $('#loading-indicator').hide();
@@ -293,6 +363,21 @@
 
         return;
     }
+
+    // Динамическое создание jqxNotification
+        function CreateNotificationToContragents(status) {
+            var rootTab3 = document.getElementById('JqxCrNot');
+            var div = document.createElement("div");
+            div.id = "jqxNotification";
+            div.className = "col-md-4";
+            switch (status) {
+                case "success": div.innerHTML = "<h4><span style='color: white'>Уведомление успешно отправлено!" + "<span style='color: white; font-size: 18px;' class='badge'>"+"</span >"+"</span ></h4 > "; break;
+                case "warning": div.innerHTML = "<h4><span style='color: white'>Уведомление ранее было отправлено!</span></h4>"; break;
+                case "error": div.innerHTML = "<h4><span style='color: white'>Уведомление не отправлено!</span></h4>"; break;
+                default: break;
+            }
+            rootTab3.appendChild(div);
+        }
 
     // Вытягивание краткой информации о маршруте перевозки по заявке
     function GetInfoAboutShortRoute(numberTender) {
@@ -373,27 +458,13 @@
             };
 
             for (let x = 0; x < listWinners.length; x++) {
+
                 if (listWinners[x] != undefined) {
+                    industryName_ = listWinners[x].NameSpecification;
                     listSameWinners.push(new Winner(listWinners[x].ExpeditorName, listWinners[x].tenderNumber, listWinners[x].OrderId,
                         listWinners[x].NameSpecification, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.Route)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.TruckDescription)),
                         listWinners[x].cargoWeight, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.FromDate)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.ToDate)), listWinners[x].itemDescription,
-                        listWinners[x].CarCost, listWinners[x].DaysDelayStep2, listWinners[x].emailContragent));
-                    for (let y = x + 1; y < listWinners.length; y++) {
-                        if (listWinners[y] != undefined && listWinners[x].ExpeditorName == listWinners[y].ExpeditorName &&
-                            listWinners[x].NameSpecification == listWinners[y].NameSpecification &&
-                            listWinners[x].CarCost == listWinners[y].CarCost) {
-                            if (listSameWinners != null && listSameWinners != 0) {
-                                listSameWinners.forEach(function (val) {
-                                    if (listWinners[y] != undefined && val.expeditorName == listWinners[y].ExpeditorName) {
-                                        ++val.countWinner;
-                                        ++val.numberOfVehicles;
-                                        delete listWinners[y];
-                                        return;
-                                    }
-                                });
-                            }
-                        }
-                    }
+                        listWinners[x].CarCost, listWinners[x].DaysDelayStep2, listWinners[x].emailContragent, FindRegisterDataAboutMessage(listWinners[x].emailContragent, x)));
                 }
             }
 
@@ -402,36 +473,28 @@
                     listSameLosers.push(new Loser(listLosers[x].ExpeditorName, listLosers[x].tenderNumber, listLosers[x].OrderId,
                         listLosers[x].NameSpecification, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.Route)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.TruckDescription)),
                         listLosers[x].cargoWeight, listLosers[x].CarCost, listLosers[x].emailContragent));
-                    for (let y = x + 1; y < listLosers.length; y++) {
-                        if (listLosers[y] != undefined) {
-                            if (listLosers[y] != undefined && listLosers[x].ExpeditorName == listLosers[y].ExpeditorName &&
-                                listLosers[x].NameSpecification == listLosers[y].NameSpecification &&
-                                listLosers[x].CarCost == listLosers[y].CarCost) {
-                                if (listSameLosers != null && listSameLosers != 0) {
-                                    listSameLosers.forEach(function (val) {
-                                        if (listLosers[y] != undefined && val.expeditorName == listLosers[y].ExpeditorName) {
-                                            ++val.countLoser;
-                                            delete listLosers[y];
-                                            return;
-                                        }
-                                    });
-                                }
-                            }
-                        }
-
-                    }
                 }
             }
 
         }
-        CreateHTMLTableWithDataWinnersContragents();
-        CreateHTMLTableWithDataLosersContragents();
+        CreateHTMLTableWithDataWinnersContragents(listLink_);
+        CreateHTMLTableWithDataLosersContragents(listLink_);
     }
+
+    function FindRegisterDataAboutMessage(emailContragents, count) {
+        let listWinnersRegisty =  @Html.Raw(Json.Encode(Model.ListFormUuidToContragents));
+        let formUuid = '';
+        if (listWinnersRegisty.length != 0) {
+            formUuid = listWinnersRegisty[count].formUuid;
+        }
+        return formUuid;
+    }
+
     // Метод для создания и вывода данных о победителях контрагентах в модальное окно
-    function CreateHTMLTableWithDataWinnersContragents() {
+    function CreateHTMLTableWithDataWinnersContragents(listLink) {
         let sectOtherWinner = document.getElementById('sectOtherWinner');
-
-
+        let flag = false;
+        let count = 0;
 
         for (const val of listSameWinners) {
             let winnerObj = new WinnersIdHTMLElements();
@@ -455,7 +518,7 @@
 
             // Создание выпадающего заголовка контрагента
             let summary = document.createElement('summary');
-            let prepos = `${val.expeditorName} (${val.countWinner} ${(val.countWinner > 1)?'предложения':'предложение'})`;
+            let prepos = `${val.expeditorName}`;
             $(summary).text(prepos);
             detWinner.appendChild(summary);
 
@@ -525,7 +588,27 @@
             // Создание параграфа, вложенного в объект messBody
             let preWinParh = document.createElement('p');
             $(preWinParh).addClass('preWin');
-            $(preWinParh).append('Уважаемый партнер.<br>Спасибо за участие.<br>Вы стали победителем.<br>Прошу направить данные по автомобилю/ям, водителю в течение 30 минут,<br>заполнив форму перейдя по <a id="linkToFormContr" class="linkToForm" href="#" title="ссылка на форму">ссылке</a>');
+            let uuid;
+            let link;
+            if (val.formUuid != '') {
+                link = 'http://corumsource.com/FormContragents/SendFormToCorumSource?' + `formUuid=${val.formUuid}`;
+                //link = 'http://localhost:14589/FormContragents/SendFormToCorumSource?' + `formUuid=${val.formUuid}`;
+            }
+            else {
+                if (listLink != null) {
+                    uuid = listLink[count].formUuid;
+                    link = 'http://corumsource.com/FormContragents/SendFormToCorumSource?' + `formUuid=${uuid}`;
+                //link = 'http://localhost:14589/FormContragents/SendFormToCorumSource?' + `formUuid=${uuid}`;
+                }
+                else {
+                    uuid = uuidv4();
+                    link = 'http://corumsource.com/FormContragents/SendFormToCorumSource?' + `formUuid=${uuid}`;
+                //link = 'http://localhost:14589/FormContragents/SendFormToCorumSource?' + `formUuid=${uuid}`;
+                }
+
+            }
+
+            $(preWinParh).append(`Уважаемый партнер.<br>Спасибо за участие.<br>Вы стали победителем.<br>Прошу направить данные по автомобилю/ям, водителю в течение 30 минут,<br>заполнив форму перейдя по <a id="linkToFormContr" class="linkToForm" href="${link}" title="ссылка на форму">ссылке</a>`);
             messBody.appendChild(preWinParh);
             winnerObj.upperpartOfTheMessage = preWinParh;
 
@@ -685,10 +768,138 @@
             messageToContragents.contentEditable = 'true';
             messFromTo.contentEditable = 'false';
 
+            winnerObj.orderId = val.order;
+            winnerObj.tenderNumber = val.numberTender;
+            (JSON.parse(sessionStorage.getItem('data'))).forEach(value => {
+                if (value.tenderNumber == val.numberTender) {
+                    winnerObj.industryId = value.industryId;
+                    winnerObj.tenderItemUuid = value.TenderUuid;
+                }
+            });
+            winnerObj.description = val.description;
+            winnerObj.price = val.price;
+            if (val.formUuid != '') {
+                winnerObj.formUuid = val.formUuid;
+            }
+            else {
+                if (listLink != null) {
+                 winnerObj.formUuid = listLink[count].formUuid;
+                }
+                else {
+                winnerObj.formUuid = uuid;
+                flag = true;
+                }
+
+            }
+
+
             listWinnersIdHTMLElements.push(winnerObj);
+            count++;
         };
+        if (flag) {
+            AjaxRequestInitData();
+            flag = !flag;
+        }
+
     }
 
+    function AjaxRequestInitData() {
+        let orderId = JSON.parse(sessionStorage.getItem('OrderIdKL'));
+                                    let DropDownListTender = document.getElementById('drpDwnListTend');
+                                    let tendNumber = Number(DropDownListTender.textContent.replace(" ", ""));
+                                    let InfoToContragentsAfterCh = new InfoToContragentsAfterChange();
+                                    let modelWinnders = listWinnersIdHTMLElements;
+                                    for (const item of modelWinnders) {
+                                        let winnerAfterChange = new WinnersInfoAfterChange();
+                                        winnerAfterChange.isSelected = item.isSelected.checked;
+                                        winnerAfterChange.expeditorName = item.expeditorName;
+                                        winnerAfterChange.numberOfVehicles = item.numberOfVehicles;
+                                        winnerAfterChange.count = item.countWinner;
+                                        for(const value of item.senderEmail){
+                                            if (value.selected) {
+                                                winnerAfterChange.senderEmail = value.text;
+                                            }
+                                        };
+                                        for (const value of item.dataTable.childNodes[0].childNodes) {
+                                            winnerAfterChange.tr.push(value);
+                                        }
+                                        for (const value of winnerAfterChange.tr) {
+                                            winnerAfterChange.thContent.push(value.childNodes[0].outerText);
+                                            winnerAfterChange.tdContent.push(value.childNodes[1].outerText);
+                                        }
+                                        winnerAfterChange.thContent.push('Экспедитор');
+                                        winnerAfterChange.tdContent.push(item.expeditorName);
+                                        winnerAfterChange.recipientEmail = item.recipientEmail.value;
+                                        winnerAfterChange.upperartOfTheMessage = item.upperpartOfTheMessage.outerHTML;
+                                        winnerAfterChange.dataTable = item.dataTable.outerHTML;
+                                        winnerAfterChange.messageFooter = item.messageFooter.outerHTML;
+                                        winnerAfterChange.subject = `№${tendNumber}, (${orderId}) ${item.routeShort}, погрузка ${downloadingDateForTender}`;
+                                        winnerAfterChange.bodyHTML = CreateHTMLBody(winnerAfterChange.tr, winnerAfterChange.thContent,
+                                            winnerAfterChange.tdContent, winnerAfterChange.upperartOfTheMessage, winnerAfterChange.messageFooter);
+                                        winnerAfterChange.description = item.description;
+                                        winnerAfterChange.formUuid = item.formUuid;
+                                        winnerAfterChange.industryId = item.industryId;
+                                        winnerAfterChange.orderId = item.orderId;
+                                        winnerAfterChange.price = item.price;
+                                        winnerAfterChange.tenderNumber = item.tenderNumber;
+                                        winnerAfterChange.tenderItemUuid = item.tenderItemUuid;
+                                        winnerAfterChange.flag = true;
+
+                                        winnerAfterChange.industryName = industryName_;
+                                        winnerAfterChange.routeShort = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.Route));
+                                        winnerAfterChange.nameCargo = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.TruckDescription));
+                                        winnerAfterChange.weightCargo = parseFloat(@Html.Raw(Json.Encode(Model.CompetitiveListInfo.Weight)));
+                                        winnerAfterChange.dataDownload = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.FromDate));
+                                        winnerAfterChange.dataUnload = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.ToDate));
+                                        allContragents = (JSON.parse(sessionStorage.getItem('listDisplayValues')))[tendNumber];
+                                        for (const val of allContragents) {
+                                            if (val.emailContragent == winnerAfterChange.recipientEmail || val.ExpeditorName == item.expeditorName) {
+                                                winnerAfterChange.DelayPayment = parseInt(val.DaysDelayStep2);
+                                                break;
+                                            }
+                                        };
+
+                                        if (winnerAfterChange.isSelected) {
+                                        InfoToContragentsAfterCh.listWinnersInfoAfterChange.push(winnerAfterChange);
+                                        }
+                                    }
+        let listInfoToCont = JSON.stringify(InfoToContragentsAfterCh);
+                                        $.ajax({
+                                        type: "POST",
+                                        async: true,
+                                        url: "/OrderTender/AsyncInitDataMessageToContragents",
+                                        data: listInfoToCont,
+                                        dataType: "json",
+                                        contentType: 'application/json; charset=utf-8',
+                                        success: function (data) {
+                                            let listLink = [];
+                                            let sectOtherWinner = document.getElementById('sectOtherWinner');
+                                            sectOtherWinner.innerHTML = '';
+                                            for (const item of data.listInfoToCont.listWinnersInfoAfterChange) {
+                                                listLink.push(
+                                                {
+                                                        expeditorName: item.expeditorName,
+                                                        orderId: item.orderId,
+                                                        tenderNumber: item.tenderNumber,
+                                                        recipientEmail: item.recipientEmail,
+                                                        formUuid: item.formUuid
+                                                });
+                                            };
+                                             listWinnersIdHTMLElements = [];
+                                            CreateHTMLTableWithDataWinnersContragents(listLink);
+                                            listLink_ = listLink;
+                                        },
+                                        error: function () {
+
+                                        }
+                                    });
+
+    };
+
+    function uuidv4() {
+    return ([1e7]+-1e3+-4e3+-8e3+-1e11).replace(/[018]/g, c =>
+    (c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> c / 4).toString(16));
+    };
 
     // Метод для создания и вывода данных о проигравших контрагентах в модальное окно
     function CreateHTMLTableWithDataLosersContragents() {
@@ -719,7 +930,7 @@
 
             // Создание выпадающего заголовка контрагента
             let summary = document.createElement('summary');
-            let prepos = `${val.expeditorName} (${val.countLoser} ${(val.countLoser > 1)?'предложения':'предложение'})`;
+            let prepos = `${val.expeditorName}`;
             $(summary).text(prepos);
             detWinner.appendChild(summary);
 
@@ -884,6 +1095,8 @@
 
             messageToContragents.contentEditable = 'true';
             messFromTo.contentEditable = 'false';
+            loserObj.orderId = val.order;
+            loserObj.tenderNumber = val.numberTender;
 
             listLoserIdHTMLElements.push(loserObj);
         };

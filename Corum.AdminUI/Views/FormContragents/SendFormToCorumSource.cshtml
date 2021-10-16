@@ -12,7 +12,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="~/Scripts/bootstrap.bundle.min.js"></script>
     <script src="~/Scripts/jquery-3.6.0.min.js"></script>
-    <link rel="stylesheet" href="~/Content/bootstrap.min.css">
     <link rel="stylesheet" href="~/Content/Tender/formFromContragents.css">
     <title>Форма запроса данных по транспортному средству</title>
 </head>
@@ -90,60 +89,84 @@
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Марка авто<span class="redFont">*</span></th>
-                                <td class="tdForm">
-                                    <input name="carBrand" class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" data-valid="false" value="@Model[0].carBrand" required title="Марка транспортного средства из
-                                свидетельства регистрации транспортного средства" placeholder="Введите данные">
+                                <td class="tdForm tooltip">
+                                    <input name="carBrand" class="inputTxt" type="text" data-valid="false" value="@Model[0].carBrand" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Марка транспортного средства из
+                                        свидетельства регистрации транспортного средства
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Гос.номер ТС<span class="redFont">*</span></th>
-                                <td class="tdForm">
-                                    <input name="stateNumberCar" class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" data-valid="false" value="@Model[0].stateNumberCar" required title="Номер регистрации транспортного средства
-                                из свидетельства регистрации транспортного средства" placeholder="Введите данные">
+                                <td class="tdForm tooltip">
+                                    <input name="stateNumberCar" class="inputTxt" type="text" data-valid="false" value="@Model[0].stateNumberCar" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Номер регистрации транспортного средства
+                                        из свидетельства регистрации транспортного средства
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Гос.номер прицепа<span class="redFont">*</span></th>
-                                <td class="tdForm">
-                                    <input name="trailerNumber" class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" data-valid="false" value="@Model[0].trailerNumber" required title="При отсутствии прицепа ставим «-»(дефис).
-                                Номер регистрации прицепа из свидетельства регистрации транспортного средства/прицепа." placeholder="Введите данные">
+                                <td class="tdForm tooltip">
+                                    <input name="trailerNumber" class="inputTxt" type="text" data-valid="false" value="@Model[0].trailerNumber" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        При отсутствии прицепа ставим «-»(дефис).
+                                        Номер регистрации прицепа из свидетельства регистрации транспортного средства/прицепа.
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Габариты ТС/прицепа<span class="redFont">*</span></th>
-                                <td class="tdForm">
-                                    <input name="transportDimensions" class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" data-valid="false" value="@Model[0].transportDimensions" required title="
-                                Указать габариты транспортного средства/прицепа." placeholder="Введите данные">
+                                <td class="tdForm tooltip">
+                                    <input name="transportDimensions" class="inputTxt" type="text" data-valid="false" value="@Model[0].transportDimensions" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Указать габариты транспортного средства/прицепа.
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Грузоподъемность, т<span class="redFont">*</span></th>
-                                <td class="tdForm">
-                                    <input name="loadCapacity" class="inputTxt" type="text" data-toggle="tooltip" value="@Model[0].loadCapacity" data-placement="auto" data-valid="false" required title="Грузоподъемность автомобиля" placeholder="Введите данные">
+                                <td class="tdForm tooltip">
+                                    <input name="loadCapacity" class="inputTxt" type="text" value="@Model[0].loadCapacity" data-valid="false" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Грузоподъемность автомобиля
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Расстояние маршрута, км<span class="redFont">*</span></th>
-                                <td class="tdForm">
+                                <td class="tdForm tooltip">
                                     <input name="distance" class="inputTxt" value="@Model[0].distance" type="text" data-valid="false" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Укажите расстояние маршрута
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">ФИО водителя<span class="redFont">*</span></th>
-                                <td class="tdForm">
-                                    <input name="fullNameOfDriver" class="inputTxt" value="@Model[0].fullNameOfDriver" data-valid="false" type="text" data-toggle="tooltip" data-placement="auto" required title="Ввести ФИО водителя транспортного средства." placeholder="Введите данные">
+                                <td class="tdForm tooltip">
+                                    <input name="fullNameOfDriver" class="inputTxt" value="@Model[0].fullNameOfDriver" data-valid="false" type="text" required placeholder="Введите данные">
+                                    <span class="tooltiptext">Ввести ФИО водителя транспортного средства</span>
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">№ телефона<span class="redFont">*</span></th>
-                                <td class="tdForm">
-                                    <input name="phoneNumber" class="inputTxt" type="text" value="@Model[0].phoneNumber" data-toggle="tooltip" data-valid="false" data-placement="auto" required title="Ввести номер мобильного телефона водителя транспортного средства." placeholder="Введите данные">
+                                <td class="tdForm tooltip">
+                                    <input name="phoneNumber" class="inputTxt" type="text" value="@Model[0].phoneNumber" data-valid="false" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Ввести номер мобильного телефона водителя транспортного средства.
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">№ водительского удостоверения<span class="redFont">*</span></th>
-                                <td class="tdForm">
-                                    <input name="drivingLicenseNumber" class="inputTxt" value="@Model[0].drivingLicenseNumber" type="text" data-toggle="tooltip" data-placement="auto" required title="Ввести номер водительского удостоверения водителя транспортного средства." placeholder="Введите данные">
+                                <td class="tdForm tooltip">
+                                    <input name="drivingLicenseNumber" class="inputTxt" value="@Model[0].drivingLicenseNumber" data-valid="false" type="text" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Ввести номер водительского удостоверения водителя транспортного средства.
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
@@ -154,22 +177,31 @@
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">Примечание</th>
-                                <td class="tdForm">
-                                    <input name="note" class="inputTxt" type="text" value="@Model[0].note" data-toggle="tooltip" data-placement="auto" title="Можете указать дополнительную информацию" placeholder="Введите данные">
+                                <td class="tdForm tooltip">
+                                    <input name="note" class="inputTxt" type="text" value="@Model[0].note" placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Можете указать дополнительную информацию
+                                    </span>
                                 </td>
                             </tr>
                             @if (Model[0].industryId == 54)
                             {
                                 <tr>
                                     <th class="thMessCont tdThMessCont">Пункт перехода гос.границы<span class="redFont">*</span></th>
-                                    <td class="tdForm">
-                                        <input name="stateBorderCrossingPoint" value="@Model[0].stateBorderCrossingPoint" data-valid="false" class="inputTxt" type="text" data-toggle="tooltip" required data-placement="auto" title="Указать Пункт перехода гос.границы для международных перевозок" placeholder="Введите данные">
+                                    <td class="tdForm tooltip">
+                                        <input name="stateBorderCrossingPoint" value="@Model[0].stateBorderCrossingPoint" data-valid="false" class="inputTxt" type="text" required placeholder="Введите данные">
+                                        <span class="tooltiptext">
+                                            Указать Пункт перехода гос.границы для международных перевозок
+                                        </span>
                                     </td>
                                 </tr>
                                 <tr>
                                     <th class="thMessCont tdThMessCont">Серия, номер заграничного паспорта</th>
-                                    <td class="tdForm">
-                                        <input name="seriesPassportNumber" value="@Model[0].seriesPassportNumber" class="inputTxt" type="text" data-toggle="tooltip" data-placement="auto" title="Ввести номер заграничного паспорта водителя транспортного средства." placeholder="Введите данные">
+                                    <td class="tdForm tooltip">
+                                        <input name="seriesPassportNumber" value="@Model[0].seriesPassportNumber" class="inputTxt" type="text" placeholder="Введите данные">
+                                        <span class="tooltiptext">
+                                            Ввести номер заграничного паспорта водителя транспортного средства.
+                                        </span>
                                     </td>
                                 </tr>
                             }
@@ -184,21 +216,27 @@
                                             {<span class="redFont">*</span> }
                                         }
                                     </th>
-                                    <td id="tdFormFileOne" class="tdForm" data-toggle="tooltip" data-placement="auto" title="Вложите сканкопию или документ заверенный электронной цифровой подписью Экспедитора">
+                                    <td id="tdFormFileOne" class="tdForm tooltip">
                                         <label for="inpFileOne" id="btnChooseOne" class="labBtn">Выбрать файл</label>
                                         <input id="inpFileOne" name="inpFileOne" type="file" class="inpFile" multiple style="display: none;">
                                         <label id="labChooseOne" class="labChoose">Файл не выбран</label>
                                         <p class="parhChoose"></p>
+                                        <span class="tooltiptext">
+                                            Вложите сканкопию или документ заверенный электронной цифровой подписью Экспедитора
+                                        </span>
                                     </td>
                                 </tr>
                             }
                             <tr>
                                 <th class="thMessCont tdThMessCont">- Сканкопия Свидетельство о регистрации ТС<span class="redFont">*</span></th>
-                                <td id="tdFormFileTwo" class="tdForm" data-toggle="tooltip" data-placement="auto" title="Вложите сканкопию Свидетельство о регистрации ТС">
+                                <td id="tdFormFileTwo" class="tdForm tooltip">
                                     <label for="inpFileTwo" id="btnChooseTwo" class="labBtn">Выбрать файл</label>
                                     <input id="inpFileTwo" name="inpFileTwo" type="file" class="inpFile" style="display: none;" multiple>
                                     <label id="labChooseTwo" class="labChoose">Файл не выбран</label>
                                     <p class="parhChoose"></p>
+                                    <span class="tooltiptext">
+                                        Вложите сканкопию Свидетельство о регистрации ТС
+                                    </span>
                                 </td>
                             </tr>
                             @if (Model[0].industryId == 54)
@@ -209,30 +247,39 @@
                                             {<span class="redFont">*</span> }
                                         }
                                     </th>
-                                    <td id="tdFormFileThree" class="tdForm" data-toggle="tooltip" data-placement="auto" title="Вложите сканкопию Загранпаспорта водителя">
+                                    <td id="tdFormFileThree" class="tdForm tooltip">
                                         <label for="inpFileThree" id="btnChooseThree" class="labBtn">Выбрать файл</label>
                                         <input id="inpFileThree" name="inpFileThree" type="file" class="inpFile" style="display: none;" multiple>
                                         <label id="labChooseThree" class="labChoose">Файл не выбран</label>
                                         <p class="parhChoose"></p>
+                                        <span class="tooltiptext">
+                                            Вложите сканкопию Загранпаспорта водителя
+                                        </span>
                                     </td>
                                 </tr>
                             }
                             <tr>
                                 <th class="thMessCont tdThMessCont">- Сканкопия свидетельства о допуске ТС к перевозкам грузов под таможенными пломбами</th>
-                                <td class="tdForm" data-toggle="tooltip" data-placement="auto" title="Вложите сканкопию свидетельства о допуске ТС к перевозкам грузов под таможенными пломбами">
+                                <td class="tdForm tooltip">
                                     <label for="inpFileFour" id="btnChooseFour" class="labBtn">Выбрать файл</label>
                                     <input id="inpFileFour" name="inpFileFourName" type="file" class="inpFile" style="display: none;" multiple>
                                     <label id="labChooseFour" class="labChoose">Файл не выбран</label>
                                     <p class="parhChoose"></p>
+                                    <span class="tooltiptext">
+                                        Вложите сканкопию свидетельства о допуске ТС к перевозкам грузов под таможенными пломбами
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
                                 <th class="thMessCont tdThMessCont">- Сканкопия Гражданского паспорта Перевозчика - собственника ТС для ФОП</th>
-                                <td class="tdForm" data-toggle="tooltip" data-placement="auto" title="Вложите сканкопию Гражданского паспорта Перевозчика - собственника ТС для ФОП">
+                                <td class="tdForm tooltip">
                                     <label for="inpFileFive" id="btnChooseFive" class="labBtn">Выбрать файл</label>
                                     <input id="inpFileFive" name="inpFileFiveName" type="file" class="inpFile" style="display: none;" multiple>
                                     <label id="labChooseFive" class="labChoose">Файл не выбран</label>
                                     <p class="parhChoose"></p>
+                                    <span class="tooltiptext">
+                                        Вложите сканкопию Гражданского паспорта Перевозчика - собственника ТС для ФОП
+                                    </span>
                                 </td>
                             </tr>
 
@@ -242,13 +289,15 @@
 
             </div>
             <div class="contTCTwo">
-                <div class="chFromContr">
+                <div class="chFromContr tooltip">
                     <input id="checkFronContragents" name="checkFronContragents" type="checkbox" disabled>
-                    <label style="padding-left: 10px; font-size: 16px; font-weight: bold;" for="checkFronContragents" data-toggle="tooltip" data-placement="auto" title="Если есть необходимость обновить ранее отправленные данные по Заявке, то установить признак">Обновить ранее отправленные данные по Заявке</label>
+                    <label style="padding-left: 10px; font-size: 16px; font-weight: bold;" for="checkFronContragents">Обновить ранее отправленные данные по Заявке</label>
+                    <span class="tooltiptext">
+                        Если есть необходимость обновить ранее отправленные данные по Заявке, то установить признак
+                    </span>
                 </div>
                 <div class="buttonsMS">
-                    <button style="width: 150px; margin-right:3%;" id="editTC" class="btn btn-danger" disabled>Редактировать</button>
-                    <input style="width: 150px; margin-left:3%;" id="submTC" class="btn btn-success" type="submit" value="Отправить">
+                    <input style="width: 150px; margin-left:3%;" id="submTC" class="submTC" type="submit" value="Отправить">
                 </div>
 
 
@@ -445,8 +494,6 @@
                 }
                 flagCollapse = !flagCollapse;
             };
-
-            $('[data-toggle="tooltip"]').tooltip();
 
             let validInpFileObj = {
                 inpOne: false,
@@ -663,7 +710,7 @@
                     subject: GetSubjectToMessage()
                 };
                 let bodyHtml = JSON.stringify(BodyHtmlForm);
-                
+
                 SendBodyHtml(bodyHtml);
                 if (flagInput && flagValidInpFile) {
                     loadingIndicator.style.display = "block";
@@ -698,7 +745,10 @@
                         }
                     });
                 }
-
+                if (!@Html.Raw(Json.Encode(@Model[0].IsEditable))) {
+                    let check = document.getElementsByName('checkFronContragents')[0];
+                    check.setAttribute('disabled', 'disabled');
+                }
             };
 
             // Создание Notification
@@ -777,7 +827,7 @@
 
         let divDerived = document.createElement('div');
         $(divDerived).attr('style', 'width: 100%; display: flex; flex-flow: column nowrap; align-items: center;');
-        
+
         let tableMain = document.createElement('table');
         $(tableMain).attr('style', 'border: 3px solid rgb(239, 125, 26); margin-left: 2%; margin-right: 2%; border-collapse: collapse; border-spacing: 0;text-align: left; margin-top: 1%; width: 96%; table-layout: fixed;');
         let tbodyMain = document.createElement('tbody');
@@ -847,7 +897,7 @@
         tableMain.appendChild(tbodyMain);
         divDerived.appendChild(tableMain);
         divMain.appendChild(divDerived);
-        
+
         bodyHTML = divMain.outerHTML;
         return bodyHTML;
     }
@@ -864,19 +914,19 @@
                     value.setAttribute('disabled', 'disabled');
                 };
 
-                let edit = document.getElementById('editTC');
-                edit.removeAttribute('disabled');
                 let submit = document.getElementById('submTC');
-                submit.setAttribute('disabled', 'disabled');
+                submit.className = '';
+                submit.value = 'Редактировать';
+                submit.className = 'editTC';
             }
         };
 
         InitFielsEditabled();
 
-        let edit = document.getElementById('editTC');
+        let edit = document.getElementById('submTC');
         edit.onclick = EditFielsEnabled;
 
-        function EditFielsEnabled() {
+        function EditFielsEnabled(e) {
                 listHtmlFields.forEach(value => {
                     if (value.type == 'text') {
                         value.removeAttribute('readonly');
@@ -887,11 +937,11 @@
                 };
 
                 let check = document.getElementsByName('checkFronContragents')[0];
-                check.removeAttribute('disabled');
-                let edit = document.getElementById('editTC');
-                edit.setAttribute('disabled','disabled');
-                let submit = document.getElementById('submTC');
-                submit.removeAttribute('disabled');
+            check.removeAttribute('disabled');
+            let submit = e.currentTarget;
+            submit.className = '';
+            submit.value = 'Отправить';
+            submit.className = 'submTC';
         };
 
         function DeleteFilePath(e) {

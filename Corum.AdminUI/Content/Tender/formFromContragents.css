@@ -97,7 +97,7 @@
     margin-top: 3%;
 }
 
-#submTC {
+.submTC {
     font-size: 16px;
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
@@ -112,18 +112,19 @@
     margin-top: 2%;
 }
 
-    #submTC:hover {
+    .submTC:hover {
         background-color: #078f8f;
     }
 
-    #submTC:active {
+    .submTC:active {
         background-color: #55c2c2;
     }
 
-#editTC {
+.editTC {
     font-size: 16px;
     font-weight: bold;
     font-family: Arial, Helvetica, sans-serif;
+    background-color: #ee3118;
     color: white;
     border: 0px;
     border-radius: 20px;
@@ -133,6 +134,14 @@
     padding-right: 15px;
     margin-top: 2%;
 }
+
+    .editTC:hover {
+        background-color: #811203;
+    }
+
+    .editTC:active {
+        background-color: #d34d3b;
+    }
 
 .parhChoose {
     margin-left: 8px;
@@ -255,3 +264,36 @@
     border-radius: 10px;
     display: none;
 }
+.tooltip {
+    position: relative;
+}
+
+    .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 200px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 120%;
+        left: 45%;
+        margin-left: -60px;
+    }
+
+        .tooltip .tooltiptext::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: black transparent transparent transparent;
+        }
+
+    .tooltip:hover .tooltiptext {
+        visibility: visible;
+    }

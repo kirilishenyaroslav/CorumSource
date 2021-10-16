@@ -591,16 +591,19 @@
             let uuid;
             let link;
             if (val.formUuid != '') {
-                link = 'http://localhost:14589/FormContragents/SendFormToCorumSource?' + `formUuid=${val.formUuid}`;
+                link = 'http://corumsource.com/FormContragents/SendFormToCorumSource?' + `formUuid=${val.formUuid}`;
+                //link = 'http://localhost:14589/FormContragents/SendFormToCorumSource?' + `formUuid=${val.formUuid}`;
             }
             else {
                 if (listLink != null) {
-                uuid = listLink[count].formUuid;
-                link = 'http://localhost:14589/FormContragents/SendFormToCorumSource?' + `formUuid=${uuid}`;
+                    uuid = listLink[count].formUuid;
+                    link = 'http://corumsource.com/FormContragents/SendFormToCorumSource?' + `formUuid=${uuid}`;
+                //link = 'http://localhost:14589/FormContragents/SendFormToCorumSource?' + `formUuid=${uuid}`;
                 }
                 else {
-                uuid = uuidv4();
-                link = 'http://localhost:14589/FormContragents/SendFormToCorumSource?' + `formUuid=${uuid}`;
+                    uuid = uuidv4();
+                    link = 'http://corumsource.com/FormContragents/SendFormToCorumSource?' + `formUuid=${uuid}`;
+                //link = 'http://localhost:14589/FormContragents/SendFormToCorumSource?' + `formUuid=${uuid}`;
                 }
 
             }

@@ -649,6 +649,7 @@
                 let tbodyMainInfo = document.getElementById('tbodyMainInfo');
                 HeaderInitFromForm(tbodyMainInfo.children);
                 function HeaderInitFromForm(element) {
+                    form.headerData = [];
                     for (const val of element) {
                         let thValue = val.children[0].outerText;
                         let tdValue = val.children[1].outerText;
@@ -660,6 +661,7 @@
                 let tbodyMainTable = document.getElementById('tbodyMainTable');
                 MainOneInitFromForm(tbodyMainTable.children);
                 function MainOneInitFromForm(element) {
+                    form.mainDataOne = [];
                     for (const val of element) {
                         if (val.id == 'LastThMain') {
                             break;
@@ -674,6 +676,7 @@
                 };
                 MainTwoInitFromForm(tbodyMainTable.children);
                 function MainTwoInitFromForm(element) {
+                    form.mainDataTwo = [];
                     let flag = false;
                     for (const val of element) {
                         if (val.id == 'LastThMain') {
@@ -690,6 +693,7 @@
                 };
                 FooterInitFromFrom();
                 function FooterInitFromFrom() {
+                    form.footerData = undefined;
                     let th = document.createElement('th');
                     $(th).attr('style', 'font-weight: 100; text-align: center; padding-top: 1%; padding-bottom: 1%; line-height: 1.5;');
                     $(th).attr('colspan', '2');

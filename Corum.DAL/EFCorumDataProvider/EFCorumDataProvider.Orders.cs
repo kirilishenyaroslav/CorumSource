@@ -13,6 +13,7 @@ using Corum.Models.ViewModels.Cars;
 using System.Globalization;
 using GoogleMaps.LocationServices;
 using Corum.Models.ViewModels.Customers;
+using Corum.Models.ViewModels.Tender;
 
 namespace Corum.DAL
 {
@@ -71,6 +72,29 @@ namespace Corum.DAL
                              .Select(Mapper.Map)
                               .OrderByDescending(o => o.Id)
                                .AsQueryable();
+        }
+
+        public IQueryable<OrderUsedCarViewModel> getOrderCarsInfoFromContragent(Guid formUuid)
+        {
+            return db.OrderUsedCars
+                           .AsNoTracking()
+                            .Where(x => x.formUuid == formUuid)
+                             .Select(Mapper.Map)
+                              .OrderByDescending(o => o.Id)
+                               .AsQueryable();
+        }
+
+        public int? GetTenderNumber(Guid formUuid)
+        {
+            var messageToContr = db.RegisterMessageToContragents.FirstOrDefault(u => u.formUuid == formUuid);
+            if (messageToContr != null)
+            {
+                return messageToContr.tenderNumber;
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public OrderUsedCarViewModel getUsedCarInfo(int Id)
@@ -1827,6 +1851,23 @@ namespace Corum.DAL
 
         }
 
+        public bool DeleteUsedCar(Guid[] formUuid)
+        {
+            foreach (var item in formUuid)
+            {
+                var usedCar = db.OrderUsedCars.FirstOrDefault(o => o.formUuid == item);
+
+                if (usedCar != null)
+                {
+                    db.OrderUsedCars.Remove(usedCar);
+                    db.SaveChanges();
+                }
+            }
+
+            return true;
+
+        }
+
 
         public bool DeleteAttachment(long id)
         {
@@ -2344,21 +2385,29 @@ namespace Corum.DAL
 
         public long NewUsedCar(OrderUsedCarViewModel model)
         {
-            var car = new OrderUsedCars()
-            {
-                OrderId = model.OrderId,
-                CarOwnerInfo = model.CarOwnerInfo,
-                CarModelInfo = model.CarModelInfo,
-                CarRegNum = model.CarRegNum,
-                CarCapacity = model.CarCapacity,
-                CarDriverInfo = model.CarDriverInfo,
-                DriverContactInfo = model.DriverContactInfo,
-                CarrierInfo = model.CarrierInfo,
-                ContractInfo = model.ContractInfo,
-                ContractExpBkId = model.ContractExpBkId,
-                ExpeditorId = model.ExpeditorId,
-                DriverCardInfo = model.DriverCardInfo,
-                Comments = model.Comments,
+            var car = new OrderUsedCars();
+            car.OrderId = model.OrderId;
+            car.CarOwnerInfo = model.CarOwnerInfo;
+            car.CarModelInfo = model.CarModelInfo;
+            car.CarRegNum = model.CarRegNum;
+            car.CarCapacity = model.CarCapacity;
+            car.CarDriverInfo = model.CarDriverInfo;
+            car.DriverContactInfo = model.DriverContactInfo;
+            car.CarrierInfo = model.CarrierInfo;
+            car.ContractInfo = model.ContractInfo;
+            car.ContractExpBkId = model.ContractExpBkId;
+            car.ExpeditorId = model.ExpeditorId;
+            car.DriverCardInfo = model.DriverCardInfo;
+            car.Comments = model.Comments;
+            car.tenderNumber = model.tenderNumber;
+            car.stateBorderCrossingPoint = model.stateBorderCrossingPoint;
+            car.seriesPassportNumber = model.seriesPassportNumber;
+            car.trailerNumber = model.trailerNumber;
+            car.transportDimensions = model.transportDimensions;
+            car.distance = model.distance;
+            car.Summ = (Nullable<decimal>)model.Summ_;
+            car.Summ_ = model.Summ_;
+            car.formUuid = Guid.NewGuid();
                 /*
                 FactShipperDateTime = DateTimeConvertClass.getDateTime(model.FactShipperDate).
                                                            AddHours(DateTimeConvertClass.getHours(model.FactShipperTime)).
@@ -2367,14 +2416,233 @@ namespace Corum.DAL
                  FactConsigneeDateTime = DateTimeConvertClass.getDateTime(model.FactConsigneeDate).
                                                         AddHours(DateTimeConvertClass.getHours(model.FactConsigneeTime)).
                                                         AddMinutes(DateTimeConvertClass.getMinutes(model.FactConsigneeTime)),*/
-                Summ = 0
-            };
+
 
             db.OrderUsedCars.Add(car);
             db.SaveChanges();
 
             return car.Id;
 
+        }
+
+        public int NewUsedCar(Guid formUuid, ref DataToAndFromContragent data)
+        {
+            var messageToContr = db.RegisterMessageToContragents.FirstOrDefault(u => u.formUuid == formUuid);
+            var formFromContr = db.RegisterFormFromContragents.FirstOrDefault(u => u.tenderItemUuid == formUuid);
+            var dbInfo = db.OrderUsedCars.FirstOrDefault(u => u.formUuid == formUuid);
+            var expeditor = db.CarOwners.FirstOrDefault(u => u.email_aps == messageToContr.emailContragent);
+            var payerId = db.OrdersBase.FirstOrDefault(u => u.Id == messageToContr.orderId).PayerId;
+            var contractInfo = GetContractExpBkInfoBySearchString("", expeditor.Id, (int)payerId).ToList();
+            data.regmesstocontrag = new Models.Tender.RegisterMessageToContragents()
+            {
+                acceptedTransportUnits = messageToContr.acceptedTransportUnits,
+                emailContragent = messageToContr.emailContragent,
+                contragentName = messageToContr.contragentName,
+                cost = messageToContr.cost,
+                dataDownload = (DateTime)messageToContr.dataDownload,
+                dataUnload = (DateTime)messageToContr.dataUnload,
+                dateCreate = (DateTime)messageToContr.dateCreate,
+                dateUpdate = (DateTime)messageToContr.dateUpdate,
+                DelayPayment = messageToContr.DelayPayment,
+                descriptionTender = messageToContr.descriptionTender,
+                emailOperacionist = messageToContr.emailOperacionist,
+                flag = (bool)messageToContr.flag,
+                formUuid = messageToContr.formUuid,
+                industryId = messageToContr.industryId,
+                industryName = messageToContr.industryName,
+                nameCargo = messageToContr.nameCargo,
+                orderId = messageToContr.orderId,
+                routeShort = messageToContr.routeShort,
+                tenderItemUuid = messageToContr.tenderItemUuid,
+                tenderNumber = messageToContr.tenderNumber,
+                weightCargo = messageToContr.weightCargo
+            };
+            data.formFromContr = new Models.Tender.RegisterFormFromContragents()
+            {
+                carBrand = formFromContr.carBrand,
+                stateNumberCar = formFromContr.stateNumberCar,
+                trailerNumber = formFromContr.trailerNumber,
+                transportDimensions = formFromContr.transportDimensions,
+                loadCapacity = formFromContr.loadCapacity,
+                distance = formFromContr.distance,
+                fullNameOfDriver = formFromContr.fullNameOfDriver,
+                phoneNumber = formFromContr.phoneNumber,
+                drivingLicenseNumber = formFromContr.drivingLicenseNumber,
+                contragentName = formFromContr.contragentName,
+                note = formFromContr.note,
+                stateBorderCrossingPoint = formFromContr.stateBorderCrossingPoint,
+                seriesPassportNumber = formFromContr.seriesPassportNumber,
+                tenderItemUuid = formFromContr.tenderItemUuid
+            };
+            try
+            {
+                if (dbInfo == null)
+                {
+                    var car = new OrderUsedCars()
+                    {
+                        CarDriverInfo = formFromContr.fullNameOfDriver,
+                        CarCapacity = (Nullable<int>)formFromContr.loadCapacity,
+                        OrderId = messageToContr.orderId,
+                        CarModelInfo = formFromContr.carBrand,
+                        CarRegNum = formFromContr.stateNumberCar,
+                        ExpeditorName = formFromContr.contragentName,
+                        ExpeditorId = (expeditor != null) ? expeditor.Id : 0,
+                        ContractInfo = $"{contractInfo[0].ContractNumber}",
+                        ContractExpBkId = contractInfo[0].Id,
+                        DriverCardInfo = formFromContr.drivingLicenseNumber,
+                        DelayDays = messageToContr.DelayPayment,
+                        DriverContactInfo = formFromContr.phoneNumber,
+                        CarrierInfo = messageToContr.contragentName,
+                        trailerNumber = formFromContr.trailerNumber,
+                        distance = formFromContr.distance,
+                        formUuid = formFromContr.tenderItemUuid,
+                        IsUpdate = formFromContr.IsUpdate,
+                        transportDimensions = formFromContr.transportDimensions,
+                        stateBorderCrossingPoint = formFromContr.stateBorderCrossingPoint,
+                        seriesPassportNumber = formFromContr.seriesPassportNumber,
+                        Comments = formFromContr.note,
+                        drivingLicenseNumber = formFromContr.drivingLicenseNumber
+                    };
+
+                    db.OrderUsedCars.Add(car);
+                    db.SaveChanges();
+                }
+                else
+                {
+                    dbInfo.CarDriverInfo = formFromContr.fullNameOfDriver;
+                    dbInfo.CarCapacity = (Nullable<int>)formFromContr.loadCapacity;
+                    dbInfo.OrderId = messageToContr.orderId;
+                    dbInfo.CarModelInfo = formFromContr.carBrand;
+                    dbInfo.CarRegNum = formFromContr.stateNumberCar;
+                    dbInfo.ExpeditorName = formFromContr.contragentName;
+                    dbInfo.ExpeditorId = (expeditor != null) ? expeditor.Id : 0;
+                    dbInfo.ContractInfo = $"{contractInfo[0].ContractNumber}";
+                    dbInfo.ContractExpBkId = contractInfo[0].Id;
+                    dbInfo.DriverCardInfo = formFromContr.drivingLicenseNumber;
+                    dbInfo.DelayDays = messageToContr.DelayPayment;
+                    dbInfo.DriverContactInfo = formFromContr.phoneNumber;
+                    dbInfo.CarrierInfo = messageToContr.contragentName;
+                    dbInfo.trailerNumber = formFromContr.trailerNumber;
+                    dbInfo.distance = formFromContr.distance;
+                    dbInfo.formUuid = formFromContr.tenderItemUuid;
+                    dbInfo.IsUpdate = formFromContr.IsUpdate;
+                    dbInfo.transportDimensions = formFromContr.transportDimensions;
+                    dbInfo.stateBorderCrossingPoint = formFromContr.stateBorderCrossingPoint;
+                    dbInfo.seriesPassportNumber = formFromContr.seriesPassportNumber;
+                    dbInfo.Comments = formFromContr.note;
+                    dbInfo.drivingLicenseNumber = formFromContr.drivingLicenseNumber;
+                    db.SaveChanges();
+                }
+                return (int)messageToContr.orderId;
+            }
+            catch (Exception e)
+            {
+                return 0;
+            }
+        }
+
+        public void NewUsedCarExcel(Guid formUuid, ref DataToAndFromContragent data)
+        {
+            var messageToContr = db.RegisterMessageToContragents.FirstOrDefault(u => u.formUuid == formUuid);
+            var formFromContr = db.RegisterFormFromContragents.FirstOrDefault(u => u.tenderItemUuid == formUuid);
+            if (messageToContr != null)
+            {
+                data.regmesstocontrag = new Models.Tender.RegisterMessageToContragents()
+                {
+                    acceptedTransportUnits = messageToContr.acceptedTransportUnits,
+                    emailContragent = messageToContr.emailContragent,
+                    contragentName = messageToContr.contragentName,
+                    cost = messageToContr.cost,
+                    dataDownload = (DateTime)messageToContr.dataDownload,
+                    dataUnload = (DateTime)messageToContr.dataUnload,
+                    dateCreate = (DateTime)messageToContr.dateCreate,
+                    dateUpdate = (DateTime)messageToContr.dateUpdate,
+                    DelayPayment = messageToContr.DelayPayment,
+                    descriptionTender = messageToContr.descriptionTender,
+                    emailOperacionist = messageToContr.emailOperacionist,
+                    flag = (bool)messageToContr.flag,
+                    formUuid = messageToContr.formUuid,
+                    industryId = messageToContr.industryId,
+                    industryName = messageToContr.industryName,
+                    nameCargo = messageToContr.nameCargo,
+                    orderId = messageToContr.orderId,
+                    routeShort = messageToContr.routeShort,
+                    tenderItemUuid = messageToContr.tenderItemUuid,
+                    tenderNumber = messageToContr.tenderNumber,
+                    weightCargo = messageToContr.weightCargo
+                };
+            }
+            if (formFromContr != null)
+            {
+                data.formFromContr = new Models.Tender.RegisterFormFromContragents()
+                {
+                    carBrand = formFromContr.carBrand,
+                    stateNumberCar = formFromContr.stateNumberCar,
+                    trailerNumber = formFromContr.trailerNumber,
+                    transportDimensions = formFromContr.transportDimensions,
+                    loadCapacity = formFromContr.loadCapacity,
+                    distance = formFromContr.distance,
+                    fullNameOfDriver = formFromContr.fullNameOfDriver,
+                    phoneNumber = formFromContr.phoneNumber,
+                    drivingLicenseNumber = formFromContr.drivingLicenseNumber,
+                    contragentName = formFromContr.contragentName,
+                    note = formFromContr.note,
+                    stateBorderCrossingPoint = formFromContr.stateBorderCrossingPoint,
+                    seriesPassportNumber = formFromContr.seriesPassportNumber,
+                    tenderItemUuid = formFromContr.tenderItemUuid
+                };
+            }
+        }
+
+        public void NewUsedCar(Guid formUuid)
+        {
+            var messageToContr = db.RegisterMessageToContragents.FirstOrDefault(u => u.formUuid == formUuid);
+            var formFromContr = db.RegisterFormFromContragents.FirstOrDefault(u => u.tenderItemUuid == formUuid);
+            var dbInfo = db.OrderUsedCars.FirstOrDefault(u => u.formUuid == formUuid);
+            var expeditor = db.CarOwners.FirstOrDefault(u => u.email_aps == messageToContr.emailContragent);
+            var payerId = db.OrdersBase.FirstOrDefault(u => u.Id == messageToContr.orderId).PayerId;
+            var contractInfo = GetContractExpBkInfoBySearchString("", expeditor.Id, (int)payerId).ToList();
+
+            try
+            {
+                if (dbInfo == null)
+                {
+                    var car = new OrderUsedCars()
+                    {
+                        CarDriverInfo = "",
+                        CarCapacity = null,
+                        OrderId = messageToContr.orderId,
+                        CarModelInfo = "",
+                        CarRegNum = "",
+                        ExpeditorName = messageToContr.contragentName,
+                        ExpeditorId = (expeditor != null) ? expeditor.Id : 0,
+                        ContractInfo = $"{contractInfo[0].ContractNumber}",
+                        ContractExpBkId = contractInfo[0].Id,
+                        DriverCardInfo = "",
+                        DelayDays = messageToContr.DelayPayment,
+                        DriverContactInfo = "",
+                        CarrierInfo = messageToContr.contragentName,
+                        trailerNumber = "",
+                        distance = null,
+                        formUuid = messageToContr.formUuid,
+                        IsUpdate = false,
+                        transportDimensions = "",
+                        stateBorderCrossingPoint = "",
+                        seriesPassportNumber = "",
+                        Comments = "",
+                        drivingLicenseNumber = "",
+                        tenderNumber = messageToContr.tenderNumber
+                    };
+
+                    db.OrderUsedCars.Add(car);
+                    db.SaveChanges();
+                }
+
+            }
+            catch (Exception e)
+            {
+
+            }
         }
 
         public bool UpdateUsedCar(OrderUsedCarViewModel model)
@@ -2395,6 +2663,14 @@ namespace Corum.DAL
             dbInfo.ExpeditorId = model.ExpeditorId;
             dbInfo.DriverCardInfo = model.DriverCardInfo;
             dbInfo.Comments = model.Comments;
+            dbInfo.tenderNumber = model.tenderNumber;
+            dbInfo.stateBorderCrossingPoint = model.stateBorderCrossingPoint;
+            dbInfo.seriesPassportNumber = model.seriesPassportNumber;
+            dbInfo.trailerNumber = model.trailerNumber;
+            dbInfo.transportDimensions = model.transportDimensions;
+            dbInfo.distance = model.distance;
+            dbInfo.Summ = (model.Summ_ != null) ? (decimal)model.Summ_ : 0;
+            dbInfo.Summ_ = (model.Summ_ != null) ? model.Summ_ : 0;
 
             /*   dbInfo.FactShipperDateTime = DateTimeConvertClass.getDateTime(model.FactShipperDate).
                                                           AddHours(DateTimeConvertClass.getHours(model.FactShipperTime)).
@@ -2403,7 +2679,7 @@ namespace Corum.DAL
            dbInfo.FactConsigneeDateTime = DateTimeConvertClass.getDateTime(model.FactConsigneeDate).
                                                        AddHours(DateTimeConvertClass.getHours(model.FactConsigneeTime)).
                                                        AddMinutes(DateTimeConvertClass.getMinutes(model.FactConsigneeTime));*/
-            dbInfo.Summ = 0;
+
 
             db.SaveChanges();
 
@@ -3699,7 +3975,7 @@ namespace Corum.DAL
 
             }
 
-            return OrdersInfo.OrderByDescending(o=>DateTime.Parse(o.AcceptDate).Ticks).AsQueryable();
+            return OrdersInfo.OrderByDescending(o => DateTime.Parse(o.AcceptDate).Ticks).AsQueryable();
             //return result;
         }
 
@@ -4560,9 +4836,9 @@ namespace Corum.DAL
                     factCarsInfo.FactConsigneeDateTime = DateTimeConvertClass.getDateTime(model.FactConsigneeDateRaw);
             }
             else factCarsInfo.FactConsigneeDateTime = null;
-          
 
-                  if (model.RealFactShipperDateRaw != null)
+
+            if (model.RealFactShipperDateRaw != null)
             {
                 if (model.RealFactShipperTimeRaw != null)
                     factCarsInfo.FactShipper = DateTimeConvertClass.getDateTime(model.RealFactShipperDateRaw).
@@ -4849,14 +5125,14 @@ namespace Corum.DAL
         private IQueryable<ProjectTypeViewModel> GetOrderProjectsBySearchString(long orderId, string searchTerm)
         {
             return db.GetOrderProjects(orderId, searchTerm).ToList().Select(Mapper.Map).AsQueryable();
-        }        
+        }
 
         public IQueryable<TruckViewModel> getTruckReportData(string userId,
             bool isAdmin,
             bool UseOrderTypeFilter,
             string FilterOrderTypeId,
             DateTime FilterOrderDate,
-            bool UseOrderDateFilter, 
+            bool UseOrderDateFilter,
             String IdTree)
         {
 
@@ -4872,8 +5148,8 @@ namespace Corum.DAL
                 FilterOrderDate,
                 UseOrderDateFilter).ToList();
 
-            List<TruckViewModel> TruckInfo = new List<TruckViewModel>();            
-           // var OrdersItems = OrdersItems1; //.Where(x => x.ShipperId == 1446);
+            List<TruckViewModel> TruckInfo = new List<TruckViewModel>();
+            // var OrdersItems = OrdersItems1; //.Where(x => x.ShipperId == 1446);
             bool isShipper = false;
             foreach (var o in OrdersItems)
             {
@@ -4881,7 +5157,7 @@ namespace Corum.DAL
                     isShipper = true;
 
                 if (isShipper)
-                { 
+                {
                     TruckViewModel OrdersInfoItem = new TruckViewModel();
                     OrdersInfoItem.IsShipper = true;
                     OrdersInfoItem.IsSystemOrg = o.ShipperIsSystemOrg ?? false;
@@ -4890,8 +5166,8 @@ namespace Corum.DAL
                     OrdersInfoItem.ShipperAdress = o.ShipperAdress;
                     OrdersInfoItem.ShipperCountryId = o.ShipperCountryId ?? 0;
                     OrdersInfoItem.ShipperId = o.ShipperId ?? 0;
-                    OrdersInfoItem.Shipper = o.Shipper;     
-                    OrdersInfoItem.IdTree = IdTree;                                     
+                    OrdersInfoItem.Shipper = o.Shipper;
+                    OrdersInfoItem.IdTree = IdTree;
 
                     TruckOrganization(ref OrdersInfoItem, o);
                     TruckInfo.Add(OrdersInfoItem);
@@ -4906,11 +5182,11 @@ namespace Corum.DAL
                     OrdersInfoItem2.ShipperAdress = o.ConsigneeAdress;
                     OrdersInfoItem2.ShipperCountryId = o.ConsigneeCountryId ?? 0;
                     OrdersInfoItem2.ShipperId = o.ShipperId ?? 0;
-                    OrdersInfoItem2.Shipper = o.Consignee;    
-                    OrdersInfoItem2.IdTree = IdTree;                  
+                    OrdersInfoItem2.Shipper = o.Consignee;
+                    OrdersInfoItem2.IdTree = IdTree;
 
                     TruckOrganization(ref OrdersInfoItem2, o);
-                    TruckInfo.Add(OrdersInfoItem2);                    
+                    TruckInfo.Add(OrdersInfoItem2);
                 }
             }
             return TruckInfo.AsQueryable();
@@ -4923,11 +5199,11 @@ namespace Corum.DAL
                                                             DateTime FilterOrderDate,
                                                             bool UseOrderDateFilter,
                                                             String IdTree,
-                                                            ref  List<TruckViewModel> TruckInfo)
+                                                            ref List<TruckViewModel> TruckInfo)
         {
             TruckInfo = getTruckTree(userId, isAdmin, UseOrderTypeFilter, FilterOrderTypeId, FilterOrderDate, UseOrderDateFilter, IdTree);
-         
-            return TruckInfo.Where(x => x.IdGroudId != 6).OrderBy(c => c.IsSystemOrg).ThenBy(c => c.ShipperCountryName).ThenBy(c => c.ShipperCity).ThenBy(c => c.ShipperAdress).AsQueryable();             
+
+            return TruckInfo.Where(x => x.IdGroudId != 6).OrderBy(c => c.IsSystemOrg).ThenBy(c => c.ShipperCountryName).ThenBy(c => c.ShipperCity).ThenBy(c => c.ShipperAdress).AsQueryable();
         }
 
         private List<TruckViewModel> getTruckTree(string userId, bool isAdmin, bool UseOrderTypeFilter, string FilterOrderTypeId,
@@ -4939,7 +5215,7 @@ namespace Corum.DAL
             //var Trucks = TruckInfo.Select(x => new {x.ShipperAdress, x.ShipperCity, x.ShipperCountryId, x.Id}).ToList().Distinct();
 
             //добавляем системная фирма или нет
-            var SystemOrg = TruckInfo.Where(x => x.IdGroudId == 6).Select(x => new {x.IsSystemOrg}).ToList().Distinct();
+            var SystemOrg = TruckInfo.Where(x => x.IdGroudId == 6).Select(x => new { x.IsSystemOrg }).ToList().Distinct();
             Dictionary<String, bool> IdSystemOrg = new Dictionary<String, bool>();
 
             foreach (var org in SystemOrg)
@@ -4965,145 +5241,145 @@ namespace Corum.DAL
         }
 
         private void AddShipper(ref List<TruckViewModel> TruckInfo, DateTime FilterOrderDate, String IdTree)
-        {            
-            var Shippers = TruckInfo.Where(x => x.IdGroudId == 6).Select(x => new {x.ShipperId, x.Shipper, x.ShipperAdress, x.ShipperCity, x.ShipperCountryId, x.IsSystemOrg}).ToList().Distinct();
+        {
+            var Shippers = TruckInfo.Where(x => x.IdGroudId == 6).Select(x => new { x.ShipperId, x.Shipper, x.ShipperAdress, x.ShipperCity, x.ShipperCountryId, x.IsSystemOrg }).ToList().Distinct();
 
-            var Addresses = TruckInfo.Where(x => x.IdGroudId == 4).Select(x => new {x.ShipperAdress, x.ShipperCity, x.ShipperCountryId, x.IsSystemOrg, x.Id}).ToList().Distinct();
+            var Addresses = TruckInfo.Where(x => x.IdGroudId == 4).Select(x => new { x.ShipperAdress, x.ShipperCity, x.ShipperCountryId, x.IsSystemOrg, x.Id }).ToList().Distinct();
 
             List<TruckViewModel> tmp = new List<TruckViewModel>();
 
-                foreach (var address in Addresses)
+            foreach (var address in Addresses)
+            {
+                foreach (var shippers in Shippers)
                 {
-                    foreach (var shippers in Shippers)
+                    if (shippers.ShipperAdress == null || shippers.ShipperCity == null) continue;
+                    if (shippers.ShipperAdress.Equals(address.ShipperAdress) && shippers.ShipperCity.Equals(address.ShipperCity)
+                    && shippers.ShipperCountryId == address.ShipperCountryId && shippers.IsSystemOrg == address.IsSystemOrg)
+
                     {
-                        if (shippers.ShipperAdress == null || shippers.ShipperCity == null) continue;
-                        if (shippers.ShipperAdress.Equals(address.ShipperAdress) && shippers.ShipperCity.Equals(address.ShipperCity)
-                        && shippers.ShipperCountryId == address.ShipperCountryId && shippers.IsSystemOrg == address.IsSystemOrg)
+                        TruckViewModel OrdersInfoItem = new TruckViewModel();
+                        OrdersInfoItem.IdParent = address.Id;
 
-                        {
-                            TruckViewModel OrdersInfoItem = new TruckViewModel();
-                            OrdersInfoItem.IdParent = address.Id;
+                        OrdersInfoItem.Name = ""; //shippers.Shipper;
+                        OrdersInfoItem.ShipperId = shippers.ShipperId;
+                        OrdersInfoItem.IsLeaf = true;
+                        OrdersInfoItem.IdGroudId = 5;
+                        OrdersInfoItem.IdTree = IdTree;
 
-                            OrdersInfoItem.Name = ""; //shippers.Shipper;
-                            OrdersInfoItem.ShipperId = shippers.ShipperId;
-                            OrdersInfoItem.IsLeaf = true;
-                            OrdersInfoItem.IdGroudId = 5;
-                            OrdersInfoItem.IdTree = IdTree;    
+                        OrdersInfoItem.Id = Guid.NewGuid().ToString();
+                        OrdersInfoItem.IdDetails = OrdersInfoItem.Id;
+                        OrdersInfoItem.ReportsDate = FilterOrderDate;
 
-                            OrdersInfoItem.Id = Guid.NewGuid().ToString();
-                            OrdersInfoItem.IdDetails = OrdersInfoItem.Id;
-                            OrdersInfoItem.ReportsDate = FilterOrderDate;
+                        OrdersInfoItem.ShipperCountryId = shippers.ShipperCountryId;
+                        OrdersInfoItem.IsSystemOrg = shippers.IsSystemOrg;
+                        OrdersInfoItem.ShipperCity = shippers.ShipperCity;
+                        OrdersInfoItem.ShipperAdress = shippers.ShipperAdress;
+                        OrdersInfoItem.Shipper = shippers.Shipper;
 
-                            OrdersInfoItem.ShipperCountryId = shippers.ShipperCountryId;
-                            OrdersInfoItem.IsSystemOrg = shippers.IsSystemOrg;
-                            OrdersInfoItem.ShipperCity = shippers.ShipperCity;
-                            OrdersInfoItem.ShipperAdress = shippers.ShipperAdress;
-                            OrdersInfoItem.Shipper = shippers.Shipper;
-                        
-                            tmp.Add(OrdersInfoItem);
-                        }
+                        tmp.Add(OrdersInfoItem);
+                    }
                 }
             }
 
-                TruckInfo.AddRange(tmp);
-                tmp = null;
+            TruckInfo.AddRange(tmp);
+            tmp = null;
 
         }
 
         private void AddAddresses(ref List<TruckViewModel> TruckInfo, DateTime FilterOrderDate, String IdTree)//, String[] IdSystemOrg)
         {
-             var Addresses = TruckInfo.Where(x => x.IdGroudId == 6).Select(x => new {x.ShipperAdress, x.ShipperCity, x.ShipperCountryId, x.IsSystemOrg}).ToList().Distinct();
+            var Addresses = TruckInfo.Where(x => x.IdGroudId == 6).Select(x => new { x.ShipperAdress, x.ShipperCity, x.ShipperCountryId, x.IsSystemOrg }).ToList().Distinct();
 
-             var Cities = TruckInfo.Where(x => x.IdGroudId == 3).Select(x => new {x.ShipperCity, x.ShipperCountryId, x.IsSystemOrg, x.Id}).ToList().Distinct();
+            var Cities = TruckInfo.Where(x => x.IdGroudId == 3).Select(x => new { x.ShipperCity, x.ShipperCountryId, x.IsSystemOrg, x.Id }).ToList().Distinct();
 
             /*var Countries =
                 TruckInfo.Where(x => x.IdGroudId == 2)
                     .Select(x => new {x.ShipperCountryId, x.ShipperCountryName, x.Id})
                     .Distinct();*/
-                List<TruckViewModel> tmp = new List<TruckViewModel>();
+            List<TruckViewModel> tmp = new List<TruckViewModel>();
 
-                foreach (var city in Cities)
+            foreach (var city in Cities)
+            {
+                foreach (var address in Addresses)
                 {
-                    foreach (var address in Addresses)
+                    if (address.ShipperCity == null) continue;
+                    if (city.ShipperCountryId == address.ShipperCountryId && address.ShipperCity.Equals(city.ShipperCity)
+                    && city.IsSystemOrg == address.IsSystemOrg)
                     {
-                        if (address.ShipperCity == null) continue;
-                        if (city.ShipperCountryId == address.ShipperCountryId && address.ShipperCity.Equals(city.ShipperCity)
-                        && city.IsSystemOrg == address.IsSystemOrg)
-                        {
-                            TruckViewModel OrdersInfoItem = new TruckViewModel();
-                            OrdersInfoItem.IdParent = city.Id;
+                        TruckViewModel OrdersInfoItem = new TruckViewModel();
+                        OrdersInfoItem.IdParent = city.Id;
 
-                            OrdersInfoItem.Name = address.ShipperAdress;
-                            OrdersInfoItem.ShipperAdress = address.ShipperAdress;
-                            OrdersInfoItem.IsLeaf = false;
-                            OrdersInfoItem.IdGroudId = 4;
-                            OrdersInfoItem.IdTree = IdTree;    
+                        OrdersInfoItem.Name = address.ShipperAdress;
+                        OrdersInfoItem.ShipperAdress = address.ShipperAdress;
+                        OrdersInfoItem.IsLeaf = false;
+                        OrdersInfoItem.IdGroudId = 4;
+                        OrdersInfoItem.IdTree = IdTree;
 
-                            OrdersInfoItem.Id = Guid.NewGuid().ToString();
-                            OrdersInfoItem.IdDetails = OrdersInfoItem.Id;
-                            OrdersInfoItem.ReportsDate = FilterOrderDate;
+                        OrdersInfoItem.Id = Guid.NewGuid().ToString();
+                        OrdersInfoItem.IdDetails = OrdersInfoItem.Id;
+                        OrdersInfoItem.ReportsDate = FilterOrderDate;
 
-                            OrdersInfoItem.ShipperCountryId = city.ShipperCountryId;
-                            OrdersInfoItem.IsSystemOrg = city.IsSystemOrg;
-                            OrdersInfoItem.ShipperCity = city.ShipperCity;
+                        OrdersInfoItem.ShipperCountryId = city.ShipperCountryId;
+                        OrdersInfoItem.IsSystemOrg = city.IsSystemOrg;
+                        OrdersInfoItem.ShipperCity = city.ShipperCity;
 
-                            tmp.Add(OrdersInfoItem);
-                        }
+                        tmp.Add(OrdersInfoItem);
+                    }
                 }
             }
 
-                TruckInfo.AddRange(tmp);
-                tmp = null;
+            TruckInfo.AddRange(tmp);
+            tmp = null;
         }
 
         private void AddCities(ref List<TruckViewModel> TruckInfo, DateTime FilterOrderDate, String IdTree)//, String[] IdSystemOrg)
         {
-            var Cities = TruckInfo.Where(x => x.IdGroudId == 6).Select(x => new {x.ShipperCity, x.ShipperCountryId, x.IsSystemOrg}).ToList().Distinct();
+            var Cities = TruckInfo.Where(x => x.IdGroudId == 6).Select(x => new { x.ShipperCity, x.ShipperCountryId, x.IsSystemOrg }).ToList().Distinct();
 
             var Countries =
                 TruckInfo.Where(x => x.IdGroudId == 2)
-                    .Select(x => new {x.ShipperCountryId, x.ShipperCountryName, x.IsSystemOrg, x.Id})
+                    .Select(x => new { x.ShipperCountryId, x.ShipperCountryName, x.IsSystemOrg, x.Id })
                     .Distinct();
 
 
-             List<TruckViewModel> tmp = new List<TruckViewModel>();
-             //foreach (String s in IdSystemOrg)
-           //  {
-                 foreach (var country in Countries)
-                 {
-                     foreach (var city in Cities)
-                     {
-                         if (city.ShipperCountryId == country.ShipperCountryId && city.IsSystemOrg == country.IsSystemOrg)
-                         {
-                             TruckViewModel OrdersInfoItem = new TruckViewModel();
-                             OrdersInfoItem.IdParent = country.Id;
+            List<TruckViewModel> tmp = new List<TruckViewModel>();
+            //foreach (String s in IdSystemOrg)
+            //  {
+            foreach (var country in Countries)
+            {
+                foreach (var city in Cities)
+                {
+                    if (city.ShipperCountryId == country.ShipperCountryId && city.IsSystemOrg == country.IsSystemOrg)
+                    {
+                        TruckViewModel OrdersInfoItem = new TruckViewModel();
+                        OrdersInfoItem.IdParent = country.Id;
 
-                             OrdersInfoItem.Name = city.ShipperCity;
-                             OrdersInfoItem.ShipperCity = city.ShipperCity;
-                             OrdersInfoItem.IsLeaf = false;
-                             OrdersInfoItem.IdGroudId = 3;
-                             OrdersInfoItem.IdTree = IdTree;    
+                        OrdersInfoItem.Name = city.ShipperCity;
+                        OrdersInfoItem.ShipperCity = city.ShipperCity;
+                        OrdersInfoItem.IsLeaf = false;
+                        OrdersInfoItem.IdGroudId = 3;
+                        OrdersInfoItem.IdTree = IdTree;
 
-                             OrdersInfoItem.Id = Guid.NewGuid().ToString();
-                             OrdersInfoItem.IdDetails = OrdersInfoItem.Id;
-                             OrdersInfoItem.ReportsDate = FilterOrderDate;
-                             OrdersInfoItem.ShipperCountryId = city.ShipperCountryId;
-                             OrdersInfoItem.IsSystemOrg = city.IsSystemOrg;
-                             tmp.Add(OrdersInfoItem);
-                         }
-                     }
+                        OrdersInfoItem.Id = Guid.NewGuid().ToString();
+                        OrdersInfoItem.IdDetails = OrdersInfoItem.Id;
+                        OrdersInfoItem.ReportsDate = FilterOrderDate;
+                        OrdersInfoItem.ShipperCountryId = city.ShipperCountryId;
+                        OrdersInfoItem.IsSystemOrg = city.IsSystemOrg;
+                        tmp.Add(OrdersInfoItem);
+                    }
+                }
                 // }
-             }
+            }
             TruckInfo.AddRange(tmp);
             tmp = null;
         }
 
         private static void AddCountries(ref List<TruckViewModel> TruckInfo, DateTime FilterOrderDate, Dictionary<String, bool> IdSystemOrg, String IdTree)
-        {            
-           var Countries = TruckInfo.Where(x => x.ShipperCountryId != 0 && x.IdGroudId == 6).Select(x => new {x.ShipperCountryId, x.ShipperCountryName, x.IsSystemOrg}).Distinct();
+        {
+            var Countries = TruckInfo.Where(x => x.ShipperCountryId != 0 && x.IdGroudId == 6).Select(x => new { x.ShipperCountryId, x.ShipperCountryName, x.IsSystemOrg }).Distinct();
 
-            List<TruckViewModel> tmp = new List<TruckViewModel>();            
-            foreach(KeyValuePair<String, bool> s in IdSystemOrg)
+            List<TruckViewModel> tmp = new List<TruckViewModel>();
+            foreach (KeyValuePair<String, bool> s in IdSystemOrg)
             {
                 foreach (var country in Countries)
                 {
@@ -5116,9 +5392,9 @@ namespace Corum.DAL
                         OrdersInfoItem.ShipperCountryName = country.ShipperCountryName;
                         OrdersInfoItem.ShipperCountryId = country.ShipperCountryId;
                         OrdersInfoItem.IsLeaf = false;
-                       // OrdersInfoItem.IsLeaf = true;
+                        // OrdersInfoItem.IsLeaf = true;
                         OrdersInfoItem.IdGroudId = 2;
-                        OrdersInfoItem.IdTree = IdTree;    
+                        OrdersInfoItem.IdTree = IdTree;
 
                         OrdersInfoItem.Id = Guid.NewGuid().ToString();
                         OrdersInfoItem.IdDetails = OrdersInfoItem.Id;
@@ -5143,7 +5419,7 @@ namespace Corum.DAL
             OrdersInfoItem.IdGroudId = 1;
             OrdersInfoItem.IdDetails = OrdersInfoItem.Id;
             OrdersInfoItem.ReportsDate = FilterOrderDate;
-            OrdersInfoItem.IdTree = IdTree;    
+            OrdersInfoItem.IdTree = IdTree;
             TruckInfo.Add(OrdersInfoItem);
             return OrdersInfoItem.Id;
         }
@@ -5169,7 +5445,7 @@ namespace Corum.DAL
             OrdersInfoItem.BalanceKeeper = o.BalanceKeeper;
             OrdersInfoItem.CreatorByUserName = o.CreatorByUserName;
             OrdersInfoItem.IsShipperString = OrdersInfoItem.isShipper ? "Отгрузка" : "Поступление";
-            OrdersInfoItem.CarCapacity = o.CarCapacity; 
+            OrdersInfoItem.CarCapacity = o.CarCapacity;
             OrdersInfoItem.IsLeaf = true;
             OrdersInfoItem.IdGroudId = 6;
         }
@@ -5211,7 +5487,7 @@ namespace Corum.DAL
                     res = TruckInfo.Where(x => x.IdGroudId == 6 && x.IsSystemOrg == data?.IsSystemOrg).AsQueryable();
                     break;
                 case 2: //страна                    
-                    res = TruckInfo.Where(x => x.IdGroudId == 6 && 
+                    res = TruckInfo.Where(x => x.IdGroudId == 6 &&
                                                x.ShipperCountryId == data?.ShipperCountryId &&
                                                x.IsSystemOrg == data.IsSystemOrg).AsQueryable();
                     break;
@@ -5221,26 +5497,26 @@ namespace Corum.DAL
                                                x.IsSystemOrg == data.IsSystemOrg).AsQueryable();
                     break;
                 case 4: //адрес
-                      res = TruckInfo.Where(x => x.IdGroudId == 6 && x.ShipperAdress.Equals(data?.ShipperAdress) &&
-                                               x.ShipperCity.Equals(data?.ShipperCity) && 
-                                               x.ShipperCountryId == data?.ShipperCountryId &&
-                                               x.IsSystemOrg == data.IsSystemOrg).AsQueryable();
+                    res = TruckInfo.Where(x => x.IdGroudId == 6 && x.ShipperAdress.Equals(data?.ShipperAdress) &&
+                                             x.ShipperCity.Equals(data?.ShipperCity) &&
+                                             x.ShipperCountryId == data?.ShipperCountryId &&
+                                             x.IsSystemOrg == data.IsSystemOrg).AsQueryable();
                     break;
                 case 5: //организация                                       
                     res = TruckInfo.Where(x => x.IdGroudId == 6 && x.ShipperId == data.ShipperId &&
                                                x.ShipperAdress.Equals(data?.ShipperAdress) &&
-                                               x.ShipperCity.Equals(data?.ShipperCity) && 
+                                               x.ShipperCity.Equals(data?.ShipperCity) &&
                                                x.ShipperCountryId == data?.ShipperCountryId &&
                                                x.IsSystemOrg == data.IsSystemOrg).AsQueryable();
                     break;
                 default:
                     break;
-                    
+
             }
 
             //int IdGroupId1 = 3; //по городу
             // String id1 = "4746d166-cb4f-4bd5-b0b9-5ba59a0650fa";
-            return res?.AsQueryable();        
+            return res?.AsQueryable();
         }
 
         public String getTruckReportTitle(List<TruckViewModel> TruckInfo,
@@ -5261,15 +5537,15 @@ namespace Corum.DAL
                     res = data?.ShipperCity;
                     break;
                 case 4: //адрес
-                      res = data?.ShipperAdress;
+                    res = data?.ShipperAdress;
                     break;
                 case 5: //организация                                       
                     res = data?.Shipper;
-                    Address = String.Concat("Адрес:",data?.ShipperAdress);
-                        //isShipper ? GetShipperAddress(data.OrderId) : GetConsigneeAddress(data.OrderId);
+                    Address = String.Concat("Адрес:", data?.ShipperAdress);
+                    //isShipper ? GetShipperAddress(data.OrderId) : GetConsigneeAddress(data.OrderId);
                     break;
                 default:
-                    break;                    
+                    break;
             }
             return res;
         }
@@ -5281,7 +5557,7 @@ namespace Corum.DAL
             DateTime ReportDate, int IdGroudId, string Id)
         {
             //var orgInfo = GetOrganization(OrgId);
-            List<GetTruckReportDetails_Result> OrdersItems=null;
+            List<GetTruckReportDetails_Result> OrdersItems = null;
             //if (IdGroudId == 5)
             OrdersItems = db.GetTruckReportDetails(userId,
               isAdmin,
@@ -5289,23 +5565,23 @@ namespace Corum.DAL
               ReportDate).ToList();
 
 
-            List<TruckReportViewModel> truckInfo = new List<TruckReportViewModel>();           
-            
+            List<TruckReportViewModel> truckInfo = new List<TruckReportViewModel>();
+
             foreach (var o in OrdersItems)
             {
                 TruckReportViewModel truckInfoItem = new TruckReportViewModel();
-             //   truckInfoItem.ShipperName = orgInfo.Name;
+                //   truckInfoItem.ShipperName = orgInfo.Name;
                 truckInfoItem.OrderId = o.Id;
 
                 truckInfoItem.Shipper = o.Shipper;
                 truckInfoItem.Consignee = o.Consignee;
 
-                truckInfoItem.ShipperId = o.ShipperId ??0;
+                truckInfoItem.ShipperId = o.ShipperId ?? 0;
 
                 //как понять где Отгрузка а где Поступление
-               // По тому в грузоотправителях или в грузополучателях находится организация
+                // По тому в грузоотправителях или в грузополучателях находится организация
                 truckInfoItem.isShipper = o.ShipperId == OrgId;
-               // truckInfoItem.ConsigneeId = o.ConsigneeId;
+                // truckInfoItem.ConsigneeId = o.ConsigneeId;
 
                 truckInfoItem.TruckDescription = o.TruckDescription;
                 truckInfoItem.ExpeditorName = o.ExpeditorName;
@@ -5320,7 +5596,7 @@ namespace Corum.DAL
                 truckInfoItem.FactTime = truckInfoItem.FactDateTime?.ToString("HH:mm");
 
                 truckInfoItem.PlanDate = truckInfoItem.PlanDateTime?.ToString("dd.MM.yyyy");
-                truckInfoItem.FactDate = truckInfoItem.FactDateTime?.ToString("dd.MM.yyyy");               
+                truckInfoItem.FactDate = truckInfoItem.FactDateTime?.ToString("dd.MM.yyyy");
 
                 truckInfoItem.DateFactConsignee = o.FactConsignee?.ToString("dd.MM.yyyy");
                 truckInfoItem.TimeFactConsignee = o.FactConsignee?.ToString("HH:mm");
@@ -5331,33 +5607,33 @@ namespace Corum.DAL
                     ? GetShipperAddress(o.Id)
                     : GetConsigneeAddress(o.Id);*/
                 truckInfoItem.CarCapacity = o.CarCapacity;
-              if (truckInfoItem.PlanDateTime?.ToString("dd.MM.yyyy") == ReportDate.ToString("dd.MM.yyyy"))
-                truckInfo.Add(truckInfoItem);
+                if (truckInfoItem.PlanDateTime?.ToString("dd.MM.yyyy") == ReportDate.ToString("dd.MM.yyyy"))
+                    truckInfo.Add(truckInfoItem);
             }
-            return truckInfo.AsQueryable();        
+            return truckInfo.AsQueryable();
         }
 
         public string GetShipperAddress(long orderId)
         {
-              var orderInfo2 = db.OrderTruckTransport.AsNoTracking().FirstOrDefault(x => x.OrderId == orderId);
+            var orderInfo2 = db.OrderTruckTransport.AsNoTracking().FirstOrDefault(x => x.OrderId == orderId);
 
-                    if (orderInfo2 != null)
-                    {
-                        return string.Concat(orderInfo2.Countries1 == null ? null : orderInfo2.Countries1.Name, ", ", orderInfo2.ShipperCity, ", ", orderInfo2.ShipperAdress);
-                    }
-                    
+            if (orderInfo2 != null)
+            {
+                return string.Concat(orderInfo2.Countries1 == null ? null : orderInfo2.Countries1.Name, ", ", orderInfo2.ShipperCity, ", ", orderInfo2.ShipperAdress);
+            }
+
             return string.Empty;
         }
 
-         public string GetConsigneeAddress(long orderId)
+        public string GetConsigneeAddress(long orderId)
         {
-              var orderInfo2 = db.OrderTruckTransport.AsNoTracking().FirstOrDefault(x => x.OrderId == orderId);
+            var orderInfo2 = db.OrderTruckTransport.AsNoTracking().FirstOrDefault(x => x.OrderId == orderId);
 
-                    if (orderInfo2 != null)
-                    {
-                        return string.Concat(orderInfo2.Countries == null ? null : orderInfo2.Countries.Name, ", ", orderInfo2.ConsigneeCity, ", ", orderInfo2.ConsigneeAdress);
-                    }
-                    
+            if (orderInfo2 != null)
+            {
+                return string.Concat(orderInfo2.Countries == null ? null : orderInfo2.Countries.Name, ", ", orderInfo2.ConsigneeCity, ", ", orderInfo2.ConsigneeAdress);
+            }
+
             return string.Empty;
         }
     }

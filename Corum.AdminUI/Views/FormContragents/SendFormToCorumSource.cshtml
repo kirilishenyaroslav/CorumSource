@@ -328,13 +328,14 @@
         };
 
         function ValidData(inputElement) {
-            inputElement.oninvalid = function (e) {
-            let element = e.currentTarget.offsetParent;
-            element.style.border = "3px solid red";
-            e.currentTarget.style.color = "red";
-            e.currentTarget.value = "Введите данные";
-            e.currentTarget.setAttribute(`data-valid`, `false`);
-        };
+            if (inputElement != undefined) {
+                inputElement.oninvalid = function (e) {
+                let element = e.currentTarget.offsetParent;
+                element.style.border = "3px solid red";
+                e.currentTarget.style.color = "red";
+                e.currentTarget.value = "Введите данные";
+                e.currentTarget.setAttribute(`data-valid`, `false`);
+            }
             inputElement.onmousedown = function (e) {
                 if (e.currentTarget.readOnly == false) {
                     if (e.currentTarget.dataset.valid === 'false' && (e.currentTarget.value == '' || e.currentTarget.value == 'Введите данные')) {
@@ -356,6 +357,7 @@
             let element = e.currentTarget.offsetParent;
             element.style.border = "1px solid rgb(239, 125, 26)";
             };
+        }
         };
 
 
@@ -505,16 +507,18 @@
                 let inpFileTwo = document.getElementById('inpFileTwo');
                 let inpFileThree = document.getElementById('inpFileThree');
 
-                validInpFileObj.inpOne = (inpFileOne != 'undefined' && inpFileOne.files.length != 0) ? true : false;
-                validInpFileObj.inpTwo = (inpFileTwo != 'undefined' && inpFileTwo.files.length != 0) ? true : false;
-                validInpFileObj.inpThree = (inpFileThree != 'undefined' && inpFileThree.files.length != 0) ? true : false;
+                validInpFileObj.inpOne = (inpFileOne != undefined)? (inpFileOne.files.length != 0) ? true: false : false;
+                validInpFileObj.inpThree = (inpFileThree != undefined) ? (inpFileThree.files.length != 0) ? true : false : false;
+                validInpFileObj.inpTwo = (inpFileTwo != undefined) ? (inpFileTwo.files.length != 0) ? true : false : false;
             };
 
             function ValidDataInputFile(htmlElement) {
-                htmlElement.style.border = "3px solid red";
-                let labChoose = htmlElement.children[2];
-                labChoose.style.color = "red";
-                return false;
+                if (htmlElement != undefined) {
+                    htmlElement.style.border = "3px solid red";
+                    let labChoose = htmlElement.children[2];
+                    labChoose.style.color = "red";
+                    return false;
+                }
             };
 
 
@@ -527,13 +531,13 @@
                     let tdFormFileOne = document.getElementById('tdFormFileOne');
                     flagValidInpFile = ValidDataInputFile(tdFormFileOne);
                 }
-                if (!validInpFileObj.inpTwo) {
-                    let tdFormFileTwo = document.getElementById('tdFormFileTwo');
-                    flagValidInpFile = ValidDataInputFile(tdFormFileTwo);
-                }
                 if (!validInpFileObj.inpThree) {
                     let tdFormFileThree = document.getElementById('tdFormFileThree');
                     flagValidInpFile = ValidDataInputFile(tdFormFileThree);
+                }
+                if (!validInpFileObj.inpTwo) {
+                    let tdFormFileTwo = document.getElementById('tdFormFileTwo');
+                    flagValidInpFile = ValidDataInputFile(tdFormFileTwo);
                 }
 
                 let formaData = new FormData();
@@ -579,21 +583,30 @@
                 formaData.append(note.name, note.value);
 
                 let stateBorderCrossingPoint = document.getElementsByName('stateBorderCrossingPoint')[0];
-                formaData.append(stateBorderCrossingPoint.name, stateBorderCrossingPoint.value);
-                listHtmlFields.push(stateBorderCrossingPoint);
-                let seriesPassportNumber = document.getElementsByName('seriesPassportNumber')[0];
-                formaData.append(seriesPassportNumber.name, seriesPassportNumber.value);
-
-                let scannedCopyOfSignedOrder = document.getElementById('inpFileOne');
-                for (let i = 0; i < scannedCopyOfSignedOrder.files.length; i++) {
-                    formaData.append(scannedCopyOfSignedOrder.files[i].name, scannedCopyOfSignedOrder.files[i]);
-                }
-
-                if (scannedCopyOfSignedOrder.files.length != 0) {
-                    formaData.append('scannedCopyOfSignedOrder', true);
+                if (stateBorderCrossingPoint != undefined) {
+                    formaData.append(stateBorderCrossingPoint.name, stateBorderCrossingPoint.value);
+                    listHtmlFields.push(stateBorderCrossingPoint);
                 }
                 else {
-                    formaData.append('scannedCopyOfSignedOrder', false);
+                    flagValidInpFile = true;
+                }
+                let seriesPassportNumber = document.getElementsByName('seriesPassportNumber')[0];
+                if (seriesPassportNumber != undefined) {
+                    formaData.append(seriesPassportNumber.name, seriesPassportNumber.value);
+                }
+
+                let scannedCopyOfSignedOrder = document.getElementById('inpFileOne');
+                if (scannedCopyOfSignedOrder != undefined) {
+                    for (let i = 0; i < scannedCopyOfSignedOrder.files.length; i++) {
+                        formaData.append(scannedCopyOfSignedOrder.files[i].name, scannedCopyOfSignedOrder.files[i]);
+                    }
+
+                    if (scannedCopyOfSignedOrder.files.length != 0) {
+                        formaData.append('scannedCopyOfSignedOrder', true);
+                    }
+                    else {
+                        formaData.append('scannedCopyOfSignedOrder', false);
+                    }
                 }
                 let scannedCopyOfRegistrationCertificate = document.getElementById('inpFileTwo');
                 for (let i = 0; i < scannedCopyOfRegistrationCertificate.files.length; i++) {
@@ -607,15 +620,17 @@
                     formaData.append('scannedCopyOfRegistrationCertificate', false);
                 }
                 let scanCopyOfPassport = document.getElementById('inpFileThree');
-                for (let i = 0; i < scanCopyOfPassport.files.length; i++) {
-                    formaData.append(scanCopyOfPassport.files[i].name, scanCopyOfPassport.files[i]);
-                }
+                if (scanCopyOfPassport != undefined) {
+                    for (let i = 0; i < scanCopyOfPassport.files.length; i++) {
+                        formaData.append(scanCopyOfPassport.files[i].name, scanCopyOfPassport.files[i]);
+                    }
 
-                if (scanCopyOfPassport.files.length != 0) {
-                    formaData.append('scanCopyOfPassport', true);
-                }
-                else {
-                    formaData.append('scanCopyOfPassport', false);
+                    if (scanCopyOfPassport.files.length != 0) {
+                        formaData.append('scanCopyOfPassport', true);
+                    }
+                    else {
+                        formaData.append('scanCopyOfPassport', false);
+                    }
                 }
                 let scannedCopyOfAdmissionToTransportation = document.getElementById('inpFileFour');
                 for (let i = 0; i < scannedCopyOfAdmissionToTransportation.files.length; i++) {
@@ -699,7 +714,10 @@
                     $(th).attr('colspan', '2');
                     $(th).append(`<span style="font-size: 20px; font-weight: bold; text-align: center; line-height: 2;">Краткая информация для копирования</span><br><span style="font-weight: bold;">Тендер ${@Html.Raw(Json.Encode(Model[0].tenderNumber))}, (Заявка ${@Html.Raw(Json.Encode(Model[0].orderId))})</span><br>${@Html.Raw(Json.Encode(Model[0].routeShort))}<br> <span style="font-weight: bold;">Дата подачи авто ${@Html.Raw(Json.Encode(Model[0].dateDownloading.ToString("dd.MM.yyyy")))}</span><br> Авто: ${carBrand.value}<br>
                 <span style="font-weight: bold;">Гос.номер: ${stateNumberCar.value} п/п ${trailerNumber.value}</span><br> Водитель: ${fullNameOfDriver.value} ${phoneNumber.value}<br><span style="font-weight: bold;">Водительское удостоверение: ${drivingLicenseNumber.value}</span> <br> Экспедитор
-                ${contragentName.value}<br> <span style="font-weight: bold;">Переход: ${stateBorderCrossingPoint.value}</span> (отдельное поле для международных перевозок заполняется вручную)`);
+                ${contragentName.value}<br>`);
+                    if (stateBorderCrossingPoint != undefined) {
+                        $(th).append(`<span style="font-weight: bold;">Переход: ${stateBorderCrossingPoint.value}</span> (отдельное поле для международных перевозок заполняется вручную)`);
+                    }
                     form.footerData = th;
                 };
 
@@ -931,10 +949,12 @@
         edit.onclick = EditFielsEnabled;
 
         function EditFielsEnabled(e) {
-                listHtmlFields.forEach(value => {
+            listHtmlFields.forEach(value => {
+                if (value != undefined) {
                     if (value.type == 'text') {
                         value.removeAttribute('readonly');
                     }
+                }
                 });
                 for(const value of inpChoose){
                     value.removeAttribute('disabled');

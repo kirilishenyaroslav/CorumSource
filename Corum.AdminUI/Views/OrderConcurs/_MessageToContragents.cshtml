@@ -305,7 +305,7 @@
                                                 break;
                                             }
                                         };
-                                        
+
                                         if (loserAfterChange.isSelected) {
                                         InfoToContragentsAfterCh.listLosersInfoAfterChange.push(loserAfterChange);
                                         }
@@ -464,7 +464,7 @@
                     listSameWinners.push(new Winner(listWinners[x].ExpeditorName, listWinners[x].tenderNumber, listWinners[x].OrderId,
                         listWinners[x].NameSpecification, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.Route)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.TruckDescription)),
                         listWinners[x].cargoWeight, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.FromDate)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.ToDate)), listWinners[x].itemDescription,
-                        listWinners[x].CarCost, listWinners[x].DaysDelayStep2, listWinners[x].emailContragent, FindRegisterDataAboutMessage(listWinners[x].emailContragent, x)));
+                        listWinners[x].CarCost, listWinners[x].DaysDelayStep2, listWinners[x].emailContragent, FindRegisterDataAboutMessage(listWinners[x].emailContragent, x, listWinners[x].tenderNumber)));
                 }
             }
 
@@ -481,11 +481,19 @@
         CreateHTMLTableWithDataLosersContragents(listLink_);
     }
 
-    function FindRegisterDataAboutMessage(emailContragents, count) {
+    function FindRegisterDataAboutMessage(emailContragents, count, tenderNumber) {
         let listWinnersRegisty =  @Html.Raw(Json.Encode(Model.ListFormUuidToContragents));
         let formUuid = '';
         if (listWinnersRegisty.length != 0) {
-            formUuid = listWinnersRegisty[count].formUuid;
+            let newListWinnersTender = [];
+            listWinnersRegisty.forEach(value => {
+                if (value.tenderNumber == tenderNumber) {
+                    newListWinnersTender.push(value);
+                }
+            });
+            if (newListWinnersTender.length != 0) {
+               formUuid = newListWinnersTender[count].formUuid;
+            }
         }
         return formUuid;
     }
@@ -1115,6 +1123,7 @@
         listSameLosers = [];
         listWinnersIdHTMLElements = [];
         listLoserIdHTMLElements = [];
+        listlink_ = undefined;
     }
 
     // Вытягивание данных для рассылки на имейлы победителям и проигравшим контрагентам из формы модального окна

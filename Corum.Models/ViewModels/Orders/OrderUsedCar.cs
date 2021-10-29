@@ -27,7 +27,6 @@ namespace Corum.Models.ViewModels.Orders
         public string DriverContactInfo { get; set; }
         public string CarrierInfo { get; set; }
         public int? CarId { get; set; }
-       // public decimal Summ { get; set; }
         public string DriverCardInfo { get; set; }
         public string Comments { get; set; }
         public int? ExpeditorId { get; set; }
@@ -89,6 +88,15 @@ namespace Corum.Models.ViewModels.Orders
         public string RealFactShipperTime { get; set; }
         public string RealFactShipperTimeRaw { get; set; }
 
+        public Nullable<System.Guid> formUuid { get; set; }
+        public string trailerNumber { get; set; }
+        public string transportDimensions { get; set; }
+        public Nullable<double> distance { get; set; }
+        public string stateBorderCrossingPoint { get; set; }
+        public string seriesPassportNumber { get; set; }
+        public string drivingLicenseNumber { get; set; }
         public CompetitiveListViewModel OrderListInfo { get; set; }
+        public Nullable<int> tenderNumber { get; set; }
+        public Nullable<float> Summ_ { get; set; }
     }
 }

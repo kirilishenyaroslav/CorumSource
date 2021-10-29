@@ -2248,7 +2248,17 @@
 
                 DivBtnChangeStatusKL.appendChild(tymeLineSt);
             }
+             var BtnSendMessageCont = document.getElementById('BtnSendMessageCont');
+            if (BtnSendMessageCont == null) {
+                let BtnSendMessageCont = document.createElement('div');
+                $(BtnSendMessageCont).attr('id', 'BtnSendMessageCont');
+                $(BtnSendMessageCont).attr("style", "display:inline-block; margin-left: 10px; ");
+                $(BtnSendMessageCont).append(`<a onclick="SendMessageToContragents(${@Html.Raw(Json.Encode(@Model.Id))})" class="delete_link btn btn-success" style="margin-bottom:10px">
+                            Уведомление контр-м
+                        </a>`);
 
+                DivBtnChangeStatusKL.appendChild(BtnSendMessageCont);
+            }
 
         }
 

@@ -43,7 +43,17 @@ namespace Corum.DAL.Entity
         public Nullable<System.DateTime> FactConsigneeDateTime { get; set; }
         public Nullable<System.DateTime> FactConsignee { get; set; }
         public Nullable<System.DateTime> FactShipper { get; set; }
-    
+        public Nullable<System.Guid> formUuid { get; set; }
+        public Nullable<bool> IsUpdate { get; set; }
+        public string trailerNumber { get; set; }
+        public string transportDimensions { get; set; }
+        public Nullable<double> distance { get; set; }
+        public string stateBorderCrossingPoint { get; set; }
+        public string seriesPassportNumber { get; set; }
+        public string drivingLicenseNumber { get; set; }
+        public Nullable<int> tenderNumber { get; set; }
+        public Nullable<float> Summ_ { get; set; }
+
         public virtual CarOwners CarOwners { get; set; }
         public virtual Cars Cars { get; set; }
         public virtual Contracts Contracts { get; set; }

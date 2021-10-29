@@ -125,6 +125,7 @@
     <Compile Include="Tender\BalanceKeepers.cs" />
     <Compile Include="Tender\ContrAgentModel.cs" />
     <Compile Include="Tender\Countries.cs" />
+    <Compile Include="Tender\ExcelLink.cs" />
     <Compile Include="Tender\InfoToContragentsAfterChange.cs" />
     <Compile Include="Tender\OrderTruckTransport.cs" />
     <Compile Include="Tender\RegisterFormFromContragents.cs" />
@@ -210,6 +211,7 @@
     <Compile Include="ViewModels\Customers\OrganizationViewModel.cs" />
     <Compile Include="ViewModels\Tender\AddFilePostApiTender.cs" />
     <Compile Include="ViewModels\Tender\Criteriavalues.cs" />
+    <Compile Include="ViewModels\Tender\DataToAndFromContragent.cs" />
     <Compile Include="ViewModels\Tender\GetApiTendAjax.cs" />
     <Compile Include="ViewModels\Tender\GetApiTender.cs" />
     <Compile Include="ViewModels\Tender\GetFileApiTender.cs" />

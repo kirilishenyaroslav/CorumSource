@@ -802,6 +802,15 @@
           <Property Name="FactConsigneeDateTime" Type="datetime2" Precision="7" />
           <Property Name="FactConsignee" Type="datetime" />
           <Property Name="FactShipper" Type="datetime" />
+          <Property Name="formUuid" Type="uniqueidentifier" />
+          <Property Name="IsUpdate" Type="bit" />
+          <Property Name="trailerNumber" Type="nvarchar" MaxLength="100" />
+          <Property Name="transportDimensions" Type="nvarchar" MaxLength="350" />
+          <Property Name="distance" Type="float" />
+          <Property Name="stateBorderCrossingPoint" Type="text" />
+          <Property Name="seriesPassportNumber" Type="nvarchar" MaxLength="350" />
+          <Property Name="drivingLicenseNumber" Type="nvarchar" MaxLength="350" />
+          <Property Name="tenderNumber" Type="int" />
         </EntityType>
         <EntityType Name="OrderVehicleTypes">
           <Key>
@@ -1173,7 +1182,7 @@
           <Property Name="PageSize" Type="int" Nullable="false" />
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
         </EntityType>
-        <Association Name="FK__OrdersBas__Proje__2EFAF1E2">
+        <Association Name="FK__OrdersBas__Proje__32CB82C6">
           <End Role="Projects" Type="Self.Projects" Multiplicity="0..1" />
           <End Role="OrdersBase" Type="Self.OrdersBase" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1185,7 +1194,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__758D6A5C">
+        <Association Name="FK__Projects__Projec__795DFB40">
           <End Role="Centers" Type="Self.Centers" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -1197,7 +1206,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="FK__Projects__Projec__76818E95">
+        <Association Name="FK__Projects__Projec__7A521F79">
           <End Role="ProjectTypes" Type="Self.ProjectTypes" Multiplicity="0..1" />
           <End Role="Projects" Type="Self.Projects" Multiplicity="*" />
           <ReferentialConstraint>
@@ -3539,15 +3548,15 @@
           <EntitySet Name="UserMessages" EntityType="Self.UserMessages" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserProfile" EntityType="Self.UserProfile" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserSettings" EntityType="Self.UserSettings" Schema="dbo" store:Type="Tables" />
-          <AssociationSet Name="FK__OrdersBas__Proje__2EFAF1E2" Association="Self.FK__OrdersBas__Proje__2EFAF1E2">
+          <AssociationSet Name="FK__OrdersBas__Proje__32CB82C6" Association="Self.FK__OrdersBas__Proje__32CB82C6">
             <End Role="Projects" EntitySet="Projects" />
             <End Role="OrdersBase" EntitySet="OrdersBase" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__758D6A5C" Association="Self.FK__Projects__Projec__758D6A5C">
+          <AssociationSet Name="FK__Projects__Projec__795DFB40" Association="Self.FK__Projects__Projec__795DFB40">
             <End Role="Centers" EntitySet="Centers" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
-          <AssociationSet Name="FK__Projects__Projec__76818E95" Association="Self.FK__Projects__Projec__76818E95">
+          <AssociationSet Name="FK__Projects__Projec__7A521F79" Association="Self.FK__Projects__Projec__7A521F79">
             <End Role="ProjectTypes" EntitySet="ProjectTypes" />
             <End Role="Projects" EntitySet="Projects" />
           </AssociationSet>
@@ -8438,6 +8447,15 @@
           <NavigationProperty Name="Contracts" Relationship="CorumModel.FK_OrderUsedCarsContract" FromRole="OrderUsedCars" ToRole="Contracts" />
           <NavigationProperty Name="Contracts1" Relationship="CorumModel.FK_OrderUsedCarsContracts1" FromRole="OrderUsedCars" ToRole="Contracts" />
           <NavigationProperty Name="OrdersBase" Relationship="CorumModel.FK_OrderUsedCarsOrder" FromRole="OrderUsedCars" ToRole="OrdersBase" />
+          <Property Name="formUuid" Type="Guid" />
+          <Property Name="IsUpdate" Type="Boolean" />
+          <Property Name="trailerNumber" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="transportDimensions" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="distance" Type="Double" />
+          <Property Name="stateBorderCrossingPoint" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="seriesPassportNumber" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="drivingLicenseNumber" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="tenderNumber" Type="Int32" />
         </EntityType>
         <Association Name="FK_OrderUsedCars_CarOwners">
           <End Type="CorumModel.CarOwners" Role="CarOwners" Multiplicity="0..1" />
@@ -10642,6 +10660,15 @@
           <EntitySetMapping Name="OrderUsedCars">
             <EntityTypeMapping TypeName="CorumModel.OrderUsedCars">
               <MappingFragment StoreEntitySet="OrderUsedCars">
+                <ScalarProperty Name="tenderNumber" ColumnName="tenderNumber" />
+                <ScalarProperty Name="drivingLicenseNumber" ColumnName="drivingLicenseNumber" />
+                <ScalarProperty Name="seriesPassportNumber" ColumnName="seriesPassportNumber" />
+                <ScalarProperty Name="stateBorderCrossingPoint" ColumnName="stateBorderCrossingPoint" />
+                <ScalarProperty Name="distance" ColumnName="distance" />
+                <ScalarProperty Name="transportDimensions" ColumnName="transportDimensions" />
+                <ScalarProperty Name="trailerNumber" ColumnName="trailerNumber" />
+                <ScalarProperty Name="IsUpdate" ColumnName="IsUpdate" />
+                <ScalarProperty Name="formUuid" ColumnName="formUuid" />
                 <ScalarProperty Name="FactShipper" ColumnName="FactShipper" />
                 <ScalarProperty Name="FactConsignee" ColumnName="FactConsignee" />
                 <ScalarProperty Name="FactConsigneeDateTime" ColumnName="FactConsigneeDateTime" />

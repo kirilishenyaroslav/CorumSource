@@ -11,12 +11,13 @@ using Corum.Models.ViewModels.Customers;
 using Corum.Models.ViewModels.OrderConcurs;
 using System.Globalization;
 using Corum.Models.ViewModels.Bucket;
+using System.Web.Mvc;
 
 namespace Corum.DAL.Mappings
 {
     public static class Mapper
     {
-
+        static Corum.Models.ICorumDataProvider context;
         public static CompetetiveListStepsInfoViewModel Map(OrderConcursListsSteps o)
         {
             return new CompetetiveListStepsInfoViewModel()
@@ -160,6 +161,15 @@ namespace Corum.DAL.Mappings
 
         public static OrderUsedCarViewModel Map(OrderUsedCars o)
         {
+            context = DependencyResolver.Current.GetService<ICorumDataProvider>();
+            Nullable<int> tenderNumber = null;
+            if (o.formUuid != null) {
+                tenderNumber = context.GetTenderNumber((Guid)o.formUuid);
+               
+            } 
+            if (tenderNumber == null) {
+                    tenderNumber = o.tenderNumber;
+                }
             return new OrderUsedCarViewModel()
             {
                 Id = o.Id,
@@ -211,7 +221,15 @@ namespace Corum.DAL.Mappings
                 RealFactShipperTimeRaw = o.FactShipper != null ? DateTimeConvertClass.getString(o.FactShipper.Value) : "",
                 RealFactConsigneeTime = o.FactConsignee != null ? o.FactConsignee.Value.ToString("HH:mm") : "",
                 RealFactConsigneeTimeRaw = o.FactConsignee != null ? DateTimeConvertClass.getString(o.FactConsignee.Value) : "",
-
+                formUuid = o.formUuid,
+                trailerNumber = o.trailerNumber,
+                seriesPassportNumber = o.seriesPassportNumber,
+                transportDimensions = o.transportDimensions,
+                distance = o.distance,
+                stateBorderCrossingPoint = o.stateBorderCrossingPoint,
+                drivingLicenseNumber = o.drivingLicenseNumber,
+                tenderNumber = tenderNumber,
+                Summ_ = (Nullable<float>)(o.Summ) ?? 0,
             };
         }
 

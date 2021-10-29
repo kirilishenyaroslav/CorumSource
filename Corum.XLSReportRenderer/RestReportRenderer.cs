@@ -19,6 +19,7 @@ using System.Linq.Expressions;
 using System.Runtime.CompilerServices;
 using System.Reflection;
 using Microsoft.CSharp.RuntimeBinder;
+using Corum.Models.ViewModels.Tender;
 
 namespace Corum.RestReports
 {
@@ -742,6 +743,31 @@ namespace Corum.RestReports
                 //грузовой транспорт
                 return TruckOrderRenderReport(OrderTypeModel, AcceptDate, orderClientInfo, Params, AdressFrom, AdressTo,
                     ContractName, extOrderTypeModel2, carList);
+
+        }
+
+        public byte[] OrderRenderReport<T>(OrderBaseViewModel OrderTypeModel, OrdersPassTransportViewModel extOrderTypeModel, string AcceptDate, OrderClientsViewModel orderClientInfo, RestParamsInfo Params, string AdressFrom, string AdressTo, string ContractName, OrdersTruckTransportViewModel extOrderTypeModel2, int OrderType, List<OrderUsedCarViewModel> carList, DataToAndFromContragent data)
+        {
+            //легковой транспорт
+            if (OrderType == 6)
+                return PassOrderRenderReport(OrderTypeModel, extOrderTypeModel, AcceptDate, orderClientInfo, Params,
+                    AdressFrom, AdressTo, ContractName, carList);
+            else
+                //грузовой транспорт
+                return TruckOrderRenderReport(OrderTypeModel, AcceptDate, orderClientInfo, Params, AdressFrom, AdressTo,
+                    ContractName, extOrderTypeModel2, carList, data);
+
+        }
+        public byte[] OrderRenderReport<T>(OrderBaseViewModel OrderTypeModel, OrdersPassTransportViewModel extOrderTypeModel, string AcceptDate, OrderClientsViewModel orderClientInfo, RestParamsInfo Params, string AdressFrom, string AdressTo, string ContractName, OrdersTruckTransportViewModel extOrderTypeModel2, int OrderType, List<OrderUsedCarViewModel> carList, List<DataToAndFromContragent> data)
+        {
+            //легковой транспорт
+            if (OrderType == 6)
+                return PassOrderRenderReport(OrderTypeModel, extOrderTypeModel, AcceptDate, orderClientInfo, Params,
+                    AdressFrom, AdressTo, ContractName, carList);
+            else
+                //грузовой транспорт
+                return TruckOrderRenderReport(OrderTypeModel, AcceptDate, orderClientInfo, Params, AdressFrom, AdressTo,
+                    ContractName, extOrderTypeModel2, carList, data);
 
         }
         private byte[] PassOrderRenderReport(OrderBaseViewModel OrderTypeModel, OrdersPassTransportViewModel extOrderTypeModel, string AcceptDate, OrderClientsViewModel orderClientInfo, RestParamsInfo Params, string AdressFrom, string AdressTo, string ContractName, List<OrderUsedCarViewModel> carList)
@@ -2798,6 +2824,963 @@ namespace Corum.RestReports
 
         }
 
+        private byte[] TruckOrderRenderReport(OrderBaseViewModel OrderTypeModel, string AcceptDate,
+            OrderClientsViewModel orderClientInfo, RestParamsInfo Params, string AdressFrom, string AdressTo,
+            string ContractName, OrdersTruckTransportViewModel extOrderTypeModel, List<OrderUsedCarViewModel> carList, DataToAndFromContragent data)
+        {
+            //Пример генерации QR кода
+            string UrlForEncoding =
+#if DEBUG
+
+                $"http://uh218479-1.ukrdomen.com/Orders/UpdateOrder/{OrderTypeModel.Id}";
+#else
+                              
+                                $"https://corumsource.com/Orders/UpdateOrder/{OrderTypeModel.Id}";
+#endif
+
+
+            ExcelFile ef = new ExcelFile();
+            CultureInfo ci = new CultureInfo(Params.Language);
+
+            ExcelWorksheet WorkSheet = ef.Worksheets.Add("Заявка грузовой");
+            ExcelWorksheet WorkSheet2 = ef.Worksheets.Add("Данные для учета");
+
+            WorkSheet.PrintOptions.PaperType = PaperType.A4;
+            WorkSheet.PrintOptions.FitWorksheetWidthToPages = 1;
+
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(UrlForEncoding, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+
+            var imgStream = new MemoryStream();
+            qrCodeImage.Save(imgStream, System.Drawing.Imaging.ImageFormat.Png);
+
+            WorkSheet.Pictures.Add(imgStream,
+                PositioningMode.MoveAndSize,
+                new AnchorCell(WorkSheet.Columns[6], WorkSheet.Rows[0], 10, 10, LengthUnit.Pixel),
+                new AnchorCell(WorkSheet.Columns[6], WorkSheet.Rows[2], 70, 70, LengthUnit.Pixel),
+                ExcelPictureFormat.Png);
+            //шрифт 10 для всех ячеек
+            WorkSheet.Cells.Style.Font.Size = 11 * 20;
+
+            //ширина колонок            
+            WorkSheet.Columns[0].Width = 3 * 256;
+            WorkSheet.Columns[1].Width = 8 * 256;
+            WorkSheet.Columns[2].Width = 25 * 256;
+            WorkSheet.Columns[3].Width = 15 * 256;
+            WorkSheet.Columns[4].Width = 15 * 256;
+            WorkSheet.Columns[5].Width = 34 * 256;
+            WorkSheet.Columns[6].Width = 27 * 256;
+            WorkSheet.Columns[7].Width = 24 * 256;
+            WorkSheet.Columns[8].Width = 25 * 256;
+            WorkSheet.Rows[40].AutoFit();
+            //WorkSheet.Rows[40].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            //WorkSheet.Rows[40].Style.VerticalAlignment = VerticalAlignmentStyle.Bottom;
+
+
+            //шрифт заголовка + сделать жирным
+            WorkSheet.Cells["C1"].Style.Font.Size = 14 * 20;
+            WorkSheet.Cells["C1"].Style.Font.Weight = ExcelFont.BoldWeight;
+
+            //заголовок отчета
+            WorkSheet.Cells["C1"].Value = Params.MainHeader;
+
+            //Дата и время создания файла            
+            WorkSheet.Cells["E2"].Value = "Дата и время создания файла:" + DateTime.Now;
+            WorkSheet.Cells["E2"].Style.Font.Size = 8 * 20;
+
+            WorkSheet.Cells["B3"].Value = "ДАТА:";
+            WorkSheet.Cells["D3"].Value = OrderTypeModel.OrderDate;
+            WorkSheet.Cells["B3"].Style.Font.Size = 13 * 20;
+            WorkSheet.Cells["B3"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D3"].Style.Font.Size = 14 * 20;
+            for (int i = 3; i <= 6; i++)
+            {
+                for (int j = 3; j <= 4; j++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+            }
+
+            WorkSheet.Cells["B4"].Value = "СОСТАВИЛ:";
+            WorkSheet.Cells["D4"].Value = OrderTypeModel.CreatorPosition;
+            WorkSheet.Cells["B4"].Style.Font.Size = 13 * 20;
+            WorkSheet.Cells["D4"].Style.Font.Size = 12 * 20;
+            WorkSheet.Cells["F4"].Style.Font.Size = 12 * 20;
+            WorkSheet.Cells["F4"].Value = OrderTypeModel.CreatorContact;
+            WorkSheet.Cells["B4"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D4"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["F4"].Style.Font.Weight = ExcelFont.BoldWeight;
+
+            WorkSheet.Cells["D5"].Value = "/ФИО, Должность/";
+            WorkSheet.Cells["D5"].Style.Font.Size = 8 * 20;
+
+            WorkSheet.Cells["B6"].Value = "Заполняется заказчиком";
+            WorkSheet.Cells["B6"].Style.Font.Size = 16 * 20;
+            WorkSheet.Cells["B6"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B6"].Style.Font.Italic = true;
+            WorkSheet.Cells["B6"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+            {
+                WorkSheet.Cells[GetExcelColumnName(i) + "6"].Style.Borders.SetBorders(
+                    MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                    Color.Black, LineStyle.Thin);
+                WorkSheet.Cells[GetExcelColumnName(i) + "6"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+            }
+
+            WorkSheet.Cells.GetSubrangeAbsolute(5, 1, 5, 6).Merged = true;
+
+            WorkSheet.Cells["B7"].Value = "Заказчик (Плательщик) за транспортировку: ";
+            WorkSheet.Cells["B7"].Style.Font.Size = 13 * 20;
+            WorkSheet.Cells["B7"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B7"].Style.Font.Italic = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(6, 1, 6, 6).Merged = true;
+            WorkSheet.Cells["B7"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+            {
+                WorkSheet.Cells[GetExcelColumnName(i) + "7"].Style.Borders.SetBorders(
+                    MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                    Color.Black, LineStyle.Medium);
+
+                WorkSheet.Cells[GetExcelColumnName(i) + "7"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+            }
+
+            WorkSheet.Cells["B8"].Value = "Наименование организации";
+            WorkSheet.Cells.GetSubrangeAbsolute(7, 1, 7, 2).Merged = true;
+            WorkSheet.Cells["B8"].Style.Font.Weight = ExcelFont.BoldWeight;
+
+            WorkSheet.Cells["D8"].Style.Borders.SetBorders(
+                  MultipleBorders.Bottom,
+                  Color.Black, LineStyle.Thin);
+
+
+            WorkSheet.Cells["B8"].Style.Borders.SetBorders(MultipleBorders.Left, Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["B8"].Style.Borders.SetBorders(MultipleBorders.Right, Color.Black, LineStyle.Thin);
+            WorkSheet.Cells["G8"].Style.Borders.SetBorders(MultipleBorders.Right, Color.Black, LineStyle.Medium);
+
+            WorkSheet.Cells["B9"].Value = "Контактное лицо/ тел.";
+            WorkSheet.Cells.GetSubrangeAbsolute(8, 1, 8, 2).Merged = true;
+            WorkSheet.Cells["B9"].Style.Font.Weight = ExcelFont.BoldWeight;
+
+
+            WorkSheet.Cells["B9"].Style.Borders.SetBorders(MultipleBorders.Left, Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["G9"].Style.Borders.SetBorders(MultipleBorders.Right, Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["D9"].Style.Borders.SetBorders(MultipleBorders.Left, Color.Black, LineStyle.Thin);
+
+            for (int i = 2; i <= 7; i++)
+            {
+                WorkSheet.Cells[GetExcelColumnName(i) + "9"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                    Color.Black, LineStyle.Medium);
+                WorkSheet.Cells[GetExcelColumnName(i) + "9"].Style.Borders.SetBorders(MultipleBorders.Top,
+                 Color.Black, LineStyle.Thin);
+            }
+
+            WorkSheet.Cells["D8"].Value = OrderTypeModel.PayerName;
+            WorkSheet.Cells["D8"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(7, 3, 7, 6).Merged = true;
+            WorkSheet.Cells["D8"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            //WorkSheet.Cells["D9"].Style.Borders.SetBorders(MultipleBorders.Top | MultipleBorders.Bottom, Color.Black, LineStyle.Thin);
+
+            WorkSheet.Cells["D9"].Value = OrderTypeModel.CreatorPosition + "/" + OrderTypeModel.CreatorContact;
+            WorkSheet.Cells["D9"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(8, 3, 8, 6).Merged = true;
+            WorkSheet.Cells["D9"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["B11"].Value = "Информация о грузе:";
+            WorkSheet.Cells["B11"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B11"].Style.Font.Italic = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(10, 1, 10, 6).Merged = true;
+            WorkSheet.Cells["B11"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+                WorkSheet.Cells[GetExcelColumnName(i) + "11"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+
+            WorkSheet.Cells["B12"].Value = "Наименование груза";
+            WorkSheet.Cells["B12"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(11, 1, 11, 2).Merged = true;
+
+            WorkSheet.Cells["D12"].Value = extOrderTypeModel.TruckDescription;
+            WorkSheet.Cells["D12"].Style.WrapText = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(11, 3, 11, 5).Merged = true;
+            WorkSheet.Cells["D12"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["D12"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D12"].Style.Font.Italic = true;
+
+            WorkSheet.Cells["G12"].Value = extOrderTypeModel.TruckTypeName;
+            WorkSheet.Cells["G12"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["G12"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            //WorkSheet.Cells["G12"].Style.FillPattern.SetPattern(FillPatternStyle.Solid, SpreadsheetColor.FromName(ColorName.LightGreen), SpreadsheetColor.FromName(ColorName.Automatic));
+
+            WorkSheet.Cells["B13"].Value = "Вес, т:";
+            WorkSheet.Cells["B13"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["C13"].Value = data.regmesstocontrag.weightCargo;
+            WorkSheet.Cells["C13"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B13"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["C13"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["C13"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["D13"].Value = "Объем, м3";
+            WorkSheet.Cells["D13"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D13"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["E13"].Value = extOrderTypeModel.Volume;
+            WorkSheet.Cells["E13"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["E13"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["E13"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["F13"].Value = "Упаковка ";
+            WorkSheet.Cells["G13"].Value = extOrderTypeModel.BoxingDescription;
+            WorkSheet.Cells["F13"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["F13"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["G13"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["G13"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["G13"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["B14"].Value = "Габариты / L x W x H / см /негабарит";
+            WorkSheet.Cells["B14"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B14"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(13, 1, 13, 2).Merged = true;
+
+            WorkSheet.Cells["D14"].Value = extOrderTypeModel.DimenssionL + " x " + extOrderTypeModel.DimenssionW + " x " +
+                                           extOrderTypeModel.DimenssionH;
+            WorkSheet.Cells["D14"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D14"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(13, 3, 13, 4).Merged = true;
+            WorkSheet.Cells["D14"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["F14"].Value = "Количество мест";
+            WorkSheet.Cells["F14"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["F14"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["G14"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["B15"].Value = "Необходимое кол-во автомобилей *";
+            WorkSheet.Cells["B15"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B15"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(14, 3, 14, 4).Merged = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(14, 1, 14, 2).Merged = true;
+            WorkSheet.Cells["D15"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            WorkSheet.Cells["D15"].Value = OrderTypeModel.CarNumber;
+
+            WorkSheet.Cells["B16"].Value = "Тип авто/вид загрузки/выгрузки";
+            WorkSheet.Cells["B16"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B16"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(15, 1, 15, 2).Merged = true;
+
+            WorkSheet.Cells["D16"].Value = extOrderTypeModel.VehicleTypeName;
+            //WorkSheet.Cells["D16"].Style.FillPattern.SetPattern(FillPatternStyle.Solid, SpreadsheetColor.FromName(ColorName.LightGreen), SpreadsheetColor.FromName(ColorName.Automatic));
+            WorkSheet.Cells.GetSubrangeAbsolute(15, 3, 15, 4).Merged = true;
+            WorkSheet.Cells["D16"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["F16"].Value = extOrderTypeModel.LoadingTypeName;
+            //WorkSheet.Cells["F16"].Style.FillPattern.SetPattern(FillPatternStyle.Solid, SpreadsheetColor.FromName(ColorName.LightGreen), SpreadsheetColor.FromName(ColorName.Automatic));
+            WorkSheet.Cells["F16"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["G16"].Value = extOrderTypeModel.UnloadingTypeName;
+            //WorkSheet.Cells["G16"].Style.FillPattern.SetPattern(FillPatternStyle.Solid, SpreadsheetColor.FromName(ColorName.LightGreen), SpreadsheetColor.FromName(ColorName.Automatic));
+            WorkSheet.Cells["G16"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+            {
+                for (int j = 12; j <= 16; j++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
+                        MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+            }
+
+            WorkSheet.Cells["B11"].Style.Borders.SetBorders(
+                MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top,
+                Color.Black, LineStyle.Medium);
+            for (int i = 12; i <= 16; i++)
+            {
+                WorkSheet.Cells["B" + i].Style.Borders.SetBorders(MultipleBorders.Left,
+                    Color.Black, LineStyle.Medium);
+
+                WorkSheet.Cells["G" + i].Style.Borders.SetBorders(MultipleBorders.Right,
+                    Color.Black, LineStyle.Medium);
+            }
+
+            WorkSheet.Cells["B16"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["D16"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["F16"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["G16"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+
+            WorkSheet.Cells["B18"].Value = "Сроки подачи/доставки";
+            WorkSheet.Cells["B18"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B18"].Style.Font.Italic = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(17, 1, 17, 6).Merged = true;
+            WorkSheet.Cells["B18"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+                WorkSheet.Cells[GetExcelColumnName(i) + "18"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+
+            WorkSheet.Cells.GetSubrangeAbsolute(18, 1, 18, 2).Merged = true;
+            WorkSheet.Cells["D19"].Value = "Дата";
+            WorkSheet.Cells["D19"].Style.Font.Size = 8 * 20;
+            WorkSheet.Cells["D19"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D19"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            WorkSheet.Cells.GetSubrangeAbsolute(18, 3, 18, 5).Merged = true;
+
+            WorkSheet.Cells["G19"].Value = "Время";
+            WorkSheet.Cells["G19"].Style.Font.Size = 8 * 20;
+            WorkSheet.Cells["G19"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["G19"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["B20"].Value = "Дата и время подачи автомобиля(ей) грузоотправителю *";
+            WorkSheet.Cells["B20"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B20"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(19, 1, 19, 2).Merged = true;
+            WorkSheet.Cells["B20"].Style.WrapText = true;
+            WorkSheet.Cells["B20"].Row.Height = 600;
+
+            WorkSheet.Cells["D20"].Value = extOrderTypeModel.FromShipperDate;
+            WorkSheet.Cells["D20"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D20"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            WorkSheet.Cells.GetSubrangeAbsolute(19, 3, 19, 5).Merged = true;
+
+            WorkSheet.Cells["G20"].Value = extOrderTypeModel.FromShipperTime;
+            WorkSheet.Cells["G20"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["G20"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["B21"].Value = "Дата и время доставки груза грузополучателю *";
+            //WorkSheet.Cells["B21"].Row.AutoFit();            
+
+            WorkSheet.Cells["B21"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B21"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(20, 1, 20, 2).Merged = true;
+            WorkSheet.Cells["B21"].Style.WrapText = true;
+            WorkSheet.Cells["B21"].Row.Height = 600;
+
+            WorkSheet.Cells["D21"].Value = extOrderTypeModel.ToConsigneeDate;
+            WorkSheet.Cells["D21"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D21"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            WorkSheet.Cells.GetSubrangeAbsolute(20, 3, 20, 5).Merged = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(21, 3, 21, 6).Merged = true;
+
+            WorkSheet.Cells["G21"].Value = extOrderTypeModel.ToConsigneeTime;
+            WorkSheet.Cells["G21"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["G21"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["B22"].Value = "Особые условия перевозки";
+            WorkSheet.Cells["B22"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(21, 1, 21, 2).Merged = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(22, 1, 22, 2).Merged = true;
+
+            WorkSheet.Cells["D22"].Value = extOrderTypeModel.OrderDescription;
+            WorkSheet.Cells["D22"].Style.Font.Weight = ExcelFont.BoldWeight;
+
+            for (int i = 2; i <= 7; i++)
+            {
+
+                for (int j = 19; j <= 22; j++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
+                        MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+            }
+
+            WorkSheet.Cells["B18"].Style.Borders.SetBorders(
+                MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top,
+                Color.Black, LineStyle.Medium);
+            for (int i = 19; i <= 22; i++)
+            {
+                WorkSheet.Cells["B" + i].Style.Borders.SetBorders(MultipleBorders.Left,
+                    Color.Black, LineStyle.Medium);
+
+                WorkSheet.Cells["G" + i].Style.Borders.SetBorders(MultipleBorders.Right,
+                    Color.Black, LineStyle.Medium);
+            }
+            WorkSheet.Cells["B22"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["D22"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+
+            WorkSheet.Cells["B24"].Value = "Грузоотправитель:";
+            WorkSheet.Cells["B24"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B24"].Style.Font.Italic = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(23, 1, 23, 6).Merged = true;
+            WorkSheet.Cells["B24"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+                WorkSheet.Cells[GetExcelColumnName(i) + "24"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+
+            WorkSheet.Cells["B25"].Value = "Наименование организации";
+            WorkSheet.Cells["B25"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(24, 1, 24, 2).Merged = true;
+
+            if (extOrderTypeModel.Shipper == "")
+                WorkSheet.Cells["D25"].Value = extOrderTypeModel.OrganizationLoadPoints;
+            else
+                WorkSheet.Cells["D25"].Value = "1) " + extOrderTypeModel.Shipper + "\n" + extOrderTypeModel.OrganizationLoadPoints;
+            WorkSheet.Cells["D25"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(24, 3, 24, 6).Merged = true;
+            WorkSheet.Cells["D25"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+            WorkSheet.Cells["D25"].Style.VerticalAlignment = VerticalAlignmentStyle.Top;
+            WorkSheet.Cells["D25"].Style.Font.Italic = true;
+            WorkSheet.Cells["D25"].Style.WrapText = true;
+            double cntHeight = WorkSheet.Cells["D25"].Value.ToString().Length * 2 / 75;
+            if (cntHeight == 0) cntHeight = 1;
+            if (cntHeight < WorkSheet.Cells["D25"].Value.ToString().Count(x => x == '\n'))
+                cntHeight = WorkSheet.Cells["D25"].Value.ToString().Count(x => x == '\n') * 1.3;
+            WorkSheet.Cells["D25"].Row.Height = (int)(WorkSheet.Cells["D25"].Row.Height * cntHeight);
+
+            WorkSheet.Cells["B26"].Value = "Адрес загрузки";
+            WorkSheet.Cells["B26"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(25, 1, 25, 2).Merged = true;
+
+            string ShipperAddress = "";
+            if (extOrderTypeModel.TripType == 2)
+                ShipperAddress = extOrderTypeModel.ShipperCountryName + " " +
+                extOrderTypeModel.ShipperCity + " " + extOrderTypeModel.ShipperAdress;
+            else
+                ShipperAddress = extOrderTypeModel.ShipperCity + " " + extOrderTypeModel.ShipperAdress;
+
+            //if  (ShipperAddress == "")
+            //    WorkSheet.Cells["D26"].Value = extOrderTypeModel.AddressLoadPoints;
+            //else
+            WorkSheet.Cells["D26"].Value = "1) " + ShipperAddress + "\n" + extOrderTypeModel.AddressLoadPoints;
+            WorkSheet.Cells["D26"].Style.VerticalAlignment = VerticalAlignmentStyle.Top;
+            WorkSheet.Cells["D26"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(25, 3, 25, 6).Merged = true;
+            WorkSheet.Cells["D26"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+            WorkSheet.Cells["D26"].Style.Font.Italic = true;
+            WorkSheet.Cells["D26"].Style.WrapText = true;
+            WorkSheet.Cells["B27"].Value = "Контактное лицо / тел.";
+            WorkSheet.Cells["B27"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(26, 1, 26, 2).Merged = true;
+            cntHeight = WorkSheet.Cells["D26"].Value.ToString().Length * 2 / 75;
+            if (cntHeight == 0) cntHeight = 1;
+            if (cntHeight < WorkSheet.Cells["D26"].Value.ToString().Count(x => x == '\n'))
+                cntHeight = WorkSheet.Cells["D26"].Value.ToString().Count(x => x == '\n') * 1.3;
+            WorkSheet.Cells["D26"].Row.Height = (int)(WorkSheet.Cells["D26"].Row.Height * cntHeight);
+
+            string ShipperContact = "";
+            ShipperContact = extOrderTypeModel.ShipperContactPerson + "/" +
+                                           extOrderTypeModel.ShipperContactPersonPhone;
+
+            //if (ShipperContact == "")
+            //    WorkSheet.Cells["D27"].Value = extOrderTypeModel.ContactsLoadPoints;
+            //else
+            WorkSheet.Cells["D27"].Value = "1) " + ShipperContact + "\n" + extOrderTypeModel.ContactsLoadPoints;
+            WorkSheet.Cells["D27"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(26, 3, 26, 6).Merged = true;
+            WorkSheet.Cells["D27"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+            WorkSheet.Cells["D27"].Style.Font.Italic = true;
+            WorkSheet.Cells["D27"].Style.VerticalAlignment = VerticalAlignmentStyle.Top;
+            cntHeight = WorkSheet.Cells["D27"].Value.ToString().Length * 2 / 75;
+            if (cntHeight == 0) cntHeight = 1;
+            if (cntHeight < WorkSheet.Cells["D27"].Value.ToString().Count(x => x == '\n'))
+                cntHeight = WorkSheet.Cells["D27"].Value.ToString().Count(x => x == '\n') * 1.3;
+            WorkSheet.Cells["D27"].Row.Height = (int)(WorkSheet.Cells["D27"].Row.Height * cntHeight);
+
+
+            for (int i = 2; i <= 7; i++)
+            {
+                for (int j = 25; j <= 27; j++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
+                        MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+            }
+
+            WorkSheet.Cells["B24"].Style.Borders.SetBorders(
+                MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top,
+                Color.Black, LineStyle.Medium);
+
+            for (int i = 25; i <= 27; i++)
+            {
+                WorkSheet.Cells["B" + i].Style.Borders.SetBorders(MultipleBorders.Left,
+                    Color.Black, LineStyle.Medium);
+
+                WorkSheet.Cells["G" + i].Style.Borders.SetBorders(MultipleBorders.Right,
+                    Color.Black, LineStyle.Medium);
+            }
+            WorkSheet.Cells["B27"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["D27"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+
+
+            WorkSheet.Cells["B29"].Value = "Грузополучатель:";
+            WorkSheet.Cells["B29"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B29"].Style.Font.Italic = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(28, 1, 28, 6).Merged = true;
+            WorkSheet.Cells["B29"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+                WorkSheet.Cells[GetExcelColumnName(i) + "29"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+
+            WorkSheet.Cells["B30"].Value = "Наименование организации";
+            WorkSheet.Cells["B30"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(29, 1, 29, 2).Merged = true;
+
+            int countUnLoadPoints = extOrderTypeModel.CountUnLoadPoints + 1;
+            if (extOrderTypeModel.Consignee == "")
+                WorkSheet.Cells["D30"].Value = extOrderTypeModel.OrganizationUnLoadPoints;
+            else
+                WorkSheet.Cells["D30"].Value = extOrderTypeModel.OrganizationUnLoadPoints + countUnLoadPoints.ToString() + ") " + extOrderTypeModel.Consignee;
+            WorkSheet.Cells["D30"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(29, 3, 29, 6).Merged = true;
+            WorkSheet.Cells["D30"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+            WorkSheet.Cells["D30"].Style.VerticalAlignment = VerticalAlignmentStyle.Top;
+
+            WorkSheet.Cells["D30"].Style.Font.Italic = true;
+            WorkSheet.Cells["D30"].Style.WrapText = true;
+            cntHeight = WorkSheet.Cells["D30"].Value.ToString().Length * 2 / 75;
+            if (cntHeight == 0) cntHeight = 1;
+            if (cntHeight < WorkSheet.Cells["D30"].Value.ToString().Count(x => x == '\n'))
+                cntHeight = WorkSheet.Cells["D30"].Value.ToString().Count(x => x == '\n') * 1.3;
+            WorkSheet.Cells["D30"].Row.Height = (int)(WorkSheet.Cells["D30"].Row.Height * cntHeight);
+
+            WorkSheet.Cells["B31"].Value = "Адрес выгрузки";
+            WorkSheet.Cells["B31"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(30, 1, 30, 2).Merged = true;
+            WorkSheet.Cells["B31"].Style.WrapText = true;
+
+            string ConsigneeAddress = "";
+            if (extOrderTypeModel.TripType == 2)
+                ConsigneeAddress = extOrderTypeModel.ConsigneeCountryName + " " +
+                                   extOrderTypeModel.ConsigneeCity + " " + extOrderTypeModel.ConsigneeAdress;
+            else
+                ConsigneeAddress = extOrderTypeModel.ConsigneeCity + " " + extOrderTypeModel.ConsigneeAdress;
+            if (ConsigneeAddress == "")
+                WorkSheet.Cells["D31"].Value = extOrderTypeModel.AddressUnLoadPoints;
+            else
+                WorkSheet.Cells["D31"].Value = extOrderTypeModel.AddressUnLoadPoints + countUnLoadPoints.ToString() + ") " + ConsigneeAddress;
+
+            WorkSheet.Cells["D31"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(30, 3, 30, 6).Merged = true;
+            WorkSheet.Cells["D31"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+            WorkSheet.Cells["D31"].Style.VerticalAlignment = VerticalAlignmentStyle.Top;
+            WorkSheet.Cells["D31"].Style.Font.Italic = true;
+
+            //WorkSheet.Cells["D31"].Style.WrapText = true;
+            cntHeight = WorkSheet.Cells["D31"].Value.ToString().Length * 2 / 75;
+            if (cntHeight == 0) cntHeight = 1;
+            if (cntHeight < WorkSheet.Cells["D31"].Value.ToString().Count(x => x == '\n'))
+                cntHeight = WorkSheet.Cells["D31"].Value.ToString().Count(x => x == '\n') * 1.3;
+            WorkSheet.Cells["D31"].Row.Height = (int)(WorkSheet.Cells["D31"].Row.Height * cntHeight);
+            //extOrderTypeModel.AddressUnLoadPoints.Count(x => x == '\n');
+            // WorkSheet.Cells["D31"].Row.Height = WorkSheet.Cells["D31"].Row.Height * cntHeight;
+
+            WorkSheet.Cells["B32"].Value = "Контактное лицо / тел.";
+            WorkSheet.Cells["B32"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(31, 1, 31, 2).Merged = true;
+            string ConsigneeContact = "";
+            ConsigneeContact = extOrderTypeModel.ConsigneeContactPerson + "/" +
+                               extOrderTypeModel.ConsigneeContactPersonPhone;
+            //if (ConsigneeContact == "")
+            //WorkSheet.Cells["D32"].Value = extOrderTypeModel.ContactsUnLoadPoints;
+            //else
+            WorkSheet.Cells["D32"].Value = extOrderTypeModel.ContactsUnLoadPoints + countUnLoadPoints.ToString() + ") " + ConsigneeContact;
+            WorkSheet.Cells["D32"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(31, 3, 31, 6).Merged = true;
+            WorkSheet.Cells["D32"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+            WorkSheet.Cells["D32"].Style.VerticalAlignment = VerticalAlignmentStyle.Top;
+            WorkSheet.Cells["D32"].Style.Font.Italic = true;
+
+            cntHeight = WorkSheet.Cells["D32"].Value.ToString().Length * 2 / 75;
+            if (cntHeight == 0) cntHeight = 1;
+            if (cntHeight < WorkSheet.Cells["D32"].Value.ToString().Count(x => x == '\n'))
+                cntHeight = WorkSheet.Cells["D32"].Value.ToString().Count(x => x == '\n') * 1.3;
+            WorkSheet.Cells["D32"].Row.Height = (int)(WorkSheet.Cells["D32"].Row.Height * cntHeight);
+
+            for (int i = 2; i <= 7; i++)
+            {
+                for (int j = 30; j <= 32; j++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
+                        MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+            }
+
+            WorkSheet.Cells["B29"].Style.Borders.SetBorders(
+                MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top,
+                Color.Black, LineStyle.Medium);
+
+            for (int i = 30; i <= 32; i++)
+            {
+                WorkSheet.Cells["B" + i].Style.Borders.SetBorders(MultipleBorders.Left,
+                    Color.Black, LineStyle.Medium);
+
+                WorkSheet.Cells["G" + i].Style.Borders.SetBorders(MultipleBorders.Right,
+                    Color.Black, LineStyle.Medium);
+            }
+            WorkSheet.Cells["B32"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["D32"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+
+            //if (carList.Count > 0)
+            //{
+            WorkSheet.Cells["B34"].Value = "ЗАПОЛНЯЕТСЯ ЭКСПЕДИТОРОМ-ПЕРЕВОЗЧИКОМ:";
+            WorkSheet.Cells["B34"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B34"].Style.Font.Italic = true;
+            WorkSheet.Cells["B34"].Style.Font.Size = 16 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(33, 1, 33, 6).Merged = true;
+            WorkSheet.Cells["B34"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+            {
+                WorkSheet.Cells[GetExcelColumnName(i) + "34"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+            }
+
+            WorkSheet.Cells["B34"].Style.Borders.SetBorders(MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top,
+                      Color.Black, LineStyle.Medium);
+
+            //}
+            //добавим пустую запись, чтобы даже если нет выбранного перевозчика/экспедитора выводить пустую часть блока "ЗАПОЛНЯЕТСЯ ЭКСПЕДИТОРОМ"
+            if (carList.Count == 0)
+            {
+                //OrderUsedCarViewModel car = new OrderUsedCarViewModel();
+                carList.Add(new OrderUsedCarViewModel());
+
+            }
+
+            int RowCount = 35;
+            int RowCountStart = 35;
+
+            foreach (var car in carList)
+            {
+                RowCountStart = RowCount;
+
+                WorkSheet.Cells["B" + RowCount].Value = "Экспедитор:  " + data.regmesstocontrag.contragentName + " согласно договора " + car.ContractExpBkInfo;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Italic = true;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 6).Merged = true;
+
+                for (int i = 2; i <= 7; i++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + RowCount].Style.FillPattern.SetPattern(
+                        FillPatternStyle.Solid, SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                        SpreadsheetColor.FromName(ColorName.Automatic));
+                }
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = "Маршрут движения";
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 6).Merged = true;
+                WorkSheet.Cells["D" + RowCount].Value = data.regmesstocontrag.routeShort;
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = "Расстояние, км";
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 6).Merged = true;
+                if (Convert.ToDecimal(extOrderTypeModel.TotalDistanceLenght) == 0)
+                    WorkSheet.Cells["D" + RowCount].Value = data.formFromContr.distance;
+                else
+                    WorkSheet.Cells["D" + RowCount].Value = data.formFromContr.distance;
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = "Стоимость перевозки, грн.";
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 6).Merged = true;
+                if (extOrderTypeModel.TotalCost == "")
+                    WorkSheet.Cells["D" + RowCount].Value = data.regmesstocontrag.cost;
+                else
+                    WorkSheet.Cells["D" + RowCount].Value = data.regmesstocontrag.cost;
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+
+                for (int i = 2; i <= 7; i++)
+                {
+                    for (int j = RowCountStart; j <= RowCount; j++)
+                    {
+                        WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                            Color.Black, LineStyle.Thin);
+                    }
+                }
+
+                WorkSheet.Cells["B" + (RowCountStart - 1)].Style.Borders.SetBorders(MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top,
+                            Color.Black, LineStyle.Medium);
+
+                for (int i = RowCountStart; i <= RowCount; i++)
+                {
+                    WorkSheet.Cells["B" + i].Style.Borders.SetBorders(MultipleBorders.Left,
+                        Color.Black, LineStyle.Medium);
+
+                    WorkSheet.Cells["G" + i].Style.Borders.SetBorders(MultipleBorders.Right,
+                        Color.Black, LineStyle.Medium);
+                }
+
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = "Информация об автомобиле и водителе*";
+
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Italic = true;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 6).Merged = true;
+                WorkSheet.Cells["B" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                for (int i = 2; i <= 7; i++)
+                    WorkSheet.Cells[GetExcelColumnName(i) + RowCount].Style.FillPattern.SetPattern(
+                        FillPatternStyle.Solid, SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                        SpreadsheetColor.FromName(ColorName.Automatic));
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = "Наименование Перевозчика";
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["B" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+
+                WorkSheet.Cells["D" + RowCount].Value = "ФИО водителя, тел., № вод.удостоверения";
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
+                WorkSheet.Cells["D" + RowCount].Row.Height = 600;
+                WorkSheet.Cells["D" + RowCount].Style.WrapText = true;
+
+                WorkSheet.Cells["F" + RowCount].Value = "Марка, № авто";
+                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["F" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+                WorkSheet.Cells["G" + RowCount].Value = "Грузоподъемность, тн";
+                WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = car.CarrierInfo;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+
+                WorkSheet.Cells["D" + RowCount].Value = car.CarDriverInfo + ", \n" + car.DriverContactInfo + "; " +
+                                                        car.DriverCardInfo;
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
+                WorkSheet.Cells["D" + RowCount].Row.Height = 600;
+
+                WorkSheet.Cells["F" + RowCount].Value = car.CarModelInfo + " " + car.CarRegNum;
+                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+
+                WorkSheet.Cells["G" + RowCount].Value = car.CarCapacity;
+                WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+                RowCount++;
+                //}
+            }
+
+            if (carList.Count > 0) RowCount--;
+
+            for (int i = 2; i <= 7; i++)
+            {
+                for (int j = 39; j <= RowCount; j++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
+                        MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+            }
+
+
+            for (int i = 39; i <= RowCount; i++)
+            {
+                WorkSheet.Cells["B" + i].Style.Borders.SetBorders(MultipleBorders.Left,
+                    Color.Black, LineStyle.Medium);
+
+                WorkSheet.Cells["G" + i].Style.Borders.SetBorders(MultipleBorders.Right,
+                    Color.Black, LineStyle.Medium);
+            }
+
+            if (carList.Count > 0)
+            {
+                for (int i = 2; i <= 7; i++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + RowCount].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Medium);
+                }
+            }
+
+            if (carList.Count <= 0) RowCount = 32;
+            RowCount = RowCount + 3;
+            WorkSheet.Cells["B" + RowCount].Value = "ЗАКАЗЧИК ___________________";
+            // WorkSheet.Cells["C" + RowCount].Value = " И.О.Руководителя КР и СО";
+            WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 3).Merged = true;
+            WorkSheet.Cells["C" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["E" + RowCount].Value = "                          Экспедитор_____________________";
+
+            RowCount = RowCount + 2;
+
+            WorkSheet.Cells["C" + RowCount].Value = "ФИО";
+            WorkSheet.Cells["F" + RowCount].Value = "ФИО";
+
+            WorkSheet.Cells["B" + RowCount].Style.Borders.SetBorders(MultipleBorders.Top, Color.Black, LineStyle.Thin);
+            WorkSheet.Cells["C" + RowCount].Style.Borders.SetBorders(MultipleBorders.Top, Color.Black, LineStyle.Thin);
+
+            WorkSheet.Cells["E" + RowCount].Style.Borders.SetBorders(MultipleBorders.Top, Color.Black, LineStyle.Thin);
+            WorkSheet.Cells["F" + RowCount].Style.Borders.SetBorders(MultipleBorders.Top, Color.Black, LineStyle.Thin);
+
+            /*********** 2 лист **********/
+
+            //ширина колонок            
+            WorkSheet2.Columns[0].Width = 14 * 256;
+            WorkSheet2.Columns[1].Width = 10 * 256;
+            WorkSheet2.Columns[2].Width = 20 * 256;
+            WorkSheet2.Columns[3].Width = 20 * 256;
+            WorkSheet2.Columns[4].Width = 18 * 256;
+            WorkSheet2.Columns[5].Width = 18 * 256;
+            WorkSheet2.Columns[6].Width = 15 * 256;
+            WorkSheet2.Columns[7].Width = 22 * 256;
+            WorkSheet2.Columns[8].Width = 16 * 256;//I
+
+            WorkSheet2.Columns[9].Width = 8 * 256;
+            WorkSheet2.Columns[10].Width = 8 * 256;
+            WorkSheet2.Columns[11].Width = 8 * 256;
+            WorkSheet2.Columns[12].Width = 8 * 256;
+            WorkSheet2.Columns[13].Width = 8 * 256;
+            WorkSheet2.Columns[14].Width = 10 * 256;//O
+
+            WorkSheet2.Columns[15].Width = 10 * 256;
+            WorkSheet2.Columns[16].Width = 12 * 256;
+            WorkSheet2.Columns[17].Width = 12 * 256;//I
+            WorkSheet2.Columns[18].Width = 8 * 256;
+            WorkSheet2.Columns[19].Width = 8 * 256;//T
+            WorkSheet2.Columns[20].Width = 13 * 256;
+
+            WorkSheet2.Columns[21].Width = 9 * 256;
+            WorkSheet2.Columns[22].Width = 11 * 256;
+            WorkSheet2.Columns[23].Width = 13 * 256;
+
+            //форматирование
+            for (int i = 1; i <= 24; i++)
+            {
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.VerticalAlignment = VerticalAlignmentStyle.Center;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.WrapText = true;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Medium);
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.Borders.SetBorders(
+                       MultipleBorders.Left | MultipleBorders.Right, Color.Black, LineStyle.Thin);
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                        SpreadsheetColor.FromName(ColorName.Accent1Lighter80Pct),
+                        SpreadsheetColor.FromName(ColorName.Automatic));
+
+                WorkSheet2.Cells[GetExcelColumnName(i) + 2].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 2].Style.WrapText = true;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.Font.Size = 10 * 20;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 2].Style.Font.Size = 11 * 20;
+            }
+
+            WorkSheet2.Cells["A1"].Value = "Номер заявки (при разбитие заявки на строки использовать нумерацию с \" / \")";
+            WorkSheet2.Cells["A2"].Value = OrderTypeModel.Id.ToString();
+            WorkSheet2.Cells["B1"].Value = "Дата указанная в заявке";
+            WorkSheet2.Cells["B2"].Value = OrderTypeModel.OrderDate;
+            WorkSheet2.Cells["C1"].Value = "Заказчик/Плательщик (по справочнику) ";
+            WorkSheet2.Cells["C2"].Value = OrderTypeModel.PayerName;
+            WorkSheet2.Cells["D1"].Value = "Автор заявки";
+            WorkSheet2.Cells["D2"].Value = OrderTypeModel.CreatorPosition;
+            WorkSheet2.Cells["E1"].Value = "Грузоотправитель (по справочнику)";
+            WorkSheet2.Cells["E2"].Value = extOrderTypeModel.Shipper;
+
+            WorkSheet2.Cells["F1"].Value = "Грузополучатель (по справочнику)";
+            WorkSheet2.Cells["F2"].Value = extOrderTypeModel.Consignee;
+            WorkSheet2.Cells["G1"].Value = "Пункт отправления (по справочника)";
+
+            if (extOrderTypeModel.TripType == 2)
+                WorkSheet2.Cells["G2"].Value = extOrderTypeModel.ShipperCountryName + " " +
+                                               extOrderTypeModel.ShipperCity + " " + extOrderTypeModel.ShipperAdress;
+            else
+                WorkSheet2.Cells["G2"].Value = extOrderTypeModel.ShipperCity + " " + extOrderTypeModel.ShipperAdress;
+
+            WorkSheet2.Cells["H1"].Value = "Пункт прибытия (по справочнику)";
+            if (extOrderTypeModel.TripType == 2)
+                WorkSheet2.Cells["H2"].Value = extOrderTypeModel.ConsigneeCountryName + " " +
+                                               extOrderTypeModel.ConsigneeCity + " " + extOrderTypeModel.ConsigneeAdress;
+            else
+                WorkSheet2.Cells["H2"].Value = extOrderTypeModel.ConsigneeCity + " " + extOrderTypeModel.ConsigneeAdress;
+
+            WorkSheet2.Cells["I1"].Value = "Наименование груза";
+            WorkSheet2.Cells["I2"].Value = extOrderTypeModel.TruckDescription;
+
+            WorkSheet2.Cells["J1"].Value = "Вес груза";
+            WorkSheet2.Cells["J2"].Value = extOrderTypeModel.Weight;
+            WorkSheet2.Cells["K1"].Value = "Тип авто/кузова";
+            WorkSheet2.Cells["K2"].Value = extOrderTypeModel.VehicleTypeName;
+            WorkSheet2.Cells["L1"].Value = "Вид загрузки";
+            WorkSheet2.Cells["L2"].Value = extOrderTypeModel.LoadingTypeName;
+
+            WorkSheet2.Cells["M1"].Value = "Ограничения по выгрузке";
+            WorkSheet2.Cells["M2"].Value = extOrderTypeModel.UnloadingTypeName;
+            WorkSheet2.Cells["N1"].Value = "К-во авто к подаче";
+            WorkSheet2.Cells["N2"].Value = extOrderTypeModel.CarNumber;
+            WorkSheet2.Cells["O1"].Value = "Дата подачи авто по заявке";
+            WorkSheet2.Cells["O2"].Value = extOrderTypeModel.FromShipperDate;
+
+            WorkSheet2.Cells["P1"].Value = "Время подачи авто по заявке";
+            WorkSheet2.Cells["P2"].Value = extOrderTypeModel.FromShipperTime;
+
+            WorkSheet2.Cells["Q1"].Value = "Дата доставки груза по заявке";
+            WorkSheet2.Cells["Q2"].Value = extOrderTypeModel.ToConsigneeDate;
+
+            WorkSheet2.Cells["R1"].Value = "Время доставки груза по заявке";
+            WorkSheet2.Cells["R2"].Value = extOrderTypeModel.ToConsigneeTime;
+
+            WorkSheet2.Cells["S1"].Value = "Дата подачи заявки";
+            WorkSheet2.Cells["S2"].Value = OrderTypeModel.CreateDatetime.ToShortDateString();
+
+            WorkSheet2.Cells["T1"].Value = "Время подачи заявки";
+            WorkSheet2.Cells["T2"].Value = OrderTypeModel.CreateDatetime.ToShortTimeString();
+
+            WorkSheet2.Cells["U1"].Value = "Тип груза";
+            WorkSheet2.Cells["U2"].Value = extOrderTypeModel.TruckTypeName;
+
+            WorkSheet2.Cells["V1"].Value = "Сумма точек загрузки и выгрузки";
+            WorkSheet2.Cells["V2"].Value = extOrderTypeModel.CountLoadAndUnLoadPoints;
+
+            WorkSheet2.Cells["W1"].Value = "Длина марш., км";
+
+            WorkSheet2.Cells["X1"].Value = "Тип маршрута (по справочнику)";
+
+
+            byte[] fileContents;
+            var options = SaveOptions.XlsxDefault;
+
+            using (var stream = new MemoryStream())
+            {
+                ef.Save(stream, options);
+                fileContents = stream.ToArray();
+            }
+            return fileContents;
+
+
+        }
+
         public byte[] StatusReportRenderReport<T>(RestDataInfo<T> Data, RestParamsInfo Params, List<string> statusOrderSumm)
         {
             ExcelFile ef = new ExcelFile();
@@ -3225,11 +4208,11 @@ namespace Corum.RestReports
             WorkSheet.Columns[10].Width = 17 * 256;
             WorkSheet.Columns[11].Width = 17 * 256;
             WorkSheet.Columns[12].Width = 2 * 256;
-            WorkSheet.Columns[13].Width = 17 * 256;          
-            WorkSheet.Columns[14].Width = 17 * 256;   
+            WorkSheet.Columns[13].Width = 17 * 256;
+            WorkSheet.Columns[14].Width = 17 * 256;
             WorkSheet.Columns[15].Width = 2 * 256;
-            WorkSheet.Columns[16].Width = 17 * 256;          
-            WorkSheet.Columns[17].Width = 17 * 256;          
+            WorkSheet.Columns[16].Width = 17 * 256;
+            WorkSheet.Columns[17].Width = 17 * 256;
 
             //шрифт заголовка + сделать жирным
             WorkSheet.Cells["D2"].Style.Font.Size = 14 * 20;
@@ -3283,24 +4266,24 @@ namespace Corum.RestReports
                         MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
                         Color.Black, LineStyle.Thin);
 
-                 if ((i == 10) || (i == 13) || (i == 16))
+                if ((i == 10) || (i == 13) || (i == 16))
                     WorkSheet.Cells[GetExcelColumnName(i) + 4].Style.Borders.SetBorders(
                         MultipleBorders.Left, Color.Black, LineStyle.Thin);
 
                 if ((i == 11) || (i == 12) || (i == 14) || (i == 15) || (i == 17) || (i == 18))
                 {
-                    WorkSheet.Cells[GetExcelColumnName(i) + 4].Style.Font.Color = Color.Black;                
+                    WorkSheet.Cells[GetExcelColumnName(i) + 4].Style.Font.Color = Color.Black;
                     WorkSheet.Cells[GetExcelColumnName(i) + 4].Style.Borders.SetBorders(
                     MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom, Color.Black, LineStyle.Thin);
                     WorkSheet.Cells[GetExcelColumnName(i) + 5].Style.Borders.SetBorders(
                     MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom, Color.Black, LineStyle.Thin);
                 }
-              
+
                 if (i == 14)
                     WorkSheet.Cells[GetExcelColumnName(i) + 4].Style.Borders.SetBorders(
                         MultipleBorders.Left, Color.Black, LineStyle.Thin);
 
-             
+
 
                 if (i == 4)
                     WorkSheet.Cells[GetExcelColumnName(i) + 4].Style.Borders.SetBorders(
@@ -3319,7 +4302,7 @@ namespace Corum.RestReports
             WorkSheet.Cells.GetSubrangeAbsolute(3, 16, 3, 17).Merged = true;
             WorkSheet.Cells.GetSubrangeAbsolute(3, 3, 3, 7).Merged = true;
             WorkSheet.Cells["A4"].Row.Height = 600;
-              WorkSheet.Cells["D4"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            WorkSheet.Cells["D4"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
 
             //шапка            
             WorkSheet.Cells["D5"].Value = "Экспедитор";
@@ -3351,7 +4334,7 @@ namespace Corum.RestReports
             int RowCount = 7;
             foreach (var data in DataOtgruzka.Rows)
             {
-                WorkSheet.Cells["A" + RowCount].Value = GetPropValue(data, "BalanceKeeper").ToString() + " / " + GetPropValue(data, "CreatorByUserName").ToString();                
+                WorkSheet.Cells["A" + RowCount].Value = GetPropValue(data, "BalanceKeeper").ToString() + " / " + GetPropValue(data, "CreatorByUserName").ToString();
                 WorkSheet.Cells["B" + RowCount].Value = GetPropValue(data, "TruckDescription"); //2
                 WorkSheet.Cells["D" + RowCount].Value = GetPropValue(data, "ExpeditorName"); //1
                 WorkSheet.Cells["E" + RowCount].Value = GetPropValue(data, "CarCapacity"); //2
@@ -3373,10 +4356,10 @@ namespace Corum.RestReports
             {
                 for (int j = 7; j <= RowCount; j++)
                 {
-                    if ((i !=10) && (i != 13) && (i != 16))
-                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
-                        MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
-                        Color.Black, LineStyle.Thin);
+                    if ((i != 10) && (i != 13) && (i != 16))
+                        WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
+                            MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                            Color.Black, LineStyle.Thin);
                     WorkSheet.Cells[GetExcelColumnName(i) + j].Style.WrapText = true;
                 }
             }
@@ -3396,7 +4379,7 @@ namespace Corum.RestReports
             int RowCount2 = RowCount;
             foreach (var data in DataPoluchenie.Rows)
             {
-                 WorkSheet.Cells["A" + RowCount].Value = GetPropValue(data, "BalanceKeeper").ToString() + " / " + GetPropValue(data, "CreatorByUserName").ToString();                
+                WorkSheet.Cells["A" + RowCount].Value = GetPropValue(data, "BalanceKeeper").ToString() + " / " + GetPropValue(data, "CreatorByUserName").ToString();
                 WorkSheet.Cells["B" + RowCount].Value = GetPropValue(data, "TruckDescription"); //2
                 WorkSheet.Cells["D" + RowCount].Value = GetPropValue(data, "ExpeditorName"); //1
                 WorkSheet.Cells["E" + RowCount].Value = GetPropValue(data, "CarCapacity"); //2
@@ -3417,16 +4400,16 @@ namespace Corum.RestReports
             {
                 for (int j = RowCount2; j < RowCount; j++)
                 {
-                    if ((i !=10) && (i != 13) && (i != 16))
-                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
-                        MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
-                        Color.Black, LineStyle.Thin);
+                    if ((i != 10) && (i != 13) && (i != 16))
+                        WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
+                            MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                            Color.Black, LineStyle.Thin);
                     WorkSheet.Cells[GetExcelColumnName(i) + j].Style.WrapText = true;
                 }
             }
             int RowItog = RowCount;
             int SumAvto = SumOtgruzka + SumPoluchenie;
-                        
+
             WorkSheet.Cells["B" + RowCount].Value = "Итого " + SumAvto + " машин";
             WorkSheet.Cells["D" + RowCount].Value = SumAvto;
             WorkSheet.Cells["E" + RowCount].Value = " машин(ы)";
@@ -3451,17 +4434,17 @@ namespace Corum.RestReports
                         Color.Black, LineStyle.Thin);
                     WorkSheet.Cells[GetExcelColumnName(j) + i].Style.WrapText = true;
                 }
-                 WorkSheet.Cells[GetExcelColumnName(9) + i].Style.Borders.SetBorders(
-                        MultipleBorders.Left | MultipleBorders.Right,
-                        Color.Black, LineStyle.Thin);
-                    WorkSheet.Cells[GetExcelColumnName(9) + i].Style.WrapText = true;
+                WorkSheet.Cells[GetExcelColumnName(9) + i].Style.Borders.SetBorders(
+                       MultipleBorders.Left | MultipleBorders.Right,
+                       Color.Black, LineStyle.Thin);
+                WorkSheet.Cells[GetExcelColumnName(9) + i].Style.WrapText = true;
 
             }
-             for (int i = 1; i <= 9; i++)
-              WorkSheet.Cells[GetExcelColumnName(i) + RowCount].Style.Borders.SetBorders(
-                        MultipleBorders.Bottom,
-                        Color.Black, LineStyle.Thin);
-                   
+            for (int i = 1; i <= 9; i++)
+                WorkSheet.Cells[GetExcelColumnName(i) + RowCount].Style.Borders.SetBorders(
+                          MultipleBorders.Bottom,
+                          Color.Black, LineStyle.Thin);
+
             byte[] fileContents;
             var options = SaveOptions.XlsxDefault;
 
@@ -3473,6 +4456,974 @@ namespace Corum.RestReports
             return fileContents;
         }
 
+        private byte[] TruckOrderRenderReport(OrderBaseViewModel OrderTypeModel, string AcceptDate,
+            OrderClientsViewModel orderClientInfo, RestParamsInfo Params, string AdressFrom, string AdressTo,
+            string ContractName, OrdersTruckTransportViewModel extOrderTypeModel, List<OrderUsedCarViewModel> carList, List<DataToAndFromContragent> data)
+        {
+            //Пример генерации QR кода
+            string UrlForEncoding =
+#if DEBUG
 
+                $"http://uh218479-1.ukrdomen.com/Orders/UpdateOrder/{OrderTypeModel.Id}";
+#else
+                              
+                                $"https://corumsource.com/Orders/UpdateOrder/{OrderTypeModel.Id}";
+#endif
+
+
+            ExcelFile ef = new ExcelFile();
+            CultureInfo ci = new CultureInfo(Params.Language);
+
+            ExcelWorksheet WorkSheet = ef.Worksheets.Add("Заявка грузовой");
+            ExcelWorksheet WorkSheet2 = ef.Worksheets.Add("Данные для учета");
+
+            WorkSheet.PrintOptions.PaperType = PaperType.A4;
+            WorkSheet.PrintOptions.FitWorksheetWidthToPages = 1;
+
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(UrlForEncoding, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+
+            var imgStream = new MemoryStream();
+            qrCodeImage.Save(imgStream, System.Drawing.Imaging.ImageFormat.Png);
+
+            WorkSheet.Pictures.Add(imgStream,
+                PositioningMode.MoveAndSize,
+                new AnchorCell(WorkSheet.Columns[6], WorkSheet.Rows[0], 10, 10, LengthUnit.Pixel),
+                new AnchorCell(WorkSheet.Columns[6], WorkSheet.Rows[2], 70, 70, LengthUnit.Pixel),
+                ExcelPictureFormat.Png);
+            //шрифт 10 для всех ячеек
+            WorkSheet.Cells.Style.Font.Size = 11 * 20;
+
+            //ширина колонок            
+            WorkSheet.Columns[0].Width = 3 * 256;
+            WorkSheet.Columns[1].Width = 8 * 256;
+            WorkSheet.Columns[2].Width = 25 * 256;
+            WorkSheet.Columns[3].Width = 15 * 256;
+            WorkSheet.Columns[4].Width = 15 * 256;
+            WorkSheet.Columns[5].Width = 34 * 256;
+            WorkSheet.Columns[6].Width = 27 * 256;
+            WorkSheet.Columns[7].Width = 24 * 256;
+            WorkSheet.Columns[8].Width = 25 * 256;
+            WorkSheet.Rows[40].AutoFit();
+            //WorkSheet.Rows[40].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            //WorkSheet.Rows[40].Style.VerticalAlignment = VerticalAlignmentStyle.Bottom;
+
+
+            //шрифт заголовка + сделать жирным
+            WorkSheet.Cells["C1"].Style.Font.Size = 14 * 20;
+            WorkSheet.Cells["C1"].Style.Font.Weight = ExcelFont.BoldWeight;
+
+            //заголовок отчета
+            WorkSheet.Cells["C1"].Value = Params.MainHeader;
+
+            //Дата и время создания файла            
+            WorkSheet.Cells["E2"].Value = "Дата и время создания файла:" + DateTime.Now;
+            WorkSheet.Cells["E2"].Style.Font.Size = 8 * 20;
+
+            WorkSheet.Cells["B3"].Value = "ДАТА:";
+            WorkSheet.Cells["D3"].Value = OrderTypeModel.OrderDate;
+            WorkSheet.Cells["B3"].Style.Font.Size = 13 * 20;
+            WorkSheet.Cells["B3"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D3"].Style.Font.Size = 14 * 20;
+            for (int i = 3; i <= 6; i++)
+            {
+                for (int j = 3; j <= 4; j++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+            }
+
+            WorkSheet.Cells["B4"].Value = "СОСТАВИЛ:";
+            WorkSheet.Cells["D4"].Value = OrderTypeModel.CreatorPosition;
+            WorkSheet.Cells["B4"].Style.Font.Size = 13 * 20;
+            WorkSheet.Cells["D4"].Style.Font.Size = 12 * 20;
+            WorkSheet.Cells["F4"].Style.Font.Size = 12 * 20;
+            WorkSheet.Cells["F4"].Value = OrderTypeModel.CreatorContact;
+            WorkSheet.Cells["B4"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D4"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["F4"].Style.Font.Weight = ExcelFont.BoldWeight;
+
+            WorkSheet.Cells["D5"].Value = "/ФИО, Должность/";
+            WorkSheet.Cells["D5"].Style.Font.Size = 8 * 20;
+
+            WorkSheet.Cells["B6"].Value = "Заполняется заказчиком";
+            WorkSheet.Cells["B6"].Style.Font.Size = 16 * 20;
+            WorkSheet.Cells["B6"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B6"].Style.Font.Italic = true;
+            WorkSheet.Cells["B6"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+            {
+                WorkSheet.Cells[GetExcelColumnName(i) + "6"].Style.Borders.SetBorders(
+                    MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                    Color.Black, LineStyle.Thin);
+                WorkSheet.Cells[GetExcelColumnName(i) + "6"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+            }
+
+            WorkSheet.Cells.GetSubrangeAbsolute(5, 1, 5, 6).Merged = true;
+
+            WorkSheet.Cells["B7"].Value = "Заказчик (Плательщик) за транспортировку: ";
+            WorkSheet.Cells["B7"].Style.Font.Size = 13 * 20;
+            WorkSheet.Cells["B7"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B7"].Style.Font.Italic = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(6, 1, 6, 6).Merged = true;
+            WorkSheet.Cells["B7"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+            {
+                WorkSheet.Cells[GetExcelColumnName(i) + "7"].Style.Borders.SetBorders(
+                    MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                    Color.Black, LineStyle.Medium);
+
+                WorkSheet.Cells[GetExcelColumnName(i) + "7"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+            }
+
+            WorkSheet.Cells["B8"].Value = "Наименование организации";
+            WorkSheet.Cells.GetSubrangeAbsolute(7, 1, 7, 2).Merged = true;
+            WorkSheet.Cells["B8"].Style.Font.Weight = ExcelFont.BoldWeight;
+
+            WorkSheet.Cells["D8"].Style.Borders.SetBorders(
+                  MultipleBorders.Bottom,
+                  Color.Black, LineStyle.Thin);
+
+
+            WorkSheet.Cells["B8"].Style.Borders.SetBorders(MultipleBorders.Left, Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["B8"].Style.Borders.SetBorders(MultipleBorders.Right, Color.Black, LineStyle.Thin);
+            WorkSheet.Cells["G8"].Style.Borders.SetBorders(MultipleBorders.Right, Color.Black, LineStyle.Medium);
+
+            WorkSheet.Cells["B9"].Value = "Контактное лицо/ тел.";
+            WorkSheet.Cells.GetSubrangeAbsolute(8, 1, 8, 2).Merged = true;
+            WorkSheet.Cells["B9"].Style.Font.Weight = ExcelFont.BoldWeight;
+
+
+            WorkSheet.Cells["B9"].Style.Borders.SetBorders(MultipleBorders.Left, Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["G9"].Style.Borders.SetBorders(MultipleBorders.Right, Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["D9"].Style.Borders.SetBorders(MultipleBorders.Left, Color.Black, LineStyle.Thin);
+
+            for (int i = 2; i <= 7; i++)
+            {
+                WorkSheet.Cells[GetExcelColumnName(i) + "9"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                    Color.Black, LineStyle.Medium);
+                WorkSheet.Cells[GetExcelColumnName(i) + "9"].Style.Borders.SetBorders(MultipleBorders.Top,
+                 Color.Black, LineStyle.Thin);
+            }
+
+            WorkSheet.Cells["D8"].Value = OrderTypeModel.PayerName;
+            WorkSheet.Cells["D8"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(7, 3, 7, 6).Merged = true;
+            WorkSheet.Cells["D8"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            //WorkSheet.Cells["D9"].Style.Borders.SetBorders(MultipleBorders.Top | MultipleBorders.Bottom, Color.Black, LineStyle.Thin);
+
+            WorkSheet.Cells["D9"].Value = OrderTypeModel.CreatorPosition + "/" + OrderTypeModel.CreatorContact;
+            WorkSheet.Cells["D9"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(8, 3, 8, 6).Merged = true;
+            WorkSheet.Cells["D9"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["B11"].Value = "Информация о грузе:";
+            WorkSheet.Cells["B11"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B11"].Style.Font.Italic = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(10, 1, 10, 6).Merged = true;
+            WorkSheet.Cells["B11"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+                WorkSheet.Cells[GetExcelColumnName(i) + "11"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+
+            WorkSheet.Cells["B12"].Value = "Наименование груза";
+            WorkSheet.Cells["B12"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(11, 1, 11, 2).Merged = true;
+
+            WorkSheet.Cells["D12"].Value = extOrderTypeModel.TruckDescription;
+            WorkSheet.Cells["D12"].Style.WrapText = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(11, 3, 11, 5).Merged = true;
+            WorkSheet.Cells["D12"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["D12"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D12"].Style.Font.Italic = true;
+
+            WorkSheet.Cells["G12"].Value = extOrderTypeModel.TruckTypeName;
+            WorkSheet.Cells["G12"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["G12"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            //WorkSheet.Cells["G12"].Style.FillPattern.SetPattern(FillPatternStyle.Solid, SpreadsheetColor.FromName(ColorName.LightGreen), SpreadsheetColor.FromName(ColorName.Automatic));
+
+            WorkSheet.Cells["B13"].Value = "Вес, т:";
+            WorkSheet.Cells["B13"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["C13"].Value = extOrderTypeModel.Weight;
+            WorkSheet.Cells["C13"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B13"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["C13"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["C13"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["D13"].Value = "Объем, м3";
+            WorkSheet.Cells["D13"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D13"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["E13"].Value = extOrderTypeModel.Volume;
+            WorkSheet.Cells["E13"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["E13"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["E13"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["F13"].Value = "Упаковка ";
+            WorkSheet.Cells["G13"].Value = extOrderTypeModel.BoxingDescription;
+            WorkSheet.Cells["F13"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["F13"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["G13"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["G13"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["G13"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["B14"].Value = "Габариты / L x W x H / см /негабарит";
+            WorkSheet.Cells["B14"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B14"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(13, 1, 13, 2).Merged = true;
+
+            WorkSheet.Cells["D14"].Value = extOrderTypeModel.DimenssionL + " x " + extOrderTypeModel.DimenssionW + " x " +
+                                           extOrderTypeModel.DimenssionH;
+            WorkSheet.Cells["D14"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D14"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(13, 3, 13, 4).Merged = true;
+            WorkSheet.Cells["D14"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["F14"].Value = "Количество мест";
+            WorkSheet.Cells["F14"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["F14"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells["G14"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["B15"].Value = "Необходимое кол-во автомобилей *";
+            WorkSheet.Cells["B15"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B15"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(14, 3, 14, 4).Merged = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(14, 1, 14, 2).Merged = true;
+            WorkSheet.Cells["D15"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            WorkSheet.Cells["D15"].Value = OrderTypeModel.CarNumber;
+
+            WorkSheet.Cells["B16"].Value = "Тип авто/вид загрузки/выгрузки";
+            WorkSheet.Cells["B16"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B16"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(15, 1, 15, 2).Merged = true;
+
+            WorkSheet.Cells["D16"].Value = extOrderTypeModel.VehicleTypeName;
+            //WorkSheet.Cells["D16"].Style.FillPattern.SetPattern(FillPatternStyle.Solid, SpreadsheetColor.FromName(ColorName.LightGreen), SpreadsheetColor.FromName(ColorName.Automatic));
+            WorkSheet.Cells.GetSubrangeAbsolute(15, 3, 15, 4).Merged = true;
+            WorkSheet.Cells["D16"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["F16"].Value = extOrderTypeModel.LoadingTypeName;
+            //WorkSheet.Cells["F16"].Style.FillPattern.SetPattern(FillPatternStyle.Solid, SpreadsheetColor.FromName(ColorName.LightGreen), SpreadsheetColor.FromName(ColorName.Automatic));
+            WorkSheet.Cells["F16"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["G16"].Value = extOrderTypeModel.UnloadingTypeName;
+            //WorkSheet.Cells["G16"].Style.FillPattern.SetPattern(FillPatternStyle.Solid, SpreadsheetColor.FromName(ColorName.LightGreen), SpreadsheetColor.FromName(ColorName.Automatic));
+            WorkSheet.Cells["G16"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+            {
+                for (int j = 12; j <= 16; j++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
+                        MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+            }
+
+            WorkSheet.Cells["B11"].Style.Borders.SetBorders(
+                MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top,
+                Color.Black, LineStyle.Medium);
+            for (int i = 12; i <= 16; i++)
+            {
+                WorkSheet.Cells["B" + i].Style.Borders.SetBorders(MultipleBorders.Left,
+                    Color.Black, LineStyle.Medium);
+
+                WorkSheet.Cells["G" + i].Style.Borders.SetBorders(MultipleBorders.Right,
+                    Color.Black, LineStyle.Medium);
+            }
+
+            WorkSheet.Cells["B16"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["D16"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["F16"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["G16"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+
+            WorkSheet.Cells["B18"].Value = "Сроки подачи/доставки";
+            WorkSheet.Cells["B18"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B18"].Style.Font.Italic = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(17, 1, 17, 6).Merged = true;
+            WorkSheet.Cells["B18"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+                WorkSheet.Cells[GetExcelColumnName(i) + "18"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+
+            WorkSheet.Cells.GetSubrangeAbsolute(18, 1, 18, 2).Merged = true;
+            WorkSheet.Cells["D19"].Value = "Дата";
+            WorkSheet.Cells["D19"].Style.Font.Size = 8 * 20;
+            WorkSheet.Cells["D19"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D19"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            WorkSheet.Cells.GetSubrangeAbsolute(18, 3, 18, 5).Merged = true;
+
+            WorkSheet.Cells["G19"].Value = "Время";
+            WorkSheet.Cells["G19"].Style.Font.Size = 8 * 20;
+            WorkSheet.Cells["G19"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["G19"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["B20"].Value = "Дата и время подачи автомобиля(ей) грузоотправителю *";
+            WorkSheet.Cells["B20"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B20"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(19, 1, 19, 2).Merged = true;
+            WorkSheet.Cells["B20"].Style.WrapText = true;
+            WorkSheet.Cells["B20"].Row.Height = 600;
+
+            WorkSheet.Cells["D20"].Value = extOrderTypeModel.FromShipperDate;
+            WorkSheet.Cells["D20"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D20"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            WorkSheet.Cells.GetSubrangeAbsolute(19, 3, 19, 5).Merged = true;
+
+            WorkSheet.Cells["G20"].Value = extOrderTypeModel.FromShipperTime;
+            WorkSheet.Cells["G20"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["G20"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["B21"].Value = "Дата и время доставки груза грузополучателю *";
+            //WorkSheet.Cells["B21"].Row.AutoFit();            
+
+            WorkSheet.Cells["B21"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B21"].Style.Font.Size = 10 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(20, 1, 20, 2).Merged = true;
+            WorkSheet.Cells["B21"].Style.WrapText = true;
+            WorkSheet.Cells["B21"].Row.Height = 600;
+
+            WorkSheet.Cells["D21"].Value = extOrderTypeModel.ToConsigneeDate;
+            WorkSheet.Cells["D21"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["D21"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+            WorkSheet.Cells.GetSubrangeAbsolute(20, 3, 20, 5).Merged = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(21, 3, 21, 6).Merged = true;
+
+            WorkSheet.Cells["G21"].Value = extOrderTypeModel.ToConsigneeTime;
+            WorkSheet.Cells["G21"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["G21"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["B22"].Value = "Особые условия перевозки";
+            WorkSheet.Cells["B22"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(21, 1, 21, 2).Merged = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(22, 1, 22, 2).Merged = true;
+
+            WorkSheet.Cells["D22"].Value = extOrderTypeModel.OrderDescription;
+            WorkSheet.Cells["D22"].Style.Font.Weight = ExcelFont.BoldWeight;
+
+            for (int i = 2; i <= 7; i++)
+            {
+
+                for (int j = 19; j <= 22; j++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
+                        MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+            }
+
+            WorkSheet.Cells["B18"].Style.Borders.SetBorders(
+                MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top,
+                Color.Black, LineStyle.Medium);
+            for (int i = 19; i <= 22; i++)
+            {
+                WorkSheet.Cells["B" + i].Style.Borders.SetBorders(MultipleBorders.Left,
+                    Color.Black, LineStyle.Medium);
+
+                WorkSheet.Cells["G" + i].Style.Borders.SetBorders(MultipleBorders.Right,
+                    Color.Black, LineStyle.Medium);
+            }
+            WorkSheet.Cells["B22"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["D22"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+
+            WorkSheet.Cells["B24"].Value = "Грузоотправитель:";
+            WorkSheet.Cells["B24"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B24"].Style.Font.Italic = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(23, 1, 23, 6).Merged = true;
+            WorkSheet.Cells["B24"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+                WorkSheet.Cells[GetExcelColumnName(i) + "24"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+
+            WorkSheet.Cells["B25"].Value = "Наименование организации";
+            WorkSheet.Cells["B25"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(24, 1, 24, 2).Merged = true;
+
+            if (extOrderTypeModel.Shipper == "")
+                WorkSheet.Cells["D25"].Value = extOrderTypeModel.OrganizationLoadPoints;
+            else
+                WorkSheet.Cells["D25"].Value = "1) " + extOrderTypeModel.Shipper + "\n" + extOrderTypeModel.OrganizationLoadPoints;
+            WorkSheet.Cells["D25"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(24, 3, 24, 6).Merged = true;
+            WorkSheet.Cells["D25"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+            WorkSheet.Cells["D25"].Style.VerticalAlignment = VerticalAlignmentStyle.Top;
+            WorkSheet.Cells["D25"].Style.Font.Italic = true;
+            WorkSheet.Cells["D25"].Style.WrapText = true;
+            double cntHeight = WorkSheet.Cells["D25"].Value.ToString().Length * 2 / 75;
+            if (cntHeight == 0) cntHeight = 1;
+            if (cntHeight < WorkSheet.Cells["D25"].Value.ToString().Count(x => x == '\n'))
+                cntHeight = WorkSheet.Cells["D25"].Value.ToString().Count(x => x == '\n') * 1.3;
+            WorkSheet.Cells["D25"].Row.Height = (int)(WorkSheet.Cells["D25"].Row.Height * cntHeight);
+
+            WorkSheet.Cells["B26"].Value = "Адрес загрузки";
+            WorkSheet.Cells["B26"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(25, 1, 25, 2).Merged = true;
+
+            string ShipperAddress = "";
+            if (extOrderTypeModel.TripType == 2)
+                ShipperAddress = extOrderTypeModel.ShipperCountryName + " " +
+                extOrderTypeModel.ShipperCity + " " + extOrderTypeModel.ShipperAdress;
+            else
+                ShipperAddress = extOrderTypeModel.ShipperCity + " " + extOrderTypeModel.ShipperAdress;
+
+            //if  (ShipperAddress == "")
+            //    WorkSheet.Cells["D26"].Value = extOrderTypeModel.AddressLoadPoints;
+            //else
+            WorkSheet.Cells["D26"].Value = "1) " + ShipperAddress + "\n" + extOrderTypeModel.AddressLoadPoints;
+            WorkSheet.Cells["D26"].Style.VerticalAlignment = VerticalAlignmentStyle.Top;
+            WorkSheet.Cells["D26"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(25, 3, 25, 6).Merged = true;
+            WorkSheet.Cells["D26"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+            WorkSheet.Cells["D26"].Style.Font.Italic = true;
+            WorkSheet.Cells["D26"].Style.WrapText = true;
+            WorkSheet.Cells["B27"].Value = "Контактное лицо / тел.";
+            WorkSheet.Cells["B27"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(26, 1, 26, 2).Merged = true;
+            cntHeight = WorkSheet.Cells["D26"].Value.ToString().Length * 2 / 75;
+            if (cntHeight == 0) cntHeight = 1;
+            if (cntHeight < WorkSheet.Cells["D26"].Value.ToString().Count(x => x == '\n'))
+                cntHeight = WorkSheet.Cells["D26"].Value.ToString().Count(x => x == '\n') * 1.3;
+            WorkSheet.Cells["D26"].Row.Height = (int)(WorkSheet.Cells["D26"].Row.Height * cntHeight);
+
+            string ShipperContact = "";
+            ShipperContact = extOrderTypeModel.ShipperContactPerson + "/" +
+                                           extOrderTypeModel.ShipperContactPersonPhone;
+
+            //if (ShipperContact == "")
+            //    WorkSheet.Cells["D27"].Value = extOrderTypeModel.ContactsLoadPoints;
+            //else
+            WorkSheet.Cells["D27"].Value = "1) " + ShipperContact + "\n" + extOrderTypeModel.ContactsLoadPoints;
+            WorkSheet.Cells["D27"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(26, 3, 26, 6).Merged = true;
+            WorkSheet.Cells["D27"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+            WorkSheet.Cells["D27"].Style.Font.Italic = true;
+            WorkSheet.Cells["D27"].Style.VerticalAlignment = VerticalAlignmentStyle.Top;
+            cntHeight = WorkSheet.Cells["D27"].Value.ToString().Length * 2 / 75;
+            if (cntHeight == 0) cntHeight = 1;
+            if (cntHeight < WorkSheet.Cells["D27"].Value.ToString().Count(x => x == '\n'))
+                cntHeight = WorkSheet.Cells["D27"].Value.ToString().Count(x => x == '\n') * 1.3;
+            WorkSheet.Cells["D27"].Row.Height = (int)(WorkSheet.Cells["D27"].Row.Height * cntHeight);
+
+
+            for (int i = 2; i <= 7; i++)
+            {
+                for (int j = 25; j <= 27; j++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
+                        MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+            }
+
+            WorkSheet.Cells["B24"].Style.Borders.SetBorders(
+                MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top,
+                Color.Black, LineStyle.Medium);
+
+            for (int i = 25; i <= 27; i++)
+            {
+                WorkSheet.Cells["B" + i].Style.Borders.SetBorders(MultipleBorders.Left,
+                    Color.Black, LineStyle.Medium);
+
+                WorkSheet.Cells["G" + i].Style.Borders.SetBorders(MultipleBorders.Right,
+                    Color.Black, LineStyle.Medium);
+            }
+            WorkSheet.Cells["B27"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["D27"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+
+
+            WorkSheet.Cells["B29"].Value = "Грузополучатель:";
+            WorkSheet.Cells["B29"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B29"].Style.Font.Italic = true;
+            WorkSheet.Cells.GetSubrangeAbsolute(28, 1, 28, 6).Merged = true;
+            WorkSheet.Cells["B29"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+                WorkSheet.Cells[GetExcelColumnName(i) + "29"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+
+            WorkSheet.Cells["B30"].Value = "Наименование организации";
+            WorkSheet.Cells["B30"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(29, 1, 29, 2).Merged = true;
+
+            int countUnLoadPoints = extOrderTypeModel.CountUnLoadPoints + 1;
+            if (extOrderTypeModel.Consignee == "")
+                WorkSheet.Cells["D30"].Value = extOrderTypeModel.OrganizationUnLoadPoints;
+            else
+                WorkSheet.Cells["D30"].Value = extOrderTypeModel.OrganizationUnLoadPoints + countUnLoadPoints.ToString() + ") " + extOrderTypeModel.Consignee;
+            WorkSheet.Cells["D30"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(29, 3, 29, 6).Merged = true;
+            WorkSheet.Cells["D30"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+            WorkSheet.Cells["D30"].Style.VerticalAlignment = VerticalAlignmentStyle.Top;
+
+            WorkSheet.Cells["D30"].Style.Font.Italic = true;
+            WorkSheet.Cells["D30"].Style.WrapText = true;
+            cntHeight = WorkSheet.Cells["D30"].Value.ToString().Length * 2 / 75;
+            if (cntHeight == 0) cntHeight = 1;
+            if (cntHeight < WorkSheet.Cells["D30"].Value.ToString().Count(x => x == '\n'))
+                cntHeight = WorkSheet.Cells["D30"].Value.ToString().Count(x => x == '\n') * 1.3;
+            WorkSheet.Cells["D30"].Row.Height = (int)(WorkSheet.Cells["D30"].Row.Height * cntHeight);
+
+            WorkSheet.Cells["B31"].Value = "Адрес выгрузки";
+            WorkSheet.Cells["B31"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(30, 1, 30, 2).Merged = true;
+            WorkSheet.Cells["B31"].Style.WrapText = true;
+
+            string ConsigneeAddress = "";
+            if (extOrderTypeModel.TripType == 2)
+                ConsigneeAddress = extOrderTypeModel.ConsigneeCountryName + " " +
+                                   extOrderTypeModel.ConsigneeCity + " " + extOrderTypeModel.ConsigneeAdress;
+            else
+                ConsigneeAddress = extOrderTypeModel.ConsigneeCity + " " + extOrderTypeModel.ConsigneeAdress;
+            if (ConsigneeAddress == "")
+                WorkSheet.Cells["D31"].Value = extOrderTypeModel.AddressUnLoadPoints;
+            else
+                WorkSheet.Cells["D31"].Value = extOrderTypeModel.AddressUnLoadPoints + countUnLoadPoints.ToString() + ") " + ConsigneeAddress;
+
+            WorkSheet.Cells["D31"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(30, 3, 30, 6).Merged = true;
+            WorkSheet.Cells["D31"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+            WorkSheet.Cells["D31"].Style.VerticalAlignment = VerticalAlignmentStyle.Top;
+            WorkSheet.Cells["D31"].Style.Font.Italic = true;
+
+            //WorkSheet.Cells["D31"].Style.WrapText = true;
+            cntHeight = WorkSheet.Cells["D31"].Value.ToString().Length * 2 / 75;
+            if (cntHeight == 0) cntHeight = 1;
+            if (cntHeight < WorkSheet.Cells["D31"].Value.ToString().Count(x => x == '\n'))
+                cntHeight = WorkSheet.Cells["D31"].Value.ToString().Count(x => x == '\n') * 1.3;
+            WorkSheet.Cells["D31"].Row.Height = (int)(WorkSheet.Cells["D31"].Row.Height * cntHeight);
+            //extOrderTypeModel.AddressUnLoadPoints.Count(x => x == '\n');
+            // WorkSheet.Cells["D31"].Row.Height = WorkSheet.Cells["D31"].Row.Height * cntHeight;
+
+            WorkSheet.Cells["B32"].Value = "Контактное лицо / тел.";
+            WorkSheet.Cells["B32"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(31, 1, 31, 2).Merged = true;
+            string ConsigneeContact = "";
+            ConsigneeContact = extOrderTypeModel.ConsigneeContactPerson + "/" +
+                               extOrderTypeModel.ConsigneeContactPersonPhone;
+            //if (ConsigneeContact == "")
+            //WorkSheet.Cells["D32"].Value = extOrderTypeModel.ContactsUnLoadPoints;
+            //else
+            WorkSheet.Cells["D32"].Value = extOrderTypeModel.ContactsUnLoadPoints + countUnLoadPoints.ToString() + ") " + ConsigneeContact;
+            WorkSheet.Cells["D32"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells.GetSubrangeAbsolute(31, 3, 31, 6).Merged = true;
+            WorkSheet.Cells["D32"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+            WorkSheet.Cells["D32"].Style.VerticalAlignment = VerticalAlignmentStyle.Top;
+            WorkSheet.Cells["D32"].Style.Font.Italic = true;
+
+            cntHeight = WorkSheet.Cells["D32"].Value.ToString().Length * 2 / 75;
+            if (cntHeight == 0) cntHeight = 1;
+            if (cntHeight < WorkSheet.Cells["D32"].Value.ToString().Count(x => x == '\n'))
+                cntHeight = WorkSheet.Cells["D32"].Value.ToString().Count(x => x == '\n') * 1.3;
+            WorkSheet.Cells["D32"].Row.Height = (int)(WorkSheet.Cells["D32"].Row.Height * cntHeight);
+
+            for (int i = 2; i <= 7; i++)
+            {
+                for (int j = 30; j <= 32; j++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
+                        MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+            }
+
+            WorkSheet.Cells["B29"].Style.Borders.SetBorders(
+                MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top,
+                Color.Black, LineStyle.Medium);
+
+            for (int i = 30; i <= 32; i++)
+            {
+                WorkSheet.Cells["B" + i].Style.Borders.SetBorders(MultipleBorders.Left,
+                    Color.Black, LineStyle.Medium);
+
+                WorkSheet.Cells["G" + i].Style.Borders.SetBorders(MultipleBorders.Right,
+                    Color.Black, LineStyle.Medium);
+            }
+            WorkSheet.Cells["B32"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+            WorkSheet.Cells["D32"].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                Color.Black, LineStyle.Medium);
+
+            //if (carList.Count > 0)
+            //{
+            WorkSheet.Cells["B34"].Value = "ЗАПОЛНЯЕТСЯ ЭКСПЕДИТОРОМ-ПЕРЕВОЗЧИКОМ:";
+            WorkSheet.Cells["B34"].Style.Font.Weight = ExcelFont.BoldWeight;
+            WorkSheet.Cells["B34"].Style.Font.Italic = true;
+            WorkSheet.Cells["B34"].Style.Font.Size = 16 * 20;
+            WorkSheet.Cells.GetSubrangeAbsolute(33, 1, 33, 6).Merged = true;
+            WorkSheet.Cells["B34"].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            for (int i = 2; i <= 7; i++)
+            {
+                WorkSheet.Cells[GetExcelColumnName(i) + "34"].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                    SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                    SpreadsheetColor.FromName(ColorName.Automatic));
+            }
+
+            WorkSheet.Cells["B34"].Style.Borders.SetBorders(MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top,
+                      Color.Black, LineStyle.Medium);
+
+            //}
+            //добавим пустую запись, чтобы даже если нет выбранного перевозчика/экспедитора выводить пустую часть блока "ЗАПОЛНЯЕТСЯ ЭКСПЕДИТОРОМ"
+            if (carList.Count == 0)
+            {
+                //OrderUsedCarViewModel car = new OrderUsedCarViewModel();
+                carList.Add(new OrderUsedCarViewModel());
+
+            }
+
+            int RowCount = 35;
+            int RowCountStart = 35;
+            int count = 0;
+            foreach (var car in carList)
+            {
+                bool flagData = false; bool flagRegMess = false; bool flagFrom = false;
+                if (data[count] != null)
+                {
+                    flagData = true;
+                }
+                if (flagData && data[count].regmesstocontrag != null)
+                {
+                    flagRegMess = true;
+                }
+                if (flagData && data[count].formFromContr != null)
+                {
+                    flagFrom = true;
+                }
+
+                RowCountStart = RowCount;
+
+                WorkSheet.Cells["B" + RowCount].Value = "Экспедитор:  " + ((flagData && flagRegMess) ? (data[count].regmesstocontrag.contragentName != "") ? data[count].regmesstocontrag.contragentName : car.ExpeditorName : car.ExpeditorName) + " согласно договора " + car.ContractExpBkInfo;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Italic = true;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 6).Merged = true;
+
+                for (int i = 2; i <= 7; i++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + RowCount].Style.FillPattern.SetPattern(
+                        FillPatternStyle.Solid, SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                        SpreadsheetColor.FromName(ColorName.Automatic));
+                }
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = "Маршрут движения";
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 6).Merged = true;
+                WorkSheet.Cells["D" + RowCount].Value = ((flagData && flagRegMess) ? (data[count].regmesstocontrag.routeShort != "") ? data[count].regmesstocontrag.routeShort : OrderTypeModel.ShortName : OrderTypeModel.ShortName);
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = "Расстояние, км";
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 6).Merged = true;
+                if (Convert.ToDecimal(extOrderTypeModel.TotalDistanceLenght) == 0)
+                    WorkSheet.Cells["D" + RowCount].Value = ((flagData && flagFrom) ? (data[count].formFromContr.distance != null) ? data[count].formFromContr.distance : null : null);
+                else
+                    WorkSheet.Cells["D" + RowCount].Value = ((flagData && flagFrom) ? (data[count].formFromContr.distance != null) ? data[count].formFromContr.distance : Convert.ToDouble(extOrderTypeModel.TotalDistanceLenght) : Convert.ToDouble(extOrderTypeModel.TotalDistanceLenght));
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = "Стоимость перевозки, грн.";
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 6).Merged = true;
+                if (extOrderTypeModel.TotalCost == "")
+                    WorkSheet.Cells["D" + RowCount].Value = ((flagData && flagRegMess) ? (data[count].regmesstocontrag.cost != null) ? data[count].regmesstocontrag.cost : null : null);
+                else
+                    WorkSheet.Cells["D" + RowCount].Value = ((flagData && flagRegMess) ? (data[count].regmesstocontrag.cost != null) ? data[count].regmesstocontrag.cost : Convert.ToDouble(extOrderTypeModel.TotalCost) : Convert.ToDouble(extOrderTypeModel.TotalCost));
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+
+                for (int i = 2; i <= 7; i++)
+                {
+                    for (int j = RowCountStart; j <= RowCount; j++)
+                    {
+                        WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                            Color.Black, LineStyle.Thin);
+                    }
+                }
+
+                WorkSheet.Cells["B" + (RowCountStart - 1)].Style.Borders.SetBorders(MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top,
+                            Color.Black, LineStyle.Medium);
+
+                for (int i = RowCountStart; i <= RowCount; i++)
+                {
+                    WorkSheet.Cells["B" + i].Style.Borders.SetBorders(MultipleBorders.Left,
+                        Color.Black, LineStyle.Medium);
+
+                    WorkSheet.Cells["G" + i].Style.Borders.SetBorders(MultipleBorders.Right,
+                        Color.Black, LineStyle.Medium);
+                }
+
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = "Информация об автомобиле и водителе*";
+
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Italic = true;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 6).Merged = true;
+                WorkSheet.Cells["B" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                for (int i = 2; i <= 7; i++)
+                    WorkSheet.Cells[GetExcelColumnName(i) + RowCount].Style.FillPattern.SetPattern(
+                        FillPatternStyle.Solid, SpreadsheetColor.FromName(ColorName.Background1Darker15Pct),
+                        SpreadsheetColor.FromName(ColorName.Automatic));
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = "Наименование Перевозчика";
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["B" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+
+                WorkSheet.Cells["D" + RowCount].Value = "ФИО водителя, тел., № вод.удостоверения";
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
+                WorkSheet.Cells["D" + RowCount].Row.Height = 600;
+                WorkSheet.Cells["D" + RowCount].Style.WrapText = true;
+
+                WorkSheet.Cells["F" + RowCount].Value = "Марка, № авто";
+                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["F" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+                WorkSheet.Cells["G" + RowCount].Value = "Грузоподъемность, тн";
+                WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = car.CarrierInfo;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+
+                WorkSheet.Cells["D" + RowCount].Value = car.CarDriverInfo + "\n" + car.DriverContactInfo + "\n" +
+                                                        car.DriverCardInfo;
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
+                WorkSheet.Cells["D" + RowCount].Row.Height = 600;
+
+                WorkSheet.Cells["F" + RowCount].Value = car.CarModelInfo + " " + car.CarRegNum;
+                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+
+                WorkSheet.Cells["G" + RowCount].Value = car.CarCapacity;
+                WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+                RowCount++;
+                count++;
+                //}
+            }
+
+            if (carList.Count > 0) RowCount--;
+
+            for (int i = 2; i <= 7; i++)
+            {
+                for (int j = 39; j <= RowCount; j++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + j].Style.Borders.SetBorders(
+                        MultipleBorders.Left | MultipleBorders.Right | MultipleBorders.Top | MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+            }
+
+
+            for (int i = 39; i <= RowCount; i++)
+            {
+                WorkSheet.Cells["B" + i].Style.Borders.SetBorders(MultipleBorders.Left,
+                    Color.Black, LineStyle.Medium);
+
+                WorkSheet.Cells["G" + i].Style.Borders.SetBorders(MultipleBorders.Right,
+                    Color.Black, LineStyle.Medium);
+            }
+
+            if (carList.Count > 0)
+            {
+                for (int i = 2; i <= 7; i++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + RowCount].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Medium);
+                }
+            }
+
+            if (carList.Count <= 0) RowCount = 32;
+            RowCount = RowCount + 3;
+            WorkSheet.Cells["B" + RowCount].Value = "ЗАКАЗЧИК ___________________";
+            // WorkSheet.Cells["C" + RowCount].Value = " И.О.Руководителя КР и СО";
+            WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 3).Merged = true;
+            WorkSheet.Cells["C" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+
+            WorkSheet.Cells["E" + RowCount].Value = "                          Экспедитор_____________________";
+
+            RowCount = RowCount + 2;
+
+            WorkSheet.Cells["C" + RowCount].Value = "ФИО";
+            WorkSheet.Cells["F" + RowCount].Value = "ФИО";
+
+            WorkSheet.Cells["B" + RowCount].Style.Borders.SetBorders(MultipleBorders.Top, Color.Black, LineStyle.Thin);
+            WorkSheet.Cells["C" + RowCount].Style.Borders.SetBorders(MultipleBorders.Top, Color.Black, LineStyle.Thin);
+
+            WorkSheet.Cells["E" + RowCount].Style.Borders.SetBorders(MultipleBorders.Top, Color.Black, LineStyle.Thin);
+            WorkSheet.Cells["F" + RowCount].Style.Borders.SetBorders(MultipleBorders.Top, Color.Black, LineStyle.Thin);
+
+            /*********** 2 лист **********/
+
+            //ширина колонок            
+            WorkSheet2.Columns[0].Width = 14 * 256;
+            WorkSheet2.Columns[1].Width = 10 * 256;
+            WorkSheet2.Columns[2].Width = 20 * 256;
+            WorkSheet2.Columns[3].Width = 20 * 256;
+            WorkSheet2.Columns[4].Width = 18 * 256;
+            WorkSheet2.Columns[5].Width = 18 * 256;
+            WorkSheet2.Columns[6].Width = 15 * 256;
+            WorkSheet2.Columns[7].Width = 22 * 256;
+            WorkSheet2.Columns[8].Width = 16 * 256;//I
+
+            WorkSheet2.Columns[9].Width = 8 * 256;
+            WorkSheet2.Columns[10].Width = 8 * 256;
+            WorkSheet2.Columns[11].Width = 8 * 256;
+            WorkSheet2.Columns[12].Width = 8 * 256;
+            WorkSheet2.Columns[13].Width = 8 * 256;
+            WorkSheet2.Columns[14].Width = 10 * 256;//O
+
+            WorkSheet2.Columns[15].Width = 10 * 256;
+            WorkSheet2.Columns[16].Width = 12 * 256;
+            WorkSheet2.Columns[17].Width = 12 * 256;//I
+            WorkSheet2.Columns[18].Width = 8 * 256;
+            WorkSheet2.Columns[19].Width = 8 * 256;//T
+            WorkSheet2.Columns[20].Width = 13 * 256;
+
+            WorkSheet2.Columns[21].Width = 9 * 256;
+            WorkSheet2.Columns[22].Width = 11 * 256;
+            WorkSheet2.Columns[23].Width = 13 * 256;
+
+            //форматирование
+            for (int i = 1; i <= 24; i++)
+            {
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.VerticalAlignment = VerticalAlignmentStyle.Center;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.WrapText = true;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.Borders.SetBorders(MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Medium);
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.Borders.SetBorders(
+                       MultipleBorders.Left | MultipleBorders.Right, Color.Black, LineStyle.Thin);
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.FillPattern.SetPattern(FillPatternStyle.Solid,
+                        SpreadsheetColor.FromName(ColorName.Accent1Lighter80Pct),
+                        SpreadsheetColor.FromName(ColorName.Automatic));
+
+                WorkSheet2.Cells[GetExcelColumnName(i) + 2].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 2].Style.WrapText = true;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 1].Style.Font.Size = 10 * 20;
+                WorkSheet2.Cells[GetExcelColumnName(i) + 2].Style.Font.Size = 11 * 20;
+            }
+
+            WorkSheet2.Cells["A1"].Value = "Номер заявки (при разбитие заявки на строки использовать нумерацию с \" / \")";
+            WorkSheet2.Cells["A2"].Value = OrderTypeModel.Id.ToString();
+            WorkSheet2.Cells["B1"].Value = "Дата указанная в заявке";
+            WorkSheet2.Cells["B2"].Value = OrderTypeModel.OrderDate;
+            WorkSheet2.Cells["C1"].Value = "Заказчик/Плательщик (по справочнику) ";
+            WorkSheet2.Cells["C2"].Value = OrderTypeModel.PayerName;
+            WorkSheet2.Cells["D1"].Value = "Автор заявки";
+            WorkSheet2.Cells["D2"].Value = OrderTypeModel.CreatorPosition;
+            WorkSheet2.Cells["E1"].Value = "Грузоотправитель (по справочнику)";
+            WorkSheet2.Cells["E2"].Value = extOrderTypeModel.Shipper;
+
+            WorkSheet2.Cells["F1"].Value = "Грузополучатель (по справочнику)";
+            WorkSheet2.Cells["F2"].Value = extOrderTypeModel.Consignee;
+            WorkSheet2.Cells["G1"].Value = "Пункт отправления (по справочника)";
+
+            if (extOrderTypeModel.TripType == 2)
+                WorkSheet2.Cells["G2"].Value = extOrderTypeModel.ShipperCountryName + " " +
+                                               extOrderTypeModel.ShipperCity + " " + extOrderTypeModel.ShipperAdress;
+            else
+                WorkSheet2.Cells["G2"].Value = extOrderTypeModel.ShipperCity + " " + extOrderTypeModel.ShipperAdress;
+
+            WorkSheet2.Cells["H1"].Value = "Пункт прибытия (по справочнику)";
+            if (extOrderTypeModel.TripType == 2)
+                WorkSheet2.Cells["H2"].Value = extOrderTypeModel.ConsigneeCountryName + " " +
+                                               extOrderTypeModel.ConsigneeCity + " " + extOrderTypeModel.ConsigneeAdress;
+            else
+                WorkSheet2.Cells["H2"].Value = extOrderTypeModel.ConsigneeCity + " " + extOrderTypeModel.ConsigneeAdress;
+
+            WorkSheet2.Cells["I1"].Value = "Наименование груза";
+            WorkSheet2.Cells["I2"].Value = extOrderTypeModel.TruckDescription;
+
+            WorkSheet2.Cells["J1"].Value = "Вес груза";
+            WorkSheet2.Cells["J2"].Value = extOrderTypeModel.Weight;
+            WorkSheet2.Cells["K1"].Value = "Тип авто/кузова";
+            WorkSheet2.Cells["K2"].Value = extOrderTypeModel.VehicleTypeName;
+            WorkSheet2.Cells["L1"].Value = "Вид загрузки";
+            WorkSheet2.Cells["L2"].Value = extOrderTypeModel.LoadingTypeName;
+
+            WorkSheet2.Cells["M1"].Value = "Ограничения по выгрузке";
+            WorkSheet2.Cells["M2"].Value = extOrderTypeModel.UnloadingTypeName;
+            WorkSheet2.Cells["N1"].Value = "К-во авто к подаче";
+            WorkSheet2.Cells["N2"].Value = extOrderTypeModel.CarNumber;
+            WorkSheet2.Cells["O1"].Value = "Дата подачи авто по заявке";
+            WorkSheet2.Cells["O2"].Value = extOrderTypeModel.FromShipperDate;
+
+            WorkSheet2.Cells["P1"].Value = "Время подачи авто по заявке";
+            WorkSheet2.Cells["P2"].Value = extOrderTypeModel.FromShipperTime;
+
+            WorkSheet2.Cells["Q1"].Value = "Дата доставки груза по заявке";
+            WorkSheet2.Cells["Q2"].Value = extOrderTypeModel.ToConsigneeDate;
+
+            WorkSheet2.Cells["R1"].Value = "Время доставки груза по заявке";
+            WorkSheet2.Cells["R2"].Value = extOrderTypeModel.ToConsigneeTime;
+
+            WorkSheet2.Cells["S1"].Value = "Дата подачи заявки";
+            WorkSheet2.Cells["S2"].Value = OrderTypeModel.CreateDatetime.ToShortDateString();
+
+            WorkSheet2.Cells["T1"].Value = "Время подачи заявки";
+            WorkSheet2.Cells["T2"].Value = OrderTypeModel.CreateDatetime.ToShortTimeString();
+
+            WorkSheet2.Cells["U1"].Value = "Тип груза";
+            WorkSheet2.Cells["U2"].Value = extOrderTypeModel.TruckTypeName;
+
+            WorkSheet2.Cells["V1"].Value = "Сумма точек загрузки и выгрузки";
+            WorkSheet2.Cells["V2"].Value = extOrderTypeModel.CountLoadAndUnLoadPoints;
+
+            WorkSheet2.Cells["W1"].Value = "Длина марш., км";
+
+            WorkSheet2.Cells["X1"].Value = "Тип маршрута (по справочнику)";
+
+
+            byte[] fileContents;
+            var options = SaveOptions.XlsxDefault;
+
+            using (var stream = new MemoryStream())
+            {
+                ef.Save(stream, options);
+                fileContents = stream.ToArray();
+            }
+            return fileContents;
+        }
     }
 }

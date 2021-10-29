@@ -62,5 +62,6 @@ namespace Corum.Models.Tender
     {
         public string body { get; set; }
         public string subject { get; set; }
+        public string excelFile { get; set; }
     }
 }

@@ -729,10 +729,11 @@ namespace Corum.DAL
         public bool FormMessageToSendContragents(InfoToContragentsAfterChange listInfoToCont)
         {
             var listWinners = listInfoToCont.listWinnersInfoAfterChange;
+            var listLosers = listInfoToCont.listLosersInfoAfterChange;
             bool flag = false;
             try
             {
-                if (listWinners != null)
+                if (listWinners.Count != 0)
                 {
                     foreach (var model in listWinners)
                     {
@@ -764,10 +765,44 @@ namespace Corum.DAL
                             flag = true;
                             continue;
                         }
+                        else if (item == null)
+                        {
+                            item.acceptedTransportUnits = model.numberOfVehicles;
+                            item.contragentName = model.expeditorName;
+                            item.cost = model.price;
+                            item.dateCreate = model.dateCreate;
+                            item.dateUpdate = model.dateUpdate;
+                            item.descriptionTender = model.description;
+                            item.emailContragent = model.recipientEmail;
+                            item.emailOperacionist = model.senderEmail;
+                            item.formUuid = model.formUuid;
+                            item.industryId = model.industryId;
+                            item.orderId = model.orderId;
+                            item.tenderItemUuid = model.tenderItemUuid;
+                            item.tenderNumber = model.tenderNumber;
+                            item.flag = model.flag;
+                            item.dataDownload = model.dataDownload;
+                            item.dataUnload = model.dataUnload;
+                            item.DelayPayment = model.DelayPayment;
+                            item.industryName = model.industryName;
+                            item.nameCargo = model.nameCargo;
+                            item.routeShort = model.routeShort;
+                            item.weightCargo = model.weightCargo;
+                            db.SaveChanges();
+                            flag = true;
+                            continue;
+                        }
                         else
                         {
                             continue;
                         }
+                    }
+                }
+                else
+                {
+                    if (listLosers.Count != 0)
+                    {
+                        flag = true;
                     }
                 }
 
@@ -936,9 +971,9 @@ namespace Corum.DAL
                     item.note = dic["note"];
                     item.stateBorderCrossingPoint = (dic.ContainsKey("stateBorderCrossingPoint")) ? dic["stateBorderCrossingPoint"] : "";
                     item.seriesPassportNumber = (dic.ContainsKey("seriesPassportNumber")) ? dic["seriesPassportNumber"] : "";
-                    item.scannedCopyOfSignedOrder = (dic.ContainsKey("scannedCopyOfSignedOrder"))?(item.scannedCopyOfSignedOrder != true) ? Boolean.Parse(dic["scannedCopyOfSignedOrder"]) : item.scannedCopyOfSignedOrder:false;
-                    item.scannedCopyOfRegistrationCertificate = (dic.ContainsKey("scannedCopyOfRegistrationCertificate"))?(item.scannedCopyOfRegistrationCertificate != true) ? Boolean.Parse(dic["scannedCopyOfRegistrationCertificate"]) : item.scannedCopyOfRegistrationCertificate: false;
-                    item.scanCopyOfPassport = (dic.ContainsKey("scanCopyOfPassport"))?(item.scanCopyOfPassport != true) ? Boolean.Parse(dic["scanCopyOfPassport"]) : item.scanCopyOfPassport:false;
+                    item.scannedCopyOfSignedOrder = (dic.ContainsKey("scannedCopyOfSignedOrder")) ? (item.scannedCopyOfSignedOrder != true) ? Boolean.Parse(dic["scannedCopyOfSignedOrder"]) : item.scannedCopyOfSignedOrder : false;
+                    item.scannedCopyOfRegistrationCertificate = (dic.ContainsKey("scannedCopyOfRegistrationCertificate")) ? (item.scannedCopyOfRegistrationCertificate != true) ? Boolean.Parse(dic["scannedCopyOfRegistrationCertificate"]) : item.scannedCopyOfRegistrationCertificate : false;
+                    item.scanCopyOfPassport = (dic.ContainsKey("scanCopyOfPassport")) ? (item.scanCopyOfPassport != true) ? Boolean.Parse(dic["scanCopyOfPassport"]) : item.scanCopyOfPassport : false;
                     item.scannedCopyOfAdmissionToTransportation = (item.scannedCopyOfAdmissionToTransportation != true) ? Boolean.Parse(dic["scannedCopyOfAdmissionToTransportation"]) : item.scannedCopyOfAdmissionToTransportation;
                     item.scannedCopyOfCivilPassport = (item.scannedCopyOfCivilPassport != true) ? Boolean.Parse(dic["scannedCopyOfCivilPassport"]) : item.scannedCopyOfCivilPassport;
                     item.IsUpdate = Boolean.Parse(dic["checkFronContragents"]);

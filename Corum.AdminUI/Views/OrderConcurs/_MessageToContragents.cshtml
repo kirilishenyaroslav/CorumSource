@@ -255,6 +255,9 @@
                                         InfoToContragentsAfterCh.listWinnersInfoAfterChange.push(winnerAfterChange);
                                         }
                                     }
+                                    if (InfoToContragentsAfterCh.listWinnersInfoAfterChange.length == 0) {
+                                        InfoToContragentsAfterCh.listWinnersInfoAfterChange = null;
+                                    }
 
                                     let modelLosers = listLoserIdHTMLElements;
                                     for (const item of modelLosers) {
@@ -310,6 +313,9 @@
                                         InfoToContragentsAfterCh.listLosersInfoAfterChange.push(loserAfterChange);
                                         }
                                     }
+                                    if (InfoToContragentsAfterCh.listLosersInfoAfterChange.length == 0) {
+                                        InfoToContragentsAfterCh.listLosersInfoAfterChange = null;
+                                    }
 
                                     let listInfoToCont = JSON.stringify(InfoToContragentsAfterCh);
                                     $('#loading-indicator').show();
@@ -323,7 +329,7 @@
                                         success: function (data) {
                                             var dataParse = data;
                                             $('#loading-indicator').hide();
-                                            if ((dataParse.listInfoToCont.listLosersInfoAfterChange != null || dataParse.listInfoToCont.listWinnersInfoAfterChange != null) && dataParse.isAvaliable) {
+                                            if ((dataParse.listInfoToCont.listLosersInfoAfterChange.length != 0 || dataParse.listInfoToCont.listWinnersInfoAfterChange.length != 0) && dataParse.isAvaliable) {
                                                     CreateNotificationToContragents("success");
                                                     $("#jqxNotification").jqxNotification({
                                                         position: "bottom-right", opacity: 1, animationCloseDelay: 1000, autoCloseDelay: 5000,
@@ -331,7 +337,7 @@
                                                     });
                                                     DeleteNotification();
                                             }
-                                            if ((dataParse.listInfoToCont.listLosersInfoAfterChange != null || dataParse.listInfoToCont.listWinnersInfoAfterChange != null) && !dataParse.isAvaliable) {
+                                            if ((dataParse.listInfoToCont.listLosersInfoAfterChange.length != 0 || dataParse.listInfoToCont.listWinnersInfoAfterChange.length != 0) && !dataParse.isAvaliable) {
                                                     CreateNotificationToContragents("warning");
                                                     $("#jqxNotification").jqxNotification({
                                                         position: "bottom-right", opacity: 1, animationCloseDelay: 1000, autoCloseDelay: 5000,
@@ -339,7 +345,7 @@
                                                     });
                                                     DeleteNotification();
                                             }
-                                            if ((dataParse.listInfoToCont.listLosersInfoAfterChange == null || dataParse.listInfoToCont.listWinnersInfoAfterChange == null) && !dataParse.isAvaliable) {
+                                            if ((dataParse.listInfoToCont.listLosersInfoAfterChange.length == 0 || dataParse.listInfoToCont.listWinnersInfoAfterChange.length == 0) && !dataParse.isAvaliable) {
                                                     CreateNotificationToContragents("error");
                                                     $("#jqxNotification").jqxNotification({
                                                         position: "bottom-right", opacity: 1, animationCloseDelay: 1000, autoCloseDelay: 5000,

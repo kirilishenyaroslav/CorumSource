@@ -2408,14 +2408,14 @@ namespace Corum.DAL
             car.Summ = (Nullable<decimal>)model.Summ_;
             car.Summ_ = model.Summ_;
             car.formUuid = Guid.NewGuid();
-                /*
-                FactShipperDateTime = DateTimeConvertClass.getDateTime(model.FactShipperDate).
-                                                           AddHours(DateTimeConvertClass.getHours(model.FactShipperTime)).
-                                                           AddMinutes(DateTimeConvertClass.getMinutes(model.FactShipperTime)),
+            /*
+            FactShipperDateTime = DateTimeConvertClass.getDateTime(model.FactShipperDate).
+                                                       AddHours(DateTimeConvertClass.getHours(model.FactShipperTime)).
+                                                       AddMinutes(DateTimeConvertClass.getMinutes(model.FactShipperTime)),
 
-                 FactConsigneeDateTime = DateTimeConvertClass.getDateTime(model.FactConsigneeDate).
-                                                        AddHours(DateTimeConvertClass.getHours(model.FactConsigneeTime)).
-                                                        AddMinutes(DateTimeConvertClass.getMinutes(model.FactConsigneeTime)),*/
+             FactConsigneeDateTime = DateTimeConvertClass.getDateTime(model.FactConsigneeDate).
+                                                    AddHours(DateTimeConvertClass.getHours(model.FactConsigneeTime)).
+                                                    AddMinutes(DateTimeConvertClass.getMinutes(model.FactConsigneeTime)),*/
 
 
             db.OrderUsedCars.Add(car);
@@ -2596,15 +2596,20 @@ namespace Corum.DAL
 
         public void NewUsedCar(Guid formUuid)
         {
-            var messageToContr = db.RegisterMessageToContragents.FirstOrDefault(u => u.formUuid == formUuid);
-            var formFromContr = db.RegisterFormFromContragents.FirstOrDefault(u => u.tenderItemUuid == formUuid);
-            var dbInfo = db.OrderUsedCars.FirstOrDefault(u => u.formUuid == formUuid);
-            var expeditor = db.CarOwners.FirstOrDefault(u => u.email_aps == messageToContr.emailContragent);
-            var payerId = db.OrdersBase.FirstOrDefault(u => u.Id == messageToContr.orderId).PayerId;
-            var contractInfo = GetContractExpBkInfoBySearchString("", expeditor.Id, (int)payerId).ToList();
 
             try
             {
+                var messageToContr = db.RegisterMessageToContragents.FirstOrDefault(u => u.formUuid == formUuid);
+                var formFromContr = db.RegisterFormFromContragents.FirstOrDefault(u => u.tenderItemUuid == formUuid);
+                var dbInfo = db.OrderUsedCars.FirstOrDefault(u => u.formUuid == formUuid);
+                var expeditor = db.CarOwners.FirstOrDefault(u => u.email_aps == messageToContr.emailContragent);
+                if (expeditor == null)
+                {
+                    var regContrag = db.RegisterTenderContragents.FirstOrDefault(u => u.emailContragent == messageToContr.emailContragent);
+                    expeditor = (regContrag != null)? db.CarOwners.FirstOrDefault(u => u.edrpou_aps == regContrag.EDRPOUContragent): expeditor;
+                }
+                var payerId = db.OrdersBase.FirstOrDefault(u => u.Id == messageToContr.orderId).PayerId;
+                var contractInfo = GetContractExpBkInfoBySearchString("", expeditor.Id, (int)payerId).ToList();
                 if (dbInfo == null)
                 {
                     var car = new OrderUsedCars()

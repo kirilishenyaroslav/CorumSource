@@ -107,7 +107,7 @@ namespace CorumAdminUI.Controllers
         private void SendEmailToContragents(InfoToContragentsAfterChange model) {
             try
             {
-                if (model.listWinnersInfoAfterChange != null)
+                if (model.listWinnersInfoAfterChange.Count != 0)
                 {
                     foreach (var item in model.listWinnersInfoAfterChange)
                     {
@@ -117,7 +117,7 @@ namespace CorumAdminUI.Controllers
                         SendToWinnerContragentsAsync(item as ListInfoAfterChange, orderId, instance).GetAwaiter();
                     }
                 }
-                if (model.listLosersInfoAfterChange != null)
+                if (model.listLosersInfoAfterChange.Count != 0)
                 {
                     foreach (var item in model.listLosersInfoAfterChange)
                     {

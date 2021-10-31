@@ -18,6 +18,8 @@ using Corum.Models.ViewModels.Bucket;
 using Corum.Models.ViewModels.Tender;
 using System.Configuration;
 using System.Collections.Specialized;
+using Corum.Models.Tender;
+using Newtonsoft.Json;
 
 namespace Corum.ReportsUI
 {
@@ -69,18 +71,18 @@ namespace Corum.ReportsUI
                         extOrderTypeModel1 = (OrderTypeModel as OrdersPassTransportViewModel);
                         context.getPassTrasportOrderData(ref extOrderTypeModel1);
 
-                        if (((OrdersPassTransportViewModel) OrderTypeModel).CountryFrom == 0)
+                        if (((OrdersPassTransportViewModel)OrderTypeModel).CountryFrom == 0)
                         {
-                            ((OrdersPassTransportViewModel) OrderTypeModel).CountryFrom = DefaultCounty.Id;
-                            ((OrdersPassTransportViewModel) OrderTypeModel).CountryFromName = DefaultCounty.CountryName;
+                            ((OrdersPassTransportViewModel)OrderTypeModel).CountryFrom = DefaultCounty.Id;
+                            ((OrdersPassTransportViewModel)OrderTypeModel).CountryFromName = DefaultCounty.CountryName;
                         }
-                        if (((OrdersPassTransportViewModel) OrderTypeModel).CountryTo == 0)
+                        if (((OrdersPassTransportViewModel)OrderTypeModel).CountryTo == 0)
                         {
-                            ((OrdersPassTransportViewModel) OrderTypeModel).CountryTo = DefaultCounty.Id;
-                            ((OrdersPassTransportViewModel) OrderTypeModel).CountryToName = DefaultCounty.CountryName;
+                            ((OrdersPassTransportViewModel)OrderTypeModel).CountryTo = DefaultCounty.Id;
+                            ((OrdersPassTransportViewModel)OrderTypeModel).CountryToName = DefaultCounty.CountryName;
                         }
-                        ((OrdersPassTransportViewModel) OrderTypeModel).DefaultCountry = DefaultCounty.Id;
-                        ((OrdersPassTransportViewModel) OrderTypeModel).DefaultCountryName = DefaultCounty.CountryName;
+                        ((OrdersPassTransportViewModel)OrderTypeModel).DefaultCountry = DefaultCounty.Id;
+                        ((OrdersPassTransportViewModel)OrderTypeModel).DefaultCountryName = DefaultCounty.CountryName;
                         AdressFrom = context.GetFromInfoForExport(extOrderTypeModel1.Id);
                         AdressTo = context.GetToInfoForExport(extOrderTypeModel1.Id);
                         break;
@@ -92,23 +94,23 @@ namespace Corum.ReportsUI
                         extOrderTypeModel2 = (OrderTypeModel as OrdersTruckTransportViewModel);
                         context.getTruckTrasportOrderData(ref extOrderTypeModel2);
 
-                        if ((((OrdersTruckTransportViewModel) OrderTypeModel).ShipperCountryId == 0) ||
-                            (((OrdersTruckTransportViewModel) OrderTypeModel).TripType < 2))
+                        if ((((OrdersTruckTransportViewModel)OrderTypeModel).ShipperCountryId == 0) ||
+                            (((OrdersTruckTransportViewModel)OrderTypeModel).TripType < 2))
                         {
-                            ((OrdersTruckTransportViewModel) OrderTypeModel).ShipperCountryId = DefaultCounty.Id;
-                            ((OrdersTruckTransportViewModel) OrderTypeModel).ShipperCountryName =
+                            ((OrdersTruckTransportViewModel)OrderTypeModel).ShipperCountryId = DefaultCounty.Id;
+                            ((OrdersTruckTransportViewModel)OrderTypeModel).ShipperCountryName =
                                 DefaultCounty.CountryName;
                         }
-                        if ((((OrdersTruckTransportViewModel) OrderTypeModel).ConsigneeCountryId == 0) ||
-                            (((OrdersTruckTransportViewModel) OrderTypeModel).TripType < 2))
+                        if ((((OrdersTruckTransportViewModel)OrderTypeModel).ConsigneeCountryId == 0) ||
+                            (((OrdersTruckTransportViewModel)OrderTypeModel).TripType < 2))
                         {
-                            ((OrdersTruckTransportViewModel) OrderTypeModel).ConsigneeCountryId = DefaultCounty.Id;
-                            ((OrdersTruckTransportViewModel) OrderTypeModel).ConsigneeCountryName =
+                            ((OrdersTruckTransportViewModel)OrderTypeModel).ConsigneeCountryId = DefaultCounty.Id;
+                            ((OrdersTruckTransportViewModel)OrderTypeModel).ConsigneeCountryName =
                                 DefaultCounty.CountryName;
                         }
 
-                        ((OrdersTruckTransportViewModel) OrderTypeModel).DefaultCountry = DefaultCounty.Id;
-                        ((OrdersTruckTransportViewModel) OrderTypeModel).DefaultCountryName = DefaultCounty.CountryName;
+                        ((OrdersTruckTransportViewModel)OrderTypeModel).DefaultCountry = DefaultCounty.Id;
+                        ((OrdersTruckTransportViewModel)OrderTypeModel).DefaultCountryName = DefaultCounty.CountryName;
                         break;
                     default:
                         throw new NotImplementedException();
@@ -120,7 +122,7 @@ namespace Corum.ReportsUI
             var Params = new RestParamsInfo();
             Params.Language = Request.UserLanguages[0];
             if (OrderType == 6)
-            Params.MainHeader = "Конкурентный лист автоперевозки к Заявке на легковой автотранспорт";// + OrderTypeModel.Id.ToString();
+                Params.MainHeader = "Конкурентный лист автоперевозки к Заявке на легковой автотранспорт";// + OrderTypeModel.Id.ToString();
             else if (OrderType == 7)
                 Params.MainHeader = "Конкурентный лист автоперевозки к Заявке на грузовой автотранспорт";// + OrderTypeModel.Id.ToString();
 
@@ -179,14 +181,14 @@ namespace Corum.ReportsUI
                 navInfo.FilterAcceptDateEndRaw = DateTimeConvertClass.getString(DateTime.Now.AddDays(1));
             }
 
-            var orders = context.getFinalReport(userId,                
+            var orders = context.getFinalReport(userId,
                     this.isAdmin,
                     navInfo.UseOrderClientFilter,
                     navInfo.UseOrderTypeFilter,
                     navInfo.UseTripTypeFilter,
                     navInfo.FilterOrderClientId,
                     navInfo.FilterOrderTypeId,
-                    navInfo.FilterTripTypeId,                    
+                    navInfo.FilterTripTypeId,
                     string.IsNullOrEmpty(navInfo.FilterOrderDateBegRaw)
                     ? DateTime.Now.AddDays(-7)
                     : DateTimeConvertClass.getDateTime(navInfo.FilterOrderDateBegRaw),
@@ -238,16 +240,16 @@ namespace Corum.ReportsUI
             {
                 DateBeg = string.IsNullOrEmpty(navInfo.FilterOrderDateBegRaw)
                     ? DateTime.Now.AddDays(-7)
-                    : DateTimeConvertClass.getDateTime(navInfo.FilterOrderDateBegRaw);            
+                    : DateTimeConvertClass.getDateTime(navInfo.FilterOrderDateBegRaw);
                 DateEnd = string.IsNullOrEmpty(navInfo.FilterOrderDateEndRaw)
                 ? DateTime.Now
                 : DateTimeConvertClass.getDateTime(navInfo.FilterOrderDateEndRaw);
             }
-        else if (navInfo.UseAcceptDateFilter)
+            else if (navInfo.UseAcceptDateFilter)
             {
                 DateBeg = string.IsNullOrEmpty(navInfo.FilterAcceptDateBegRaw)
                     ? DateTime.Now.AddDays(-7)
-                    : DateTimeConvertClass.getDateTime(navInfo.FilterAcceptDateBegRaw);            
+                    : DateTimeConvertClass.getDateTime(navInfo.FilterAcceptDateBegRaw);
                 DateEnd = string.IsNullOrEmpty(navInfo.FilterAcceptDateEndRaw)
                 ? DateTime.Now
                 : DateTimeConvertClass.getDateTime(navInfo.FilterAcceptDateEndRaw);
@@ -313,7 +315,7 @@ namespace Corum.ReportsUI
                                                 navInfo.UseTripTypeFilter,
                                                 navInfo.FilterOrderClientId,
                                                 navInfo.FilterOrderTypeId,
-                                                navInfo.FilterTripTypeId, 
+                                                navInfo.FilterTripTypeId,
                                                 string.IsNullOrEmpty(navInfo.FilterOrderDateBegRaw) ? DateTime.Now.AddDays(-7) : DateTimeConvertClass.getDateTime(navInfo.FilterOrderDateBegRaw),
                                                 string.IsNullOrEmpty(navInfo.FilterOrderDateEndRaw) ? DateTime.Now : DateTimeConvertClass.getDateTime(navInfo.FilterOrderDateEndRaw),
                                                 string.IsNullOrEmpty(navInfo.FilterAcceptDateBegRaw)
@@ -552,9 +554,9 @@ namespace Corum.ReportsUI
              && (!navInfo.UseOrderEndDateFilter)
              && (!navInfo.UseFinalStatusFilter)
              && (!navInfo.UseOrderProjectFilter)
-              /* && (!navInfo.UseOrderPayerFilter)
-               && (!navInfo.UseOrderOrgFromFilter)
-               && (!navInfo.UseOrderOrgToFilter)*/)
+                   /* && (!navInfo.UseOrderPayerFilter)
+                    && (!navInfo.UseOrderOrgFromFilter)
+                    && (!navInfo.UseOrderOrgToFilter)*/)
             {
                 navInfo.UseOrderDateFilter = true;
 
@@ -594,8 +596,8 @@ namespace Corum.ReportsUI
                 string.IsNullOrEmpty(navInfo.FilterOrderDateBegRaw)
                     ? DateTime.Now.AddDays(-7)
                     : DateTimeConvertClass.getDateTime(navInfo.FilterOrderDateBegRaw),
-            
-                
+
+
                 string.IsNullOrEmpty(navInfo.FilterOrderDateEndRaw)
                     ? DateTime.Now
                     : DateTimeConvertClass.getDateTime(navInfo.FilterOrderDateEndRaw),
@@ -643,7 +645,7 @@ namespace Corum.ReportsUI
                     OrdersPassTransportViewModel orderPassItem = new OrdersPassTransportViewModel();
 
                     OrderBaseViewModel OrderPassTypeModel = null;
-                    var orderPassInfo = context.getOrder(order.Id);                    
+                    var orderPassInfo = context.getOrder(order.Id);
                     var extOrderTypeModel1 = (OrderPassTypeModel as OrdersPassTransportViewModel);
 
                     int OrderPassType = 6;
@@ -681,7 +683,7 @@ namespace Corum.ReportsUI
 
                         orderPassItem.DefaultCountry = DefaultCounty.Id;
                         orderPassItem.DefaultCountryName = DefaultCounty.CountryName;
-                                                
+
                         ordersPassList.Add(orderPassItem);
                     }
                 }
@@ -739,13 +741,13 @@ namespace Corum.ReportsUI
                     }
                 }
             }
-            
+
             var Param = new RestParamsInfo();
             Param.Language = Request.UserLanguages[0];
             string MainHeader = "";
             Param.MainHeader = MainHeader;
             var reportName = "OrderReport.xlsx";
-            
+
             byte[] fileContents;
 
             fileContents = report.AllOrderRenderReport<OrderBaseViewModel>(ordersPassList.OrderBy(x => x.Id).ToList(),
@@ -958,6 +960,134 @@ namespace Corum.ReportsUI
 
             return null;
         }
+
+
+        [HttpGet]
+        [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
+        public FileResult OrderAsExcel_(int id, string formUuid)
+        {
+            Guid[] listFormUuid = null;
+            try
+            {
+                listFormUuid = JsonConvert.DeserializeObject<Guid[]>(formUuid);
+            }
+            catch (Exception) { }
+            //Поднимаем из БД базовую информацию о заявке
+            OrderBaseViewModel OrderTypeModel = null;
+            var orderInfo = context.getOrder(id);
+            //OrdersPassTransportViewModel extOrderTypeModel1 = null;
+            var extOrderTypeModel1 = (OrderTypeModel as OrdersPassTransportViewModel);
+            var extOrderTypeModel2 = (OrderTypeModel as OrdersTruckTransportViewModel);
+            int OrderType = 6;
+            string AdressFrom, AdressTo;
+            AdressFrom = "";
+            AdressTo = "";
+            if (orderInfo != null)
+            {
+                var DefaultCounty = context.getDefaultCountry();
+                switch (orderInfo.OrderType)
+                {
+                    case 1:
+                    case 3:
+                    case 6:
+                        OrderType = 6;
+                        OrderTypeModel = orderInfo.ConvertTo<OrdersPassTransportViewModel>();
+                        extOrderTypeModel1 = (OrderTypeModel as OrdersPassTransportViewModel);
+                        context.getPassTrasportOrderData(ref extOrderTypeModel1);
+
+                        if (((OrdersPassTransportViewModel)OrderTypeModel).CountryFrom == 0)
+                        {
+                            ((OrdersPassTransportViewModel)OrderTypeModel).CountryFrom = DefaultCounty.Id;
+                            ((OrdersPassTransportViewModel)OrderTypeModel).CountryFromName = DefaultCounty.CountryName;
+                        }
+                        if (((OrdersPassTransportViewModel)OrderTypeModel).CountryTo == 0)
+                        {
+                            ((OrdersPassTransportViewModel)OrderTypeModel).CountryTo = DefaultCounty.Id;
+                            ((OrdersPassTransportViewModel)OrderTypeModel).CountryToName = DefaultCounty.CountryName;
+                        }
+
+                       ((OrdersPassTransportViewModel)OrderTypeModel).DefaultCountry = DefaultCounty.Id;
+                        ((OrdersPassTransportViewModel)OrderTypeModel).DefaultCountryName = DefaultCounty.CountryName;
+
+                        AdressFrom = context.GetFromInfoForExport(extOrderTypeModel1.Id);
+                        AdressTo = context.GetToInfoForExport(extOrderTypeModel1.Id);
+
+                        break;
+
+                    case 4:
+                    case 5:
+                    case 7:
+                        OrderType = 7;
+                        OrderTypeModel = orderInfo.ConvertTo<OrdersTruckTransportViewModel>();
+                        extOrderTypeModel2 = (OrderTypeModel as OrdersTruckTransportViewModel);
+                        context.getTruckTrasportOrderData(ref extOrderTypeModel2);
+
+                        if ((((OrdersTruckTransportViewModel)OrderTypeModel).ShipperCountryId == 0) || (((OrdersTruckTransportViewModel)OrderTypeModel).TripType < 2))
+                        {
+                            ((OrdersTruckTransportViewModel)OrderTypeModel).ShipperCountryId = DefaultCounty.Id;
+                            ((OrdersTruckTransportViewModel)OrderTypeModel).ShipperCountryName = DefaultCounty.CountryName;
+                        }
+                        if ((((OrdersTruckTransportViewModel)OrderTypeModel).ConsigneeCountryId == 0) || (((OrdersTruckTransportViewModel)OrderTypeModel).TripType < 2))
+                        {
+                            ((OrdersTruckTransportViewModel)OrderTypeModel).ConsigneeCountryId = DefaultCounty.Id;
+                            ((OrdersTruckTransportViewModel)OrderTypeModel).ConsigneeCountryName = DefaultCounty.CountryName;
+                        }
+
+                       ((OrdersTruckTransportViewModel)OrderTypeModel).DefaultCountry = DefaultCounty.Id;
+                        ((OrdersTruckTransportViewModel)OrderTypeModel).DefaultCountryName = DefaultCounty.CountryName;
+
+                        break;
+
+                    default:
+                        throw new NotImplementedException();
+                }
+
+                var Param = new RestParamsInfo();
+                Param.Language = Request.UserLanguages[0];
+                string MainHeader = "";
+                if (OrderType == 6)
+                    MainHeader = "Заявка на транспортные средства категории В ";
+                else if (OrderType == 7)
+                    MainHeader = "ЗАЯВКА НА ПЕРЕВОЗКУ ГРУЗОВ ПО МАРШРУТУ  № " + OrderTypeModel.Id.ToString();
+
+                Param.MainHeader = MainHeader;
+
+                string AcceptDate = context.GetAcceptDate(id);
+
+                OrderClientsViewModel orderClientInfo = context.getClient(OrderTypeModel.ClientId);
+
+                var reportName = "OrderReport " + OrderTypeModel.Id.ToString() + ".xlsx";
+
+                string ContractName = context.getContactName(OrderTypeModel.Id);
+                List<OrderUsedCarViewModel> carList = new List<OrderUsedCarViewModel>();
+                List<DataToAndFromContragent> listData = new List<DataToAndFromContragent>();
+                if (listFormUuid != null)
+                {
+                    foreach (var item in listFormUuid)
+                    {
+                        carList.Add(context.getOrderCarsInfoFromContragent(item).ToList()[0]);
+                        DataToAndFromContragent instance = new DataToAndFromContragent();
+                        context.NewUsedCarExcel(item, ref instance);
+                        listData.Add(instance);
+                    }
+                }
+
+                byte[] fileContents;
+                if (listFormUuid.Length == 0)
+                {
+                    fileContents = report.OrderRenderReport<OrderBaseViewModel>(OrderTypeModel, extOrderTypeModel1, AcceptDate, orderClientInfo, Param, AdressFrom, AdressTo, ContractName, extOrderTypeModel2, OrderType, carList);
+                }
+                else
+                {
+                    fileContents = report.OrderRenderReport<OrderBaseViewModel>(OrderTypeModel, extOrderTypeModel1, AcceptDate, orderClientInfo, Param, AdressFrom, AdressTo, ContractName, extOrderTypeModel2, OrderType, carList, listData);
+                }
+
+                return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", reportName);
+            }
+
+            return null;
+        }
+
 
         [HttpGet]
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
@@ -3183,12 +3313,12 @@ namespace Corum.ReportsUI
 
         }
 
-        
+
         [HttpGet]
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
         public FileResult TruckReportAsExcel(OrdersNavigationInfo navInfo)
         {
-             String Address = "", OrgName = "";
+            String Address = "", OrgName = "";
             IQueryable<TruckViewModel> orders = null;
             var modelTruckReport2 = (Session[navInfo.IdTree] as OrdersNavigationResult<TruckViewModel>);
             var modelTruckReport3 = new OrdersNavigationResult<TruckViewModel>(navInfo, userId);
@@ -3196,7 +3326,7 @@ namespace Corum.ReportsUI
             {
                 var TruckInfo = modelTruckReport2.DataDisplayValues.ToList();
                 modelTruckReport3 = new OrdersNavigationResult<TruckViewModel>(navInfo, userId)
-                {                   
+                {
                     DisplayValues = context.getTruckReportDetails2(TruckInfo,
                     navInfo.IdGroup ?? 0,
                     navInfo.Id)
@@ -3218,26 +3348,26 @@ namespace Corum.ReportsUI
                 //return View(model);
             }
             else
-            {                
+            {
                 /*return RedirectToAction( "TruckReport", new RouteValueDictionary( 
     new { controller = "Orders", action = "TruckReport", UseOrderTypeFilter =  navInfo.UseOrderTypeFilter,
         FilterOrderTypeId =  navInfo.FilterOrderTypeId, FilterOrderDateRaw =  navInfo.FilterOrderDateRaw,
         UseOrderDateFilter = navInfo.UseOrderDateFilter} ) );  */
-                             
+
             }
 
-             // string orgName= context.GetOrganizationNameById(navInfo.OrgId);
-            
-           /* var orders = context.getTruckReportDetails(userId,
-                                                this.isAdmin,                                               
-                                                 navInfo.OrgId,
-                                                 navInfo.ReportDate, navInfo.IdGroup ?? 0, navInfo.Id).ToList();*/
+            // string orgName= context.GetOrganizationNameById(navInfo.OrgId);
+
+            /* var orders = context.getTruckReportDetails(userId,
+                                                 this.isAdmin,                                               
+                                                  navInfo.OrgId,
+                                                  navInfo.ReportDate, navInfo.IdGroup ?? 0, navInfo.Id).ToList();*/
 
             var Otgruzka = orders.Where(x => x.isShipper == true).ToList();
             var Poluchenie = orders.Where(x => x.isShipper == false).ToList();
             int SumOtgruzka = Otgruzka.Count();
             int SumPoluchenie = Poluchenie.Count();
-       
+
             var DataOtgruzka = new RestDataInfo<TruckViewModel>();
 
             DataOtgruzka.Rows.AddRange(Otgruzka);
@@ -3249,11 +3379,11 @@ namespace Corum.ReportsUI
             byte[] fileContents = null;
 
             var Params = new RestParamsInfo();
-            Params.Language = Request.UserLanguages[0];              
-            Params.Address = Address;           
+            Params.Language = Request.UserLanguages[0];
+            Params.Address = Address;
 
             Params.MainHeader = "Информация по " + OrgName + " на дату " +
-                                navInfo.ReportDate.Date.ToString("dd.MM.yyyy") + Address;            
+                                navInfo.ReportDate.Date.ToString("dd.MM.yyyy") + Address;
 
             fileContents = report.TruckReportRenderReport<TruckViewModel>(DataOtgruzka, DataPoluchenie, Params, SumOtgruzka, SumPoluchenie);
 
@@ -3418,7 +3548,7 @@ namespace Corum.ReportsUI
             {
                 var order = 1;
                 var items = document.Items.ToList();
-                foreach(var item in items)
+                foreach (var item in items)
                 {
                     item.OrderNum = order++;
                 }
@@ -3436,13 +3566,13 @@ namespace Corum.ReportsUI
             Param.Language = Request.UserLanguages[0];
 
             string MainHeader = "Документ корзины: ";
-            
+
             Param.MainHeader = MainHeader + document.Id.ToString() + " от " + document.Date.ToString("dd.mm.yyyy") + " автор: " + document.CreatedBy;
 
             byte[] fileContents;
             fileContents = report.RenderReport<BucketItem>(Header, Data, Footer, Param);
 
-            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "BucketDocument"+document.Id.ToString()+".xlsx");
+            return File(fileContents, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "BucketDocument" + document.Id.ToString() + ".xlsx");
         }
 
         [HttpGet]
@@ -3454,6 +3584,121 @@ namespace Corum.ReportsUI
             BaseClient clientbase = new BaseClient($"{allAppSettings["ApiUrlGetFile"]}{tenderUuid}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
             var response = new GetFileApiTender().GetCallAsync(clientbase).Result;
             return File(response, "application/vnd.ms-excel", nameKL);
+        }
+
+        public byte[] OrderAsExcelFromContragent(int id, string language, DataToAndFromContragent data)
+        {
+            //Поднимаем из БД базовую информацию о заявке
+            OrderBaseViewModel OrderTypeModel = null;
+            var orderInfo = context.getOrder(id);
+            //OrdersPassTransportViewModel extOrderTypeModel1 = null;
+            var extOrderTypeModel1 = (OrderTypeModel as OrdersPassTransportViewModel);
+            var extOrderTypeModel2 = (OrderTypeModel as OrdersTruckTransportViewModel);
+            int OrderType = 6;
+            string AdressFrom, AdressTo;
+            AdressFrom = "";
+            AdressTo = "";
+            if (orderInfo != null)
+            {
+                var DefaultCounty = context.getDefaultCountry();
+                switch (orderInfo.OrderType)
+                {
+                    case 1:
+                    case 3:
+                    case 6:
+                        OrderType = 6;
+                        OrderTypeModel = orderInfo.ConvertTo<OrdersPassTransportViewModel>();
+                        extOrderTypeModel1 = (OrderTypeModel as OrdersPassTransportViewModel);
+                        context.getPassTrasportOrderData(ref extOrderTypeModel1);
+
+                        if (((OrdersPassTransportViewModel)OrderTypeModel).CountryFrom == 0)
+                        {
+                            ((OrdersPassTransportViewModel)OrderTypeModel).CountryFrom = DefaultCounty.Id;
+                            ((OrdersPassTransportViewModel)OrderTypeModel).CountryFromName = DefaultCounty.CountryName;
+                        }
+                        if (((OrdersPassTransportViewModel)OrderTypeModel).CountryTo == 0)
+                        {
+                            ((OrdersPassTransportViewModel)OrderTypeModel).CountryTo = DefaultCounty.Id;
+                            ((OrdersPassTransportViewModel)OrderTypeModel).CountryToName = DefaultCounty.CountryName;
+                        }
+
+                       ((OrdersPassTransportViewModel)OrderTypeModel).DefaultCountry = DefaultCounty.Id;
+                        ((OrdersPassTransportViewModel)OrderTypeModel).DefaultCountryName = DefaultCounty.CountryName;
+
+                        AdressFrom = context.GetFromInfoForExport(extOrderTypeModel1.Id);
+                        AdressTo = context.GetToInfoForExport(extOrderTypeModel1.Id);
+
+                        break;
+
+                    case 4:
+                    case 5:
+                    case 7:
+                        OrderType = 7;
+                        OrderTypeModel = orderInfo.ConvertTo<OrdersTruckTransportViewModel>();
+                        extOrderTypeModel2 = (OrderTypeModel as OrdersTruckTransportViewModel);
+                        context.getTruckTrasportOrderData(ref extOrderTypeModel2);
+
+                        if ((((OrdersTruckTransportViewModel)OrderTypeModel).ShipperCountryId == 0) || (((OrdersTruckTransportViewModel)OrderTypeModel).TripType < 2))
+                        {
+                            ((OrdersTruckTransportViewModel)OrderTypeModel).ShipperCountryId = DefaultCounty.Id;
+                            ((OrdersTruckTransportViewModel)OrderTypeModel).ShipperCountryName = DefaultCounty.CountryName;
+                        }
+                        if ((((OrdersTruckTransportViewModel)OrderTypeModel).ConsigneeCountryId == 0) || (((OrdersTruckTransportViewModel)OrderTypeModel).TripType < 2))
+                        {
+                            ((OrdersTruckTransportViewModel)OrderTypeModel).ConsigneeCountryId = DefaultCounty.Id;
+                            ((OrdersTruckTransportViewModel)OrderTypeModel).ConsigneeCountryName = DefaultCounty.CountryName;
+                        }
+
+                       ((OrdersTruckTransportViewModel)OrderTypeModel).DefaultCountry = DefaultCounty.Id;
+                        ((OrdersTruckTransportViewModel)OrderTypeModel).DefaultCountryName = DefaultCounty.CountryName;
+
+                        break;
+
+                    default:
+                        throw new NotImplementedException();
+                }
+
+                var Param = new RestParamsInfo();
+                Param.Language = language;
+                string MainHeader = "";
+                if (OrderType == 6)
+                    MainHeader = "Заявка на транспортные средства категории В ";
+                else if (OrderType == 7)
+                    MainHeader = "ЗАЯВКА НА ПЕРЕВОЗКУ ГРУЗОВ ПО МАРШРУТУ  № " + OrderTypeModel.Id.ToString();
+
+                Param.MainHeader = MainHeader;
+
+                string AcceptDate = context.GetAcceptDate(id);
+
+                OrderClientsViewModel orderClientInfo = context.getClient(OrderTypeModel.ClientId);
+
+                string ContractName = context.getContactName(OrderTypeModel.Id);
+                List<OrderUsedCarViewModel> carList = new List<OrderUsedCarViewModel>();
+                byte[] fileContents;
+                List<DataToAndFromContragent> listData = new List<DataToAndFromContragent>();
+                if (data.regmesstocontrag.formUuid != null)
+                {
+                        carList.Add(context.getOrderCarsInfoFromContragent(data.regmesstocontrag.formUuid).ToList()[0]);
+                        DataToAndFromContragent instance = new DataToAndFromContragent();
+                        context.NewUsedCarExcel(data.regmesstocontrag.formUuid, ref instance);
+                        listData.Add(instance);                   
+                }
+                if (data.formFromContr != null)
+                {
+                    carList = context.getOrderCarsInfoFromContragent(data.formFromContr.tenderItemUuid).ToList();
+                    fileContents = report.OrderRenderReport<OrderBaseViewModel>(OrderTypeModel, extOrderTypeModel1, AcceptDate, orderClientInfo, Param, AdressFrom, AdressTo, ContractName, extOrderTypeModel2, OrderType, carList, data);
+                }
+                else
+                {
+                    carList = context.getOrderCarsInfoFromContragent(data.regmesstocontrag.formUuid).ToList();
+                    fileContents = report.OrderRenderReport<OrderBaseViewModel>(OrderTypeModel, extOrderTypeModel1, AcceptDate, orderClientInfo, Param, AdressFrom, AdressTo, ContractName, extOrderTypeModel2, OrderType, carList, listData);
+                }
+                
+
+                return fileContents;
+            }
+
+            return null;
         }
     }
 }

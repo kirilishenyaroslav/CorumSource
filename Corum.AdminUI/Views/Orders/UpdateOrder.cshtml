@@ -57,7 +57,7 @@
                         <div class="form-group" style="margin-left:20px; font-size:12px;">
 
                             @if (Model.IsTransport)
-                {
+                            {
                                 @Html.ActionLink("В реестр", "Orders", "Orders", null, new { @class = "btn btn-success col-md-1 col-sm-2 col-xs-4", @style = "margin-left:10px; margin-top:5px;" })
                             }
                             else
@@ -66,13 +66,13 @@
                             }
 
                             @if ((Model.AllowClientData) || (Model.AllowExecuterData))
-                {
+                            {
                                 <input type="submit" value="Сохранить" class="btn btn-default col-md-1 col-sm-2 col-xs-4" style="margin-left:10px;margin-top:5px;" />
                             }
 
                             @if (Model.IsTransport)
-                {
-                                @Html.ActionLink("В excel", "OrderAsExcel", "ExportToExcel", new { id = Model.Id }, new { @class = "delete_link btn btn-success col-md-1 col-sm-2 col-xs-4", @style = "margin-left:10px;margin-top:5px;" })
+                            {
+                                @Html.ActionLink("В excel", "OrderAsExcel_", "ExportToExcel", null, new { @class = "delete_link btn btn-success col-md-1 col-sm-2 col-xs-4", @style = "margin-left:10px;margin-top:5px;", @onclick = "GetSelectedRows(this)" });
                             }
 
                             @Html.ActionLink("Тайм-лайн", "OrderStatuses", "Orders", new { OrderId = Model.Id }, new { @class = "delete_link btn btn-success col-md-1 col-sm-2 col-xs-4", @style = "margin-left:10px;margin-top:5px;" })
@@ -139,14 +139,14 @@
                             @if ((@Model.AllowExecuterData) && (@Model.ProjectsCnt != 0))
                             {
                                 if (@Model.ProjectsCnt == 1)
-                                {                                
+                                {
                                     <div class="dropdown" style="display: inline-block;">
                                         <button class="btn btn-success col-md-1 col-sm-2 col-xs-4 dropdown-toggle" style="margin: -12px 5px 5px 5px; width: 100px;" type="button" id="dropdownReestr" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                             <span class="glyphicon" aria-hidden="true"></span>
                                             Перейти
                                             <span class="caret"></span>
                                         </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownReestr" style="top: 80% !important; font-size: 12px;">                                            
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownReestr" style="top: 80% !important; font-size: 12px;">
                                             <li>@Html.ActionLink("Реестр остатков", "RestReportProject", "Projects", new { Id = @Model.MultiProjectId, Code = @Model.ProjectNum }, null)</li>
                                             <li>@Html.ActionLink("Сводная форма", "GroupRestProject", "Projects", new { Id = @Model.MultiProjectId, Code = @Model.ProjectNum }, null)</li>
 
@@ -162,14 +162,16 @@
                                             <span class="caret"></span>
                                         </button>
                                         <ul class="dropdown-menu" aria-labelledby="dropdownReestr" style="top: 80% !important; font-size: 12px;">
-                                            <li><a onclick="RestReport(@Model.Id, 0)" style="cursor: pointer;">
-                                                <span>Реестр остатков</span>
-                                            </a></li>
+                                            <li>
+                                                <a onclick="RestReport(@Model.Id, 0)" style="cursor: pointer;">
+                                                    <span>Реестр остатков</span>
+                                                </a>
+                                            </li>
                                             <li>
                                                 <a onclick="RestReport(@Model.Id, 1)" style="cursor: pointer;">
                                                     <span>Сводная форма</span>
                                                 </a>
-                                            </li>                                          
+                                            </li>
                                         </ul>
                                     </div>
 
@@ -231,7 +233,7 @@
 
                                 </div>
                             }
-                        </div>                      
+                        </div>
                     </div>
 
                     <hr />
@@ -948,10 +950,12 @@
             $('#ordernotificationdialog').dialog('open');
             return;
         }
-
         function ShowUsedCarDialog(_OrderId, IsEditing, _IsTruck) {
-
-            var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
+            var getselectedRows = [];
+            var getselectedrowindexes = $("#jqxgridUC").jqxGrid('getselectedrowindexes');
+            for (const item of getselectedrowindexes) {
+                getselectedRows.push($("#jqxgridUC").jqxGrid('getrows')[item]);
+            };
 
             if ((getselectedrowindexes.length == 0) && (IsEditing == true)) {
 
@@ -967,14 +971,27 @@
                     top: 25,
                     resizable: false,
                     tags: true,
+                    zIndex: 99999,
                     title: IsEditing ? "Изменить информацию об автомобиле" : "Новый автомобиль для заявки",
                     modal: true,
-                    open: function(event, ui) {
+                        open: function (event, ui) {
+                        let div = document.getElementById('columntablejqxgridUC');
+                        div.style.zIndex = 1;
+
+
                         var PayerInfo = $('#PayerId').attr("data-selected-text");
-                        var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
+                        var getselectedrowindexes = getselectedRows;
                         $("#PayerInfo").val(PayerInfo);
                         if ((getselectedrowindexes.length > 0) && (IsEditing == true)) {
                             $("#UsedCarId").val(getselectedrowindexes[0].Id);
+
+                            $("#tenderNumber").val(getselectedrowindexes[0].tenderNumber);
+                            $("#stateBorderCrossingPoint").val(getselectedrowindexes[0].stateBorderCrossingPoint);
+                            $("#seriesPassportNumber").val(getselectedrowindexes[0].seriesPassportNumber);
+                            $("#trailerNumber").val(getselectedrowindexes[0].trailerNumber);
+                            $("#transportDimensions").val(getselectedrowindexes[0].transportDimensions);
+                            $("#distance").val(getselectedrowindexes[0].distance);
+                            $("#Summ_").val(getselectedrowindexes[0].Summ_);
 
                             $('#ContractExpBkInfo').val(getselectedrowindexes[0].ContractExpBkId);
                             $("#ContractExpBkInfo").attr("data-selected-text", getselectedrowindexes[0].ContractExpBkInfo);
@@ -1027,6 +1044,13 @@
                             $('#DriverCardInfo').val('');
                             $('#Comments').val('');
 
+                            $("#tenderNumber").val('');
+                            $("#stateBorderCrossingPoint").val('');
+                            $("#seriesPassportNumber").val('');
+                            $("#trailerNumber").val('');
+                            $("#transportDimensions").val('');
+                            $("#distance").val('');
+                            $("#Summ_").val('');
                             //var currDateNew = DateTime.Now.ToString("dd.MM.yyyy");
                          //   $('#FactShipperDate').val('');
                          //   $('#FactShipperTime').val('00:00:00');
@@ -1105,14 +1129,19 @@
                                     var _DriverCardInfo = $('#DriverCardInfo').val();
                                     var _Comments = $('#Comments').val();
 
+                                    var _tenderNumber = $("#tenderNumber").val();
+                                    var _stateBorderCrossingPoint = $("#stateBorderCrossingPoint").val();
+                                    var _seriesPassportNumber = $("#seriesPassportNumber").val();
+                                    var _trailerNumber = $("#trailerNumber").val();
+                                    var _transportDimensions = $("#transportDimensions").val();
+                                    var _distance = $("#distance").val();
+                                    var _Summ = $("#Summ_").val();
                                   //  var _FactShipperDate = $('#FactShipperDate').val();
                                   //  var _FactShipperTime = $('#FactShipperTime').val();
                                   //  var _FactConsigneeDate = $('#FactConsigneeDate').val();
                                    // var _FactConsigneeTime = $('#FactConsigneeTime').val();
-
-                                    var _Summ = 0;
-
-
+                                    var Summ = 0;
+                                   
                                     if (IsEditing) {
 
                                         var _CarId = $("#UsedCarId").val();
@@ -1134,14 +1163,22 @@
                                             CarrierInfo: _CarrierInfo,
                                             DriverCardInfo: _DriverCardInfo,
                                             Comments: _Comments,
+                                            tenderNumber: _tenderNumber,
+                                            stateBorderCrossingPoint: _stateBorderCrossingPoint,
+                                            seriesPassportNumber: _seriesPassportNumber,
+                                            trailerNumber: _trailerNumber,
+                                            transportDimensions: _transportDimensions,
+                                            distance: _distance,
+                                            Summ_: _Summ,
                                            // FactShipperDate: _FactShipperDate,
                                           //  FactShipperTime: _FactShipperTime,
                                           //  FactConsigneeDate: _FactConsigneeDate,
                                           //  FactConsigneeTime: _FactConsigneeTime,
-                                                Summ: _Summ
+                                                Summ: Summ
                                             },
                                             function(data) {
-                                                $("#jqxgridUC").jqxDataTable('updateBoundData');
+                                                $("#jqxgridUC").jqxGrid('updatebounddata');
+                                                $("#jqxgridUC").jqxGrid('addgroup', 'tenderNumber');
                                             });
                                     } else {
                                         $.post('@Url.Action("NewUsedCar", "Orders")',
@@ -1159,14 +1196,21 @@
                                                 CarrierInfo: _CarrierInfo,
                                                 DriverCardInfo: _DriverCardInfo,
                                                 Comments: _Comments,
+                                                tenderNumber: _tenderNumber,
+                                                stateBorderCrossingPoint: _stateBorderCrossingPoint,
+                                                seriesPassportNumber: _seriesPassportNumber,
+                                                trailerNumber: _trailerNumber,
+                                                transportDimensions: _transportDimensions,
+                                                distance: _distance,
+                                                Summ_: _Summ,
                                              //   FactShipperDate: _FactShipperDate,
                                              //   FactShipperTime: _FactShipperTime,
                                              //   FactConsigneeDate: _FactConsigneeDate,
                                             //    FactConsigneeTime: _FactConsigneeTime,
-                                                Summ: _Summ
                                             },
                                             function(data) {
-                                                $("#jqxgridUC").jqxDataTable('updateBoundData');
+                                                $("#jqxgridUC").jqxGrid('updatebounddata');
+                                                $("#jqxgridUC").jqxGrid('addgroup', 'tenderNumber');
                                             });
                                     }
 
@@ -1181,6 +1225,7 @@
 
             return;
         }
+
 
         function FitFields() {
             var CommentStr = document.querySelector("#Comments").value;
@@ -1283,8 +1328,12 @@
         };
 
         function ShowUsedCarAddDialog(_OrderId) {
-            var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
-
+            var getselectedRows = [];
+            var getselectedrowindexes = $("#jqxgridUC").jqxGrid('getselectedrowindexes');
+            for (const item of getselectedrowindexes) {
+                getselectedRows.push($("#jqxgridUC").jqxGrid('getrows')[item]);
+            };
+            
             if ((getselectedrowindexes.length == 0)) {
 
                 return false;
@@ -1302,8 +1351,9 @@
                     title: "Дополнительная информация о автомобиле",
                     modal: true,
                     open: function(event, ui) {
-
-                        var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
+                        let div = document.getElementById('columntablejqxgridUC');
+                        div.style.zIndex = 1;
+                        var getselectedrowindexes = getselectedRows;
 
                         if (getselectedrowindexes.length > 0) {
                             $("#UsedCarId").val(getselectedrowindexes[0].Id);
@@ -1461,8 +1511,12 @@
         }
 
         function ShowDirectoryUsedCarDialog(_OrderId, _IsTruck) {
-
-            var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
+            var getselectedRows = [];
+            var getselectedrowindexes = $("#jqxgridUC").jqxGrid('getselectedrowindexes');
+            for (const item of getselectedrowindexes) {
+                getselectedRows.push($("#jqxgridUC").jqxGrid('getrows')[item]);
+            };
+            
 
             $('#useddircarinfodialog')
                 .dialog(
@@ -1475,10 +1529,12 @@
                     tags: true,
                     title: "Новый автомобиль для заявки",
                     modal: true,
-                    open: function(event, ui) {
+                        open: function (event, ui) {
+                        let div = document.getElementById('columntablejqxgridUC');
+                        div.style.zIndex = 1;
                         var PayerInfo = $('#PayerId').attr("data-selected-text");
                         $("#DirPayerInfo").val(PayerInfo);
-                        var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
+                        var getselectedrowindexes = getselectedRows;
 
                         $("#DirExpeditorName").select2("val", "");
                         $("#DirContractInfo").select2("val", "");
@@ -1657,7 +1713,7 @@
                                             Summ: _DirSumm
                                         },
                                         function(data) {
-                                            $("#jqxgridUC").jqxDataTable('updateBoundData');
+                                            $("#jqxgridUC").jqxGrid('updatebounddata');
                                         });
 
 
@@ -1675,21 +1731,26 @@
 
 
         function DropUsedCar() {
-            var getselectedrowindexes = $("#jqxgridUC").jqxDataTable('getSelection');
+            let getselectedRows = [];
+            let getselectedrowindexes = $("#jqxgridUC").jqxGrid('getselectedrowindexes');
+            for (const item of getselectedrowindexes) {
+                getselectedRows.push($("#jqxgridUC").jqxGrid('getrows')[item].formUuid);
+            };
+           
 
             if (getselectedrowindexes.length > 0) {
-                $("#UsedCarId").val(getselectedrowindexes[0].Id);
+                $("#UsedCarId").val(JSON.stringify(getselectedRows));
 
                 bootbox.confirm("Вы хотите удалить автомобиль из заявки?", function(result) {
 
                     if (result) {
-                        $.post('@Url.Action("RemoveUsedCar", "Orders")',
+                        $.post('@Url.Action("RemoveUsedCar_", "Orders")',
                             {
                                 Id: $("#UsedCarId").val()
                             },
                             function(data) {
-                                $("#jqxgridUC").jqxDataTable('updateBoundData');
-
+                                $("#jqxgridUC").jqxGrid('updatebounddata');
+                                $("#jqxgridUC").jqxGrid('addgroup', 'tenderNumber');
                                 $("#UsedCarEditButton").addClass("disabled");
                                 $("#UsedCarDeleButton").addClass("disabled");
                                 $("#UsedCarEditButton").removeClass("btn-default");
@@ -1973,62 +2034,86 @@
 
 
             var sourceUC =
-            {
-                datatype: "json",
-                datafields: [
-                    { name: 'Id' },
-                    { name: 'OrderId' },
-                    { name: 'ContractInfo' },
-                    { name: 'ContractExpBkInfo' },
-                    { name: 'ContractExpBkId' },
-                    { name: 'ExpeditorId' },
-                    { name: 'ExpeditorName' },
-                    { name: 'CarOwnerInfo' },
-                    { name: 'CarModelInfo' },
-                    { name: 'CarRegNum' },
-                    { name: 'CarCapacity' },
-                    { name: 'CarDriverInfo' },
-                    { name: 'DriverContactInfo' },
-                    { name: 'CarrierInfo' },
-                    { name: 'CarId' },
-                    { name: 'DriverCardInfo' },
-                    { name: 'Comments' },
-                    { name: 'FactShipperDateTime' },
-                    { name: 'FactConsigneeDateTime' }
+                    {
+                        datatype: "json",
+                        datafields: [
+                            { name: 'Id' },
+                            { name: 'OrderId' },
+                            { name: 'ContractInfo' },
+                            { name: 'ContractExpBkInfo' },
+                            { name: 'ContractExpBkId' },
+                            { name: 'ExpeditorId' },
+                            { name: 'ExpeditorName' },
+                            { name: 'CarOwnerInfo' },
+                            { name: 'CarModelInfo' },
+                            { name: 'CarRegNum' },
+                            { name: 'CarCapacity' },
+                            { name: 'CarDriverInfo' },
+                            { name: 'DriverContactInfo' },
+                            { name: 'CarrierInfo' },
+                            { name: 'CarId' },
+                            { name: 'DriverCardInfo' },
+                            { name: 'Comments' },
+                            { name: 'FactShipperDateTime' },
+                            { name: 'FactConsigneeDateTime' },
+                            { name: 'tenderNumber' },
+                            { name: 'seriesPassportNumber' },
+                            { name: 'stateBorderCrossingPoint' },
+                            { name: 'trailerNumber' },
+                            { name: 'transportDimensions' },
+                            { name: 'distance' },
+                            { name: 'Summ_' },
+                            { name: 'formUuid' }
+                        ],
+                        url: '@Url.Action("GetUsedCars", "Orders", new {OrderId = Model.Id})',
+                        id: 'Id'
+                    };
 
-                ],
-                url: '@Url.Action("GetUsedCars", "Orders", new {OrderId = Model.Id})',
-                id: 'Id'
-            };
+                    var dataAdapterUCars = new $.jqx.dataAdapter(sourceUC);
 
-            var dataAdapterUCars = new $.jqx.dataAdapter(sourceUC);
+                    $("#jqxgridUC").jqxGrid(
+                    {
+                        width: 1000,
+                        autorowheight: true,
+                        autoheight: true,
+                        source: dataAdapterUCars,
+                        theme: 'arctic',
+                        groupable: true,
+                        groups: ['tenderNumber'],
+                        columnsheight: 80,
+                        pageSize: 10,
+                        sortable: false,
+                        filterable: false,
+                        pageable: true,
+                        selectionmode: 'checkbox',
+                            ready: function (e) {
+                                let div = document.getElementById('columntablejqxgridUC');
+                                div.style.zIndex = 1;
+                            },
 
-            $("#jqxgridUC").jqxDataTable(
-            {
-                width: 1000,
-                source: dataAdapterUCars,
-                theme: 'arctic',
-                columnsheight: 80,
-                pageSize: 10,
-                sortable: false,
-                filterable: false,
-                pageable: true,
-                columns: [
-                    { text: 'Экспедитор', datafield: 'ExpeditorName', width: 120 },
-                    { text: 'Договор<br/>Эксп/<br/>Плательщик', datafield: 'ContractExpBkInfo', width: 100 },
-                    { text: 'Перевозчик', datafield: 'CarrierInfo', width: 100 },
-                    { text: 'Договор<br/>Эксп/<br/>Перевозчик', datafield: 'ContractInfo', width: 100 },
-                    { text: 'Марка<br/>авто', datafield: 'CarModelInfo', width: 75 },
-                    { text: 'Номер<br/>авто', datafield: 'CarRegNum', width: 75 },
-                    { text: 'Грузо<br/>подъем<br/>ность', datafield: 'CarCapacity', width: 60 },
-                    { text: 'Ф.И.О.<br/>водителя', datafield: 'CarDriverInfo', width: 100 },
-                    { text: 'Права', datafield: 'DriverCardInfo', width: 60 },
-                    { text: 'Контакт<br/>водителя', datafield: 'DriverContactInfo', width: 80 },
-                    { text: 'Коммен<br/>тарий', datafield: 'Comments', width: 80 },
-                    { text: 'Факт.<br/>отправл.<br/>(дата и время)', datafield: 'FactShipperDateTime', width: 130 },
-                    { text: 'Факт.<br/>прибытие<br/>(дата и время)', datafield: 'FactConsigneeDateTime', width: 130 }
-                ]
-            });
+                            columns: [
+                            { text: 'Тендер', datafield: 'tenderNumber', width: 60 },
+                            { text: 'Экспедитор', datafield: 'ExpeditorName', width: 120 },
+                            { text: 'Договор<br/>Эксп/<br/>Плательщик', datafield: 'ContractExpBkInfo', width: 100 },
+                            { text: 'Перевозчик', datafield: 'CarrierInfo', width: 100 },
+                            { text: 'Договор<br/>Эксп/<br/>Перевозчик', datafield: 'ContractInfo', width: 100 },
+                            { text: 'Марка<br/>авто', datafield: 'CarModelInfo', width: 75 },
+                            { text: 'Номер<br/>авто', datafield: 'CarRegNum', width: 75 },
+                            { text: 'Грузо<br/>подъем<br/>ность', datafield: 'CarCapacity', width: 60 },
+                            { text: 'Ф.И.О.<br/>водителя', datafield: 'CarDriverInfo', width: 100 },
+                            { text: 'Права', datafield: 'DriverCardInfo', width: 100 },
+                            { text: 'Контакт<br/>водителя', datafield: 'DriverContactInfo', width: 130 },
+                            { text: 'Коммен<br/>тарий', datafield: 'Comments', width: 80 },
+                            { text: 'Факт.<br/>отправл.<br/>(дата и время)', datafield: 'FactShipperDateTime', width: 130 },
+                            { text: 'Факт.<br/>прибытие<br/>(дата и время)', datafield: 'FactConsigneeDateTime', width: 130 },
+                            { text: 'Серия/номер<br/>загр.паспорта', datafield: 'seriesPassportNumber', width: 100 },
+                            { text: 'Пункт перехода<br/>гос.границы', datafield: 'stateBorderCrossingPoint', width: 130 },
+                            { text: 'Гос.номер<br/>прицепа', datafield: 'trailerNumber', width: 100 },
+                            { text: 'Габариты<br/>ТС/прицепа', datafield: 'transportDimensions', width: 100 },
+                            { text: 'Расстояние', datafield: 'distance', width: 100 },
+                            { text: 'Стоимость<br/>перевозки', datafield: 'Summ_', width: 100 }
+                        ]
+                    });
 
 
             if ((@Model.OrderType === 4) || (@Model.OrderType === 5) || (@Model.OrderType === 7)) {
@@ -2145,7 +2230,7 @@
                     });
             }
 
-            $('#jqxgridUC').on('rowClick',
+            $('#jqxgridUC').on('rowclick',
                 function(event) {
                     $("#UsedCarEditButton").removeClass("disabled");
                     $("#UsedCarDeleButton").removeClass("disabled");
@@ -2156,9 +2241,9 @@
                 });
 
             if ((@Model.OrderType === 4) || (@Model.OrderType === 5) || (@Model.OrderType === 7))
-                $("#jqxgridUC").jqxDataTable('showColumn', 'CarCapacity');
+                $("#jqxgridUC").jqxGrid('showcolumn', 'CarCapacity');
             else
-                $("#jqxgridUC").jqxDataTable('hideColumn', 'CarCapacity');
+                $("#jqxgridUC").jqxGrid('hidecolumn', 'CarCapacity');
 
             var RoutePointsCount = @Html.Raw(Json.Encode(@Model.RoutePointsInfo.Count));
 
@@ -2167,7 +2252,22 @@
             $("#RouteInfo").attr("rowspan", RowSpanCount);
 
         });
-
+        let flagLink = false;
+        function GetSelectedRows(elem) {
+            let orderId = Number(@Html.Raw(Json.Encode(@Model.Id)));
+            let getselectedRows = [];
+            let getselectedrowindexes = $("#jqxgridUC").jqxGrid('getselectedrowindexes');
+            for (const item of getselectedrowindexes) {
+                getselectedRows.push($("#jqxgridUC").jqxGrid('getrows')[item].formUuid);
+            };
+            if (flagLink) {
+                $(elem).removeAttr('href');
+                $(elem).attr('href','/ExportToExcel/OrderAsExcel_');
+            }
+            let link = $(elem).attr('href') + '?id=' + orderId + '&formUuid=' + JSON.stringify(getselectedRows);
+            flagLink = true;
+            return $(elem).attr('href',link);
+        }
 
     </script>
 }

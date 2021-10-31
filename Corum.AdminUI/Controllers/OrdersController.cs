@@ -2577,6 +2577,14 @@ namespace CorumAdminUI.Controllers
             return Json(new { DeleteResult = result }, JsonRequestBehavior.AllowGet);
         }
 
+        [HttpPost]
+        public ActionResult RemoveUsedCar_(string Id)
+        {
+            Guid[] instance = JsonConvert.DeserializeObject<Guid[]>(Id);
+            var result = context.DeleteUsedCar(instance);
+            return Json(new { DeleteResult = result }, JsonRequestBehavior.AllowGet);
+        }
+
 
         [HttpGet]
         public ActionResult GetTruckTypes(string searchTerm, int pageSize, int pageNum)

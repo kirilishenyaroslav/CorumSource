@@ -2,102 +2,141 @@
 <div id="usedcarinfodialog" class="row" style="display: none; margin:auto;">
 
     @Html.Hidden("UsedCarId")
-<div class="col-md-6">
-    <div class="form-group row">
-        <label class="col-md-4" style="font-weight: normal !important;">
-            Плательщик
-        </label>
-        <div class="col-md-8">
-            @Html.TextBox("PayerInfo", "",
-                htmlAttributes: new
-                {
-                    id = "PayerInfo",
-                    @name = "PayerInfo",
-                    @class = "col-md-11",
-                    @readonly = "true"
-                })
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-md-4" style="font-weight: normal !important;">
-            Экспедитор
-        </label>
-        <div class="col-md-8">
-            @Html.TextBox("ExpeditorId", "",
-                htmlAttributes: new
-                {
-                    id = "ExpeditorId",
-                    @class = "filter_dropdown",
-                    @name = "ExpeditorId",
-                    data_source_url = Url.Action("GetExpeditorName", "Orders"),
-                    data_droplist_placeholder = "Выберите экспедитора",
-                    data_selected_text = ""
-                })
-        </div>
-    </div>
-
-    <div class="form-group row" id="divContractExpBkInfo">
-        <label class="col-md-4" style="font-weight: normal !important;">
-            Договор Эксп/Пл-щик*
-        </label>
-        <div class="col-md-8">
-
-            @Html.TextBox("ContractExpBkInfo", "",
-                htmlAttributes: new
-                {
-                    id = "ContractExpBkInfo",
-                    @class = "filter_dropdown",
-                    @name = "ContractExpBkInfo",
-                    data_source_url = Url.Action("GetContractExpBkInfo", "Orders"),
-                    data_droplist_placeholder = "Выберите договор экспедитор/плательщик",
-                    data_selected_text = ""
-                })
-
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-md-4" style="font-weight: normal !important;">
-            Перевозчик
-        </label>
-        <div class="col-md-8">
-            @Html.TextBox("CarrierInfo", "",
-                htmlAttributes: new
-                {
-                    id = "CarrierInfo",
-                    @name = "CarrierInfo"
-                })
-        </div>
-    </div>
-
-    <div class="form-group row">
-        <label class="col-md-4" style="font-weight: normal !important;">
-            Договор Эксп/Пер-к
-        </label>
-        <div class="col-md-8">
-            @Html.TextBox("ContractInfo", "",
-                htmlAttributes: new
-                {
-                    id = "ContractInfo",
-                    @name = "ContractInfo"
-                })
-        </div>
-    </div>
-    <div class="form-group row">
-        <label class="col-md-4" style="font-weight: normal !important;">
-            Комментарий
-        </label>
-        <div class="col-md-8">
-            @Html.TextArea("Comments", "",
+    <div class="col-md-6">
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Номер тендера
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("tenderNumber", "",
                     htmlAttributes: new
                     {
-                        id = "Comments",
-                        @name = "Comments"
+                        id = "tenderNumber",
+                        @name = "tenderNumber"
                     })
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Плательщик
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("PayerInfo", "",
+                    htmlAttributes: new
+                    {
+                        id = "PayerInfo",
+                        @name = "PayerInfo",
+                        @class = "col-md-11",
+                        @readonly = "true"
+                    })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Экспедитор
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("ExpeditorId", "",
+                    htmlAttributes: new
+                    {
+                        id = "ExpeditorId",
+                        @class = "filter_dropdown",
+                        @name = "ExpeditorId",
+                        data_source_url = Url.Action("GetExpeditorName", "Orders"),
+                        data_droplist_placeholder = "Выберите экспедитора",
+                        data_selected_text = ""
+                    })
+            </div>
+        </div>
+
+        <div class="form-group row" id="divContractExpBkInfo">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Договор Эксп/Пл-щик*
+            </label>
+            <div class="col-md-8">
+
+                @Html.TextBox("ContractExpBkInfo", "",
+                    htmlAttributes: new
+                    {
+                        id = "ContractExpBkInfo",
+                        @class = "filter_dropdown",
+                        @name = "ContractExpBkInfo",
+                        data_source_url = Url.Action("GetContractExpBkInfo", "Orders"),
+                        data_droplist_placeholder = "Выберите договор экспедитор/плательщик",
+                        data_selected_text = ""
+                    })
+
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Перевозчик
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("CarrierInfo", "",
+                    htmlAttributes: new
+                    {
+                        id = "CarrierInfo",
+                        @name = "CarrierInfo"
+                    })
+            </div>
+        </div>
+
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Договор Эксп/Пер-к
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("ContractInfo", "",
+                    htmlAttributes: new
+                    {
+                        id = "ContractInfo",
+                        @name = "ContractInfo"
+                    })
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Комментарий
+            </label>
+            <div class="col-md-8">
+                @Html.TextArea("Comments", "",
+                        htmlAttributes: new
+                        {
+                            id = "Comments",
+                            @name = "Comments"
+                        })
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Пунк перехода гос.границы
+            </label>
+            <div class="col-md-8">
+                @Html.TextArea("stateBorderCrossingPoint", "",
+                    htmlAttributes: new
+                    {
+                        id = "stateBorderCrossingPoint",
+                        @name = "stateBorderCrossingPoint"
+                    })
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Серия/номер загр.паспорта
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("seriesPassportNumber", "",
+                    htmlAttributes: new
+                    {
+                        id = "seriesPassportNumber",
+                        @name = "seriesPassportNumber"
+                    })
+            </div>
         </div>
     </div>
-</div>
     <div class="col-md-6">
         <div class="form-group row">
             <label class="col-md-4" style="font-weight: normal !important;">
@@ -125,7 +164,32 @@
                 })
             </div>
         </div>
-
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Гос.номер прицепа
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("trailerNumber", "",
+                htmlAttributes: new
+                {
+                    id = "trailerNumber",
+                    @name = "trailerNumber"
+                })
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Габариты ТС/прицепа
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("transportDimensions", "",
+                htmlAttributes: new
+                {
+                    id = "transportDimensions",
+                    @name = "transportDimensions"
+                })
+            </div>
+        </div>
         <div class="form-group row" id="divCarCapacity">
             <label class="col-md-4" style="font-weight: normal !important;">
                 Грузоподъем-ность
@@ -137,6 +201,32 @@
                     id = "CarCapacity",
                     @name = "CarCapacity"
                 })
+            </div>
+        </div>
+        <div class="form-group row" id="divCarCapacity">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Стоимость перев-ки
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("Summ_", "",
+                htmlAttributes: new
+                {
+                    id = "Summ_",
+                    @name = "Summ_"
+                })
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Расстояние
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("distance", "",
+                     htmlAttributes: new
+                     {
+                         id = "distance",
+                         @name = "distance"
+                     })
             </div>
         </div>
 
@@ -179,7 +269,7 @@
                      })
             </div>
         </div>
-      
+
     </div>
         @*
                     <div class="form-group row">

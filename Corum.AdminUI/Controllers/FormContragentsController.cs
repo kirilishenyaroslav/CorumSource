@@ -19,6 +19,8 @@ using System.Net.Mail;
 using System.Net;
 using System.IO;
 using System.Text;
+using System.Net.Http;
+using Corum.ReportsUI;
 
 namespace CorumAdminUI.Controllers
 {
@@ -26,6 +28,7 @@ namespace CorumAdminUI.Controllers
     {
         private static string htmlBodyForm { get; set; }
         private static string subject { get; set; }
+        private static MemoryStream excStreamFile { get; set; }
 
         [HttpGet]
         public ActionResult SendFormToCorumSource(Guid formUuid)
@@ -47,9 +50,10 @@ namespace CorumAdminUI.Controllers
         {
             htmlBodyForm = bodyHtml.body;
             subject = bodyHtml.subject;
+
             return new JsonpResult
             {
-                Data = new {  },
+                Data = new { },
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
         }
@@ -75,6 +79,8 @@ namespace CorumAdminUI.Controllers
                 }
                 if (context.SetRegisterFormFromContragent(listFiles, dic))
                 {
+                    DataToAndFromContragent data = new DataToAndFromContragent();
+                    int orderId = context.NewUsedCar(Guid.Parse(dic["tenderItemUuid"]), ref data);
                     MailAddress from = new MailAddress(ConfigurationManager.AppSettings["SmtpAccountLogin"], $"{dic["contragentName"]}", Encoding.UTF8);
                     MailAddress to = new MailAddress("corumsourcetest@gmail.com");
                     using (MailMessage mail = new MailMessage(from, to))
@@ -89,6 +95,13 @@ namespace CorumAdminUI.Controllers
                                 string fileName = Path.GetFileName(item.FileName);
                                 mail.Attachments.Add(new Attachment(item.InputStream, fileName));
                             }
+                            //MemoryStream stream = new MemoryStream();
+                            //byte[] mBArray = new ExportToExcelController().OrderAsExcelFromContragent(orderId, Request.UserLanguages[0], data);
+                            //stream = new MemoryStream(mBArray, false);
+                            //var reportName = "OrderReport " + orderId.ToString() + ".xlsx";
+                            //var attacment = new Attachment(stream, reportName);
+                            //attacment.ContentType = new System.Net.Mime.ContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                            //mail.Attachments.Add(attacment);
                         }
                         SmtpClient smtp = new SmtpClient();
                         smtp.Host = ConfigurationManager.AppSettings["SmtpServer"];
@@ -115,6 +128,34 @@ namespace CorumAdminUI.Controllers
                 Data = new { flag, error },
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
+        }
+        private static string SplitEncodedAttachmentName(string encoded)
+        {
+            const string encodingtoken = "=?UTF-8?B?";
+            const string softbreak = "?=";
+            const int maxChunkLength = 30;
+            int splitLength = maxChunkLength - encodingtoken.Length - (softbreak.Length * 2);
+            IEnumerable<string> parts = SplitByLength(encoded, splitLength);
+            string encodedAttachmentName = encodingtoken;
+            foreach (var part in parts)
+            {
+                encodedAttachmentName += part + softbreak + encodingtoken;
+            }
+            encodedAttachmentName = encodedAttachmentName.Remove(encodedAttachmentName.Length - encodingtoken.Length, encodingtoken.Length);
+            return encodedAttachmentName;
+        }
+
+        private static IEnumerable<string> SplitByLength(string stringToSplit, int length)
+        {
+            while (stringToSplit.Length > length)
+            {
+                yield return stringToSplit.Substring(0, length);
+                stringToSplit = stringToSplit.Substring(length);
+            }
+            if (stringToSplit.Length > 0)
+            {
+                yield return stringToSplit;
+            }
         }
     }
 }

@@ -5,7 +5,7 @@ using Corum.Models.ViewModels.Orders;
 using Corum.Models.ViewModels;
 using Corum.Models.ViewModels.Cars;
 using Corum.Models.ViewModels.Customers;
-
+using Corum.Models.ViewModels.Tender;
 
 namespace Corum.Models
 {
@@ -431,5 +431,12 @@ namespace Corum.Models
 
         String getTruckReportTitle(List<TruckViewModel> TruckInfo,
             int IdGroup, string Id, ref String Address);
+
+        int NewUsedCar(Guid formUuid, ref DataToAndFromContragent data);
+        void NewUsedCar(Guid formUuid);
+        IQueryable<OrderUsedCarViewModel> getOrderCarsInfoFromContragent(Guid formUuid);
+        void NewUsedCarExcel(Guid formUuid, ref DataToAndFromContragent data);
+        int? GetTenderNumber(Guid formUuid);
+        bool DeleteUsedCar(Guid[] formUuid);
     }
 }

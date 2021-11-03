@@ -3505,7 +3505,7 @@ namespace Corum.RestReports
                 WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
 
                 RowCount++;
-                WorkSheet.Cells["B" + RowCount].Value = "Стоимость перевозки, грн.";
+                WorkSheet.Cells["B" + RowCount].Value = "Стоимость перевозки, грн без НДС";
                 WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 6).Merged = true;
@@ -5151,7 +5151,7 @@ namespace Corum.RestReports
                 WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
 
                 RowCount++;
-                WorkSheet.Cells["B" + RowCount].Value = "Стоимость перевозки, грн.";
+                WorkSheet.Cells["B" + RowCount].Value = "Стоимость перевозки, грн без НДС";
                 WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 6).Merged = true;

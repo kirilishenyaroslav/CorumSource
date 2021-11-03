@@ -628,8 +628,8 @@ namespace Corum.DAL
                                 acceptedTransportUnits = items.acceptedTransportUnits,
                                 ContragentIdAps = items.ContragentIdAps,
                                 ContragentName = items.ContragentName,
-                                costOfCarWithoutNDSToNull = items.costOfCarWithoutNDSToNull,
-                                costOfCarWithoutNDS = items.costOfCarWithoutNDS,
+                                costOfCarWithoutNDSToNull = Math.Round(items.costOfCarWithoutNDSToNull, MidpointRounding.AwayFromZero),
+                                costOfCarWithoutNDS = Math.Round(items.costOfCarWithoutNDS, MidpointRounding.AwayFromZero),
                                 DateUpdateInfo = items.DateUpdateInfo,
                                 EDRPOUContragent = items.EDRPOUContragent,
                                 emailContragent = items.emailContragent,
@@ -677,7 +677,7 @@ namespace Corum.DAL
 
                             modelRegisterMessage.acceptedTransportUnits = model.numberOfVehicles;
                             modelRegisterMessage.contragentName = model.expeditorName;
-                            modelRegisterMessage.cost = model.price;
+                            modelRegisterMessage.cost = Math.Round(model.price, MidpointRounding.AwayFromZero);
                             modelRegisterMessage.dateCreate = model.dateCreate;
                             modelRegisterMessage.dateUpdate = model.dateUpdate;
                             modelRegisterMessage.descriptionTender = model.description;
@@ -711,8 +711,8 @@ namespace Corum.DAL
                             var value = db.RegisterMessageToContragents.Where(x => x.tenderNumber == tendNumber && x.flagCreate != true).FirstOrDefault();
                             if (value != null)
                             {
-                                listWinners[item].flagCreate = true;
-                                listWinners[item].formUuid = value.formUuid;
+                                list[item].flagCreate = true;
+                                list[item].formUuid = value.formUuid;
                                 value.flagCreate = true;
                                 db.SaveChanges();
                             }

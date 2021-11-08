@@ -811,6 +811,11 @@
           <Property Name="seriesPassportNumber" Type="nvarchar" MaxLength="350" />
           <Property Name="drivingLicenseNumber" Type="nvarchar" MaxLength="350" />
           <Property Name="tenderNumber" Type="int" />
+          <Property Name="fullMassTC" Type="int" />
+          <Property Name="massWithoutLoadTC1" Type="int" />
+          <Property Name="fullMassTC2Trailer" Type="int" />
+          <Property Name="massWithoutLoadTC2Trailer" Type="int" />
+          <Property Name="Summ_" Type="float" />
         </EntityType>
         <EntityType Name="OrderVehicleTypes">
           <Key>
@@ -903,6 +908,13 @@
           <Property Name="dateUpdate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="tenderItemUuid" Type="uniqueidentifier" Nullable="false" />
           <Property Name="transportDimensions" Type="nvarchar" MaxLength="350" />
+          <Property Name="fullMassTC" Type="int" />
+          <Property Name="massWithoutLoadTC1" Type="int" />
+          <Property Name="fullMassTC2Trailer" Type="int" />
+          <Property Name="massWithoutLoadTC2Trailer" Type="int" />
+          <Property Name="filesTTH_CMR" Type="bit" />
+          <Property Name="filesInvoice" Type="bit" />
+          <Property Name="filesActOfCompletion" Type="bit" />
         </EntityType>
         <EntityType Name="RegisterMessageToContragents">
           <Key>
@@ -8456,6 +8468,11 @@
           <Property Name="seriesPassportNumber" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
           <Property Name="drivingLicenseNumber" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
           <Property Name="tenderNumber" Type="Int32" />
+          <Property Name="fullMassTC" Type="Int32" />
+          <Property Name="massWithoutLoadTC1" Type="Int32" />
+          <Property Name="fullMassTC2Trailer" Type="Int32" />
+          <Property Name="massWithoutLoadTC2Trailer" Type="Int32" />
+          <Property Name="Summ_" Type="Double" />
         </EntityType>
         <Association Name="FK_OrderUsedCars_CarOwners">
           <End Type="CorumModel.CarOwners" Role="CarOwners" Multiplicity="0..1" />
@@ -8885,6 +8902,13 @@
           <Property Name="tenderItemUuid" Type="Guid" Nullable="false" />
           <NavigationProperty Name="RegisterMessageToContragents" Relationship="CorumModel.FK_RegisterFormFromContragents_RegisterMessageToContragents" FromRole="RegisterFormFromContragents" ToRole="RegisterMessageToContragents" />
           <Property Name="transportDimensions" Type="String" MaxLength="350" FixedLength="false" Unicode="true" />
+          <Property Name="fullMassTC" Type="Int32" />
+          <Property Name="massWithoutLoadTC1" Type="Int32" />
+          <Property Name="fullMassTC2Trailer" Type="Int32" />
+          <Property Name="massWithoutLoadTC2Trailer" Type="Int32" />
+          <Property Name="filesTTH_CMR" Type="Boolean" />
+          <Property Name="filesInvoice" Type="Boolean" />
+          <Property Name="filesActOfCompletion" Type="Boolean" />
         </EntityType>
         <EntityType Name="RegisterMessageToContragents">
           <Key>
@@ -10660,6 +10684,11 @@
           <EntitySetMapping Name="OrderUsedCars">
             <EntityTypeMapping TypeName="CorumModel.OrderUsedCars">
               <MappingFragment StoreEntitySet="OrderUsedCars">
+                <ScalarProperty Name="Summ_" ColumnName="Summ_" />
+                <ScalarProperty Name="massWithoutLoadTC2Trailer" ColumnName="massWithoutLoadTC2Trailer" />
+                <ScalarProperty Name="fullMassTC2Trailer" ColumnName="fullMassTC2Trailer" />
+                <ScalarProperty Name="massWithoutLoadTC1" ColumnName="massWithoutLoadTC1" />
+                <ScalarProperty Name="fullMassTC" ColumnName="fullMassTC" />
                 <ScalarProperty Name="tenderNumber" ColumnName="tenderNumber" />
                 <ScalarProperty Name="drivingLicenseNumber" ColumnName="drivingLicenseNumber" />
                 <ScalarProperty Name="seriesPassportNumber" ColumnName="seriesPassportNumber" />
@@ -11076,6 +11105,13 @@
           <EntitySetMapping Name="RegisterFormFromContragents">
             <EntityTypeMapping TypeName="CorumModel.RegisterFormFromContragents">
               <MappingFragment StoreEntitySet="RegisterFormFromContragents">
+                <ScalarProperty Name="filesActOfCompletion" ColumnName="filesActOfCompletion" />
+                <ScalarProperty Name="filesInvoice" ColumnName="filesInvoice" />
+                <ScalarProperty Name="filesTTH_CMR" ColumnName="filesTTH_CMR" />
+                <ScalarProperty Name="massWithoutLoadTC2Trailer" ColumnName="massWithoutLoadTC2Trailer" />
+                <ScalarProperty Name="fullMassTC2Trailer" ColumnName="fullMassTC2Trailer" />
+                <ScalarProperty Name="massWithoutLoadTC1" ColumnName="massWithoutLoadTC1" />
+                <ScalarProperty Name="fullMassTC" ColumnName="fullMassTC" />
                 <ScalarProperty Name="transportDimensions" ColumnName="transportDimensions" />
                 <ScalarProperty Name="tenderItemUuid" ColumnName="tenderItemUuid" />
                 <ScalarProperty Name="dateUpdate" ColumnName="dateUpdate" />

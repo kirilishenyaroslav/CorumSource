@@ -958,6 +958,12 @@ namespace Corum.DAL
 
         }
 
+        public string GetUserId(long orderId)
+        {
+            var order = db.OrdersBase.Where(x => x.Id == orderId).FirstOrDefault();
+            return order.CreatedByUser;
+        }
+
         public bool NewClient(OrderClientsViewModel model)
         {
             var orderClient = new OrderClients();
@@ -2408,6 +2414,10 @@ namespace Corum.DAL
             car.Summ = (Nullable<decimal>)model.Summ_;
             car.Summ_ = model.Summ_;
             car.formUuid = Guid.NewGuid();
+            car.fullMassTC = model.fullMassTC;
+            car.fullMassTC2Trailer = model.fullMassTC2Trailer;
+            car.massWithoutLoadTC1 = model.massWithoutLoadTC1;
+            car.massWithoutLoadTC2Trailer = model.massWithoutLoadTC2Trailer;
             /*
             FactShipperDateTime = DateTimeConvertClass.getDateTime(model.FactShipperDate).
                                                        AddHours(DateTimeConvertClass.getHours(model.FactShipperTime)).
@@ -2472,7 +2482,11 @@ namespace Corum.DAL
                 note = formFromContr.note,
                 stateBorderCrossingPoint = formFromContr.stateBorderCrossingPoint,
                 seriesPassportNumber = formFromContr.seriesPassportNumber,
-                tenderItemUuid = formFromContr.tenderItemUuid
+                tenderItemUuid = formFromContr.tenderItemUuid,
+                fullMassTC = formFromContr.fullMassTC,
+                fullMassTC2Trailer = formFromContr.fullMassTC2Trailer,
+                massWithoutLoadTC1 = formFromContr.massWithoutLoadTC1,
+                massWithoutLoadTC2Trailer = formFromContr.massWithoutLoadTC2Trailer
             };
             try
             {
@@ -2487,7 +2501,7 @@ namespace Corum.DAL
                         CarRegNum = formFromContr.stateNumberCar,
                         ExpeditorName = formFromContr.contragentName,
                         ExpeditorId = (expeditor != null) ? expeditor.Id : 0,
-                        ContractInfo = $"{contractInfo[0].ContractNumber}",
+                        ContractInfo = $"{contractInfo[0].ContractNumber} от {contractInfo[0].ContractDate}",
                         ContractExpBkId = contractInfo[0].Id,
                         DriverCardInfo = formFromContr.drivingLicenseNumber,
                         DelayDays = messageToContr.DelayPayment,
@@ -2501,7 +2515,11 @@ namespace Corum.DAL
                         stateBorderCrossingPoint = formFromContr.stateBorderCrossingPoint,
                         seriesPassportNumber = formFromContr.seriesPassportNumber,
                         Comments = formFromContr.note,
-                        drivingLicenseNumber = formFromContr.drivingLicenseNumber
+                        drivingLicenseNumber = formFromContr.drivingLicenseNumber,
+                        fullMassTC = formFromContr.fullMassTC,
+                        fullMassTC2Trailer = formFromContr.fullMassTC2Trailer,
+                        massWithoutLoadTC1 = formFromContr.massWithoutLoadTC1,
+                        massWithoutLoadTC2Trailer = formFromContr.massWithoutLoadTC2Trailer
                     };
 
                     db.OrderUsedCars.Add(car);
@@ -2516,7 +2534,7 @@ namespace Corum.DAL
                     dbInfo.CarRegNum = formFromContr.stateNumberCar;
                     dbInfo.ExpeditorName = formFromContr.contragentName;
                     dbInfo.ExpeditorId = (expeditor != null) ? expeditor.Id : 0;
-                    dbInfo.ContractInfo = $"{contractInfo[0].ContractNumber}";
+                    dbInfo.ContractInfo = $"{contractInfo[0].ContractNumber} от {contractInfo[0].ContractDate}";
                     dbInfo.ContractExpBkId = contractInfo[0].Id;
                     dbInfo.DriverCardInfo = formFromContr.drivingLicenseNumber;
                     dbInfo.DelayDays = messageToContr.DelayPayment;
@@ -2531,6 +2549,10 @@ namespace Corum.DAL
                     dbInfo.seriesPassportNumber = formFromContr.seriesPassportNumber;
                     dbInfo.Comments = formFromContr.note;
                     dbInfo.drivingLicenseNumber = formFromContr.drivingLicenseNumber;
+                    dbInfo.fullMassTC = formFromContr.fullMassTC;
+                    dbInfo.fullMassTC2Trailer = formFromContr.fullMassTC2Trailer;
+                    dbInfo.massWithoutLoadTC1 = formFromContr.massWithoutLoadTC1;
+                    dbInfo.massWithoutLoadTC2Trailer = formFromContr.massWithoutLoadTC2Trailer;
                     db.SaveChanges();
                 }
                 return (int)messageToContr.orderId;
@@ -2589,7 +2611,11 @@ namespace Corum.DAL
                     note = formFromContr.note,
                     stateBorderCrossingPoint = formFromContr.stateBorderCrossingPoint,
                     seriesPassportNumber = formFromContr.seriesPassportNumber,
-                    tenderItemUuid = formFromContr.tenderItemUuid
+                    tenderItemUuid = formFromContr.tenderItemUuid,
+                    fullMassTC = formFromContr.fullMassTC,
+                    fullMassTC2Trailer = formFromContr.fullMassTC2Trailer,
+                    massWithoutLoadTC1 = formFromContr.massWithoutLoadTC1,
+                    massWithoutLoadTC2Trailer = formFromContr.massWithoutLoadTC2Trailer
                 };
             }
         }
@@ -2606,7 +2632,7 @@ namespace Corum.DAL
                 if (expeditor == null)
                 {
                     var regContrag = db.RegisterTenderContragents.FirstOrDefault(u => u.emailContragent == messageToContr.emailContragent);
-                    expeditor = (regContrag != null)? db.CarOwners.FirstOrDefault(u => u.edrpou_aps == regContrag.EDRPOUContragent): expeditor;
+                    expeditor = (regContrag != null) ? db.CarOwners.FirstOrDefault(u => u.edrpou_aps == regContrag.EDRPOUContragent) : expeditor;
                 }
                 var payerId = db.OrdersBase.FirstOrDefault(u => u.Id == messageToContr.orderId).PayerId;
                 var contractInfo = GetContractExpBkInfoBySearchString("", expeditor.Id, (int)payerId).ToList();
@@ -2621,7 +2647,7 @@ namespace Corum.DAL
                         CarRegNum = "",
                         ExpeditorName = messageToContr.contragentName,
                         ExpeditorId = (expeditor != null) ? expeditor.Id : 0,
-                        ContractInfo = $"{contractInfo[0].ContractNumber}",
+                        ContractInfo = $"{contractInfo[0].ContractNumber} от {contractInfo[0].ContractDate}",
                         ContractExpBkId = contractInfo[0].Id,
                         DriverCardInfo = "",
                         DelayDays = messageToContr.DelayPayment,
@@ -2636,7 +2662,11 @@ namespace Corum.DAL
                         seriesPassportNumber = "",
                         Comments = "",
                         drivingLicenseNumber = "",
-                        tenderNumber = messageToContr.tenderNumber
+                        tenderNumber = messageToContr.tenderNumber,
+                        fullMassTC = null,
+                        fullMassTC2Trailer = null,
+                        massWithoutLoadTC1 = null,
+                        massWithoutLoadTC2Trailer = null
                     };
 
                     db.OrderUsedCars.Add(car);
@@ -2676,6 +2706,10 @@ namespace Corum.DAL
             dbInfo.distance = model.distance;
             dbInfo.Summ = (model.Summ_ != null) ? (decimal)model.Summ_ : 0;
             dbInfo.Summ_ = (model.Summ_ != null) ? model.Summ_ : 0;
+            dbInfo.fullMassTC = model.fullMassTC;
+            dbInfo.fullMassTC2Trailer = model.fullMassTC2Trailer;
+            dbInfo.massWithoutLoadTC1 = model.massWithoutLoadTC1;
+            dbInfo.massWithoutLoadTC2Trailer = model.massWithoutLoadTC2Trailer;
 
             /*   dbInfo.FactShipperDateTime = DateTimeConvertClass.getDateTime(model.FactShipperDate).
                                                           AddHours(DateTimeConvertClass.getHours(model.FactShipperTime)).

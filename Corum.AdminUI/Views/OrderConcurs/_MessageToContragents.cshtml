@@ -435,7 +435,7 @@
         table.appendChild(tbody);
 
         let parhAfterTable = document.createElement('p');
-        parhAfterTable.innerHTML = 'Данное письмо сгенерировано автоматически. ПОЖАЛУЙСТА, НЕ ОТВЕЧАЙТЕ НА НЕГО!<br>В случае возникновения вопросов - обратитесь по адресу Заказ грузовых перевозок <a href="mailto:avtogruz@corum.com" style="text-decoration: none;">avtogruz@corum.com</a>,<br>подругим вопросам – к контактному лицу заказчика.';
+        parhAfterTable.innerHTML = 'Данное письмо сгенерировано автоматически. ПОЖАЛУЙСТА, НЕ ОТВЕЧАЙТЕ НА НЕГО!<br><a href="mailto:avtogruz@corum.com" style="text-decoration: none;">В случае возникновения вопросов - обратитесь по адресу Заказ грузовых перевозок avtogruz@corum.com</a>,<br>подругим вопросам – к контактному лицу заказчика.';
         $(parhAfterTable).attr('style', 'font-style: italic;');
 
         let parhFoot = jQuery.parseHTML(parhFooter);
@@ -622,7 +622,7 @@
 
             }
 
-            $(preWinParh).append(`Уважаемый партнер.<br>Спасибо за участие.<br>Вы стали победителем.<br>Прошу направить данные по автомобилю/ям, водителю в течение 30 минут,<br>заполнив форму перейдя по <a id="linkToFormContr" class="linkToForm" href="${link}" title="ссылка на форму">ссылке</a>`);
+            $(preWinParh).append(`Уважаемый партнер.<br>Спасибо за участие.<br>Вы стали победителем.<br>Прошу направить данные по автомобилю/ям, водителю в течение 30 минут,<br><a id="linkToFormContr" class="linkToForm" href="${link}" title="ссылка на форму">заполнив форму перейдя по ссылке</a>`);
             messBody.appendChild(preWinParh);
             winnerObj.upperpartOfTheMessage = preWinParh;
 
@@ -770,7 +770,7 @@
             // Создание параграфа-футера в messBody
             let preWinParhTwo = document.createElement('p');
             $(preWinParhTwo).addClass('preWin');
-            $(preWinParhTwo).append('С уважением,<br>Департамент по логистике КОРУМ ГРУП');
+            $(preWinParhTwo).append('С уважением,<br>Департамент по закупкам и логистике КОРУМ ГРУП');
             messBody.appendChild(preWinParhTwo);
             winnerObj.messageFooter = preWinParhTwo;
 
@@ -1097,7 +1097,7 @@
             // Создание параграфа-футера в messBody
             let preWinParhTwo = document.createElement('p');
             $(preWinParhTwo).addClass('preWin');
-            $(preWinParhTwo).append('С уважением,<br>Департамент по логистике КОРУМ ГРУП');
+            $(preWinParhTwo).append('С уважением,<br>Департамент по закупкам и логистике КОРУМ ГРУП');
             messBody.appendChild(preWinParhTwo);
             loserObj.messageFooter = preWinParhTwo;
 

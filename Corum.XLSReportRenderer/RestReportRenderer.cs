@@ -2514,7 +2514,7 @@ namespace Corum.RestReports
             {
                 RowCountStart = RowCount;
 
-                WorkSheet.Cells["B" + RowCount].Value = "Экспедитор:  " + car.ExpeditorName + " согласно договора " + car.ContractExpBkInfo;
+                WorkSheet.Cells["B" + RowCount].Value = "Экспедитор:  " + car.ExpeditorName + " согласно договора " + car.ContractInfo;
                 WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
                 WorkSheet.Cells["B" + RowCount].Style.Font.Italic = true;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 6).Merged = true;
@@ -2597,40 +2597,85 @@ namespace Corum.RestReports
                 RowCount++;
                 WorkSheet.Cells["B" + RowCount].Value = "Наименование Перевозчика";
                 WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
-                WorkSheet.Cells["B" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells["B" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
 
-                WorkSheet.Cells["D" + RowCount].Value = "ФИО водителя, тел., № вод.удостоверения";
+                WorkSheet.Cells["D" + RowCount].Value = "Марка, модель, тип ТС";
                 WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
-                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
                 WorkSheet.Cells["D" + RowCount].Row.Height = 600;
                 WorkSheet.Cells["D" + RowCount].Style.WrapText = true;
 
-                WorkSheet.Cells["F" + RowCount].Value = "Марка, № авто";
+                WorkSheet.Cells["F" + RowCount].Value = "Рег.номер ТС";
                 WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
-                WorkSheet.Cells["F" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells["F" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
 
                 WorkSheet.Cells["G" + RowCount].Value = "Грузоподъемность, тн";
                 WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
-                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
 
                 RowCount++;
                 WorkSheet.Cells["B" + RowCount].Value = car.CarrierInfo;
-                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
 
-                WorkSheet.Cells["D" + RowCount].Value = car.CarDriverInfo + " " + car.DriverContactInfo + " " +
-                                                        car.DriverCardInfo;
-                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Value = car.CarModelInfo;
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
                 WorkSheet.Cells["D" + RowCount].Row.Height = 600;
 
-                WorkSheet.Cells["F" + RowCount].Value = car.CarModelInfo + " " + car.CarRegNum;
-                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["F" + RowCount].Value = car.CarRegNum;
+                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
 
                 WorkSheet.Cells["G" + RowCount].Value = car.CarCapacity;
+                WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
+                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+                for (int i = 2; i <= 7; i++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + "41"].Style.Borders.SetBorders(
+                        MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = "ЕДРПОУ или ИНН/№ паспорта";
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["B" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+
+                WorkSheet.Cells["D" + RowCount].Value = "ФИО водителя, тел., № вод.удостоверения";
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
+                WorkSheet.Cells["D" + RowCount].Row.Height = 600;
+                WorkSheet.Cells["D" + RowCount].Style.WrapText = true;
+
+                WorkSheet.Cells["F" + RowCount].Value = "Габариты ТС(ДхШхВ), мм*";
+                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["F" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+                WorkSheet.Cells["G" + RowCount].Value = "";
                 WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = car.seriesPassportNumber;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+
+                WorkSheet.Cells["D" + RowCount].Value = car.CarDriverInfo + "\n" + car.DriverContactInfo + "\n" +
+                                                        car.DriverCardInfo;
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
+                WorkSheet.Cells["D" + RowCount].Row.Height = 600;
+
+                WorkSheet.Cells["F" + RowCount].Value = car.transportDimensions;
+                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
+
+                WorkSheet.Cells["G" + RowCount].Value = "";
+                WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
                 WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
 
                 RowCount++;
@@ -3505,7 +3550,7 @@ namespace Corum.RestReports
                 WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
 
                 RowCount++;
-                WorkSheet.Cells["B" + RowCount].Value = "Стоимость перевозки, грн.";
+                WorkSheet.Cells["B" + RowCount].Value = "Стоимость перевозки, грн без НДС";
                 WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 6).Merged = true;
@@ -3554,40 +3599,85 @@ namespace Corum.RestReports
                 RowCount++;
                 WorkSheet.Cells["B" + RowCount].Value = "Наименование Перевозчика";
                 WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
-                WorkSheet.Cells["B" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells["B" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
 
-                WorkSheet.Cells["D" + RowCount].Value = "ФИО водителя, тел., № вод.удостоверения";
+                WorkSheet.Cells["D" + RowCount].Value = "Марка, модель, тип ТС";
                 WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
-                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
                 WorkSheet.Cells["D" + RowCount].Row.Height = 600;
                 WorkSheet.Cells["D" + RowCount].Style.WrapText = true;
 
-                WorkSheet.Cells["F" + RowCount].Value = "Марка, № авто";
+                WorkSheet.Cells["F" + RowCount].Value = "Рег.номер ТС";
                 WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
-                WorkSheet.Cells["F" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells["F" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
 
                 WorkSheet.Cells["G" + RowCount].Value = "Грузоподъемность, тн";
                 WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
-                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
 
                 RowCount++;
                 WorkSheet.Cells["B" + RowCount].Value = car.CarrierInfo;
-                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
 
-                WorkSheet.Cells["D" + RowCount].Value = car.CarDriverInfo + ", \n" + car.DriverContactInfo + "; " +
-                                                        car.DriverCardInfo;
-                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Value = car.CarModelInfo;
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
                 WorkSheet.Cells["D" + RowCount].Row.Height = 600;
 
-                WorkSheet.Cells["F" + RowCount].Value = car.CarModelInfo + " " + car.CarRegNum;
-                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["F" + RowCount].Value = car.CarRegNum;
+                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
 
                 WorkSheet.Cells["G" + RowCount].Value = car.CarCapacity;
+                WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
+                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+                for (int i = 2; i <= 7; i++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + "41"].Style.Borders.SetBorders(
+                        MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = "ЕДРПОУ или ИНН/№ паспорта";
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["B" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+
+                WorkSheet.Cells["D" + RowCount].Value = "ФИО водителя, тел., № вод.удостоверения";
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
+                WorkSheet.Cells["D" + RowCount].Row.Height = 600;
+                WorkSheet.Cells["D" + RowCount].Style.WrapText = true;
+
+                WorkSheet.Cells["F" + RowCount].Value = "Габариты ТС(ДхШхВ), мм*";
+                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["F" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+                WorkSheet.Cells["G" + RowCount].Value = "";
                 WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = car.seriesPassportNumber;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+
+                WorkSheet.Cells["D" + RowCount].Value = car.CarDriverInfo + "\n" + car.DriverContactInfo + "\n" +
+                                                        car.DriverCardInfo;
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
+                WorkSheet.Cells["D" + RowCount].Row.Height = 600;
+
+                WorkSheet.Cells["F" + RowCount].Value = car.transportDimensions;
+                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
+
+                WorkSheet.Cells["G" + RowCount].Value = "";
+                WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
                 WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
 
                 RowCount++;
@@ -5117,7 +5207,7 @@ namespace Corum.RestReports
 
                 RowCountStart = RowCount;
 
-                WorkSheet.Cells["B" + RowCount].Value = "Экспедитор:  " + ((flagData && flagRegMess) ? (data[count].regmesstocontrag.contragentName != "") ? data[count].regmesstocontrag.contragentName : car.ExpeditorName : car.ExpeditorName) + " согласно договора " + car.ContractExpBkInfo;
+                WorkSheet.Cells["B" + RowCount].Value = "Экспедитор:  " + ((flagData && flagRegMess) ? (data[count].regmesstocontrag.contragentName != "") ? data[count].regmesstocontrag.contragentName : car.ExpeditorName : car.ExpeditorName) + " согласно договора " + car.ContractInfo;
                 WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
                 WorkSheet.Cells["B" + RowCount].Style.Font.Italic = true;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 6).Merged = true;
@@ -5151,7 +5241,7 @@ namespace Corum.RestReports
                 WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
 
                 RowCount++;
-                WorkSheet.Cells["B" + RowCount].Value = "Стоимость перевозки, грн.";
+                WorkSheet.Cells["B" + RowCount].Value = "Стоимость перевозки, грн без НДС";
                 WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 6).Merged = true;
@@ -5200,41 +5290,87 @@ namespace Corum.RestReports
                 RowCount++;
                 WorkSheet.Cells["B" + RowCount].Value = "Наименование Перевозчика";
                 WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
-                WorkSheet.Cells["B" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells["B" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
 
-                WorkSheet.Cells["D" + RowCount].Value = "ФИО водителя, тел., № вод.удостоверения";
+                WorkSheet.Cells["D" + RowCount].Value = "Марка, модель, тип ТС";
                 WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
-                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
                 WorkSheet.Cells["D" + RowCount].Row.Height = 600;
                 WorkSheet.Cells["D" + RowCount].Style.WrapText = true;
 
-                WorkSheet.Cells["F" + RowCount].Value = "Марка, № авто";
+                WorkSheet.Cells["F" + RowCount].Value = "Рег.номер ТС";
                 WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
-                WorkSheet.Cells["F" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells["F" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
 
                 WorkSheet.Cells["G" + RowCount].Value = "Грузоподъемность, тн";
                 WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
-                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Center;
+                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
 
                 RowCount++;
                 WorkSheet.Cells["B" + RowCount].Value = car.CarrierInfo;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+
+                WorkSheet.Cells["D" + RowCount].Value = car.CarModelInfo;
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
+                WorkSheet.Cells["D" + RowCount].Row.Height = 600;
+
+                WorkSheet.Cells["F" + RowCount].Value = car.CarRegNum;
+                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
+
+                WorkSheet.Cells["G" + RowCount].Value = car.CarCapacity;
+                WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
+                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+                for (int i = 2; i <= 7; i++)
+                {
+                    WorkSheet.Cells[GetExcelColumnName(i) + "41"].Style.Borders.SetBorders(
+                        MultipleBorders.Bottom,
+                        Color.Black, LineStyle.Thin);
+                }
+
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = "ЕДРПОУ или ИНН/№ паспорта";
                 WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["B" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
+
+                WorkSheet.Cells["D" + RowCount].Value = "ФИО водителя, тел., № вод.удостоверения";
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+                WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
+                WorkSheet.Cells["D" + RowCount].Row.Height = 600;
+                WorkSheet.Cells["D" + RowCount].Style.WrapText = true;
+
+                WorkSheet.Cells["F" + RowCount].Value = "Габариты ТС(ДхШхВ), мм*";
+                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["F" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+                WorkSheet.Cells["G" + RowCount].Value = "";
+                WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
+                RowCount++;
+                WorkSheet.Cells["B" + RowCount].Value = car.seriesPassportNumber;
+                WorkSheet.Cells["B" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 1, RowCount - 1, 2).Merged = true;
 
                 WorkSheet.Cells["D" + RowCount].Value = car.CarDriverInfo + "\n" + car.DriverContactInfo + "\n" +
                                                         car.DriverCardInfo;
-                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["D" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
                 WorkSheet.Cells.GetSubrangeAbsolute(RowCount - 1, 3, RowCount - 1, 4).Merged = true;
                 WorkSheet.Cells["D" + RowCount].Row.Height = 600;
 
-                WorkSheet.Cells["F" + RowCount].Value = car.CarModelInfo + " " + car.CarRegNum;
-                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["F" + RowCount].Value = car.transportDimensions;
+                WorkSheet.Cells["F" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
 
-                WorkSheet.Cells["G" + RowCount].Value = car.CarCapacity;
-                WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.BoldWeight;
+                WorkSheet.Cells["G" + RowCount].Value = "";
+                WorkSheet.Cells["G" + RowCount].Style.Font.Weight = ExcelFont.NormalWeight;
                 WorkSheet.Cells["G" + RowCount].Style.HorizontalAlignment = HorizontalAlignmentStyle.Left;
+
 
                 RowCount++;
                 count++;

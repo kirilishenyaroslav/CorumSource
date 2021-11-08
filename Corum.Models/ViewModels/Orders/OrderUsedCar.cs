@@ -98,5 +98,9 @@ namespace Corum.Models.ViewModels.Orders
         public CompetitiveListViewModel OrderListInfo { get; set; }
         public Nullable<int> tenderNumber { get; set; }
         public Nullable<float> Summ_ { get; set; }
+        public Nullable<int> fullMassTC { get; set; }
+        public Nullable<int> massWithoutLoadTC1 { get; set; }
+        public Nullable<int> fullMassTC2Trailer { get; set; }
+        public Nullable<int> massWithoutLoadTC2Trailer { get; set; }
     }
 }

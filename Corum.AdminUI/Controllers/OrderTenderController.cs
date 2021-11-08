@@ -104,7 +104,8 @@ namespace CorumAdminUI.Controllers
 
         }
 
-        private void SendEmailToContragents(InfoToContragentsAfterChange model) {
+        private void SendEmailToContragents(InfoToContragentsAfterChange model)
+        {
             try
             {
                 if (model.listWinnersInfoAfterChange.Count != 0)
@@ -114,17 +115,42 @@ namespace CorumAdminUI.Controllers
                         DataToAndFromContragent instance = new DataToAndFromContragent();
                         context.NewUsedCarExcel(item.formUuid, ref instance);
                         int orderId = (int)item.orderId;
-                        SendToWinnerContragentsAsync(item as ListInfoAfterChange, orderId, instance).GetAwaiter();
+                        List<string> listEmails = new List<string>()
+                        {
+                        "Litovchenko.Sergey@corum.com",
+                        "avtogruz@corum.com"
+                        //"corumsourcetest@gmail.com"
+                        };
+                        if ((item as ListInfoAfterChange).recipientEmail != null && (item as ListInfoAfterChange).recipientEmail.Contains('@'))
+                        {
+                            listEmails.Add((item as ListInfoAfterChange).recipientEmail);
+                        }
+                        foreach (var value in listEmails)
+                        {
+                            SendToWinnerContragentsAsync(item as ListInfoAfterChange, orderId, instance , value).GetAwaiter();
+                        }
                     }
                 }
                 if (model.listLosersInfoAfterChange.Count != 0)
                 {
                     foreach (var item in model.listLosersInfoAfterChange)
                     {
-                        SendToLoserContragentsAsync(item as ListInfoAfterChange).GetAwaiter();
+                        List<string> listEmails = new List<string>()
+                        {
+                        "Litovchenko.Sergey@corum.com",
+                        "avtogruz@corum.com"
+                        //"corumsourcetest@gmail.com"
+                        };
+                        if ((item as ListInfoAfterChange).recipientEmail != null && (item as ListInfoAfterChange).recipientEmail.Contains('@'))
+                        {
+                            listEmails.Add((item as ListInfoAfterChange).recipientEmail);
+                        }
+                        foreach (var value in listEmails)
+                        {
+                            SendToLoserContragentsAsync(item as ListInfoAfterChange, value).GetAwaiter();
+                        }
                     }
                 }
-
             }
             catch (Exception e)
             {
@@ -132,26 +158,29 @@ namespace CorumAdminUI.Controllers
             }
 
         }
-        private async Task SendToLoserContragentsAsync(ListInfoAfterChange model)
+        private async Task SendToLoserContragentsAsync(ListInfoAfterChange model, string emailRecepient)
         {
             try
             {
-                MailAddress from = new MailAddress(ConfigurationManager.AppSettings["SmtpAccountLogin"], "Corum Source", Encoding.UTF8);
-                MailAddress to = new MailAddress("corumsourcetest@gmail.com");
-                using (MailMessage mail = new MailMessage(from, to))
-                {
-                    mail.Subject = $"№{model.tenderNumber}, ({model.orderId}) {model.routeShort}, погрузка {model.dataDownload.ToString("yyyy-MM-dd")}";
-                    mail.Body = $"{model.bodyHTML}";
-                    mail.IsBodyHtml = true;
-                    SmtpClient smtp = new SmtpClient();
-                    smtp.Host = ConfigurationManager.AppSettings["SmtpServer"];
-                    smtp.EnableSsl = false;
-                    NetworkCredential networkCredential = new NetworkCredential(from.Address, ConfigurationManager.AppSettings["SmtpAccountPassw"]);
-                    smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = networkCredential;
-                    smtp.Port = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpServerPort"]);
-                    await Task.Run(() => { smtp.Send(mail); });
-                }
+                    MailAddress from = new MailAddress(ConfigurationManager.AppSettings["SmtpAccountLogin"], "Corum Source", Encoding.UTF8);
+                    MailAddress to = new MailAddress(emailRecepient);
+                    using (MailMessage mail = new MailMessage(from, to))
+                    {
+                        mail.Subject = $"№{model.tenderNumber}, ({model.orderId}) {model.routeShort}, погрузка {model.dataDownload.ToString("yyyy-MM-dd")}";
+                        mail.Body = $"{model.bodyHTML}";
+                        mail.IsBodyHtml = true;
+                        SmtpClient smtp = new SmtpClient();
+                        smtp.Host = ConfigurationManager.AppSettings["SmtpServer"];
+                        smtp.EnableSsl = false;
+                        NetworkCredential networkCredential = new NetworkCredential(from.Address, ConfigurationManager.AppSettings["SmtpAccountPassw"]);
+                        smtp.UseDefaultCredentials = false;
+                        smtp.Credentials = networkCredential;
+                        smtp.Port = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpServerPort"]);
+                        if (true)
+                        {
+                            await Task.Run(() => { smtp.Send(mail); });
+                        }
+                    }
             }
 
             catch (Exception e)
@@ -159,33 +188,36 @@ namespace CorumAdminUI.Controllers
 
             }
         }
-        private async Task SendToWinnerContragentsAsync(ListInfoAfterChange model, int orderId, DataToAndFromContragent data)
+        private async Task SendToWinnerContragentsAsync(ListInfoAfterChange model, int orderId, DataToAndFromContragent data, string emailRecepient)
         {
             try
             {
-                MailAddress from = new MailAddress(ConfigurationManager.AppSettings["SmtpAccountLogin"], "Corum Source", Encoding.UTF8);
-                MailAddress to = new MailAddress("corumsourcetest@gmail.com");
-                using (MailMessage mail = new MailMessage(from, to))
-                {
-                    mail.Subject = $"№{model.tenderNumber}, ({model.orderId}) {model.routeShort}, погрузка {model.dataDownload.ToString("yyyy-MM-dd")}";
-                    mail.Body = $"{model.bodyHTML}";
-                    mail.IsBodyHtml = true;
-                    MemoryStream stream = new MemoryStream();
-                    byte[] mBArray = new ExportToExcelController().OrderAsExcelFromContragent(orderId, Request.UserLanguages[0], data);
-                    stream = new MemoryStream(mBArray, false);
-                    var reportName = "OrderReport " + orderId.ToString() + ".xlsx";
-                    var attacment = new Attachment(stream, reportName);
-                    attacment.ContentType = new System.Net.Mime.ContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-                    mail.Attachments.Add(attacment);
-                    SmtpClient smtp = new SmtpClient();
-                    smtp.Host = ConfigurationManager.AppSettings["SmtpServer"];
-                    smtp.EnableSsl = false;
-                    NetworkCredential networkCredential = new NetworkCredential(from.Address, ConfigurationManager.AppSettings["SmtpAccountPassw"]);
-                    smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = networkCredential;
-                    smtp.Port = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpServerPort"]);
-                    await Task.Run(() => { smtp.Send(mail); });
-                }
+                    MailAddress from = new MailAddress(ConfigurationManager.AppSettings["SmtpAccountLogin"], "Corum Source", Encoding.UTF8);
+                    MailAddress to = new MailAddress(emailRecepient);
+                    using (MailMessage mail = new MailMessage(from, to))
+                    {
+                        mail.Subject = $"№{model.tenderNumber}, ({model.orderId}) {model.routeShort}, погрузка {model.dataDownload.ToString("yyyy-MM-dd")}";
+                        mail.Body = $"{model.bodyHTML}";
+                        mail.IsBodyHtml = true;
+                        MemoryStream stream = new MemoryStream();
+                        byte[] mBArray = new ExportToExcelController().OrderAsExcelFromContragent(orderId, Request.UserLanguages[0], data);
+                        stream = new MemoryStream(mBArray, false);
+                        var reportName = "OrderReport " + orderId.ToString() + ".xlsx";
+                        var attacment = new Attachment(stream, reportName);
+                        attacment.ContentType = new System.Net.Mime.ContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+                        mail.Attachments.Add(attacment);
+                        SmtpClient smtp = new SmtpClient();
+                        smtp.Host = ConfigurationManager.AppSettings["SmtpServer"];
+                        smtp.EnableSsl = false;
+                        NetworkCredential networkCredential = new NetworkCredential(from.Address, ConfigurationManager.AppSettings["SmtpAccountPassw"]);
+                        smtp.UseDefaultCredentials = false;
+                        smtp.Credentials = networkCredential;
+                        smtp.Port = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpServerPort"]);
+                        if (true)
+                        {
+                            await Task.Run(() => { smtp.Send(mail); });
+                        }
+                    }
             }
 
             catch (Exception e)

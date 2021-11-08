@@ -136,11 +136,50 @@
                     })
             </div>
         </div>
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Полная масса ТС1(F.1 ), кг
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("fullMassTC", "",
+                    htmlAttributes: new
+                    {
+                        id = "fullMassTC",
+                        @name = "fullMassTC"
+                    })
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Масса без загрузки ТС1(G), кг
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("massWithoutLoadTC1", "",
+                    htmlAttributes: new
+                    {
+                        id = "massWithoutLoadTC1",
+                        @name = "massWithoutLoadTC1"
+                    })
+            </div>
+        </div>
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Полная масса ТС2 (прицепа)(F.1 ), кг
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("fullMassTC2Trailer", "",
+                    htmlAttributes: new
+                    {
+                        id = "fullMassTC2Trailer",
+                        @name = "fullMassTC2Trailer"
+                    })
+            </div>
+        </div>
     </div>
     <div class="col-md-6">
         <div class="form-group row">
             <label class="col-md-4" style="font-weight: normal !important;">
-                Марка авто
+                Марка, модель, тип ТС(D1,D2,D3)
             </label>
             <div class="col-md-8">
                 @Html.TextBox("CarModelInfo", "",
@@ -153,7 +192,7 @@
         </div>
         <div class="form-group row">
             <label class="col-md-4" style="font-weight: normal !important;">
-                Номер авто
+                Рег.номер ТС(А)
             </label>
             <div class="col-md-8">
                 @Html.TextBox("CarRegNum", "",
@@ -166,7 +205,7 @@
         </div>
         <div class="form-group row">
             <label class="col-md-4" style="font-weight: normal !important;">
-                Гос.номер прицепа
+                Рег.номер ТС2 (прицепа)(А)
             </label>
             <div class="col-md-8">
                 @Html.TextBox("trailerNumber", "",
@@ -179,7 +218,7 @@
         </div>
         <div class="form-group row">
             <label class="col-md-4" style="font-weight: normal !important;">
-                Габариты ТС/прицепа
+                Габариты ТС/прицепа (ДхШхВ), мм
             </label>
             <div class="col-md-8">
                 @Html.TextBox("transportDimensions", "",
@@ -192,7 +231,7 @@
         </div>
         <div class="form-group row" id="divCarCapacity">
             <label class="col-md-4" style="font-weight: normal !important;">
-                Грузоподъем-ность
+                Грузоподъем-ность, т
             </label>
             <div class="col-md-8">
                 @Html.TextBox("CarCapacity", "",
@@ -218,7 +257,7 @@
         </div>
         <div class="form-group row">
             <label class="col-md-4" style="font-weight: normal !important;">
-                Расстояние
+                Расстояние маршрута, км
             </label>
             <div class="col-md-8">
                 @Html.TextBox("distance", "",
@@ -245,7 +284,7 @@
         </div>
         <div class="form-group row">
             <label class="col-md-4" style="font-weight: normal !important;">
-                Номер и серия прав
+                № водительского удостоверения
             </label>
             <div class="col-md-8">
                 @Html.TextBox("DriverCardInfo", "",
@@ -258,7 +297,7 @@
         </div>
         <div class="form-group row">
             <label class="col-md-4" style="font-weight: normal !important;">
-                Контакт водителя
+                № телефона водителя
             </label>
             <div class="col-md-8">
                 @Html.TextArea("DriverContactInfo", "",
@@ -269,7 +308,19 @@
                      })
             </div>
         </div>
-
+        <div class="form-group row">
+            <label class="col-md-4" style="font-weight: normal !important;">
+                Масса без загрузки ТС2 (прицепа)(G), кг
+            </label>
+            <div class="col-md-8">
+                @Html.TextBox("massWithoutLoadTC2Trailer", "",
+                    htmlAttributes: new
+                    {
+                        id = "massWithoutLoadTC2Trailer",
+                        @name = "massWithoutLoadTC2Trailer"
+                    })
+            </div>
+        </div>
     </div>
         @*
                     <div class="form-group row">

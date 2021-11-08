@@ -52,8 +52,12 @@ namespace Corum.DAL.Entity
         public string seriesPassportNumber { get; set; }
         public string drivingLicenseNumber { get; set; }
         public Nullable<int> tenderNumber { get; set; }
-        public Nullable<float> Summ_ { get; set; }
-
+        public Nullable<int> fullMassTC { get; set; }
+        public Nullable<int> massWithoutLoadTC1 { get; set; }
+        public Nullable<int> fullMassTC2Trailer { get; set; }
+        public Nullable<int> massWithoutLoadTC2Trailer { get; set; }
+        public Nullable<double> Summ_ { get; set; }
+    
         public virtual CarOwners CarOwners { get; set; }
         public virtual Cars Cars { get; set; }
         public virtual Contracts Contracts { get; set; }

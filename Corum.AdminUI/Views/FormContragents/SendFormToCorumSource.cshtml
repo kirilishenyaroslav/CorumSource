@@ -88,7 +88,7 @@
                                 </th>
                             </tr>
                             <tr>
-                                <th class="thMessCont tdThMessCont">Марка авто<span class="redFont">*</span></th>
+                                <th class="thMessCont tdThMessCont">Марка, модель, тип ТС(D1,D2,D3)<span class="redFont">*</span></th>
                                 <td class="tdForm tooltip">
                                     <input name="carBrand" class="inputTxt" type="text" data-valid="false" value="@Model[0].carBrand" required placeholder="Введите данные">
                                     <span class="tooltiptext">
@@ -98,7 +98,7 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th class="thMessCont tdThMessCont">Гос.номер ТС<span class="redFont">*</span></th>
+                                <th class="thMessCont tdThMessCont">Рег.номер ТС (А)<span class="redFont">*</span></th>
                                 <td class="tdForm tooltip">
                                     <input name="stateNumberCar" class="inputTxt" type="text" data-valid="false" value="@Model[0].stateNumberCar" required placeholder="Введите данные">
                                     <span class="tooltiptext">
@@ -108,7 +108,25 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th class="thMessCont tdThMessCont">Гос.номер прицепа<span class="redFont">*</span></th>
+                                <th class="thMessCont tdThMessCont">Полная масса ТС1(F.1 ), кг<span class="redFont">*</span></th>
+                                <td class="tdForm tooltip">
+                                    <input name="fullMassTC" class="inputTxt" type="text" data-valid="false" value="@Model[0].fullMassTC" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Полная масса транспортного средства в килограммах
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">Масса без навантаження ТС1(G), кг<span class="redFont">*</span></th>
+                                <td class="tdForm tooltip">
+                                    <input name="massWithoutLoadTC1" class="inputTxt" type="text" data-valid="false" value="@Model[0].massWithoutLoadTC1" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Масса без загрузки транспортного средства в килограммах
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">Рег.номер ТС2 (прицепа) (А)<span class="redFont">*</span></th>
                                 <td class="tdForm tooltip">
                                     <input name="trailerNumber" class="inputTxt" type="text" data-valid="false" value="@Model[0].trailerNumber" required placeholder="Введите данные">
                                     <span class="tooltiptext">
@@ -118,7 +136,25 @@
                                 </td>
                             </tr>
                             <tr>
-                                <th class="thMessCont tdThMessCont">Габариты ТС/прицепа<span class="redFont">*</span></th>
+                                <th class="thMessCont tdThMessCont">Полная масса ТС2 (прицепа)(F.1 ), кг</th>
+                                <td class="tdForm tooltip">
+                                    <input name="fullMassTC2Trailer" class="inputTxt" type="text" data-valid="true" value="@Model[0].fullMassTC2Trailer" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Полная масса транспортного средства (прицепа) в килограммах
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">Масса без навантаження ТС2 (прицепа) (G) ,кг</th>
+                                <td class="tdForm tooltip">
+                                    <input name="massWithoutLoadTC2Trailer" class="inputTxt" type="text" data-valid="true" value="@Model[0].massWithoutLoadTC2Trailer" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Масса без загрузки транспортного средства (прицепа) в килограммах
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">Габариты ТС/прицепа (ДхШхВ), мм<span class="redFont">*</span></th>
                                 <td class="tdForm tooltip">
                                     <input name="transportDimensions" class="inputTxt" type="text" data-valid="false" value="@Model[0].transportDimensions" required placeholder="Введите данные">
                                     <span class="tooltiptext">
@@ -132,15 +168,6 @@
                                     <input name="loadCapacity" class="inputTxt" type="text" value="@Model[0].loadCapacity" data-valid="false" required placeholder="Введите данные">
                                     <span class="tooltiptext">
                                         Грузоподъемность автомобиля
-                                    </span>
-                                </td>
-                            </tr>
-                            <tr>
-                                <th class="thMessCont tdThMessCont">Расстояние маршрута, км<span class="redFont">*</span></th>
-                                <td class="tdForm tooltip">
-                                    <input name="distance" class="inputTxt" value="@Model[0].distance" type="text" data-valid="false" required placeholder="Введите данные">
-                                    <span class="tooltiptext">
-                                        Укажите расстояние маршрута
                                     </span>
                                 </td>
                             </tr>
@@ -170,9 +197,27 @@
                                 </td>
                             </tr>
                             <tr>
+                                <th class="thMessCont tdThMessCont">Серия, номер заграничного паспорта</th>
+                                <td class="tdForm tooltip">
+                                    <input name="seriesPassportNumber" value="@Model[0].seriesPassportNumber" class="inputTxt" type="text" placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Ввести номер заграничного паспорта водителя транспортного средства.
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr>
                                 <th class="thMessCont tdThMessCont">Экспедитор</th>
                                 <td class="tdForm">
                                     <input name="contragentName" class="inputTxt" type="text" value='@Model[i].contragentName' readonly>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="thMessCont tdThMessCont">Расстояние маршрута, км<span class="redFont">*</span></th>
+                                <td class="tdForm tooltip">
+                                    <input name="distance" class="inputTxt" value="@Model[0].distance" type="text" data-valid="false" required placeholder="Введите данные">
+                                    <span class="tooltiptext">
+                                        Укажите расстояние маршрута
+                                    </span>
                                 </td>
                             </tr>
                             <tr>
@@ -192,15 +237,6 @@
                                         <input name="stateBorderCrossingPoint" value="@Model[0].stateBorderCrossingPoint" data-valid="false" class="inputTxt" type="text" required placeholder="Введите данные">
                                         <span class="tooltiptext">
                                             Указать Пункт перехода гос.границы для международных перевозок
-                                        </span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="thMessCont tdThMessCont">Серия, номер заграничного паспорта</th>
-                                    <td class="tdForm tooltip">
-                                        <input name="seriesPassportNumber" value="@Model[0].seriesPassportNumber" class="inputTxt" type="text" placeholder="Введите данные">
-                                        <span class="tooltiptext">
-                                            Ввести номер заграничного паспорта водителя транспортного средства.
                                         </span>
                                     </td>
                                 </tr>
@@ -282,7 +318,45 @@
                                     </span>
                                 </td>
                             </tr>
-
+                            @if (Model[0].IsEditable)
+                            {
+                                <tr>
+                                    <th class="thMessCont tdThMessCont">- Сканкопия ТТН/CMR</th>
+                                    <td class="tdForm tooltip">
+                                        <label for="inpFileSix" id="btnChooseSix" class="labBtn">Выбрать файл</label>
+                                        <input id="inpFileSix" name="inpFileSixName" type="file" class="inpFile" style="display: none;" multiple>
+                                        <label id="labChooseSix" class="labChoose">Файл не выбран</label>
+                                        <p class="parhChoose"></p>
+                                        <span class="tooltiptext">
+                                            Вложите сканкопию ТТН/CMR
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="thMessCont tdThMessCont">- Сканкопия СЧЕТА</th>
+                                    <td class="tdForm tooltip">
+                                        <label for="inpFileSeven" id="btnChooseSeven" class="labBtn">Выбрать файл</label>
+                                        <input id="inpFileSeven" name="inpFileSevenName" type="file" class="inpFile" style="display: none;" multiple>
+                                        <label id="labChooseSeven" class="labChoose">Файл не выбран</label>
+                                        <p class="parhChoose"></p>
+                                        <span class="tooltiptext">
+                                            Вложите сканкопию Счета
+                                        </span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th class="thMessCont tdThMessCont">- Сканкопия Акта выполненных работ</th>
+                                    <td class="tdForm tooltip">
+                                        <label for="inpFileEight" id="btnChooseEight" class="labBtn">Выбрать файл</label>
+                                        <input id="inpFileEight" name="inpFileEightName" type="file" class="inpFile" style="display: none;" multiple>
+                                        <label id="labChooseEight" class="labChoose">Файл не выбран</label>
+                                        <p class="parhChoose"></p>
+                                        <span class="tooltiptext">
+                                            Вложите сканкопию Акта выполненных работ
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
                         </tbody>
                     </table>
                 }
@@ -310,9 +384,10 @@
     <img src="~/Content/images/ajax-loader-gray.gif" id="loading-indicator" style="position: fixed; left: 47%; top: 40%; display: none" />
     <script>
         let inpChoose = document.getElementsByClassName('inpFile');
-        let inpChooseBooferFiles = [new Array(), new Array(), new Array(), new Array(), new Array()];
+        let inpChooseBooferFiles = [new Array(), new Array(), new Array(), new Array(), new Array(), new Array(), new Array(), new Array()];
         let flagCollapse = false;
         let listHtmlFields = [];
+        let isEditable = @Html.Raw(Json.Encode(Model[0].IsEditable));
         let loadingIndicator = document.getElementById('loading-indicator');
         let form = {
             headerData: [],
@@ -377,6 +452,17 @@
         listHtmlFields.push(loadCapacity);
         ValidData(loadCapacity);
         loadCapacity.onkeypress = KeyPressValidInput;
+        let fullMassTC = document.getElementsByName('fullMassTC')[0];
+        ValidData(fullMassTC);
+        fullMassTC.onkeypress = KeyPressValidInput;
+        let massWithoutLoadTC1 = document.getElementsByName('massWithoutLoadTC1')[0];
+        ValidData(massWithoutLoadTC1);
+        massWithoutLoadTC1.onkeypress = KeyPressValidInput;
+        let fullMassTC2Trailer = document.getElementsByName('fullMassTC2Trailer')[0];
+        fullMassTC2Trailer.onkeypress = KeyPressValidInput;
+        let massWithoutLoadTC2Trailer = document.getElementsByName('massWithoutLoadTC2Trailer')[0];
+        massWithoutLoadTC2Trailer.onkeypress = KeyPressValidInput;
+
         let distance = document.getElementsByName('distance')[0];
         listHtmlFields.push(distance);
         ValidData(distance);
@@ -410,6 +496,14 @@
         listHtmlFields.push(scannedCopyOfAdmissionToTransportation);
         let scannedCopyOfCivilPassport = document.getElementById('inpFileFive');
         listHtmlFields.push(scannedCopyOfCivilPassport);
+        if (isEditable) {
+            let filesTTH_CMR = document.getElementById('inpFileSix');
+            listHtmlFields.push(filesTTH_CMR);
+            let filesInvoice = document.getElementById('inpFileSeven');
+            listHtmlFields.push(filesInvoice);
+            let filesActOfCompletion = document.getElementById('inpFileEight');
+            listHtmlFields.push(filesActOfCompletion);
+        }
 
         function KeyPressValidInput(e) {
                 switch (String.fromCharCode(e.charCode)) {
@@ -506,10 +600,11 @@
                 let inpFileOne = document.getElementById('inpFileOne');
                 let inpFileTwo = document.getElementById('inpFileTwo');
                 let inpFileThree = document.getElementById('inpFileThree');
+                let isEditable = @Html.Raw(Json.Encode(Model[0].IsEditable));
 
-                validInpFileObj.inpOne = (inpFileOne != undefined)? (inpFileOne.files.length != 0) ? true: false : false;
-                validInpFileObj.inpThree = (inpFileThree != undefined) ? (inpFileThree.files.length != 0) ? true : false : false;
-                validInpFileObj.inpTwo = (inpFileTwo != undefined) ? (inpFileTwo.files.length != 0) ? true : false : false;
+                validInpFileObj.inpOne = (inpFileOne != undefined) ? (inpFileOne.files.length != 0 || isEditable) ? true : false : false;
+                validInpFileObj.inpThree = (inpFileThree != undefined) ? (inpFileThree.files.length != 0 || isEditable) ? true : false : false;
+                validInpFileObj.inpTwo = (inpFileTwo != undefined) ? (inpFileTwo.files.length != 0 || isEditable) ? true : false : false;
             };
 
             function ValidDataInputFile(htmlElement) {
@@ -565,6 +660,19 @@
                 let loadCapacity = document.getElementsByName('loadCapacity')[0];
                 formaData.append(loadCapacity.name, loadCapacity.value);
                 listHtmlFields.push(loadCapacity);
+                let fullMassTC = document.getElementsByName('fullMassTC')[0];
+                formaData.append(fullMassTC.name, fullMassTC.value);
+                listHtmlFields.push(fullMassTC);
+                let massWithoutLoadTC1 = document.getElementsByName('massWithoutLoadTC1')[0];
+                formaData.append(massWithoutLoadTC1.name, massWithoutLoadTC1.value);
+                listHtmlFields.push(massWithoutLoadTC1);
+                let fullMassTC2Trailer = document.getElementsByName('fullMassTC2Trailer')[0];
+                formaData.append(fullMassTC2Trailer.name, fullMassTC2Trailer.value);
+                listHtmlFields.push(fullMassTC2Trailer);
+                let massWithoutLoadTC2Trailer = document.getElementsByName('massWithoutLoadTC2Trailer')[0];
+                formaData.append(massWithoutLoadTC2Trailer.name, massWithoutLoadTC2Trailer.value);
+                listHtmlFields.push(massWithoutLoadTC2Trailer);
+
                 let distance = document.getElementsByName('distance')[0];
                 formaData.append(distance.name, distance.value);
                 listHtmlFields.push(distance);
@@ -654,12 +762,52 @@
                 else {
                     formaData.append('scannedCopyOfCivilPassport', false);
                 }
+                if (isEditable) {
+                    let filesTTH_CMR = document.getElementById('inpFileSix');
+                    for (let i = 0; i < filesTTH_CMR.files.length; i++) {
+                        formaData.append(filesTTH_CMR.files[i].name, filesTTH_CMR.files[i]);
+                    }
+
+                    if (filesTTH_CMR.files.length != 0) {
+                        formaData.append('filesTTH_CMR', true);
+                    }
+                    else {
+                        formaData.append('filesTTH_CMR', false);
+                    }
+
+                    let filesInvoice = document.getElementById('inpFileSeven');
+                    for (let i = 0; i < filesInvoice.files.length; i++) {
+                        formaData.append(filesInvoice.files[i].name, filesInvoice.files[i]);
+                    }
+
+                    if (filesInvoice.files.length != 0) {
+                        formaData.append('filesInvoice', true);
+                    }
+                    else {
+                        formaData.append('filesInvoice', false);
+                    }
+
+                    let filesActOfCompletion = document.getElementById('inpFileEight');
+                    for (let i = 0; i < filesActOfCompletion.files.length; i++) {
+                        formaData.append(filesActOfCompletion.files[i].name, filesActOfCompletion.files[i]);
+                    }
+
+                    if (filesActOfCompletion.files.length != 0) {
+                        formaData.append('filesActOfCompletion', true);
+                    }
+                    else {
+                        formaData.append('filesActOfCompletion', false);
+                    }
+                }
+
+
                 let flagInput = true;
                 listHtmlFields.forEach(item => {
                     if (item.value == 'Введите данные') {
                         flagInput = false;
                     }
                 });
+
 
                 let tbodyMainInfo = document.getElementById('tbodyMainInfo');
                 HeaderInitFromForm(tbodyMainInfo.children);
@@ -712,12 +860,41 @@
                     let th = document.createElement('th');
                     $(th).attr('style', 'font-weight: 100; text-align: center; padding-top: 1%; padding-bottom: 1%; line-height: 1.5;');
                     $(th).attr('colspan', '2');
-                    $(th).append(`<span style="font-size: 20px; font-weight: bold; text-align: center; line-height: 2;">Краткая информация для копирования</span><br><span style="font-weight: bold;">Тендер ${@Html.Raw(Json.Encode(Model[0].tenderNumber))}, (Заявка ${@Html.Raw(Json.Encode(Model[0].orderId))})</span><br>${@Html.Raw(Json.Encode(Model[0].routeShort))}<br> <span style="font-weight: bold;">Дата подачи авто ${@Html.Raw(Json.Encode(Model[0].dateDownloading.ToString("dd.MM.yyyy")))}</span><br> Авто: ${carBrand.value}<br>
-                <span style="font-weight: bold;">Гос.номер: ${stateNumberCar.value} п/п ${trailerNumber.value}</span><br> Водитель: ${fullNameOfDriver.value} ${phoneNumber.value}<br><span style="font-weight: bold;">Водительское удостоверение: ${drivingLicenseNumber.value}</span> <br> Экспедитор
-                ${contragentName.value}<br>`);
-                    if (stateBorderCrossingPoint != undefined) {
-                        $(th).append(`<span style="font-weight: bold;">Переход: ${stateBorderCrossingPoint.value}</span> (отдельное поле для международных перевозок заполняется вручную)`);
+                    $(th).append(`
+<span style="font-size: 20px; font-weight: bold; text-align: center; line-height: 2;">Краткая информация</span>
+<br>
+<span style="font-weight: bold;">Тендер ${@Html.Raw(Json.Encode(Model[0].tenderNumber))}, (Заявка ${@Html.Raw(Json.Encode(Model[0].orderId))})</span>
+<br>
+${@Html.Raw(Json.Encode(Model[0].routeShort))}
+<br>`);
+
+if (stateBorderCrossingPoint != undefined) {
+    $(th).append(`<span style="font-weight: bold;">Переход: ${stateBorderCrossingPoint.value}</span>`);
                     }
+
+$(th).append(`
+<br>
+<span style="font-weight: normal;">
+Экспедитор
+${contragentName.value}</span>
+<br>
+<span style="font-weight: bold;">Дата подачи авто ${@Html.Raw(Json.Encode(Model[0].dateDownloading.ToString("dd.MM.yyyy")))}</span>
+<br>
+<span style="font-weight: normal;">
+Марка, модель, тип ТС(D1,D2,D3): ${carBrand.value}</span>
+<br>
+<span style="font-weight: bold;">Рег.номер ТС(А): ${stateNumberCar.value}; Полная масса: ${fullMassTC.value}; Масса без загрузки: ${massWithoutLoadTC1.value}</span>
+<br>
+<span style="font-weight: normal;">Рег.номер ТС2 (прицепа) (А): ${trailerNumber.value}; Полная масса: ${fullMassTC2Trailer.value}; Масса без загрузки: ${massWithoutLoadTC2Trailer.value}</span>
+<br>
+<span style="font-weight: bold;">Габариты ТС/прицепа (ДхШхВ), мм: ${transportDimensions.value}</span>
+<br>
+<span style="font-weight: normal;">Водитель: ${fullNameOfDriver.value} ${phoneNumber.value}
+<br>
+<span style="font-weight: bold;">№ водительского удостоверения: ${drivingLicenseNumber.value}; Серия, номер заграничного паспорта: ${seriesPassportNumber.value}</span>
+<br>
+<span style="font-weight: normal;">Примечание: ${note.value}
+`);
                     form.footerData = th;
                 };
 
@@ -738,7 +915,7 @@
                     loadingIndicator.style.display = "block";
                     $.ajax({
                         type: "POST",
-                        async: false,
+                        async: true,
                         url: "/FormContragents/SendDataFromForm",
                         data: formaData,
                         dataType: "json",
@@ -908,7 +1085,7 @@
                         font-size: 15px;
                         font-family: Arial, Helvetica, sans-serif;
                         padding-left: 0.8%;">
-                            ${item.value}
+                            ${(item.value == 'Файл прикреплен')?`[+]`:`[-]`}
                         </td>
                     </tr>`);
         };
@@ -963,6 +1140,9 @@
                 let check = document.getElementsByName('checkFronContragents')[0];
             check.removeAttribute('disabled');
             let submit = e.currentTarget;
+            if (submit.value == 'Редактировать') {
+                e.preventDefault();
+            }
             submit.className = '';
             submit.value = 'Отправить';
             submit.className = 'submTC';

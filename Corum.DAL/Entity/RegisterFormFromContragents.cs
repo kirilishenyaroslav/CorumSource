@@ -38,6 +38,13 @@ namespace Corum.DAL.Entity
         public System.DateTime dateUpdate { get; set; }
         public System.Guid tenderItemUuid { get; set; }
         public string transportDimensions { get; set; }
+        public Nullable<int> fullMassTC { get; set; }
+        public Nullable<int> massWithoutLoadTC1 { get; set; }
+        public Nullable<int> fullMassTC2Trailer { get; set; }
+        public Nullable<int> massWithoutLoadTC2Trailer { get; set; }
+        public Nullable<bool> filesTTH_CMR { get; set; }
+        public Nullable<bool> filesInvoice { get; set; }
+        public Nullable<bool> filesActOfCompletion { get; set; }
     
         public virtual RegisterMessageToContragents RegisterMessageToContragents { get; set; }
     }

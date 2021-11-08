@@ -230,6 +230,10 @@ namespace Corum.DAL.Mappings
                 drivingLicenseNumber = o.drivingLicenseNumber,
                 tenderNumber = tenderNumber,
                 Summ_ = (Nullable<float>)(o.Summ) ?? 0,
+                fullMassTC = o.fullMassTC,
+                fullMassTC2Trailer = o.fullMassTC2Trailer,
+                massWithoutLoadTC2Trailer = o.massWithoutLoadTC2Trailer,
+                massWithoutLoadTC1 = o.massWithoutLoadTC1
             };
         }
 

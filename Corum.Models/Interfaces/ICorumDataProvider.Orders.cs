@@ -438,5 +438,6 @@ namespace Corum.Models
         void NewUsedCarExcel(Guid formUuid, ref DataToAndFromContragent data);
         int? GetTenderNumber(Guid formUuid);
         bool DeleteUsedCar(Guid[] formUuid);
+        string GetUserId(long orderId);
     }
 }

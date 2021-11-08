@@ -908,6 +908,10 @@ namespace Corum.DAL
                     model.seriesPassportNumber = modelForm.seriesPassportNumber;
                     model.IsEditable = true;
                     model.transportDimensions = modelForm.transportDimensions;
+                    model.fullMassTC = modelForm.fullMassTC;
+                    model.massWithoutLoadTC1 = modelForm.massWithoutLoadTC1;
+                    model.massWithoutLoadTC2Trailer = modelForm.massWithoutLoadTC2Trailer;
+                    model.fullMassTC2Trailer = modelForm.fullMassTC2Trailer;
                 }
                 listDataToForm.Add(model);
             }
@@ -951,6 +955,14 @@ namespace Corum.DAL
                     instance.dateUpdate = DateTime.Now;
                     instance.tenderItemUuid = formUuid;
                     instance.transportDimensions = dic["transportDimensions"];
+                    instance.fullMassTC = Int32.Parse(dic["fullMassTC"]);
+                    instance.fullMassTC2Trailer = (dic["fullMassTC2Trailer"] != null)?(Nullable<int>)Int32.Parse(dic["fullMassTC2Trailer"]):null;
+                    instance.massWithoutLoadTC1 = Int32.Parse(dic["massWithoutLoadTC1"]);
+                    instance.massWithoutLoadTC2Trailer = (dic["massWithoutLoadTC2Trailer"] != null) ? (Nullable<int>)Int32.Parse(dic["massWithoutLoadTC2Trailer"]) : null;
+                    instance.filesTTH_CMR = (dic.ContainsKey("filesTTH_CMR")) ? Boolean.Parse(dic["filesTTH_CMR"]) : false;
+                    instance.filesInvoice = (dic.ContainsKey("filesInvoice")) ? Boolean.Parse(dic["filesInvoice"]) : false;
+                    instance.filesActOfCompletion = (dic.ContainsKey("filesActOfCompletion")) ? Boolean.Parse(dic["filesActOfCompletion"]) : false;
+
                     instance.RegisterMessageToContragents = modelRegisterToContragents;
                     db.RegisterFormFromContragents.Add(instance);
                     db.SaveChanges();
@@ -979,6 +991,14 @@ namespace Corum.DAL
                     item.IsUpdate = Boolean.Parse(dic["checkFronContragents"]);
                     item.dateUpdate = DateTime.Now;
                     item.transportDimensions = dic["transportDimensions"];
+                    item.fullMassTC = Int32.Parse(dic["fullMassTC"]);
+                    item.fullMassTC2Trailer = (dic["fullMassTC2Trailer"] != null) ? (Nullable<int>)Int32.Parse(dic["fullMassTC2Trailer"]) : null;
+                    item.massWithoutLoadTC1 = Int32.Parse(dic["massWithoutLoadTC1"]);
+                    item.massWithoutLoadTC2Trailer = (dic["massWithoutLoadTC2Trailer"] != null) ? (Nullable<int>)Int32.Parse(dic["massWithoutLoadTC2Trailer"]) : null;
+                    item.filesTTH_CMR = (dic.ContainsKey("filesTTH_CMR")) ? (item.filesTTH_CMR != true) ? Boolean.Parse(dic["filesTTH_CMR"]) : item.filesTTH_CMR : false;
+                    item.filesInvoice = (dic.ContainsKey("filesInvoice")) ? (item.filesInvoice != true) ? Boolean.Parse(dic["filesInvoice"]) : item.filesInvoice : false;
+                    item.filesActOfCompletion = (dic.ContainsKey("filesActOfCompletion")) ? (item.filesActOfCompletion != true) ? Boolean.Parse(dic["filesActOfCompletion"]) : item.filesActOfCompletion : false;
+
                     db.SaveChanges();
                     flag = true;
                 }

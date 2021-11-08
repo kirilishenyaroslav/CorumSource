@@ -22,6 +22,7 @@ using System.Text;
 using System.Net.Http;
 using Corum.ReportsUI;
 using System.Threading.Tasks;
+using Corum.Models.ViewModels.Orders;
 
 namespace CorumAdminUI.Controllers
 {
@@ -65,13 +66,43 @@ namespace CorumAdminUI.Controllers
         {
             flag = false;
             bool error = false;
+            string[] namesAddRequiredFiles = {
+            "scannedCopyOfSignedOrder",
+            "filesTTH_CMR",
+            "filesInvoice",
+            "filesActOfCompletion"
+            };
             try
             {
                 List<HttpPostedFileBase> listFiles = new List<HttpPostedFileBase>();
                 Dictionary<string, string> dic = new Dictionary<string, string>();
+                Dictionary<string, bool> dicFiles = new Dictionary<string, bool>();
+
                 foreach (var key in Request.Form.AllKeys)
                 {
                     dic[key] = Request.Form[key];
+                    if (key != "checkFronContragents" && Request.Form[key] == "true")
+                    {
+                        dicFiles[key] = Boolean.Parse(Request.Form[key]);
+                    }
+                }
+                List<int> index = new List<int>();
+                int num = 0;
+                foreach (KeyValuePair<string, Boolean> item in dicFiles)
+                {
+                    switch (item.Key)
+                    {
+                        case "scannedCopyOfSignedOrder":
+                        case "filesTTH_CMR":
+                        case "filesInvoice":
+                        case "filesActOfCompletion":
+                            {
+                                index.Add(num);
+                                break;
+                            }
+                        default: break;
+                    }
+                    ++num;
                 }
 
                 for (int i = 0; i < Request.Files.Count; i++)
@@ -84,10 +115,18 @@ namespace CorumAdminUI.Controllers
                     DataToAndFromContragent data = new DataToAndFromContragent();
                     int orderId = context.NewUsedCar(Guid.Parse(dic["tenderItemUuid"]), ref data);
 
+                    foreach(int i in index)
+                    {                   
+                        OrderAttachmentViewModel model = new OrderAttachmentViewModel();
+                        model.OrderId = orderId;
+                        listFiles[i].InputStream.Position = 0;
+                        AddFileToDocument(model, listFiles[i]);
+                    }
                     List<string> listEmails = new List<string>()
                         {
                         "Litovchenko.Sergey@corum.com"
-                        //"corumsourcetest@gmail.com"
+                        //"corumsourcetest@gmail.com",
+                        //"sergeykredenser@gmail.com"
                         };
                     if (data.regmesstocontrag != null && data.regmesstocontrag.emailOperacionist.Contains('@'))
                     {
@@ -119,41 +158,61 @@ namespace CorumAdminUI.Controllers
             {
                 MailAddress from = new MailAddress(ConfigurationManager.AppSettings["SmtpAccountLogin"], $"{dic["contragentName"]}", Encoding.UTF8);
                 MailAddress to = new MailAddress(emailOperacionist);
-                using (MailMessage mail = new MailMessage(from, to))
+                MailMessage mail = new MailMessage(from, to);
+                mail.Subject = $"{subject}";
+                mail.Body = $"{htmlBodyForm}";
+                mail.IsBodyHtml = true;
+                if (listFiles.Count != 0)
                 {
-                    mail.Subject = $"{subject}";
-                    mail.Body = $"{htmlBodyForm}";
-                    mail.IsBodyHtml = true;
-                    if (listFiles.Count != 0)
+                    foreach (var item in listFiles)
                     {
-                        foreach (var item in listFiles)
-                        {
-                            string fileName = Path.GetFileName(item.FileName);
-                            mail.Attachments.Add(new Attachment(item.InputStream, fileName));
-                        }
-                    }
-                    SmtpClient smtp = new SmtpClient();
-                    smtp.Host = ConfigurationManager.AppSettings["SmtpServer"];
-                    smtp.EnableSsl = false;
-                    NetworkCredential networkCredential = new NetworkCredential(from.Address, ConfigurationManager.AppSettings["SmtpAccountPassw"]);
-                    smtp.UseDefaultCredentials = false;
-                    smtp.Credentials = networkCredential;
-                    smtp.Port = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpServerPort"]);
-                    if (true)
-                    {
-                        await Task.Run(() =>
-                        {
-                            smtp.Send(mail);
-                            flag = true;
-                        });
+                        item.InputStream.Position = 0;
+                        string fileName = Path.GetFileName(item.FileName);
+                        mail.Attachments.Add(new Attachment(item.InputStream, fileName));
                     }
                 }
+                SmtpClient smtp = new SmtpClient();
+                smtp.Host = ConfigurationManager.AppSettings["SmtpServer"];
+                smtp.EnableSsl = false;
+                NetworkCredential networkCredential = new NetworkCredential(from.Address, ConfigurationManager.AppSettings["SmtpAccountPassw"]);
+                smtp.UseDefaultCredentials = false;
+                smtp.Credentials = networkCredential;
+                smtp.Port = Convert.ToInt32(ConfigurationManager.AppSettings["SmtpServerPort"]);
+                if (true)
+                {
+                    await Task.Run(() =>
+                    {
+                        smtp.Send(mail);
+                        flag = true;
+                    });
+                }
             }
-
             catch (Exception e)
             {
 
             }
+        }
+
+        private void AddFileToDocument(OrderAttachmentViewModel model, HttpPostedFileBase DocumentFile)
+        {
+            NameValueCollection allAppSettings = ConfigurationManager.AppSettings;
+            if (DocumentFile != null)
+            {
+                var inputStream = DocumentFile.InputStream;
+                var memoryStream = inputStream as MemoryStream;
+                if (memoryStream == null)
+                {
+                    memoryStream = new MemoryStream();
+                    inputStream.CopyTo(memoryStream);
+                }
+                model.DocBody = memoryStream.ToArray();
+                model.RealFileName = DocumentFile.FileName;
+            }
+
+            model.AddedByUser = context.GetUserId(model.OrderId);
+            model.AddedDateTime = DateTime.Now;
+
+            context.NewAttachment(model);
         }
 
         private static string SplitEncodedAttachmentName(string encoded)

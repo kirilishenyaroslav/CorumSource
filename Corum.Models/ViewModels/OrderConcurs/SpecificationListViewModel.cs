@@ -146,6 +146,8 @@ namespace Corum.Models.ViewModels.OrderConcurs
         public string note { get; set; }
         public string itemDescription { get; set; }
         public string cargoWeight { get; set; }
+        public Nullable<System.Guid> formUuid { get; set; }
+        public Nullable<int> tenderTureNumber { get; set; }
 
     }
 

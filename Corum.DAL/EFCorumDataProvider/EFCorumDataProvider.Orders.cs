@@ -66,12 +66,15 @@ namespace Corum.DAL
 
         public IQueryable<OrderUsedCarViewModel> getOrderCarsInfo(long OrderId)
         {
-            return db.OrderUsedCars
+
+            var query = db.OrderUsedCars
                            .AsNoTracking()
                             .Where(x => x.OrderId == OrderId)
                              .Select(Mapper.Map)
+                             .Where(x => x != null)
                               .OrderByDescending(o => o.Id)
                                .AsQueryable();
+            return query;
         }
 
         public IQueryable<OrderUsedCarViewModel> getOrderCarsInfoFromContragent(Guid formUuid)
@@ -2495,7 +2498,7 @@ namespace Corum.DAL
                     var car = new OrderUsedCars()
                     {
                         CarDriverInfo = formFromContr.fullNameOfDriver,
-                        CarCapacity = (Nullable<int>)formFromContr.loadCapacity,
+                        CarCapacity = (Nullable<double>)formFromContr.loadCapacity,
                         OrderId = messageToContr.orderId,
                         CarModelInfo = formFromContr.carBrand,
                         CarRegNum = formFromContr.stateNumberCar,
@@ -2528,7 +2531,7 @@ namespace Corum.DAL
                 else
                 {
                     dbInfo.CarDriverInfo = formFromContr.fullNameOfDriver;
-                    dbInfo.CarCapacity = (Nullable<int>)formFromContr.loadCapacity;
+                    dbInfo.CarCapacity = (Nullable<double>)formFromContr.loadCapacity;
                     dbInfo.OrderId = messageToContr.orderId;
                     dbInfo.CarModelInfo = formFromContr.carBrand;
                     dbInfo.CarRegNum = formFromContr.stateNumberCar;
@@ -2620,14 +2623,14 @@ namespace Corum.DAL
             }
         }
 
-        public void NewUsedCar(Guid formUuid)
+        public void NewUsedCar(Guid formUuid, int tenderTureNumber, bool IsSelected)
         {
 
             try
             {
-                var messageToContr = db.RegisterMessageToContragents.FirstOrDefault(u => u.formUuid == formUuid);
-                var formFromContr = db.RegisterFormFromContragents.FirstOrDefault(u => u.tenderItemUuid == formUuid);
-                var dbInfo = db.OrderUsedCars.FirstOrDefault(u => u.formUuid == formUuid);
+                var messageToContr = db.RegisterMessageToContragents.FirstOrDefault(u => u.formUuid == formUuid && u.tenderTureNumber == tenderTureNumber);
+                var formFromContr = db.RegisterFormFromContragents.FirstOrDefault(u => u.tenderItemUuid == formUuid && u.tenderTureNumber == tenderTureNumber);
+                var dbInfo = db.OrderUsedCars.FirstOrDefault(u => u.formUuid == formUuid && u.tenderTureNumber == tenderTureNumber);
                 var expeditor = db.CarOwners.FirstOrDefault(u => u.email_aps == messageToContr.emailContragent);
                 if (expeditor == null)
                 {
@@ -2636,7 +2639,7 @@ namespace Corum.DAL
                 }
                 var payerId = db.OrdersBase.FirstOrDefault(u => u.Id == messageToContr.orderId).PayerId;
                 var contractInfo = GetContractExpBkInfoBySearchString("", expeditor.Id, (int)payerId).ToList();
-                if (dbInfo == null)
+                if (dbInfo == null && IsSelected)
                 {
                     var car = new OrderUsedCars()
                     {
@@ -2666,7 +2669,9 @@ namespace Corum.DAL
                         fullMassTC = null,
                         fullMassTC2Trailer = null,
                         massWithoutLoadTC1 = null,
-                        massWithoutLoadTC2Trailer = null
+                        massWithoutLoadTC2Trailer = null,
+                        tenderTureNumber = tenderTureNumber,
+                        IsSelected = true
                     };
 
                     db.OrderUsedCars.Add(car);
@@ -2710,6 +2715,7 @@ namespace Corum.DAL
             dbInfo.fullMassTC2Trailer = model.fullMassTC2Trailer;
             dbInfo.massWithoutLoadTC1 = model.massWithoutLoadTC1;
             dbInfo.massWithoutLoadTC2Trailer = model.massWithoutLoadTC2Trailer;
+            dbInfo.tenderTureNumber = model.tenderTureNumber;
 
             /*   dbInfo.FactShipperDateTime = DateTimeConvertClass.getDateTime(model.FactShipperDate).
                                                           AddHours(DateTimeConvertClass.getHours(model.FactShipperTime)).

@@ -122,11 +122,12 @@ namespace CorumAdminUI.Controllers
 
 
         [OutputCache(VaryByParam = "*", Duration = 0, NoStore = true)]
-        public ActionResult UpdateConcurs(long Id, long OrderId)
+        public ActionResult UpdateConcurs(long Id, long OrderId, int tenderNumber, Guid formUuid)
         {
             var concursInfo = context.getConcurs(Id);
             concursInfo.CompetitiveListInfo = context.getCompetitiveListInfo(OrderId);
-
+            concursInfo.tenderNumber = tenderNumber;
+            concursInfo.formUuid = formUuid;
             return View(concursInfo);
         }
 
@@ -134,7 +135,7 @@ namespace CorumAdminUI.Controllers
         public ActionResult UpdateConcurs(OrderCompetitiveListViewModel model)
         {
             context.UpdateConcurs(model);
-
+            context.ChangeRegisterMessageData((int)model.tenderNumber, model.OrderId, (Guid)model.formUuid, model);
             return RedirectToAction("OrderCompetitiveList", "OrderConcurs", new { OrderId = model.OrderId });
         }
 

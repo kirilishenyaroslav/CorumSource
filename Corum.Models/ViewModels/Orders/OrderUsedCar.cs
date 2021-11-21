@@ -22,7 +22,7 @@ namespace Corum.Models.ViewModels.Orders
         public string CarOwnerInfo { get; set; }
         public string CarModelInfo { get; set; }
         public string CarRegNum { get; set; }
-        public int? CarCapacity { get; set; }
+        public Nullable<double> CarCapacity { get; set; }
         public string CarDriverInfo { get; set; }
         public string DriverContactInfo { get; set; }
         public string CarrierInfo { get; set; }
@@ -102,5 +102,7 @@ namespace Corum.Models.ViewModels.Orders
         public Nullable<int> massWithoutLoadTC1 { get; set; }
         public Nullable<int> fullMassTC2Trailer { get; set; }
         public Nullable<int> massWithoutLoadTC2Trailer { get; set; }
+        public Nullable<int> tenderTureNumber { get; set; }
+        public Nullable<bool> IsSelected { get; set; }
     }
 }

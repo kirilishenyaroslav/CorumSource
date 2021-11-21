@@ -29,7 +29,7 @@ namespace Corum.DAL.Entity
         public Nullable<decimal> Summ { get; set; }
         public string DriverCardInfo { get; set; }
         public string Comments { get; set; }
-        public Nullable<int> CarCapacity { get; set; }
+        public Nullable<double> CarCapacity { get; set; }
         public Nullable<decimal> PlanDistance { get; set; }
         public Nullable<int> PlanTimeWorkDay { get; set; }
         public Nullable<int> PlanTimeHoliday { get; set; }
@@ -57,6 +57,8 @@ namespace Corum.DAL.Entity
         public Nullable<int> fullMassTC2Trailer { get; set; }
         public Nullable<int> massWithoutLoadTC2Trailer { get; set; }
         public Nullable<double> Summ_ { get; set; }
+        public Nullable<int> tenderTureNumber { get; set; }
+        public Nullable<bool> IsSelected { get; set; }
     
         public virtual CarOwners CarOwners { get; set; }
         public virtual Cars Cars { get; set; }

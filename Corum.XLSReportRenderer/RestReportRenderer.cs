@@ -5192,7 +5192,7 @@ namespace Corum.RestReports
             foreach (var car in carList)
             {
                 bool flagData = false; bool flagRegMess = false; bool flagFrom = false;
-                if (data[count] != null)
+                if (data.Count != 0 && data[count] != null)
                 {
                     flagData = true;
                 }

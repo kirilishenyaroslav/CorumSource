@@ -1073,7 +1073,7 @@ namespace Corum.ReportsUI
                 }
 
                 byte[] fileContents;
-                if (listFormUuid.Length == 0)
+                if (listFormUuid != null && listFormUuid.Length == 0)
                 {
                     fileContents = report.OrderRenderReport<OrderBaseViewModel>(OrderTypeModel, extOrderTypeModel1, AcceptDate, orderClientInfo, Param, AdressFrom, AdressTo, ContractName, extOrderTypeModel2, OrderType, carList);
                 }

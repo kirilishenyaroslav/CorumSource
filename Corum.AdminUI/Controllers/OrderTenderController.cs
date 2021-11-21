@@ -85,20 +85,20 @@ namespace CorumAdminUI.Controllers
 
 
         [HttpPost]
-        public ActionResult SendMessageToContragents(InfoToContragentsAfterChange listInfoToCont)
+        public ActionResult SendMessageToContragents(bool flag, InfoToContragentsAfterChange listInfoToCont)
         {
             bool isAvaliable = false;
             if (listInfoToCont.listLosersInfoAfterChange != null || listInfoToCont.listWinnersInfoAfterChange != null)
             {
                 isAvaliable = context.FormMessageToSendContragents(listInfoToCont);
-                if (isAvaliable)
+                if (isAvaliable || flag)
                 {
                     SendEmailToContragents(listInfoToCont);
                 }
             }
             return new JsonpResult
             {
-                Data = new { listInfoToCont, isAvaliable },
+                Data = new { listInfoToCont, isAvaliable, flag },
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet
             };
 
@@ -471,6 +471,7 @@ namespace CorumAdminUI.Controllers
                                     model.VehicleTypeName = spec.VehicleTypeName;
                                     model.itemDescription = it.Value[i].itemDescription;
                                     model.cargoWeight = cargoWeight;
+                                    model.tenderTureNumber = myDeserializedClass.data.stageNumber;
                                     specificationListViews.Add(model);
                                 }
                                 else
@@ -521,19 +522,22 @@ namespace CorumAdminUI.Controllers
                                         costOfCarWithoutNDSToNull = it.Value[i].costOfCarWithoutNDSToNull,
                                         note = it.Value[i].note,
                                         itemDescription = it.Value[i].itemDescription,
-                                        cargoWeight = cargoWeight
-                                    };
+                                        cargoWeight = cargoWeight,
+                                        tenderTureNumber = myDeserializedClass.data.stageNumber
+                                };
                                     specificationListViews.Add(instance);
                                 }
                             }
                         }
                         if (specificationListViews.Count != 0)
                         {
-                            if (context.IsContainTender(tenderNumber))
+                            if (context.IsContainTender(tenderNumber, myDeserializedClass.data.stageNumber))
                             {
                                 foreach (var model in specificationListViews)
                                 {
-                                    context.NewSpecification(model, this.userId, tenderNumber);
+                                    Guid formUuid;
+                                    context.NewSpecification(model, this.userId, tenderNumber, out formUuid);
+                                    context.SetRegisterMessageData(tenderNumber, model, model.OrderId, formUuid, (int)model.tenderTureNumber);
                                 }
                             }
                         }
@@ -847,6 +851,7 @@ namespace CorumAdminUI.Controllers
                                     model.VehicleTypeName = spec.VehicleTypeName;
                                     model.itemDescription = it.Value[i].itemDescription;
                                     model.cargoWeight = cargoWeight;
+                                    model.tenderTureNumber = myDeserializedClass.data.stageNumber;
                                     specificationListViews.Add(model);
                                 }
                                 else
@@ -897,7 +902,8 @@ namespace CorumAdminUI.Controllers
                                         costOfCarWithoutNDSToNull = it.Value[i].costOfCarWithoutNDSToNull,
                                         note = it.Value[i].note,
                                         itemDescription = it.Value[i].itemDescription,
-                                        cargoWeight = cargoWeight
+                                        cargoWeight = cargoWeight,
+                                        tenderTureNumber = myDeserializedClass.data.stageNumber
                                     };
                                     specificationListViews.Add(instance);
                                 }
@@ -905,11 +911,13 @@ namespace CorumAdminUI.Controllers
                         }
                         if (specificationListViews.Count != 0)
                         {
-                            if (context.IsContainTender(tenderNumber))
+                            if (context.IsContainTender(tenderNumber, myDeserializedClass.data.stageNumber))
                             {
                                 foreach (var model in specificationListViews)
                                 {
-                                    context.NewSpecification(model, this.userId, tenderNumber);
+                                    Guid formUuid;
+                                    context.NewSpecification(model, this.userId, tenderNumber, out formUuid);
+                                    context.SetRegisterMessageData(tenderNumber, model, model.OrderId, formUuid, (int)model.tenderTureNumber);
                                 }
                             }
                         }

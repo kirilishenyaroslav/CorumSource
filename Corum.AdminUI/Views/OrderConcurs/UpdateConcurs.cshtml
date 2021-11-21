@@ -18,455 +18,457 @@
             <h4 style="text-align: right;margin: 0px!important;color: red;font-weight:bold; margin:0px;">@Model.CompetitiveListInfo.currentStep.StepShortCode</h4>
             @using (Html.BeginForm("UpdateConcurs", "OrderConcurs", FormMethod.Post))
             {
-                <div class="form-horizontal" style="margin-top: 0px;">
+        <div class="form-horizontal" style="margin-top: 0px;">
 
-                    @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+            @Html.ValidationSummary(true, "", new { @class = "text-danger" })
 
-                    @Html.HiddenFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.HiddenFor(model => model.OrderId, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.Id, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.OrderId, new { htmlAttributes = new { @class = "form-control" } })
 
-                    @Html.HiddenFor(model => model.RateKm, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.HiddenFor(model => model.RateHour, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.HiddenFor(model => model.RateMachineHour, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.RateKm, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.RateHour, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.RateMachineHour, new { htmlAttributes = new { @class = "form-control" } })
 
-                    @Html.HiddenFor(model => model.IsRateKm, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.HiddenFor(model => model.IsChange, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.HiddenFor(model => model.IsFreight, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.IsRateKm, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.IsChange, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.IsFreight, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.tenderNumber, new { htmlAttributes = new { @class = "form-control" } })
+            @Html.HiddenFor(model => model.formUuid, new { htmlAttributes = new { @class = "form-control" } })
 
-                    <hr style="border-top: 3px solid black !important; margin-left: -14px;">
-                    <label class="control-label" style="text-transform: uppercase!important;font-size: 15px!important;margin-left: -14px;">Договорная информация</label>
-                    <div class="row" style="font-size: 12px;">
-                        <div class="row">
-                            <div class="col-md-3">
-                                @Html.LabelFor(model => model.ExpeditorName, htmlAttributes: new { @class = "control-label" })
+            <hr style="border-top: 3px solid black !important; margin-left: -14px;">
+            <label class="control-label" style="text-transform: uppercase!important;font-size: 15px!important;margin-left: -14px;">Договорная информация</label>
+            <div class="row" style="font-size: 12px;">
+                <div class="row">
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.ExpeditorName, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.CarryCapacity, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-3">
+                        <div class="form-group">
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.DaysDelay, htmlAttributes: new { @class = "control-label", @style = "text-align: left!important;" })
                             </div>
-                            <div class="col-md-3">                               
-                                    @Html.LabelFor(model => model.CarryCapacity, htmlAttributes: new { @class = "control-label" })                               
+                            <div class="col-md-6">
+                                @Html.LabelFor(model => model.NDS, htmlAttributes: new { @class = "control-label" })
                             </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <div class="col-md-6">
-                                        @Html.LabelFor(model => model.DaysDelay, htmlAttributes: new { @class = "control-label", @style = "text-align: left!important;"})
-                                    </div>
-                                    <div class="col-md-6">
-                                        @Html.LabelFor(model => model.NDS, htmlAttributes: new { @class = "control-label" })
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group" style="text-align: left !important">
-                                    <label class="control-label" style="text-align: left !important">Стоимость одного автомобиля, грн. без НДС (согласно договору)</label>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-3">                           
-                                    <div class="form-control-container full-width-select">
-                                        @Html.TextBoxFor(model => model.ExpeditorName, new { @class = "form-control input client-info", @readonly = "readonly" })
-                                        @Html.ValidationMessageFor(model => model.ExpeditorName, "", new { @class = "text-danger" })
-                                    </div>
-                            </div>
-                            <div class="col-md-3">                              
-                                    <div class="form-control-container full-width-select">
-                                        @Html.TextBoxFor(model => model.CarryCapacity, new { @class = "form-control input client-info", @readonly = "readonly" })
-                                        @Html.ValidationMessageFor(model => model.CarryCapacity, "", new { @class = "text-danger" })                                    
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <div class="col-md-6">
-                                        <div class="form-control-container full-width-select">
-                                            @Html.TextBoxFor(model => model.DaysDelay, new { @class = "form-control input client-info", @readonly = "readonly" })
-                                            @Html.ValidationMessageFor(model => model.DaysDelay, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-control-container full-width-select">
-                                            @Html.DropDownListFor(model => model.NDS, new List<SelectListItem>
-                                                {
-                                                    new SelectListItem {Text = "0,00"},
-                                                    new SelectListItem {Text = "20,00"}
-                                                }, new { @class = "form-control input client-info" })
-
-                                            @Html.ValidationMessageFor(model =>
-                                                    model.NDS, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group" style="text-align: left !important">
-                                    <div class="form-control-container full-width-select">
-                                        @Html.TextBoxFor(model => model.CarCostDog, new { @class = "form-control input client-info", @readonly = "readonly" })
-                                        @Html.ValidationMessageFor(model => model.CarCostDog, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>   
-
-                    <hr style="border-top: 3px solid black !important; margin-left: -14px;">
-                    @if (Model.CompetitiveListInfo.currentStep.StepId == 2)
-                    {
-                        <label class="control-label" style="text-transform: uppercase !important; font-size: 15px !important; margin-left: -14px;">Коммерческое предложение 1</label>
-                    }
-                    else
-                    {
-                        <label class="control-label" style="text-transform: uppercase !important; font-size: 15px !important; margin-left: -14px; color: #E8E8E8;">Коммерческое предложение 1</label>
-                    }
-                    <div class="row" style="font-size: 12px; margin-left:0px;">
-                        <div class="row" style="font-size: 12px;">
-                            @if (Model.CompetitiveListInfo.currentStep.StepId == 2)
-                  {
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label class="control-label" style="text-align: left !important">Стоимость одного автомобиля, грн. без НДС (согласно КП-1)</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.DaysDelayStep1, htmlAttributes: new { @class = "control-label" })
-                                    </div>
-                                </div>
-
-                  }
-                  else
-                  {
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <label class="control-label" style="text-align: left !important; color: #E8E8E8;">Стоимость одного автомобиля, грн. без НДС (согласно КП-1)</label>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        @Html.LabelFor(model => model.DaysDelayStep1, htmlAttributes: new { @class = "control-label", @style = "color: #E8E8E8;" })
-                                    </div>
-                                </div>
-                  }
-                        </div>
-                        <div class="row" style="font-size: 12px;">
-                            @if (Model.CompetitiveListInfo.currentStep.StepId == 2)
-                            {
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <div class="form-control-container full-width-select">
-                                            @Html.TextBoxFor(model => model.CarCost7, new {@class = "form-control input client-info"})
-                                            @Html.ValidationMessageFor(model => model.CarCost7, "", new {@class = "text-danger"})
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <div class="form-control-container full-width-select">
-                                            @Html.TextBoxFor(model => model.DaysDelayStep1, new { @class = "form-control input client-info" })
-                                            @Html.ValidationMessageFor(model => model.DaysDelayStep1, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <div class="form-control-container full-width-select">
-                                            @Html.TextBoxFor(model => model.CarCost7, new {@class = "form-control input client-info", @readonly = "readonly", @style = "background-color:#E8E8E8; border-color: #E8E8E8;"})
-                                            @Html.ValidationMessageFor(model => model.CarCost7, "", new {@class = "text-danger"})
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-md-3">
-                                    <div class="form-group">
-                                        <div class="form-control-container full-width-select">
-                                            @Html.TextBoxFor(model => model.DaysDelayStep1, new { @class = "form-control input client-info", @readonly = "readonly", @style = "background-color:#E8E8E8; border-color: #E8E8E8;" })
-                                            @Html.ValidationMessageFor(model => model.DaysDelayStep1, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                            }                         
                         </div>
                     </div>
-                    <hr style="border-top: 3px solid black !important; margin-left: -14px;">
-                    @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
-                    {
-                        <label class="control-label" style="text-transform: uppercase!important;font-size: 15px!important;margin-left: -14px;">Коммерческое предложение 2</label>
-                    }
-                    else
-                    {
-                        <label class="control-label" style="text-transform: uppercase !important; font-size: 15px !important; margin-left: -14px; color: #E8E8E8;">Коммерческое предложение 2</label>
-                    }
-
-
-                <div class="row" style="font-size: 12px; margin-left: 0px;">
-
-                    <div class="row" style="font-size: 12px;">
-                        @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
-                        {
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="control-label" style="text-align: left !important">Стоимость одного автомобиля, грн. без НДС (согласно КП-2)</label>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.DaysDelayStep2, htmlAttributes: new { @class = "control-label" })
-                                </div>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <label class="control-label" style="text-align: left !important; color: #E8E8E8;">Стоимость одного автомобиля, грн. без НДС (согласно КП-2)</label>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.DaysDelayStep2, htmlAttributes: new { @class = "control-label", @style = "color: #E8E8E8;" })
-                                </div>
-                            </div>
-                        }
-                    </div>
-                   
-                    <div class="row" style="font-size: 12px;">
-                        @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
-                        {
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <div class="form-control-container full-width-select">
-                                        @Html.TextBoxFor(model => model.CarCost, new {@class = "form-control input client-info"})
-                                        @Html.ValidationMessageFor(model => model.CarCost, "", new {@class = "text-danger"})
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <div class="form-control-container full-width-select">
-                                        @Html.TextBoxFor(model => model.DaysDelayStep2, new {@class = "form-control input client-info"})
-                                        @Html.ValidationMessageFor(model => model.DaysDelayStep2, "", new {@class = "text-danger"})
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <div class="form-control-container full-width-select">
-                                        @Html.TextBoxFor(model => model.CarCost, new {@class = "form-control input client-info", @readonly = "readonly", @style = "color:#E8E8E8; background-color:#E8E8E8; border-color: #E8E8E8;"})
-                                        @Html.ValidationMessageFor(model => model.CarCost, "", new {@class = "text-danger"})
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <div class="form-control-container full-width-select">
-                                        @Html.TextBoxFor(model => model.DaysDelayStep2, new {@class = "form-control input client-info", @readonly = "readonly", @style = "color:#E8E8E8; background-color:#E8E8E8; border-color: #E8E8E8;"})
-                                        @Html.ValidationMessageFor(model => model.DaysDelayStep2, "", new {@class = "text-danger"})
-                                    </div>
-                                </div>
-                            </div>
-                        }
+                    <div class="col-md-3">
+                        <div class="form-group" style="text-align: left !important">
+                            <label class="control-label" style="text-align: left !important">Стоимость одного автомобиля, грн. без НДС (согласно договору)</label>
+                        </div>
                     </div>
                 </div>
-                <hr style="border-top: 3px solid black !important; margin-left: -14px;">
-                <label class="control-label" style="text-transform: uppercase !important; font-size: 15px !important; margin-left: -14px;">Итоговые показатели</label>
-                <div class="row" style="font-size: 12px;">
-                    <div class="row">
-                        <div class="col-md-3">
-                            @Html.LabelFor(model => model.DelayEffect, htmlAttributes: new {@class = "control-label"})
-                        </div>
-                       
-                        @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
-                        {
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <div class="col-md-6">
-                                        @Html.LabelFor(model => model.CarsOffered, htmlAttributes: new {@class = "control-label"})
-                                    </div>
-                                    <div class="col-md-6">
-                                        @Html.LabelFor(model => model.CarsAccepted, htmlAttributes: new {@class = "control-label"})
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <div class="col-md-6">
-                                        @Html.LabelFor(model => model.CarsOffered, htmlAttributes: new {@class = "control-label", @style = "color:#E8E8E8"})
-                                    </div>
-                                    <div class="col-md-6">
-                                        @Html.LabelFor(model => model.CarsAccepted, htmlAttributes: new {@class = "control-label", @style = "color:#E8E8E8"})
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        <div class="col-md-3">
-                            @Html.LabelFor(model => model.AverageCost, htmlAttributes: new {@class = "control-label"})
-                        </div>
-
-                        <div class="col-md-3">
-                            @Html.LabelFor(model => model.IsSelectedId, htmlAttributes: new { @class = "control-label col-md-1" })
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-control-container full-width-select">
+                            @Html.TextBoxFor(model => model.ExpeditorName, new { @class = "form-control input client-info", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(model => model.ExpeditorName, "", new { @class = "text-danger" })
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-control-container full-width-select">
-                                @Html.TextBoxFor(model => model.DelayEffect, new { @class = "form-control input client-info", @readonly = "readonly" })
-                                @Html.ValidationMessageFor(model => model.DelayEffect, "", new { @class = "text-danger" })
-                            </div>
-                        </div>
-
-                        @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
-                        {
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <div class="col-md-6">
-                                        <div class="form-control-container full-width-select">
-                                            @Html.TextBoxFor(model => model.CarsOffered, new { @class = "form-control input client-info" })
-                                            @Html.ValidationMessageFor(model => model.CarsOffered, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-control-container full-width-select">
-                                            @Html.TextBoxFor(model => model.CarsAccepted, new { @class = "form-control input client-info" })
-                                            @Html.ValidationMessageFor(model => model.CarsAccepted, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="col-md-3">
-                                <div class="form-group">
-                                    <div class="col-md-6">
-                                        <div class="form-control-container full-width-select">
-                                            @Html.TextBoxFor(model => model.CarsOffered, new { @class = "form-control input client-info", @readonly = "readonly", @style = "color:#E8E8E8; background-color:#E8E8E8; border-color: #E8E8E8;" })
-                                            @Html.ValidationMessageFor(model => model.CarsOffered, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <div class="form-control-container full-width-select">
-                                            @Html.TextBoxFor(model => model.CarsAccepted, new { @class = "form-control input client-info", @readonly = "readonly", @style = "color:#E8E8E8; background-color:#E8E8E8; border-color: #E8E8E8;" })
-                                            @Html.ValidationMessageFor(model => model.CarsAccepted, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        }
-
-                        <div class="col-md-3">
-                            <div class="form-control-container full-width-select">
-                                @Html.TextBoxFor(model => model.AverageCost, new {@class = "form-control input client-info", @readonly = "readonly"})
-                                @Html.ValidationMessageFor(model => model.AverageCost, "", new {@class = "text-danger"})
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="form-control-container full-width-select" style="margin-left: 80px;">
-                                @Html.EditorFor(model => model.IsSelectedId, new { @class = "form-control input" })
-                                @Html.ValidationMessageFor(model => model.IsSelectedId, "", new { @class = "text-danger" })
-                            </div>
+                    <div class="col-md-3">
+                        <div class="form-control-container full-width-select">
+                            @Html.TextBoxFor(model => model.CarryCapacity, new { @class = "form-control input client-info", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(model => model.CarryCapacity, "", new { @class = "text-danger" })
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            @Html.LabelFor(model => model.PrepaymentEffect, htmlAttributes: new { @class = "control-label" })
-                        </div>
-                        <div class="col-md-3">
-                            @Html.LabelFor(model => model.CarCostWithMoneyCost, htmlAttributes: new { @class = "control-label" })
-                        </div>
-                        <div class="col-md-3">                            
-                            @Html.LabelFor(model => model.Prepayment, htmlAttributes: new { @class = "control-label" })
-                        </div>
-                        <div class="col-md-3">
-                            @Html.LabelFor(model => model.Prepayment2, htmlAttributes: new { @class = "control-label" })
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-3">
-                            <div class="form-control-container full-width-select">
-                                @Html.TextBoxFor(model => model.PrepaymentEffect, new {@class = "form-control input client-info", @readonly = "readonly"})
-                                @Html.ValidationMessageFor(model => model.PrepaymentEffect, "", new {@class = "text-danger"})
-                            </div>
-                        </div>
-
-                        <div class="col-md-3">
-                            <div class="form-control-container full-width-select">
-                                @Html.TextBoxFor(model => model.CarCostWithMoneyCost, new {@class = "form-control input client-info", @readonly = "readonly"})
-                                @Html.ValidationMessageFor(model => model.CarCostWithMoneyCost, "", new {@class = "text-danger"})
-                            </div>
-                        </div>
-                        
-                        @if (Model.CompetitiveListInfo.currentStep.StepId == 1)
-                        {
-                            <div class="col-md-3">
-                                <div class="form-control-container full-width-select">
-                                    @Html.TextBoxFor(model => model.Prepayment, new { @class = "form-control input client-info", @readonly = "readonly" })
-                                    @Html.ValidationMessageFor(model => model.Prepayment, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="col-md-3">
-                                <div class="form-control-container full-width-select">
-                                    @Html.TextBoxFor(model => model.Prepayment, new { @class = "form-control input client-info" })
-                                    @Html.ValidationMessageFor(model => model.Prepayment, "", new { @class = "text-danger" })
-                                </div>
-                            </div>
-                        }
-
-                        @if (Model.CompetitiveListInfo.currentStep.StepId == 1)
-                        {
-                            <div class="col-md-3">                                
-                                        <div class="form-control-container full-width-select">
-                                            @Html.TextBoxFor(model => model.Prepayment2, new { @class = "form-control input client-info", @readonly = "readonly" })
-                                            @Html.ValidationMessageFor(model => model.Prepayment2, "", new { @class = "text-danger" })
-
-                                        </div>
-                                    </div>                              
-                        }
-                        else
-                        {
-                            <div class="col-md-3">                                                                     
-                                        <div class="form-control-container full-width-select">
-                                            @Html.TextBoxFor(model => model.Prepayment2, new { @class = "form-control input client-info" })
-                                            @Html.ValidationMessageFor(model => model.Prepayment2, "", new { @class = "text-danger" })
-                                        </div>
-                                    </div>                                
-                        }
-                       
-                        </div>
-                    </div>
-
-                        <hr style="border-top: 3px solid black !important; margin-left: -14px; margin-top: 15px;">
-                        <div class="row" style="font-size: 12px;">
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    @Html.LabelFor(model => model.Comments, htmlAttributes: new { @class = "control-label" })
-
-                                    <div class="form-control-container full-width-select">
-                                        @Html.TextAreaFor(model => model.Comments, new { @class = "form-control input client-info", @style = "width: 100%!important" })
-                                        @Html.ValidationMessageFor(model => model.Comments, "", new { @class = "text-danger" })
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        @Html.HiddenFor(model => model.RouteLength, new { htmlAttributes = new { @class = "form-control" } })
-
+                    <div class="col-md-3">
                         <div class="form-group">
-                            <div class="col-md-offset-5 col-md-10 ">
-                                <div class="row">
-                                    @Html.ActionLink("Отмена", "OrderCompetitiveList", "OrderConcurs", new { OrderId = Model.OrderId }, new { @class = "btn btn-success" })
-                                    <input type="submit" value="Подтвердить" class="btn btn-default" />
+                            <div class="col-md-6">
+                                <div class="form-control-container full-width-select">
+                                    @Html.TextBoxFor(model => model.DaysDelay, new { @class = "form-control input client-info", @readonly = "readonly" })
+                                    @Html.ValidationMessageFor(model => model.DaysDelay, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-control-container full-width-select">
+                                    @Html.DropDownListFor(model => model.NDS, new List<SelectListItem>
+                                        {
+                                            new SelectListItem {Text = "0,00"},
+                                            new SelectListItem {Text = "20,00"}
+                                        }, new { @class = "form-control input client-info" })
+
+                                    @Html.ValidationMessageFor(model =>
+                                            model.NDS, "", new { @class = "text-danger" })
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-3">
+                        <div class="form-group" style="text-align: left !important">
+                            <div class="form-control-container full-width-select">
+                                @Html.TextBoxFor(model => model.CarCostDog, new { @class = "form-control input client-info", @readonly = "readonly" })
+                                @Html.ValidationMessageFor(model => model.CarCostDog, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <hr style="border-top: 3px solid black !important; margin-left: -14px;">
+            @if (Model.CompetitiveListInfo.currentStep.StepId == 2)
+            {
+                <label class="control-label" style="text-transform: uppercase !important; font-size: 15px !important; margin-left: -14px;">Коммерческое предложение 1</label>
+            }
+            else
+            {
+                <label class="control-label" style="text-transform: uppercase !important; font-size: 15px !important; margin-left: -14px; color: #E8E8E8;">Коммерческое предложение 1</label>
+            }
+            <div class="row" style="font-size: 12px; margin-left:0px;">
+                <div class="row" style="font-size: 12px;">
+                    @if (Model.CompetitiveListInfo.currentStep.StepId == 2)
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label" style="text-align: left !important">Стоимость одного автомобиля, грн. без НДС (согласно КП-1)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.DaysDelayStep1, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                        </div>
+
+                    }
+                    else
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label" style="text-align: left !important; color: #E8E8E8;">Стоимость одного автомобиля, грн. без НДС (согласно КП-1)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.DaysDelayStep1, htmlAttributes: new { @class = "control-label", @style = "color: #E8E8E8;" })
+                            </div>
+                        </div>
+                    }
+                </div>
+                <div class="row" style="font-size: 12px;">
+                    @if (Model.CompetitiveListInfo.currentStep.StepId == 2)
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-control-container full-width-select">
+                                    @Html.TextBoxFor(model => model.CarCost7, new { @class = "form-control input client-info" })
+                                    @Html.ValidationMessageFor(model => model.CarCost7, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-control-container full-width-select">
+                                    @Html.TextBoxFor(model => model.DaysDelayStep1, new { @class = "form-control input client-info" })
+                                    @Html.ValidationMessageFor(model => model.DaysDelayStep1, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-control-container full-width-select">
+                                    @Html.TextBoxFor(model => model.CarCost7, new { @class = "form-control input client-info", @readonly = "readonly", @style = "background-color:#E8E8E8; border-color: #E8E8E8;" })
+                                    @Html.ValidationMessageFor(model => model.CarCost7, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-control-container full-width-select">
+                                    @Html.TextBoxFor(model => model.DaysDelayStep1, new { @class = "form-control input client-info", @readonly = "readonly", @style = "background-color:#E8E8E8; border-color: #E8E8E8;" })
+                                    @Html.ValidationMessageFor(model => model.DaysDelayStep1, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <hr style="border-top: 3px solid black !important; margin-left: -14px;">
+            @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
+            {
+                <label class="control-label" style="text-transform: uppercase!important;font-size: 15px!important;margin-left: -14px;">Коммерческое предложение 2</label>
+            }
+            else
+            {
+                <label class="control-label" style="text-transform: uppercase !important; font-size: 15px !important; margin-left: -14px; color: #E8E8E8;">Коммерческое предложение 2</label>
+            }
+
+
+            <div class="row" style="font-size: 12px; margin-left: 0px;">
+
+                <div class="row" style="font-size: 12px;">
+                    @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label" style="text-align: left !important">Стоимость одного автомобиля, грн. без НДС (согласно КП-2)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.DaysDelayStep2, htmlAttributes: new { @class = "control-label" })
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label class="control-label" style="text-align: left !important; color: #E8E8E8;">Стоимость одного автомобиля, грн. без НДС (согласно КП-2)</label>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                @Html.LabelFor(model => model.DaysDelayStep2, htmlAttributes: new { @class = "control-label", @style = "color: #E8E8E8;" })
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="row" style="font-size: 12px;">
+                    @if (Model.CompetitiveListInfo.currentStep.StepId >= 3)
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-control-container full-width-select">
+                                    @Html.TextBoxFor(model => model.CarCost, new { @class = "form-control input client-info" })
+                                    @Html.ValidationMessageFor(model => model.CarCost, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-control-container full-width-select">
+                                    @Html.TextBoxFor(model => model.DaysDelayStep2, new { @class = "form-control input client-info" })
+                                    @Html.ValidationMessageFor(model => model.DaysDelayStep2, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-control-container full-width-select">
+                                    @Html.TextBoxFor(model => model.CarCost, new { @class = "form-control input client-info", @readonly = "readonly", @style = "color:#E8E8E8; background-color:#E8E8E8; border-color: #E8E8E8;" })
+                                    @Html.ValidationMessageFor(model => model.CarCost, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="form-control-container full-width-select">
+                                    @Html.TextBoxFor(model => model.DaysDelayStep2, new { @class = "form-control input client-info", @readonly = "readonly", @style = "color:#E8E8E8; background-color:#E8E8E8; border-color: #E8E8E8;" })
+                                    @Html.ValidationMessageFor(model => model.DaysDelayStep2, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            </div>
+            <hr style="border-top: 3px solid black !important; margin-left: -14px;">
+            <label class="control-label" style="text-transform: uppercase !important; font-size: 15px !important; margin-left: -14px;">Итоговые показатели</label>
+            <div class="row" style="font-size: 12px;">
+                <div class="row">
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.DelayEffect, htmlAttributes: new { @class = "control-label" })
+                    </div>
+
+                    @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    @Html.LabelFor(model => model.CarsOffered, htmlAttributes: new { @class = "control-label" })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.LabelFor(model => model.CarsAccepted, htmlAttributes: new { @class = "control-label" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    @Html.LabelFor(model => model.CarsOffered, htmlAttributes: new { @class = "control-label", @style = "color:#E8E8E8" })
+                                </div>
+                                <div class="col-md-6">
+                                    @Html.LabelFor(model => model.CarsAccepted, htmlAttributes: new { @class = "control-label", @style = "color:#E8E8E8" })
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.AverageCost, htmlAttributes: new { @class = "control-label" })
+                    </div>
+
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.IsSelectedId, htmlAttributes: new { @class = "control-label col-md-1" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-control-container full-width-select">
+                            @Html.TextBoxFor(model => model.DelayEffect, new { @class = "form-control input client-info", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(model => model.DelayEffect, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    @if (Model.CompetitiveListInfo.currentStep.StepId >= 2)
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <div class="form-control-container full-width-select">
+                                        @Html.TextBoxFor(model => model.CarsOffered, new { @class = "form-control input client-info" })
+                                        @Html.ValidationMessageFor(model => model.CarsOffered, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-control-container full-width-select">
+                                        @Html.TextBoxFor(model => model.CarsAccepted, new { @class = "form-control input client-info" })
+                                        @Html.ValidationMessageFor(model => model.CarsAccepted, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <div class="col-md-6">
+                                    <div class="form-control-container full-width-select">
+                                        @Html.TextBoxFor(model => model.CarsOffered, new { @class = "form-control input client-info", @readonly = "readonly", @style = "color:#E8E8E8; background-color:#E8E8E8; border-color: #E8E8E8;" })
+                                        @Html.ValidationMessageFor(model => model.CarsOffered, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-control-container full-width-select">
+                                        @Html.TextBoxFor(model => model.CarsAccepted, new { @class = "form-control input client-info", @readonly = "readonly", @style = "color:#E8E8E8; background-color:#E8E8E8; border-color: #E8E8E8;" })
+                                        @Html.ValidationMessageFor(model => model.CarsAccepted, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+
+                    <div class="col-md-3">
+                        <div class="form-control-container full-width-select">
+                            @Html.TextBoxFor(model => model.AverageCost, new { @class = "form-control input client-info", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(model => model.AverageCost, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-control-container full-width-select" style="margin-left: 80px;">
+                            @Html.EditorFor(model => model.IsSelectedId, new { @class = "form-control input" })
+                            @Html.ValidationMessageFor(model => model.IsSelectedId, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.PrepaymentEffect, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.CarCostWithMoneyCost, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.Prepayment, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                    <div class="col-md-3">
+                        @Html.LabelFor(model => model.Prepayment2, htmlAttributes: new { @class = "control-label" })
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        <div class="form-control-container full-width-select">
+                            @Html.TextBoxFor(model => model.PrepaymentEffect, new { @class = "form-control input client-info", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(model => model.PrepaymentEffect, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="form-control-container full-width-select">
+                            @Html.TextBoxFor(model => model.CarCostWithMoneyCost, new { @class = "form-control input client-info", @readonly = "readonly" })
+                            @Html.ValidationMessageFor(model => model.CarCostWithMoneyCost, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+
+                    @if (Model.CompetitiveListInfo.currentStep.StepId == 1)
+                    {
+                        <div class="col-md-3">
+                            <div class="form-control-container full-width-select">
+                                @Html.TextBoxFor(model => model.Prepayment, new { @class = "form-control input client-info", @readonly = "readonly" })
+                                @Html.ValidationMessageFor(model => model.Prepayment, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-3">
+                            <div class="form-control-container full-width-select">
+                                @Html.TextBoxFor(model => model.Prepayment, new { @class = "form-control input client-info" })
+                                @Html.ValidationMessageFor(model => model.Prepayment, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    }
+
+                    @if (Model.CompetitiveListInfo.currentStep.StepId == 1)
+                    {
+                        <div class="col-md-3">
+                            <div class="form-control-container full-width-select">
+                                @Html.TextBoxFor(model => model.Prepayment2, new { @class = "form-control input client-info", @readonly = "readonly" })
+                                @Html.ValidationMessageFor(model => model.Prepayment2, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="col-md-3">
+                            <div class="form-control-container full-width-select">
+                                @Html.TextBoxFor(model => model.Prepayment2, new { @class = "form-control input client-info" })
+                                @Html.ValidationMessageFor(model => model.Prepayment2, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    }
+
+                </div>
+            </div>
+
+            <hr style="border-top: 3px solid black !important; margin-left: -14px; margin-top: 15px;">
+            <div class="row" style="font-size: 12px;">
+                <div class="col-md-12">
+                    <div class="form-group">
+                        @Html.LabelFor(model => model.Comments, htmlAttributes: new { @class = "control-label" })
+
+                        <div class="form-control-container full-width-select">
+                            @Html.TextAreaFor(model => model.Comments, new { @class = "form-control input client-info", @style = "width: 100%!important" })
+                            @Html.ValidationMessageFor(model => model.Comments, "", new { @class = "text-danger" })
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            @Html.HiddenFor(model => model.RouteLength, new { htmlAttributes = new { @class = "form-control" } })
+
+            <div class="form-group">
+                <div class="col-md-offset-5 col-md-10 ">
+                    <div class="row">
+                        @Html.ActionLink("Отмена", "OrderCompetitiveList", "OrderConcurs", new { OrderId = Model.OrderId }, new { @class = "btn btn-success" })
+                        <input type="submit" value="Подтвердить" class="btn btn-default" />
+                    </div>
+                </div>
+            </div>
+        </div>
             }
         </div>
             </div>

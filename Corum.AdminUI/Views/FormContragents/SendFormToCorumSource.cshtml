@@ -138,7 +138,7 @@
                             <tr>
                                 <th class="thMessCont tdThMessCont">Полная масса ТС2 (прицепа)(F.1 ), кг</th>
                                 <td class="tdForm tooltip">
-                                    <input name="fullMassTC2Trailer" class="inputTxt" type="text" data-valid="true" value="@Model[0].fullMassTC2Trailer" required placeholder="Введите данные">
+                                    <input name="fullMassTC2Trailer" class="inputTxt" type="text" data-valid="false" value="@Model[0].fullMassTC2Trailer" placeholder="Введите данные">
                                     <span class="tooltiptext">
                                         Полная масса транспортного средства (прицепа) в килограммах
                                     </span>
@@ -147,7 +147,7 @@
                             <tr>
                                 <th class="thMessCont tdThMessCont">Масса без навантаження ТС2 (прицепа) (G) ,кг</th>
                                 <td class="tdForm tooltip">
-                                    <input name="massWithoutLoadTC2Trailer" class="inputTxt" type="text" data-valid="true" value="@Model[0].massWithoutLoadTC2Trailer" required placeholder="Введите данные">
+                                    <input name="massWithoutLoadTC2Trailer" class="inputTxt" type="text" data-valid="false" value="@Model[0].massWithoutLoadTC2Trailer" placeholder="Введите данные">
                                     <span class="tooltiptext">
                                         Масса без загрузки транспортного средства (прицепа) в килограммах
                                     </span>
@@ -459,10 +459,11 @@
         ValidData(massWithoutLoadTC1);
         massWithoutLoadTC1.onkeypress = KeyPressValidInput;
         let fullMassTC2Trailer = document.getElementsByName('fullMassTC2Trailer')[0];
+        ValidData(fullMassTC2Trailer);
         fullMassTC2Trailer.onkeypress = KeyPressValidInput;
         let massWithoutLoadTC2Trailer = document.getElementsByName('massWithoutLoadTC2Trailer')[0];
+        ValidData(massWithoutLoadTC2Trailer);
         massWithoutLoadTC2Trailer.onkeypress = KeyPressValidInput;
-
         let distance = document.getElementsByName('distance')[0];
         listHtmlFields.push(distance);
         ValidData(distance);
@@ -519,6 +520,20 @@
                     case '9':
                         {
                             return true;
+                        }
+                    case '.':
+                    case ',':
+                        {
+                            let reg = /^\s*[+-]?(\d+|\.\d+|\d+\.\d+|\d+\.)(e[+-]?\d+)?\s*$/;
+                            let curValue = e.currentTarget.value;
+                            curValue += (String.fromCharCode(e.charCode) == ',') ? '.' : String.fromCharCode(e.charCode);
+                            if (reg.test(curValue) && e.currentTarget.name == 'loadCapacity') {
+                                e.currentTarget.value = curValue;
+                                return false;
+                            }
+                            else {
+                                return false;
+                            }
                         }
                     default:
                         {
@@ -634,6 +649,10 @@
                     let tdFormFileTwo = document.getElementById('tdFormFileTwo');
                     flagValidInpFile = ValidDataInputFile(tdFormFileTwo);
                 }
+                else if (@Html.Raw(Json.Encode(Model[0].industryId)) != 54) {
+                    let tdFormFileTwo = document.getElementById('tdFormFileTwo');
+                    flagValidInpFile = true;
+                }
 
                 let formaData = new FormData();
                 let listHtmlFields = [];
@@ -695,7 +714,7 @@
                     formaData.append(stateBorderCrossingPoint.name, stateBorderCrossingPoint.value);
                     listHtmlFields.push(stateBorderCrossingPoint);
                 }
-                else {
+                else if (@Html.Raw(Json.Encode(Model[0].industryId)) == 54){
                     flagValidInpFile = true;
                 }
                 let seriesPassportNumber = document.getElementsByName('seriesPassportNumber')[0];
@@ -1105,7 +1124,7 @@ ${contragentName.value}</span>
             let flag = @Html.Raw(Json.Encode(@Model[0].IsEditable));
             if (flag) {
                 listHtmlFields.forEach(value => {
-                    if (value.type == 'text') {
+                    if (value != undefined && value.type == 'text') {
                         value.setAttribute('readonly', 'readonly');
                     }
                 });

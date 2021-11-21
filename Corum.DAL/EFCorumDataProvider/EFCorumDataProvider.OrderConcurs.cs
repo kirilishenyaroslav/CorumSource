@@ -921,9 +921,9 @@ namespace Corum.DAL
             return Comment;
         }
 
-        public bool IsContainTender(int? tenderNumber)
+        public bool IsContainTender(int? tenderNumber, int tenderTureNumber)
         {
-            var tender = db.OrderCompetitiveList.Where(x => x.tenderNumber == tenderNumber).FirstOrDefault();
+            var tender = db.OrderCompetitiveList.Where(x => x.tenderNumber == tenderNumber && x.tenderTureNumber == tenderTureNumber).FirstOrDefault();
             return (tender != null) ? false : true;
         }
         public long NewSpecification(SpecificationListViewModel model, string userId, int? tenderNumber)
@@ -980,7 +980,9 @@ namespace Corum.DAL
                     IsSelectedId = model.IsWinner,
                     itemDescription = model.itemDescription,
                     cargoWeight = model.cargoWeight,
-                    emailContragent = model.emailContragent
+                    emailContragent = model.emailContragent,
+                    formUuid = Guid.NewGuid(),
+                    tenderTureNumber = model.tenderTureNumber
                 };
 
                 db.OrderCompetitiveList.Add(concurs);
@@ -1017,7 +1019,7 @@ namespace Corum.DAL
                         SpecificationId = model.Id,
                         GenId = model.UsedRateId,
                         IsChange = false,
-                        NDS = (cs != null)? cs.NDSTax ?? 0: 0,
+                        NDS = (cs != null) ? cs.NDSTax ?? 0 : 0,
                         tenderNumber = tenderNumber,
                         CarsOffered = model.transportUnitsProposed,
                         CarsAccepted = model.acceptedTransportUnits,
@@ -1028,7 +1030,9 @@ namespace Corum.DAL
                         IsSelectedId = model.IsWinner,
                         itemDescription = model.itemDescription,
                         cargoWeight = model.cargoWeight,
-                        emailContragent = model.emailContragent
+                        emailContragent = model.emailContragent,
+                        formUuid = Guid.NewGuid(),
+                        tenderTureNumber = model.tenderTureNumber
                     };
                 }
                 catch (Exception e)
@@ -1059,6 +1063,141 @@ namespace Corum.DAL
 
             return concurs.Id;
 
+        }
+
+        public void NewSpecification(SpecificationListViewModel model, string userId, int? tenderNumber, out Guid formUuid)
+        {
+            var cs = db.ContractSpecifications.AsNoTracking().FirstOrDefault(x => x.Id == model.Id);
+            OrderCompetitiveList concurs = null;
+
+            if (cs != null)
+            {
+                var orderInfo = db.OrdersBase.AsNoTracking().FirstOrDefault(x => x.Id == model.OrderId);
+
+                decimal _CarCostDog = 0;
+                //если фрахт, то _CarCostDog - это общая стоим-ть фрахта
+                // если фрахт - то длину маршрута брать не из спецификации, а из заявки
+                if /*((cs.IsFreight == true) &&*/ (model.UsedRateId == 1)
+                    _CarCostDog = (cs.RateTotalFreight ?? 0) /* Convert.ToInt32(orderInfo.TotalDistanceLength ?? 0)*/;
+                else if (model.UsedRateId == 2)
+                {
+                    _CarCostDog = (cs.RateKm ?? 0) * (orderInfo.TotalDistanceLength ?? 0);
+                }
+                else if (model.UsedRateId == 3)
+                {
+                    decimal routeTime = (orderInfo.TimeRoute ?? 0); /// (decimal)3600000.0;
+                    decimal specialVehiclesTime = (orderInfo.TimeSpecialVehicles ?? 0) / (decimal)3600000.0;
+                    //сумма= км*тариф_грн.км+часы*тариф_грн.час+м_час*тариф_грн.м.час
+                    _CarCostDog = (cs.RateKm ?? 0) * (orderInfo.TotalDistanceLength ?? 0) + (cs.RateHour ?? 0) * routeTime +
+                                  (cs.RateMachineHour ?? 0) * specialVehiclesTime;
+                }
+
+                string Comments = GetZeroTarif(model.UsedRateId, cs.RateKm, orderInfo.TotalDistanceLength, cs.RateHour,
+                    orderInfo.TimeRoute, cs.RateMachineHour, orderInfo.TimeSpecialVehicles);
+
+
+                if (!(string.IsNullOrEmpty(Comments))) _CarCostDog = 0;
+
+                concurs = new OrderCompetitiveList()
+                {
+                    OrderId = model.OrderId,
+                    ExpeditorName = model.ExpeditorName,
+                    CarryCapacity = model.CarryCapacity,
+                    DaysDelay = model.DaysDelay,
+                    CarCostDog = Math.Round(_CarCostDog, MidpointRounding.AwayFromZero),
+                    SpecificationId = model.Id,
+                    GenId = model.UsedRateId,
+                    IsChange = false,
+                    NDS = cs.NDSTax ?? 0,
+                    tenderNumber = tenderNumber,
+                    CarsOffered = model.transportUnitsProposed,
+                    CarsAccepted = model.acceptedTransportUnits,
+                    CarCost7 = 0,
+                    DaysDelayStep2 = model.DaysDelay,
+                    CarCost = Math.Round((decimal)model.costOfCarWithoutNDS, MidpointRounding.AwayFromZero),
+                    Comments = model.note,
+                    IsSelectedId = model.IsWinner,
+                    itemDescription = model.itemDescription,
+                    cargoWeight = model.cargoWeight,
+                    emailContragent = model.emailContragent,
+                    formUuid = Guid.NewGuid(),
+                    tenderTureNumber = model.tenderTureNumber
+                };
+                formUuid = (Guid)concurs.formUuid;
+                db.OrderCompetitiveList.Add(concurs);
+
+                db.SaveChanges();
+
+                if (!db.OrderConcursListsSteps.Any(x => x.OrderId == model.OrderId && x.StepId == 3))
+                {
+                    var StepInfo = new OrderConcursListsSteps()
+                    {
+                        OrderId = model.OrderId,
+                        StepId = 1,
+                        UserId = userId,
+                        Datetimevalue = DateTime.Now,
+                        tenderNumber = tenderNumber
+                    };
+
+                    db.OrderConcursListsSteps.Add(StepInfo);
+                    db.SaveChanges();
+                }
+            }
+            else
+            {
+                var orderInfo = db.OrdersBase.AsNoTracking().FirstOrDefault(x => x.Id == model.OrderId);
+                try
+                {
+                    concurs = new OrderCompetitiveList()
+                    {
+                        OrderId = model.OrderId,
+                        ExpeditorName = model.ExpeditorName,
+                        CarryCapacity = model.CarryCapacity,
+                        DaysDelay = model.DaysDelay,
+                        CarCostDog = 0,
+                        SpecificationId = model.Id,
+                        GenId = model.UsedRateId,
+                        IsChange = false,
+                        NDS = (cs != null) ? cs.NDSTax ?? 0 : 0,
+                        tenderNumber = tenderNumber,
+                        CarsOffered = model.transportUnitsProposed,
+                        CarsAccepted = model.acceptedTransportUnits,
+                        CarCost7 = 0,
+                        DaysDelayStep2 = model.DaysDelay,
+                        CarCost = Math.Round((decimal)model.costOfCarWithoutNDS, MidpointRounding.AwayFromZero),
+                        Comments = model.note,
+                        IsSelectedId = model.IsWinner,
+                        itemDescription = model.itemDescription,
+                        cargoWeight = model.cargoWeight,
+                        emailContragent = model.emailContragent,
+                        formUuid = Guid.NewGuid(),
+                        tenderTureNumber = model.tenderTureNumber
+                    };
+                }
+                catch (Exception e)
+                {
+                }
+
+                formUuid = (Guid)concurs.formUuid;
+                db.OrderCompetitiveList.Add(concurs);
+
+                db.SaveChanges();
+
+                if (!db.OrderConcursListsSteps.Any(x => x.OrderId == model.OrderId && x.StepId == 1))
+                {
+                    var StepInfo = new OrderConcursListsSteps()
+                    {
+                        OrderId = model.OrderId,
+                        StepId = 1,
+                        UserId = userId,
+                        Datetimevalue = DateTime.Now,
+                        tenderNumber = tenderNumber
+                    };
+
+                    db.OrderConcursListsSteps.Add(StepInfo);
+                    db.SaveChanges();
+                }
+            }
         }
 
         public long NewSpecification(SpecificationListViewModel model, string userId)
@@ -1469,10 +1608,11 @@ namespace Corum.DAL
         {
             if (tenderNumber != null)
             {
+                int tenderTureNumber = db.RegisterTenders.Where(x => x.tenderNumber == tenderNumber).OrderByDescending(x => x.Id).FirstOrDefault().stageNumber;
                 List<OrderCompetitiveListViewModel> cL = new List<OrderCompetitiveListViewModel>();
                 cL.AddRange(
                     db.OrderCompetitiveList.AsNoTracking()
-                        .Where(osh => osh.tenderNumber == tenderNumber)
+                        .Where(osh => osh.tenderNumber == tenderNumber && osh.tenderTureNumber == tenderTureNumber)
                         .Select(Mapper.Map)
                         .OrderByDescending(o => o.Id));
 
@@ -1939,6 +2079,39 @@ namespace Corum.DAL
 
             db.SaveChanges();
 
+        }
+
+
+        public void ChangeRegisterMessageData(int tenderNumber, long orderId, Guid formUuid, OrderCompetitiveListViewModel mod)
+        {
+            var model = db.RegisterMessageToContragents.Where(x => x.orderId == orderId && x.tenderNumber == tenderNumber && x.formUuid == formUuid).FirstOrDefault();
+            if (model != null)
+            {
+                model.dateUpdate = DateTime.Now;
+                model.isSelected = mod.IsSelectedId;
+                model.acceptedTransportUnits = mod.CarsAccepted;
+                model.cost = Double.Parse(mod.CarCost);
+                model.DelayPayment = mod.DaysDelayStep2;
+                db.SaveChanges();
+                var usedCar = db.OrderUsedCars.Where(x => x.tenderNumber == tenderNumber && x.formUuid == formUuid).FirstOrDefault();
+                if (usedCar != null)
+                {
+                    usedCar.tenderTureNumber = GetTenderTureNumber(tenderNumber);
+                    usedCar.IsSelected = mod.IsSelectedId;
+                    db.SaveChanges();
+                }
+                else
+                {
+                    NewUsedCar(formUuid, (int)GetTenderTureNumber(tenderNumber), mod.IsSelectedId);
+                }
+
+            }
+        }
+
+        public int? GetTenderTureNumber(int tenderNumber)
+        {
+            var tendTure = db.RegisterTenders.Where(x => x.tenderNumber == tenderNumber).OrderByDescending(x => x.Id).FirstOrDefault();
+            return (tendTure != null) ? (Nullable<int>)tendTure.stageNumber : null;
         }
 
 

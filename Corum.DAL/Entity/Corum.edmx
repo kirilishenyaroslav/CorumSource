@@ -463,6 +463,8 @@
           <Property Name="itemDescription" Type="text" />
           <Property Name="cargoWeight" Type="varchar" MaxLength="50" />
           <Property Name="emailContragent" Type="varchar" MaxLength="50" />
+          <Property Name="formUuid" Type="uniqueidentifier" />
+          <Property Name="tenderTureNumber" Type="int" />
         </EntityType>
         <EntityType Name="OrderConcursListsSteps">
           <Key>
@@ -788,7 +790,7 @@
           <Property Name="Summ" Type="decimal" Precision="16" Scale="2" />
           <Property Name="DriverCardInfo" Type="varchar" MaxLength="100" />
           <Property Name="Comments" Type="varchar" MaxLength="255" />
-          <Property Name="CarCapacity" Type="int" />
+          <Property Name="CarCapacity" Type="float" />
           <Property Name="PlanDistance" Type="decimal" Precision="16" Scale="2" />
           <Property Name="PlanTimeWorkDay" Type="int" />
           <Property Name="PlanTimeHoliday" Type="int" />
@@ -816,6 +818,8 @@
           <Property Name="fullMassTC2Trailer" Type="int" />
           <Property Name="massWithoutLoadTC2Trailer" Type="int" />
           <Property Name="Summ_" Type="float" />
+          <Property Name="tenderTureNumber" Type="int" />
+          <Property Name="IsSelected" Type="bit" />
         </EntityType>
         <EntityType Name="OrderVehicleTypes">
           <Key>
@@ -915,6 +919,7 @@
           <Property Name="filesTTH_CMR" Type="bit" />
           <Property Name="filesInvoice" Type="bit" />
           <Property Name="filesActOfCompletion" Type="bit" />
+          <Property Name="tenderTureNumber" Type="int" />
         </EntityType>
         <EntityType Name="RegisterMessageToContragents">
           <Key>
@@ -943,6 +948,9 @@
           <Property Name="dataUnload" Type="datetime2" Precision="7" />
           <Property Name="DelayPayment" Type="int" />
           <Property Name="flagCreate" Type="bit" Nullable="false" />
+          <Property Name="isSelected" Type="bit" />
+          <Property Name="tenderTureNumber" Type="int" />
+          <Property Name="IsSendMessage" Type="bit" />
         </EntityType>
         <EntityType Name="RegisterTenderContragents">
           <Key>
@@ -7065,6 +7073,8 @@
           <Property Name="itemDescription" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="cargoWeight" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="emailContragent" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="formUuid" Type="Guid" />
+          <Property Name="tenderTureNumber" Type="Int32" />
         </EntityType>
         <Association Name="FK_OrderCompetitiveList_ContractSpecifications">
           <End Type="CorumModel.ContractSpecifications" Role="ContractSpecifications" Multiplicity="0..1" />
@@ -8440,7 +8450,7 @@
           <Property Name="Summ" Type="Decimal" Precision="16" Scale="2" />
           <Property Name="DriverCardInfo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Comments" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="CarCapacity" Type="Int32" />
+          <Property Name="CarCapacity" Type="Double" />
           <Property Name="PlanDistance" Type="Decimal" Precision="16" Scale="2" />
           <Property Name="PlanTimeWorkDay" Type="Int32" />
           <Property Name="PlanTimeHoliday" Type="Int32" />
@@ -8473,6 +8483,8 @@
           <Property Name="fullMassTC2Trailer" Type="Int32" />
           <Property Name="massWithoutLoadTC2Trailer" Type="Int32" />
           <Property Name="Summ_" Type="Double" />
+          <Property Name="tenderTureNumber" Type="Int32" />
+          <Property Name="IsSelected" Type="Boolean" />
         </EntityType>
         <Association Name="FK_OrderUsedCars_CarOwners">
           <End Type="CorumModel.CarOwners" Role="CarOwners" Multiplicity="0..1" />
@@ -8909,6 +8921,7 @@
           <Property Name="filesTTH_CMR" Type="Boolean" />
           <Property Name="filesInvoice" Type="Boolean" />
           <Property Name="filesActOfCompletion" Type="Boolean" />
+          <Property Name="tenderTureNumber" Type="Int32" />
         </EntityType>
         <EntityType Name="RegisterMessageToContragents">
           <Key>
@@ -8938,6 +8951,9 @@
           <Property Name="dataUnload" Type="DateTime" Precision="7" />
           <Property Name="DelayPayment" Type="Int32" />
           <Property Name="flagCreate" Type="Boolean" Nullable="false" />
+          <Property Name="isSelected" Type="Boolean" />
+          <Property Name="tenderTureNumber" Type="Int32" />
+          <Property Name="IsSendMessage" Type="Boolean" />
         </EntityType>
         <Association Name="FK_RegisterFormFromContragents_RegisterMessageToContragents">
           <End Type="CorumModel.RegisterMessageToContragents" Role="RegisterMessageToContragents" Multiplicity="1">
@@ -10170,6 +10186,8 @@
           <EntitySetMapping Name="OrderCompetitiveList">
             <EntityTypeMapping TypeName="CorumModel.OrderCompetitiveList">
               <MappingFragment StoreEntitySet="OrderCompetitiveList">
+                <ScalarProperty Name="tenderTureNumber" ColumnName="tenderTureNumber" />
+                <ScalarProperty Name="formUuid" ColumnName="formUuid" />
                 <ScalarProperty Name="emailContragent" ColumnName="emailContragent" />
                 <ScalarProperty Name="cargoWeight" ColumnName="cargoWeight" />
                 <ScalarProperty Name="itemDescription" ColumnName="itemDescription" />
@@ -10684,6 +10702,8 @@
           <EntitySetMapping Name="OrderUsedCars">
             <EntityTypeMapping TypeName="CorumModel.OrderUsedCars">
               <MappingFragment StoreEntitySet="OrderUsedCars">
+                <ScalarProperty Name="IsSelected" ColumnName="IsSelected" />
+                <ScalarProperty Name="tenderTureNumber" ColumnName="tenderTureNumber" />
                 <ScalarProperty Name="Summ_" ColumnName="Summ_" />
                 <ScalarProperty Name="massWithoutLoadTC2Trailer" ColumnName="massWithoutLoadTC2Trailer" />
                 <ScalarProperty Name="fullMassTC2Trailer" ColumnName="fullMassTC2Trailer" />
@@ -11105,6 +11125,7 @@
           <EntitySetMapping Name="RegisterFormFromContragents">
             <EntityTypeMapping TypeName="CorumModel.RegisterFormFromContragents">
               <MappingFragment StoreEntitySet="RegisterFormFromContragents">
+                <ScalarProperty Name="tenderTureNumber" ColumnName="tenderTureNumber" />
                 <ScalarProperty Name="filesActOfCompletion" ColumnName="filesActOfCompletion" />
                 <ScalarProperty Name="filesInvoice" ColumnName="filesInvoice" />
                 <ScalarProperty Name="filesTTH_CMR" ColumnName="filesTTH_CMR" />
@@ -11142,6 +11163,9 @@
           <EntitySetMapping Name="RegisterMessageToContragents">
             <EntityTypeMapping TypeName="CorumModel.RegisterMessageToContragents">
               <MappingFragment StoreEntitySet="RegisterMessageToContragents">
+                <ScalarProperty Name="IsSendMessage" ColumnName="IsSendMessage" />
+                <ScalarProperty Name="tenderTureNumber" ColumnName="tenderTureNumber" />
+                <ScalarProperty Name="isSelected" ColumnName="isSelected" />
                 <ScalarProperty Name="flagCreate" ColumnName="flagCreate" />
                 <ScalarProperty Name="DelayPayment" ColumnName="DelayPayment" />
                 <ScalarProperty Name="dataUnload" ColumnName="dataUnload" />

@@ -996,6 +996,10 @@
                             $("#fullMassTC2Trailer").val(getselectedrowindexes[0].fullMassTC2Trailer);
                             $("#massWithoutLoadTC1").val(getselectedrowindexes[0].massWithoutLoadTC1);
                             $("#fullMassTC").val(getselectedrowindexes[0].fullMassTC);
+                            $("#formUuid").val(getselectedrowindexes[0].formUuid);
+                            $("#tenderTureNumber").val(getselectedrowindexes[0].tenderTureNumber);
+                            var _formUuid = $("#formUuid").val();
+                            var _tenderTureNumber = $("#tenderTureNumber").val();
 
                             $('#ContractExpBkInfo').val(getselectedrowindexes[0].ContractExpBkId);
                             $("#ContractExpBkInfo").attr("data-selected-text", getselectedrowindexes[0].ContractExpBkInfo);
@@ -1059,7 +1063,6 @@
                             $("#fullMassTC2Trailer").val('');
                             $("#massWithoutLoadTC1").val('');
                             $("#fullMassTC").val('');
-
                             //var currDateNew = DateTime.Now.ToString("dd.MM.yyyy");
                          //   $('#FactShipperDate').val('');
                          //   $('#FactShipperTime').val('00:00:00');
@@ -1115,7 +1118,12 @@
                         {
                             text: IsEditing ? "Сохранить" : "Добавить",
                             "class": 'btn btn-primary',
-                            click: function() {
+                            click: function () {
+                                var getselectedRows = [];
+                                var getselectedrowindexes = $("#jqxgridUC").jqxGrid('getselectedrowindexes');
+                                for (const item of getselectedrowindexes) {
+                                    getselectedRows.push($("#jqxgridUC").jqxGrid('getrows')[item]);
+                                };
 
                                 if (($('#ContractExpBkInfo').val() == '')
                                         || ($('#ExpeditorId').val() == '')
@@ -1149,7 +1157,10 @@
                                     var _fullMassTC2Trailer = $("#fullMassTC2Trailer").val();
                                     var _massWithoutLoadTC1 = $("#massWithoutLoadTC1").val();
                                     var _fullMassTC = $("#fullMassTC").val();
-
+                                    if (getselectedRows[0] != null) {
+                                    var _formUuid = getselectedRows[0].formUuid;
+                                    var _tenderTureNumber =  getselectedRows[0].tenderTureNumber;
+                                    }
                                   //  var _FactShipperDate = $('#FactShipperDate').val();
                                   //  var _FactShipperTime = $('#FactShipperTime').val();
                                   //  var _FactConsigneeDate = $('#FactConsigneeDate').val();
@@ -1188,6 +1199,9 @@
                                             massWithoutLoadTC1: _massWithoutLoadTC1,
                                             fullMassTC2Trailer: _fullMassTC2Trailer,
                                             massWithoutLoadTC2Trailer: _massWithoutLoadTC2Trailer,
+                                            formUuid: _formUuid,
+                                            tenderTureNumber: _tenderTureNumber,
+                                            IsSelectedId: true,
                                            // FactShipperDate: _FactShipperDate,
                                           //  FactShipperTime: _FactShipperTime,
                                           //  FactConsigneeDate: _FactConsigneeDate,
@@ -2085,11 +2099,12 @@
                             { name: 'transportDimensions' },
                             { name: 'distance' },
                             { name: 'Summ_' },
-                            { name: 'formUuid' },
                             { name: 'massWithoutLoadTC2Trailer' },
                             { name: 'fullMassTC2Trailer' },
                             { name: 'fullMassTC' },
-                            { name: 'massWithoutLoadTC1' }
+                            { name: 'massWithoutLoadTC1' },
+                            { name: 'formUuid' },
+                            { name: 'tenderTureNumber' }
 
                         ],
                         url: '@Url.Action("GetUsedCars", "Orders", new {OrderId = Model.Id})',

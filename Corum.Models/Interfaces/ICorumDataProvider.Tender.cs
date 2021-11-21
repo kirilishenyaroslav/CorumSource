@@ -7,6 +7,7 @@ using Corum.Models.ViewModels.Orders;
 using Corum.Models.ViewModels.Tender;
 using System;
 using System.Web;
+using Corum.Models.ViewModels.OrderConcurs;
 
 namespace Corum.Models
 {
@@ -38,5 +39,6 @@ namespace Corum.Models
         bool CheckFormUuid(Guid formUuid);
         List<RegisterFormFromContragents> GetRegisterFormFromContragents(Guid formUuid);
         bool SetRegisterFormFromContragent(List<HttpPostedFileBase> listFiles, Dictionary<string, string> dic);
+        void SetRegisterMessageData(int tenderNumber, SpecificationListViewModel mod, long orderId, Guid formUuid, int tenderTureNumber);
     }
 }

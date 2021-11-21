@@ -37,6 +37,7 @@ namespace Corum.Models.Tender
         public DateTime dataUnload { get; set; }
         public Nullable<int> DelayPayment { get; set; }
         public bool flagCreate { get; set; }
+        public Nullable<bool> IsSendMessage { get; set; }
 
     }
     public class ListWinnersInfoAfterChange : ListInfoAfterChange

@@ -53,8 +53,11 @@ namespace Corum.Models
         void getCurrentStatusForListKL(long orderId, string userId, int? tenderNumber);
         List<CompetetiveListStepsInfoViewModel> listCurrentStatuses(long orderId);
         int? getTenderNumber(long orderId);
-        bool IsContainTender(int? tenderNumber);
+        bool IsContainTender(int? tenderNumber, int tenderTureNumber);
         Dictionary<int, IQueryable<OrderCompetitiveListViewModel>> listDisplayValues(long orderId, string userId);
         Dictionary<int, IEnumerable<CompetitiveListStepViewModel>> list_listStatuses(long orderId);
+        void ChangeRegisterMessageData(int tenderNumber, long orderId, Guid formUuid, OrderCompetitiveListViewModel model);
+        void NewSpecification(SpecificationListViewModel model, string userId, int? tenderNumber, out Guid formUuid);
+        int? GetTenderTureNumber(int tenderNumber);
     }
 }

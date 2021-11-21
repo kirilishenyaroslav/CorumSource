@@ -433,7 +433,7 @@ namespace Corum.Models
             int IdGroup, string Id, ref String Address);
 
         int NewUsedCar(Guid formUuid, ref DataToAndFromContragent data);
-        void NewUsedCar(Guid formUuid);
+        void NewUsedCar(Guid formUuid, int tenderTureNumber, bool IsSelected);
         IQueryable<OrderUsedCarViewModel> getOrderCarsInfoFromContragent(Guid formUuid);
         void NewUsedCarExcel(Guid formUuid, ref DataToAndFromContragent data);
         int? GetTenderNumber(Guid formUuid);

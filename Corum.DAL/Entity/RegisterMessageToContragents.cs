@@ -43,6 +43,9 @@ namespace Corum.DAL.Entity
         public Nullable<System.DateTime> dataUnload { get; set; }
         public Nullable<int> DelayPayment { get; set; }
         public bool flagCreate { get; set; }
+        public Nullable<bool> isSelected { get; set; }
+        public Nullable<int> tenderTureNumber { get; set; }
+        public Nullable<bool> IsSendMessage { get; set; }
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<RegisterFormFromContragents> RegisterFormFromContragents { get; set; }

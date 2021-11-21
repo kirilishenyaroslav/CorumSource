@@ -13,6 +13,7 @@ using System.Data.Entity;
 using System.Globalization;
 using Corum.Models.ViewModels.Tender;
 using System.Web;
+using Corum.Models.ViewModels.OrderConcurs;
 
 namespace Corum.DAL
 {
@@ -695,10 +696,11 @@ namespace Corum.DAL
                             modelRegisterMessage.nameCargo = model.nameCargo;
                             modelRegisterMessage.routeShort = model.routeShort;
                             modelRegisterMessage.weightCargo = model.weightCargo;
+                            modelRegisterMessage.isSelected = model.isSelected;
                             db.RegisterMessageToContragents.Add(modelRegisterMessage);
                             db.SaveChanges();
 
-                            NewUsedCar(modelRegisterMessage.formUuid);
+                            //NewUsedCar(modelRegisterMessage.formUuid);
 
                         }
                     }
@@ -761,6 +763,8 @@ namespace Corum.DAL
                             item.nameCargo = model.nameCargo;
                             item.routeShort = model.routeShort;
                             item.weightCargo = model.weightCargo;
+                            item.isSelected = model.isSelected;
+                            item.IsSendMessage = true;
                             db.SaveChanges();
                             flag = true;
                             continue;
@@ -788,6 +792,8 @@ namespace Corum.DAL
                             item.nameCargo = model.nameCargo;
                             item.routeShort = model.routeShort;
                             item.weightCargo = model.weightCargo;
+                            item.isSelected = model.isSelected;
+                            item.IsSendMessage = true;
                             db.SaveChanges();
                             flag = true;
                             continue;
@@ -798,11 +804,24 @@ namespace Corum.DAL
                         }
                     }
                 }
-                else
+
+                if (listLosers.Count != 0)
                 {
-                    if (listLosers.Count != 0)
+                    foreach (var model in listLosers)
                     {
-                        flag = true;
+                        var item = db.RegisterMessageToContragents.Where(x => x.tenderNumber == model.tenderNumber && x.contragentName == model.expeditorName && x.formUuid == model.formUuid).FirstOrDefault();
+                        if (item != null && item.IsSendMessage == null)
+                        {
+                            flag = true;
+                            item.IsSendMessage = flag;
+                            db.SaveChanges();
+                        }
+                        else if (item != null && item.IsSendMessage != null && !(bool)item.IsSendMessage)
+                        {
+                            flag = true;
+                            item.IsSendMessage = flag;
+                            db.SaveChanges();
+                        }
                     }
                 }
 
@@ -816,6 +835,7 @@ namespace Corum.DAL
         public List<RegisterMessageToContragents> GetListFormUuidToContragents(long orderId)
         {
             List<RegisterMessageToContragents> list = new List<RegisterMessageToContragents>();
+
             var listWinnersList = db.RegisterMessageToContragents.ToList();
             try
             {
@@ -847,7 +867,9 @@ namespace Corum.DAL
                             nameCargo = item.nameCargo,
                             routeShort = item.routeShort,
                             weightCargo = item.weightCargo,
-                            flag = (bool)((item.flag != null) ? item.flag : false)
+                            flag = (bool)((item.flag != null) ? item.flag : false),
+                            isSelected = item.isSelected,
+                            IsSendMessage = item.IsSendMessage
                         };
                         list.Add(model);
                     }
@@ -936,7 +958,13 @@ namespace Corum.DAL
                     instance.carBrand = dic["carBrand"];
                     instance.stateNumberCar = dic["stateNumberCar"];
                     instance.trailerNumber = dic["trailerNumber"];
-                    instance.loadCapacity = Double.Parse(dic["loadCapacity"]);
+                    try
+                    {
+                        instance.loadCapacity = Double.Parse(dic["loadCapacity"].Replace('.', ','));
+                    }
+                    catch {
+                        instance.loadCapacity = Double.Parse(dic["loadCapacity"]);
+                    }
                     instance.distance = Double.Parse(dic["distance"]);
                     instance.fullNameOfDriver = dic["fullNameOfDriver"];
                     instance.phoneNumber = dic["phoneNumber"];
@@ -956,7 +984,7 @@ namespace Corum.DAL
                     instance.tenderItemUuid = formUuid;
                     instance.transportDimensions = dic["transportDimensions"];
                     instance.fullMassTC = Int32.Parse(dic["fullMassTC"]);
-                    instance.fullMassTC2Trailer = (dic["fullMassTC2Trailer"] != null)?(Nullable<int>)Int32.Parse(dic["fullMassTC2Trailer"]):null;
+                    instance.fullMassTC2Trailer = (dic["fullMassTC2Trailer"] != null) ? (Nullable<int>)Int32.Parse(dic["fullMassTC2Trailer"]) : null;
                     instance.massWithoutLoadTC1 = Int32.Parse(dic["massWithoutLoadTC1"]);
                     instance.massWithoutLoadTC2Trailer = (dic["massWithoutLoadTC2Trailer"] != null) ? (Nullable<int>)Int32.Parse(dic["massWithoutLoadTC2Trailer"]) : null;
                     instance.filesTTH_CMR = (dic.ContainsKey("filesTTH_CMR")) ? Boolean.Parse(dic["filesTTH_CMR"]) : false;
@@ -974,7 +1002,14 @@ namespace Corum.DAL
                     item.carBrand = dic["carBrand"];
                     item.stateNumberCar = dic["stateNumberCar"];
                     item.trailerNumber = dic["trailerNumber"];
-                    item.loadCapacity = Double.Parse(dic["loadCapacity"]);
+                    try
+                    {
+                        item.loadCapacity = Double.Parse(dic["loadCapacity"].Replace('.', ','));
+                    }
+                    catch
+                    {
+                        item.loadCapacity = Double.Parse(dic["loadCapacity"]);
+                    }
                     item.distance = Double.Parse(dic["distance"]);
                     item.fullNameOfDriver = dic["fullNameOfDriver"];
                     item.phoneNumber = dic["phoneNumber"];
@@ -1008,6 +1043,71 @@ namespace Corum.DAL
 
             }
             return flag;
+        }
+
+        public void SetRegisterMessageData(int tenderNumber, SpecificationListViewModel mod, long orderId, Guid formUuid, int tenderTureNumber)
+        {
+            var industryId = db.RegisterTenders.Where(x => x.tenderNumber == mod.tenderNumber).FirstOrDefault().industryId;
+            var concList = getCompetitiveListInfo(orderId, tenderNumber);
+            var item = db.RegisterMessageToContragents.Where(x => x.tenderNumber == tenderNumber && x.contragentName == mod.ExpeditorName && x.formUuid == mod.formUuid && x.tenderTureNumber == tenderTureNumber).FirstOrDefault();
+            if (item != null && item.flag == true)
+            {
+                item.acceptedTransportUnits = mod.acceptedTransportUnits;
+                item.contragentName = mod.ExpeditorName;
+                item.cost = mod.costOfCarWithoutNDS;
+                item.dateCreate = DateTime.Now;
+                item.dateUpdate = DateTime.Now;
+                item.descriptionTender = mod.itemDescription;
+                item.emailContragent = mod.emailContragent;
+                item.emailOperacionist = "avtogruz@corum.com";
+                item.formUuid = formUuid;
+                item.industryId = (int)industryId;
+                item.orderId = orderId;
+                item.tenderItemUuid = mod.tenderItemUuid;
+                item.tenderNumber = tenderNumber;
+                item.flag = true;
+                item.dataDownload = DateTime.Parse(concList.FromDate);
+                item.dataUnload = DateTime.Parse(concList.ToDate);
+                item.DelayPayment = mod.DaysDelay;
+                item.industryName = mod.NameSpecification;
+                item.nameCargo = concList.TruckDescription;
+                item.routeShort = concList.Route;
+                item.weightCargo = Double.Parse(concList.Weight);
+                item.isSelected = mod.IsWinner;
+                item.tenderTureNumber = mod.tenderTureNumber;
+                db.SaveChanges();
+                NewUsedCar(formUuid, (int)mod.tenderTureNumber, mod.IsWinner);
+            }
+            else if (item == null)
+            {
+                Entity.RegisterMessageToContragents model = new Entity.RegisterMessageToContragents();
+                model.acceptedTransportUnits = mod.acceptedTransportUnits;
+                model.contragentName = mod.ExpeditorName;
+                model.cost = mod.costOfCarWithoutNDS;
+                model.dateCreate = DateTime.Now;
+                model.dateUpdate = DateTime.Now;
+                model.descriptionTender = mod.itemDescription;
+                model.emailContragent = mod.emailContragent;
+                model.emailOperacionist = "avtogruz@corum.com";
+                model.formUuid = formUuid;
+                model.industryId = (int)industryId;
+                model.orderId = orderId;
+                model.tenderItemUuid = mod.tenderItemUuid;
+                model.tenderNumber = tenderNumber;
+                model.flag = true;
+                model.dataDownload = DateTime.Parse(concList.FromDate);
+                model.dataUnload = DateTime.Parse(concList.ToDate);
+                model.DelayPayment = mod.DaysDelay;
+                model.industryName = mod.NameSpecification;
+                model.nameCargo = concList.TruckDescription;
+                model.routeShort = concList.Route;
+                model.weightCargo = Double.Parse(concList.Weight);
+                model.isSelected = mod.IsWinner;
+                model.tenderTureNumber = mod.tenderTureNumber;
+                db.RegisterMessageToContragents.Add(model);
+                db.SaveChanges();
+                NewUsedCar(formUuid, (int)mod.tenderTureNumber, mod.IsWinner);
+            }
         }
     }
 }

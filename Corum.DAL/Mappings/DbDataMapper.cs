@@ -162,79 +162,171 @@ namespace Corum.DAL.Mappings
         public static OrderUsedCarViewModel Map(OrderUsedCars o)
         {
             context = DependencyResolver.Current.GetService<ICorumDataProvider>();
+            int? tenderTureNumber = null;
             Nullable<int> tenderNumber = null;
-            if (o.formUuid != null) {
-                tenderNumber = context.GetTenderNumber((Guid)o.formUuid);
-               
-            } 
-            if (tenderNumber == null) {
-                    tenderNumber = o.tenderNumber;
-                }
-            return new OrderUsedCarViewModel()
+            if (o.formUuid != null)
             {
-                Id = o.Id,
-                OrderId = o.OrderId,
-                ContractId = o.ContractId ?? 0,
-                ContractExpBkId = o.ContractExpBkId ?? 0,
-                ContractInfo = o.ContractInfo,
-                ContractExpBkInfo = o.Contracts1?.ContractNumber + " от " + o.Contracts1?.ContractDate.Value.ToString("dd.MM.yyyy") +
-                                     "(с " + o.Contracts1?.DateBeg.Value.ToString("dd.MM.yyyy") + " по " + o.Contracts1?.DateEnd.Value.ToString("dd.MM.yyyy") + ")",
-                ExpeditorId = o.ExpeditorId ?? 0,
-                ExpeditorName = o.CarOwners?.CarrierName,
-                CarOwnerInfo = o.CarOwnerInfo,
-                CarModelInfo = o.CarModelInfo,
-                CarRegNum = o.CarRegNum,
-                CarCapacity = o.CarCapacity,
-                CarDriverInfo = o.CarDriverInfo,
-                DriverContactInfo = o.DriverContactInfo,
-                CarrierInfo = o.CarrierInfo,
-                CarId = o.CarId ?? 0,
-                Summ = o.Summ ?? 0,
-                DriverCardInfo = o.DriverCardInfo,
-                Comments = o.Comments,
-                PlanDistance = (o.PlanDistance ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
-                PlanTimeWorkDay = o.PlanTimeWorkDay,
-                PlanTimeHoliday = o.PlanTimeHoliday,
-                BaseRate = (o.BaseRate ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
-                BaseRateWorkDay = (o.BaseRateWorkDay ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
-                BaseRateHoliday = (o.BaseRateHoliday ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
-                DelayDays = o.DelayDays,
-                FactShipperDateTime = o.FactShipperDateTime,
-                FactConsigneeDateTime = o.FactConsigneeDateTime,
+                tenderNumber = context.GetTenderNumber((Guid)o.formUuid);
+                if (o.tenderNumber != null)
+                {
+                    tenderTureNumber = context.GetTenderTureNumber((int)o.tenderNumber);
+                }
+                else {
+                    tenderTureNumber = null;
+                }
+            }
+            if (tenderNumber == null)
+            {
+                tenderNumber = o.tenderNumber;
+                if (o.tenderNumber != null)
+                {
+                    tenderTureNumber = context.GetTenderTureNumber((int)o.tenderNumber);
+                }
+                else {
+                    tenderTureNumber = null;
+                }
+            }
+            if (o.tenderTureNumber == null && o.IsSelected == null)
+            {
+                return new OrderUsedCarViewModel()
+                {
+                    Id = o.Id,
+                    OrderId = o.OrderId,
+                    ContractId = o.ContractId ?? 0,
+                    ContractExpBkId = o.ContractExpBkId ?? 0,
+                    ContractInfo = o.ContractInfo,
+                    ContractExpBkInfo = o.Contracts1?.ContractNumber + " от " + o.Contracts1?.ContractDate.Value.ToString("dd.MM.yyyy") +
+                                         "(с " + o.Contracts1?.DateBeg.Value.ToString("dd.MM.yyyy") + " по " + o.Contracts1?.DateEnd.Value.ToString("dd.MM.yyyy") + ")",
+                    ExpeditorId = o.ExpeditorId ?? 0,
+                    ExpeditorName = o.CarOwners?.CarrierName,
+                    CarOwnerInfo = o.CarOwnerInfo,
+                    CarModelInfo = o.CarModelInfo,
+                    CarRegNum = o.CarRegNum,
+                    CarCapacity = o.CarCapacity,
+                    CarDriverInfo = o.CarDriverInfo,
+                    DriverContactInfo = o.DriverContactInfo,
+                    CarrierInfo = o.CarrierInfo,
+                    CarId = o.CarId ?? 0,
+                    Summ = o.Summ ?? 0,
+                    DriverCardInfo = o.DriverCardInfo,
+                    Comments = o.Comments,
+                    PlanDistance = (o.PlanDistance ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
+                    PlanTimeWorkDay = o.PlanTimeWorkDay,
+                    PlanTimeHoliday = o.PlanTimeHoliday,
+                    BaseRate = (o.BaseRate ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
+                    BaseRateWorkDay = (o.BaseRateWorkDay ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
+                    BaseRateHoliday = (o.BaseRateHoliday ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
+                    DelayDays = o.DelayDays,
+                    FactShipperDateTime = o.FactShipperDateTime,
+                    FactConsigneeDateTime = o.FactConsigneeDateTime,
 
-                FactShipperDate = o.FactShipperDateTime != null ? o.FactShipperDateTime.Value.ToString("dd.MM.yyyy") : "",
-                FactShipperDateRaw = o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
-                FactConsigneeDate = o.FactConsigneeDateTime != null ? o.FactConsigneeDateTime.Value.ToString("dd.MM.yyyy") : "",
-                FactConsigneeDateRaw = o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
+                    FactShipperDate = o.FactShipperDateTime != null ? o.FactShipperDateTime.Value.ToString("dd.MM.yyyy") : "",
+                    FactShipperDateRaw = o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
+                    FactConsigneeDate = o.FactConsigneeDateTime != null ? o.FactConsigneeDateTime.Value.ToString("dd.MM.yyyy") : "",
+                    FactConsigneeDateRaw = o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
 
-                FactShipperTime = o.FactShipperDateTime != null ? o.FactShipperDateTime.Value.ToString("HH:mm") : "",
-                FactShipperTimeRaw = o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
-                FactConsigneeTime = o.FactConsigneeDateTime != null ? o.FactConsigneeDateTime.Value.ToString("HH:mm") : "",
-                FactConsigneeTimeRaw = o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
+                    FactShipperTime = o.FactShipperDateTime != null ? o.FactShipperDateTime.Value.ToString("HH:mm") : "",
+                    FactShipperTimeRaw = o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
+                    FactConsigneeTime = o.FactConsigneeDateTime != null ? o.FactConsigneeDateTime.Value.ToString("HH:mm") : "",
+                    FactConsigneeTimeRaw = o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
 
-                RealFactShipperDate = o.FactShipper != null ? o.FactShipper.Value.ToString("dd.MM.yyyy") : "",
-                RealFactShipperDateRaw = o.FactShipper != null ? DateTimeConvertClass.getString(o.FactShipper.Value) : "",
-                RealFactConsigneeDate = o.FactConsignee != null ? o.FactConsignee.Value.ToString("dd.MM.yyyy") : "",
-                RealFactConsigneeDateRaw = o.FactConsignee != null ? DateTimeConvertClass.getString(o.FactConsignee.Value) : "",
+                    RealFactShipperDate = o.FactShipper != null ? o.FactShipper.Value.ToString("dd.MM.yyyy") : "",
+                    RealFactShipperDateRaw = o.FactShipper != null ? DateTimeConvertClass.getString(o.FactShipper.Value) : "",
+                    RealFactConsigneeDate = o.FactConsignee != null ? o.FactConsignee.Value.ToString("dd.MM.yyyy") : "",
+                    RealFactConsigneeDateRaw = o.FactConsignee != null ? DateTimeConvertClass.getString(o.FactConsignee.Value) : "",
 
-                RealFactShipperTime = o.FactShipper != null ? o.FactShipper.Value.ToString("HH:mm") : "",
-                RealFactShipperTimeRaw = o.FactShipper != null ? DateTimeConvertClass.getString(o.FactShipper.Value) : "",
-                RealFactConsigneeTime = o.FactConsignee != null ? o.FactConsignee.Value.ToString("HH:mm") : "",
-                RealFactConsigneeTimeRaw = o.FactConsignee != null ? DateTimeConvertClass.getString(o.FactConsignee.Value) : "",
-                formUuid = o.formUuid,
-                trailerNumber = o.trailerNumber,
-                seriesPassportNumber = o.seriesPassportNumber,
-                transportDimensions = o.transportDimensions,
-                distance = o.distance,
-                stateBorderCrossingPoint = o.stateBorderCrossingPoint,
-                drivingLicenseNumber = o.drivingLicenseNumber,
-                tenderNumber = tenderNumber,
-                Summ_ = (Nullable<float>)(o.Summ) ?? 0,
-                fullMassTC = o.fullMassTC,
-                fullMassTC2Trailer = o.fullMassTC2Trailer,
-                massWithoutLoadTC2Trailer = o.massWithoutLoadTC2Trailer,
-                massWithoutLoadTC1 = o.massWithoutLoadTC1
-            };
+                    RealFactShipperTime = o.FactShipper != null ? o.FactShipper.Value.ToString("HH:mm") : "",
+                    RealFactShipperTimeRaw = o.FactShipper != null ? DateTimeConvertClass.getString(o.FactShipper.Value) : "",
+                    RealFactConsigneeTime = o.FactConsignee != null ? o.FactConsignee.Value.ToString("HH:mm") : "",
+                    RealFactConsigneeTimeRaw = o.FactConsignee != null ? DateTimeConvertClass.getString(o.FactConsignee.Value) : "",
+                    formUuid = o.formUuid,
+                    trailerNumber = o.trailerNumber,
+                    seriesPassportNumber = o.seriesPassportNumber,
+                    transportDimensions = o.transportDimensions,
+                    distance = o.distance,
+                    stateBorderCrossingPoint = o.stateBorderCrossingPoint,
+                    drivingLicenseNumber = o.drivingLicenseNumber,
+                    tenderNumber = tenderNumber,
+                    Summ_ = (Nullable<float>)(o.Summ) ?? 0,
+                    fullMassTC = o.fullMassTC,
+                    fullMassTC2Trailer = o.fullMassTC2Trailer,
+                    massWithoutLoadTC2Trailer = o.massWithoutLoadTC2Trailer,
+                    massWithoutLoadTC1 = o.massWithoutLoadTC1
+                };
+            }
+            else if (o.tenderTureNumber != null && (int)o.tenderTureNumber == (int)tenderTureNumber && o.IsSelected == true)
+            {
+                return new OrderUsedCarViewModel()
+                {
+                    Id = o.Id,
+                    OrderId = o.OrderId,
+                    ContractId = o.ContractId ?? 0,
+                    ContractExpBkId = o.ContractExpBkId ?? 0,
+                    ContractInfo = o.ContractInfo,
+                    ContractExpBkInfo = o.Contracts1?.ContractNumber + " от " + o.Contracts1?.ContractDate.Value.ToString("dd.MM.yyyy") +
+                                         "(с " + o.Contracts1?.DateBeg.Value.ToString("dd.MM.yyyy") + " по " + o.Contracts1?.DateEnd.Value.ToString("dd.MM.yyyy") + ")",
+                    ExpeditorId = o.ExpeditorId ?? 0,
+                    ExpeditorName = o.CarOwners?.CarrierName,
+                    CarOwnerInfo = o.CarOwnerInfo,
+                    CarModelInfo = o.CarModelInfo,
+                    CarRegNum = o.CarRegNum,
+                    CarCapacity = o.CarCapacity,
+                    CarDriverInfo = o.CarDriverInfo,
+                    DriverContactInfo = o.DriverContactInfo,
+                    CarrierInfo = o.CarrierInfo,
+                    CarId = o.CarId ?? 0,
+                    Summ = o.Summ ?? 0,
+                    DriverCardInfo = o.DriverCardInfo,
+                    Comments = o.Comments,
+                    PlanDistance = (o.PlanDistance ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
+                    PlanTimeWorkDay = o.PlanTimeWorkDay,
+                    PlanTimeHoliday = o.PlanTimeHoliday,
+                    BaseRate = (o.BaseRate ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
+                    BaseRateWorkDay = (o.BaseRateWorkDay ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
+                    BaseRateHoliday = (o.BaseRateHoliday ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA")),
+                    DelayDays = o.DelayDays,
+                    FactShipperDateTime = o.FactShipperDateTime,
+                    FactConsigneeDateTime = o.FactConsigneeDateTime,
+
+                    FactShipperDate = o.FactShipperDateTime != null ? o.FactShipperDateTime.Value.ToString("dd.MM.yyyy") : "",
+                    FactShipperDateRaw = o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
+                    FactConsigneeDate = o.FactConsigneeDateTime != null ? o.FactConsigneeDateTime.Value.ToString("dd.MM.yyyy") : "",
+                    FactConsigneeDateRaw = o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
+
+                    FactShipperTime = o.FactShipperDateTime != null ? o.FactShipperDateTime.Value.ToString("HH:mm") : "",
+                    FactShipperTimeRaw = o.FactShipperDateTime != null ? DateTimeConvertClass.getString(o.FactShipperDateTime.Value) : "",
+                    FactConsigneeTime = o.FactConsigneeDateTime != null ? o.FactConsigneeDateTime.Value.ToString("HH:mm") : "",
+                    FactConsigneeTimeRaw = o.FactConsigneeDateTime != null ? DateTimeConvertClass.getString(o.FactConsigneeDateTime.Value) : "",
+
+                    RealFactShipperDate = o.FactShipper != null ? o.FactShipper.Value.ToString("dd.MM.yyyy") : "",
+                    RealFactShipperDateRaw = o.FactShipper != null ? DateTimeConvertClass.getString(o.FactShipper.Value) : "",
+                    RealFactConsigneeDate = o.FactConsignee != null ? o.FactConsignee.Value.ToString("dd.MM.yyyy") : "",
+                    RealFactConsigneeDateRaw = o.FactConsignee != null ? DateTimeConvertClass.getString(o.FactConsignee.Value) : "",
+
+                    RealFactShipperTime = o.FactShipper != null ? o.FactShipper.Value.ToString("HH:mm") : "",
+                    RealFactShipperTimeRaw = o.FactShipper != null ? DateTimeConvertClass.getString(o.FactShipper.Value) : "",
+                    RealFactConsigneeTime = o.FactConsignee != null ? o.FactConsignee.Value.ToString("HH:mm") : "",
+                    RealFactConsigneeTimeRaw = o.FactConsignee != null ? DateTimeConvertClass.getString(o.FactConsignee.Value) : "",
+                    formUuid = o.formUuid,
+                    trailerNumber = o.trailerNumber,
+                    seriesPassportNumber = o.seriesPassportNumber,
+                    transportDimensions = o.transportDimensions,
+                    distance = o.distance,
+                    stateBorderCrossingPoint = o.stateBorderCrossingPoint,
+                    drivingLicenseNumber = o.drivingLicenseNumber,
+                    tenderNumber = tenderNumber,
+                    Summ_ = (Nullable<float>)(o.Summ) ?? 0,
+                    fullMassTC = o.fullMassTC,
+                    fullMassTC2Trailer = o.fullMassTC2Trailer,
+                    massWithoutLoadTC2Trailer = o.massWithoutLoadTC2Trailer,
+                    massWithoutLoadTC1 = o.massWithoutLoadTC1,
+                    tenderTureNumber = (int)tenderTureNumber
+                };
+            }
+            else
+            {
+                return null;
+            }
         }
 
         public static OrderNotificationViewModel Map(OrderNotifications o)
@@ -1310,7 +1402,9 @@ namespace Corum.DAL.Mappings
                 tenderNumber = o.tenderNumber,
                 itemDescription = o.itemDescription,
                 cargoWeight = o.cargoWeight,
-                emailContragent = o.emailContragent
+                emailContragent = o.emailContragent,
+                formUuid = o.formUuid,
+                tenderTureNumber = o.tenderTureNumber
             };
         }
 

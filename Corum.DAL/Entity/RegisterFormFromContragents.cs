@@ -45,6 +45,7 @@ namespace Corum.DAL.Entity
         public Nullable<bool> filesTTH_CMR { get; set; }
         public Nullable<bool> filesInvoice { get; set; }
         public Nullable<bool> filesActOfCompletion { get; set; }
+        public Nullable<int> tenderTureNumber { get; set; }
     
         public virtual RegisterMessageToContragents RegisterMessageToContragents { get; set; }
     }

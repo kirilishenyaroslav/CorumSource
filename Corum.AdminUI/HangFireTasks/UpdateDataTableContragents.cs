@@ -280,6 +280,7 @@ namespace CorumAdminUI.HangFireTasks
                                     model.VehicleTypeName = spec.VehicleTypeName;
                                     model.itemDescription = it.Value[i].itemDescription;
                                     model.cargoWeight = cargoWeight;
+                                    model.tenderTureNumber = myDeserializedClass.data.stageNumber;
                                     specificationListViews.Add(model);
                                 }
                                 else
@@ -330,7 +331,8 @@ namespace CorumAdminUI.HangFireTasks
                                         costOfCarWithoutNDSToNull = it.Value[i].costOfCarWithoutNDSToNull,
                                         note = it.Value[i].note,
                                         itemDescription = it.Value[i].itemDescription,
-                                        cargoWeight = cargoWeight
+                                        cargoWeight = cargoWeight,
+                                        tenderTureNumber = myDeserializedClass.data.stageNumber
                                     };
                                     specificationListViews.Add(instance);
                                 }
@@ -338,11 +340,13 @@ namespace CorumAdminUI.HangFireTasks
                         }
                         if (specificationListViews.Count != 0)
                         {
-                            if (context.IsContainTender(tenderNumber))
+                            if (context.IsContainTender(tenderNumber, myDeserializedClass.data.stageNumber))
                             {
                                 foreach (var model in specificationListViews)
                                 {
-                                    context.NewSpecification(model, allAppSettings["UserId"], tenderNumber);
+                                    Guid formUuid;
+                                    context.NewSpecification(model, allAppSettings["UserId"], tenderNumber, out formUuid);
+                                    context.SetRegisterMessageData(tenderNumber, model, model.OrderId, formUuid, (int)model.tenderTureNumber);
                                 }
                             }
                         }

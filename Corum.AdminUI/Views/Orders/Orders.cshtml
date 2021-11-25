@@ -94,8 +94,10 @@
                             FilterOrderOrgToId = Model.FilterOrderOrgToId,
 
                         },
-                            new {@class = "delete_link btn btn-success", @style = "margin-bottom:10px"})
-
+                            new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px" })
+                        &nbsp;&nbsp;
+                        @Html.ActionLink("Загрузить за неделю", "Orders", "Orders", null,
+                           new { @class = "delete_link btn btn-success", @style = "margin-bottom:10px", @onclick = "GetDateFilterForWeek(this)" })
                         &nbsp;&nbsp;
                         <div id="groupBtn">
 
@@ -124,6 +126,89 @@
     @section scripts
     {
         <script>
+            let filterForWeek = function () {
+                let filter = {
+                    filterOrderDateBegRaw: undefined,
+                    filterOrderDateEndRaw: undefined,
+                    filterOrderExDateBedRaw: undefined,
+                    filterOrderExDateEndRaw: undefined,
+                    filterOrderEndDateBegRaw: undefined,
+                    filterOrderEndDateEndRaw: undefined,
+                    filterOrderDateBeg: undefined,
+                    filterOrderDateEnd: undefined
+                }
+                Date.prototype.addDays = function(days) {
+                let date = new Date(this.valueOf());
+                date.setDate(date.getDate() + days);
+                    return date;
+                }
+                Date.prototype.minusDays = function(days) {
+                let date = new Date(this.valueOf());
+                date.setDate(date.getDate() - days);
+                    return date;
+                }
+
+                // Метод для форматирования даты в нужную локаль (yyyy-mm-dd'T'hh:MM:ss)
+                        function GetFormattedDate(date) {
+                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            var day  = ("0" + (date.getDate())).slice(-2);
+                            var year = date.getFullYear();
+                            var hour =  ("0" + (date.getHours())).slice(-2);
+                            var min =  ("0" + (date.getMinutes())).slice(-2);
+                            var seg = ("0" + (date.getSeconds())).slice(-2);
+                            return year + "-" + month + "-" + day + "T" + hour + ":" +  min + ":" +  seg;
+                }
+
+                 // Метод для форматирования даты в нужную локаль (dd.MM.YYYY)
+                        function GetFormattedDateShort(date) {
+                            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+                            var day  = ("0" + (date.getDate())).slice(-2);
+                            var year = date.getFullYear();
+                            var hour =  ("0" + (date.getHours())).slice(-2);
+                            var min =  ("0" + (date.getMinutes())).slice(-2);
+                            var seg = ("0" + (date.getSeconds())).slice(-2);
+                            return day + "." + month + "." + year;
+                        }
+
+                let date = new Date();
+                let dateNowPlusOneDay = date.addDays(1);
+                let dateMinusSevenDays = date.minusDays(7);
+                filter.filterOrderDateBegRaw = GetFormattedDate(dateMinusSevenDays);
+                filter.filterOrderDateEndRaw = GetFormattedDate(dateNowPlusOneDay);
+                filter.filterOrderEndDateBegRaw = GetFormattedDate(dateMinusSevenDays);
+                filter.filterOrderEndDateEndRaw = GetFormattedDate(dateNowPlusOneDay);
+                filter.filterOrderExDateBedRaw = GetFormattedDate(dateMinusSevenDays);
+                filter.filterOrderExDateEndRaw = GetFormattedDate(dateNowPlusOneDay);
+                filter.filterOrderDateBeg = GetFormattedDateShort(dateMinusSevenDays);
+                filter.filterOrderDateEnd = GetFormattedDateShort(dateNowPlusOneDay);
+
+                return filter;
+            };
+
+            function GetDateFilterForWeek(elem) {
+                           let FilterOrderDateBeg = filterForWeek().filterOrderDateBeg;
+                           let FilterOrderDateBegRaw = filterForWeek().filterOrderDateBegRaw;
+                           let FilterOrderDateEnd = filterForWeek().filterOrderDateEnd;
+                           let FilterOrderDateEndRaw = filterForWeek().filterOrderDateEndRaw;
+                           let FilterOrderExDateBegRaw = filterForWeek().filterOrderExDateBedRaw;
+                           let FilterOrderExDateEndRaw = filterForWeek().filterOrderExDateEndRaw;
+                           let FilterOrderEndDateBegRaw = filterForWeek().filterOrderEndDateBegRaw;
+                           let FilterOrderEndDateEndRaw = filterForWeek().filterOrderEndDateEndRaw;
+                           let UseFinalStatusFilter = @Html.Raw(Json.Encode(Model.UseFinalStatusFilter));
+                           let UseOrderDateFilter = @Html.Raw(Json.Encode(Model.UseOrderDateFilter));
+
+
+                return $(elem).attr('href', $(elem).attr('href') +
+                    '?FilterOrderDateBeg=' + FilterOrderDateBeg + '&FilterOrderDateBegRaw=' + FilterOrderDateBegRaw
+                    + '&FilterOrderDateEnd=' + FilterOrderDateEnd + '&FilterOrderDateEndRaw=' + FilterOrderDateEndRaw
+                    + '&FilterOrderExDateBegRaw=' + FilterOrderExDateBegRaw
+                    + '&FilterOrderExDateEndRaw=' + FilterOrderExDateEndRaw
+                    + '&FilterOrderEndDateBegRaw=' + FilterOrderEndDateBegRaw
+                    + '&FilterOrderEndDateEndRaw=' + FilterOrderEndDateEndRaw + '&UseFinalStatusFilter=' + UseFinalStatusFilter
+                    + '&UseOrderDateFilter=' + UseOrderDateFilter
+                );
+
+            }
 
             var offset = $('.navbar').height();
             $("html:not(.legacy) table").stickyTableHeaders({ fixedOffset: offset });

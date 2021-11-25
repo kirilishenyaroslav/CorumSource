@@ -17,6 +17,10 @@ namespace Corum.Models.ViewModels.Cars
         [Display(Name = "Название перевозчика")]
         public string CarrierName { get; set; }
 
+        [Required(ErrorMessage = "Введите код ЕДРПОУ")]
+        [Display(Name = "ЕДРПОУ")]
+        public long edrpou_aps { get; set; }
+
         //[Required(ErrorMessage = "Введите адрес")]
         [Display(Name = "Адрес")]
         public string Address { get; set; }
@@ -24,6 +28,10 @@ namespace Corum.Models.ViewModels.Cars
         //[Required(ErrorMessage = "Введите телефон")]
         [Display(Name = "Телефон")]
         public string Phone { get; set; }
+
+        [Required(ErrorMessage = "Введите имейл")]
+        [Display(Name = "Email")]
+        public string email_aps { get; set; }
 
         //[Required(ErrorMessage = "Введите контактное лицо")]
         [Display(Name = "Контактное лицо")]

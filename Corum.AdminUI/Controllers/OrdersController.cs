@@ -94,8 +94,8 @@ namespace CorumAdminUI.Controllers
             {
                 navInfo.UseOrderDateFilter = true;
 
-                navInfo.FilterOrderDateBeg = DateTime.Now.AddDays(-7).ToString("dd.MM.yyyy");
-                navInfo.FilterOrderDateBegRaw = DateTimeConvertClass.getString(DateTime.Now.AddDays(-7));
+                navInfo.FilterOrderDateBeg = DateTime.Now.AddDays(0).ToString("dd.MM.yyyy");
+                navInfo.FilterOrderDateBegRaw = DateTimeConvertClass.getString(DateTime.Now.AddDays(0));
                 navInfo.FilterOrderDateEnd = DateTime.Now.AddDays(1).ToString("dd.MM.yyyy");
                 navInfo.FilterOrderDateEndRaw = DateTimeConvertClass.getString(DateTime.Now.AddDays(1));
 
@@ -131,14 +131,14 @@ namespace CorumAdminUI.Controllers
                                                     navInfo.UseOrderPriorityFilter,
                                                     navInfo.FilterOrderPriority,
                                                     navInfo.UseOrderDateFilter,
-                                                    string.IsNullOrEmpty(navInfo.FilterOrderDateBegRaw) ? DateTime.Now.AddDays(-7) : DateTimeConvertClass.getDateTime(navInfo.FilterOrderDateBegRaw),
+                                                    string.IsNullOrEmpty(navInfo.FilterOrderDateBegRaw) ? DateTime.Now.AddDays(0) : DateTimeConvertClass.getDateTime(navInfo.FilterOrderDateBegRaw),
                                                     string.IsNullOrEmpty(navInfo.FilterOrderDateEndRaw) ? DateTime.Now : DateTimeConvertClass.getDateTime(navInfo.FilterOrderDateEndRaw),
                                                     navInfo.UseOrderExDateFilter,
-                                                    string.IsNullOrEmpty(navInfo.FilterOrderExDateBegRaw) ? DateTime.Now.AddDays(-7) : DateTimeConvertClass.getDateTime(navInfo.FilterOrderExDateBegRaw),
+                                                    string.IsNullOrEmpty(navInfo.FilterOrderExDateBegRaw) ? DateTime.Now.AddDays(0) : DateTimeConvertClass.getDateTime(navInfo.FilterOrderExDateBegRaw),
                                                     string.IsNullOrEmpty(navInfo.FilterOrderExDateEndRaw) ? DateTime.Now : DateTimeConvertClass.getDateTime(navInfo.FilterOrderExDateEndRaw),
 
                                                     navInfo.UseOrderEndDateFilter,
-                                                    string.IsNullOrEmpty(navInfo.FilterOrderEndDateBegRaw) ? DateTime.Now.AddDays(-7) : DateTimeConvertClass.getDateTime(navInfo.FilterOrderEndDateBegRaw),
+                                                    string.IsNullOrEmpty(navInfo.FilterOrderEndDateBegRaw) ? DateTime.Now.AddDays(0) : DateTimeConvertClass.getDateTime(navInfo.FilterOrderEndDateBegRaw),
                                                     string.IsNullOrEmpty(navInfo.FilterOrderEndDateEndRaw) ? DateTime.Now : DateTimeConvertClass.getDateTime(navInfo.FilterOrderEndDateEndRaw),
 
                                                     navInfo.FilterOrderExecuterId,
@@ -199,20 +199,20 @@ namespace CorumAdminUI.Controllers
 
             model.isChrome = Request.Browser.Type.Contains("Chrome");
             model.UseOrderDateFilter = navInfo.UseOrderDateFilter;
-            model.FilterOrderDateBeg = string.IsNullOrEmpty(navInfo.FilterOrderDateBeg) ? DateTime.Now.AddDays(-7).ToString("dd.MM.yyyy") : navInfo.FilterOrderDateBeg;
-            model.FilterOrderDateBegRaw = string.IsNullOrEmpty(navInfo.FilterOrderDateBeg) ? DateTimeConvertClass.getString(DateTime.Now.AddDays(-7)) : navInfo.FilterOrderDateBegRaw;
+            model.FilterOrderDateBeg = string.IsNullOrEmpty(navInfo.FilterOrderDateBeg) ? DateTime.Now.AddDays(0).ToString("dd.MM.yyyy") : navInfo.FilterOrderDateBeg;
+            model.FilterOrderDateBegRaw = string.IsNullOrEmpty(navInfo.FilterOrderDateBeg) ? DateTimeConvertClass.getString(DateTime.Now.AddDays(0)) : navInfo.FilterOrderDateBegRaw;
             model.FilterOrderDateEnd = string.IsNullOrEmpty(navInfo.FilterOrderDateEnd) ? DateTime.Now.AddDays(1).ToString("dd.MM.yyyy") : navInfo.FilterOrderDateEnd;
             model.FilterOrderDateEndRaw = string.IsNullOrEmpty(navInfo.FilterOrderDateEnd) ? DateTimeConvertClass.getString(DateTime.Now.AddDays(1)) : navInfo.FilterOrderDateEndRaw;
 
             model.UseOrderExDateFilter = navInfo.UseOrderExDateFilter;
-            model.FilterOrderExDateBeg = string.IsNullOrEmpty(navInfo.FilterOrderExDateBeg) ? DateTime.Now.AddDays(-7).ToString("dd.MM.yyyy") : navInfo.FilterOrderExDateBeg;
-            model.FilterOrderExDateBegRaw = string.IsNullOrEmpty(navInfo.FilterOrderExDateBeg) ? DateTimeConvertClass.getString(DateTime.Now.AddDays(-7)) : navInfo.FilterOrderExDateBegRaw;
+            model.FilterOrderExDateBeg = string.IsNullOrEmpty(navInfo.FilterOrderExDateBeg) ? DateTime.Now.AddDays(0).ToString("dd.MM.yyyy") : navInfo.FilterOrderExDateBeg;
+            model.FilterOrderExDateBegRaw = string.IsNullOrEmpty(navInfo.FilterOrderExDateBeg) ? DateTimeConvertClass.getString(DateTime.Now.AddDays(0)) : navInfo.FilterOrderExDateBegRaw;
             model.FilterOrderExDateEnd = string.IsNullOrEmpty(navInfo.FilterOrderExDateEnd) ? DateTime.Now.AddDays(1).ToString("dd.MM.yyyy") : navInfo.FilterOrderExDateEnd;
             model.FilterOrderExDateEndRaw = string.IsNullOrEmpty(navInfo.FilterOrderExDateEnd) ? DateTimeConvertClass.getString(DateTime.Now.AddDays(1)) : navInfo.FilterOrderExDateEndRaw;
 
             model.UseOrderEndDateFilter = navInfo.UseOrderEndDateFilter;
-            model.FilterOrderEndDateBeg = string.IsNullOrEmpty(navInfo.FilterOrderEndDateBeg) ? DateTime.Now.AddDays(-7).ToString("dd.MM.yyyy") : navInfo.FilterOrderEndDateBeg;
-            model.FilterOrderEndDateBegRaw = string.IsNullOrEmpty(navInfo.FilterOrderEndDateBeg) ? DateTimeConvertClass.getString(DateTime.Now.AddDays(-7)) : navInfo.FilterOrderEndDateBegRaw;
+            model.FilterOrderEndDateBeg = string.IsNullOrEmpty(navInfo.FilterOrderEndDateBeg) ? DateTime.Now.AddDays(0).ToString("dd.MM.yyyy") : navInfo.FilterOrderEndDateBeg;
+            model.FilterOrderEndDateBegRaw = string.IsNullOrEmpty(navInfo.FilterOrderEndDateBeg) ? DateTimeConvertClass.getString(DateTime.Now.AddDays(0)) : navInfo.FilterOrderEndDateBegRaw;
             model.FilterOrderEndDateEnd = string.IsNullOrEmpty(navInfo.FilterOrderEndDateEnd) ? DateTime.Now.AddDays(1).ToString("dd.MM.yyyy") : navInfo.FilterOrderEndDateEnd;
             model.FilterOrderEndDateEndRaw = string.IsNullOrEmpty(navInfo.FilterOrderEndDateEnd) ? DateTimeConvertClass.getString(DateTime.Now.AddDays(1)) : navInfo.FilterOrderEndDateEndRaw;
 

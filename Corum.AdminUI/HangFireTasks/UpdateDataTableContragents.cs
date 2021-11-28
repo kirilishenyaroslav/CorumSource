@@ -62,127 +62,131 @@ namespace CorumAdminUI.HangFireTasks
                             {
                                 BaseClient clientbaseOffer = new BaseClient($"{allAppSettings["ApiUrlGetOffer"]}{items.tenderItemUuid}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
                                 var JSONresponseContragent = $"{{\"data\":{new GetApiTendAjax().GetCallAsync(clientbaseOffer).Result.ResponseMessage}}}";
-                                RequestJSONContragentModel myDeserializedClassContragent = JsonConvert.DeserializeObject<RequestJSONContragentModel>(JSONresponseContragent);
-                                List<RequestJSONContragentMainData> listContAgentModelJSONDesiarized = new List<RequestJSONContragentMainData>();
-                                int SupplierIdWinnerContragent = 0;
-                                foreach (var item in myDeserializedClassContragent.Data)
+                                bool check = JSONresponseContragent.Contains("errorCode");
+                                if (!check)
                                 {
-                                    try
+                                    RequestJSONContragentModel myDeserializedClassContragent = JsonConvert.DeserializeObject<RequestJSONContragentModel>(JSONresponseContragent);
+                                    List<RequestJSONContragentMainData> listContAgentModelJSONDesiarized = new List<RequestJSONContragentMainData>();
+                                    int SupplierIdWinnerContragent = 0;
+                                    foreach (var item in myDeserializedClassContragent.Data)
                                     {
-                                        BaseClient clientbaseSuppContragent = new BaseClient($"{allAppSettings["ApiUrlGetSuppContrAgent"]}{item.SupplierId}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
-                                        var JSONresponseContAgentModel = new GetApiTendAjax().GetCallAsync(clientbaseSuppContragent).Result.ResponseMessage;
-                                        RequestJSONContragentMainData myDeserializedClassContragentModel = JsonConvert.DeserializeObject<RequestJSONContragentMainData>(JSONresponseContAgentModel);
-                                        listContAgentModelJSONDesiarized.Add(myDeserializedClassContragentModel);
-                                        if ((item.IsWinner != null) ? true : false)
+                                        try
                                         {
-                                            SupplierIdWinnerContragent = item.SupplierId;
-                                        }
-                                    }
-                                    catch (Exception e)
-                                    {
-                                    }
-                                }
-                                List<ContrAgentModel> listContragentModels = new List<ContrAgentModel>();
-                                ContrAgentModel isWinnerContragent = new ContrAgentModel();
-                                listContragentModels = context.GetAgentModels(listContAgentModelJSONDesiarized, myDeserializedClassContragent);   // Список всех контрагентов, которые принимали участие в тендере
-                                isWinnerContragent = context.GetWinnerContragent(listContragentModels, SupplierIdWinnerContragent); // Информация о контрагенте-победителе
-                                List<RegisterTenderContragent> tenderContragents = new List<RegisterTenderContragent>();
-                                foreach (var el in listContragentModels)
-                                {
-                                    double costOfCarWithoutNDS = 0d;
-                                    double costOfCarWithoutNDSToNull = 0d;
-                                    int paymentDelay = 0;
-                                    string note = null;
-                                    string itemsDescription = items.itemNote;
-                                    try
-                                    {
-                                        foreach (var it in items.propValues)
-                                        {
-                                            if (it.ВесТ != null)
+                                            BaseClient clientbaseSuppContragent = new BaseClient($"{allAppSettings["ApiUrlGetSuppContrAgent"]}{item.SupplierId}", allAppSettings["ApiLogin"], allAppSettings["ApiPassordMD5"]);
+                                            var JSONresponseContAgentModel = new GetApiTendAjax().GetCallAsync(clientbaseSuppContragent).Result.ResponseMessage;
+                                            RequestJSONContragentMainData myDeserializedClassContragentModel = JsonConvert.DeserializeObject<RequestJSONContragentMainData>(JSONresponseContAgentModel);
+                                            listContAgentModelJSONDesiarized.Add(myDeserializedClassContragentModel);
+                                            if ((item.IsWinner != null) ? true : false)
                                             {
-                                                cargoWeight = it.ВесТ;
-                                                break;
+                                                SupplierIdWinnerContragent = item.SupplierId;
                                             }
                                         }
+                                        catch (Exception e)
+                                        {
+                                        }
+                                    }
+                                    List<ContrAgentModel> listContragentModels = new List<ContrAgentModel>();
+                                    ContrAgentModel isWinnerContragent = new ContrAgentModel();
+                                    listContragentModels = context.GetAgentModels(listContAgentModelJSONDesiarized, myDeserializedClassContragent);   // Список всех контрагентов, которые принимали участие в тендере
+                                    isWinnerContragent = context.GetWinnerContragent(listContragentModels, SupplierIdWinnerContragent); // Информация о контрагенте-победителе
+                                    List<RegisterTenderContragent> tenderContragents = new List<RegisterTenderContragent>();
+                                    foreach (var el in listContragentModels)
+                                    {
+                                        double costOfCarWithoutNDS = 0d;
+                                        double costOfCarWithoutNDSToNull = 0d;
+                                        int paymentDelay = 0;
+                                        string note = null;
+                                        string itemsDescription = items.itemNote;
+                                        try
+                                        {
+                                            foreach (var it in items.propValues)
+                                            {
+                                                if (it.ВесТ != null)
+                                                {
+                                                    cargoWeight = it.ВесТ;
+                                                    break;
+                                                }
+                                            }
 
-                                        for (int i = 0; i < el.listCritariaValues.Count; i++)
-                                        {
-                                            if (costOfCarWithoutNDS == 0)
+                                            for (int i = 0; i < el.listCritariaValues.Count; i++)
                                             {
-                                                costOfCarWithoutNDS = (el.listCritariaValues[i].Id == 61) ? Double.Parse(el.listCritariaValues[i].Value.ToString()) : 0d;
-                                            }
-                                            if (costOfCarWithoutNDSToNull == 0)
-                                            {
-                                                costOfCarWithoutNDSToNull = (el.listCritariaValues[i].Id == 64) ? Double.Parse(el.listCritariaValues[i].Value.ToString()) : 0d;
-                                            }
-                                            if (paymentDelay == 0)
-                                            {
-                                                paymentDelay = (el.listCritariaValues[i].Id == 66) ? Int32.Parse(el.listCritariaValues[i].Value.ToString()) : 0;
-                                            }
-                                            if (note == null)
-                                            {
-                                                note = (el.listCritariaValues[i].Id == 510) ? el.listCritariaValues[i].Value.ToString() : null;
+                                                if (costOfCarWithoutNDS == 0)
+                                                {
+                                                    costOfCarWithoutNDS = (el.listCritariaValues[i].Id == 61) ? Double.Parse(el.listCritariaValues[i].Value.ToString()) : 0d;
+                                                }
+                                                if (costOfCarWithoutNDSToNull == 0)
+                                                {
+                                                    costOfCarWithoutNDSToNull = (el.listCritariaValues[i].Id == 64) ? Double.Parse(el.listCritariaValues[i].Value.ToString()) : 0d;
+                                                }
+                                                if (paymentDelay == 0)
+                                                {
+                                                    paymentDelay = (el.listCritariaValues[i].Id == 66) ? Int32.Parse(el.listCritariaValues[i].Value.ToString()) : 0;
+                                                }
+                                                if (note == null)
+                                                {
+                                                    note = (el.listCritariaValues[i].Id == 510) ? el.listCritariaValues[i].Value.ToString() : null;
+                                                }
                                             }
                                         }
-                                    }
-                                    catch (Exception e)
-                                    {
-                                    }
-                                    if (isWinnerContragent != null && el.SupplierId != isWinnerContragent.SupplierId)
-                                    {
+                                        catch (Exception e)
+                                        {
+                                        }
+                                        if (isWinnerContragent != null && el.SupplierId != isWinnerContragent.SupplierId)
+                                        {
 
-                                        RegisterTenderContragent registerTenderContragent = new RegisterTenderContragent()
+                                            RegisterTenderContragent registerTenderContragent = new RegisterTenderContragent()
+                                            {
+                                                OrderId = Int64.Parse(myDeserializedClass.data.tenderExternalN.Remove(myDeserializedClass.data.tenderExternalN.IndexOf('-'))),
+                                                tenderNumber = Int32.Parse(myDeserializedClass.data.tenderNumber),
+                                                itemExternalNumber = Int64.Parse(items.itemExternalN),
+                                                ContragentName = el.OwnershipTypeName + ' ' + el.SupplierName,
+                                                ContragentIdAps = el.SupplierId,
+                                                DateUpdateInfo = DateTime.Now,
+                                                IsWinner = false,
+                                                EDRPOUContragent = Int64.Parse(el.SupplierEdrpou),
+                                                emailContragent = (el.ContactEmail != null) ? el.ContactEmail : el.SupplierCEOContragent.EMail,
+                                                transportUnitsProposed = 1,
+                                                acceptedTransportUnits = 0,
+                                                costOfCarWithoutNDS = costOfCarWithoutNDS,
+                                                costOfCarWithoutNDSToNull = costOfCarWithoutNDSToNull,
+                                                PaymentDelay = paymentDelay,
+                                                tenderItemUuid = Guid.Parse(items.tenderItemUuid),
+                                                nmcName = items.nmcName,
+                                                note = note,
+                                                itemDescription = itemsDescription,
+                                                cargoWeight = cargoWeight
+                                            };
+                                            tenderContragents.Add(registerTenderContragent);
+                                        }
+                                        else
                                         {
-                                            OrderId = Int64.Parse(myDeserializedClass.data.tenderExternalN.Remove(myDeserializedClass.data.tenderExternalN.IndexOf('-'))),
-                                            tenderNumber = Int32.Parse(myDeserializedClass.data.tenderNumber),
-                                            itemExternalNumber = Int64.Parse(items.itemExternalN),
-                                            ContragentName = el.OwnershipTypeName + ' ' + el.SupplierName,
-                                            ContragentIdAps = el.SupplierId,
-                                            DateUpdateInfo = DateTime.Now,
-                                            IsWinner = false,
-                                            EDRPOUContragent = Int64.Parse(el.SupplierEdrpou),
-                                            emailContragent = (el.ContactEmail != null) ? el.ContactEmail : el.SupplierCEOContragent.EMail,
-                                            transportUnitsProposed = 1,
-                                            acceptedTransportUnits = 0,
-                                            costOfCarWithoutNDS = costOfCarWithoutNDS,
-                                            costOfCarWithoutNDSToNull = costOfCarWithoutNDSToNull,
-                                            PaymentDelay = paymentDelay,
-                                            tenderItemUuid = Guid.Parse(items.tenderItemUuid),
-                                            nmcName = items.nmcName,
-                                            note = note,
-                                            itemDescription = itemsDescription,
-                                            cargoWeight = cargoWeight
-                                        };
-                                        tenderContragents.Add(registerTenderContragent);
+                                            RegisterTenderContragent registerTenderContragent = new RegisterTenderContragent()
+                                            {
+                                                OrderId = Int64.Parse(myDeserializedClass.data.tenderExternalN.Remove(myDeserializedClass.data.tenderExternalN.IndexOf('-'))),
+                                                tenderNumber = Int32.Parse(myDeserializedClass.data.tenderNumber),
+                                                itemExternalNumber = Int64.Parse(items.itemExternalN),
+                                                ContragentName = el.OwnershipTypeName + ' ' + el.SupplierName,
+                                                ContragentIdAps = el.SupplierId,
+                                                DateUpdateInfo = DateTime.Now,
+                                                IsWinner = true,
+                                                EDRPOUContragent = Int64.Parse(el.SupplierEdrpou),
+                                                emailContragent = (el.ContactEmail != null) ? el.ContactEmail : el.SupplierCEOContragent.EMail,
+                                                transportUnitsProposed = 1,
+                                                acceptedTransportUnits = 1,
+                                                costOfCarWithoutNDS = costOfCarWithoutNDS,
+                                                costOfCarWithoutNDSToNull = costOfCarWithoutNDSToNull,
+                                                PaymentDelay = paymentDelay,
+                                                tenderItemUuid = Guid.Parse(items.tenderItemUuid),
+                                                nmcName = items.nmcName,
+                                                note = note,
+                                                itemDescription = itemsDescription,
+                                                cargoWeight = cargoWeight
+                                            };
+                                            tenderContragents.Add(registerTenderContragent);
+                                        }
                                     }
-                                    else
-                                    {
-                                        RegisterTenderContragent registerTenderContragent = new RegisterTenderContragent()
-                                        {
-                                            OrderId = Int64.Parse(myDeserializedClass.data.tenderExternalN.Remove(myDeserializedClass.data.tenderExternalN.IndexOf('-'))),
-                                            tenderNumber = Int32.Parse(myDeserializedClass.data.tenderNumber),
-                                            itemExternalNumber = Int64.Parse(items.itemExternalN),
-                                            ContragentName = el.OwnershipTypeName + ' ' + el.SupplierName,
-                                            ContragentIdAps = el.SupplierId,
-                                            DateUpdateInfo = DateTime.Now,
-                                            IsWinner = true,
-                                            EDRPOUContragent = Int64.Parse(el.SupplierEdrpou),
-                                            emailContragent = (el.ContactEmail != null) ? el.ContactEmail : el.SupplierCEOContragent.EMail,
-                                            transportUnitsProposed = 1,
-                                            acceptedTransportUnits = 1,
-                                            costOfCarWithoutNDS = costOfCarWithoutNDS,
-                                            costOfCarWithoutNDSToNull = costOfCarWithoutNDSToNull,
-                                            PaymentDelay = paymentDelay,
-                                            tenderItemUuid = Guid.Parse(items.tenderItemUuid),
-                                            nmcName = items.nmcName,
-                                            note = note,
-                                            itemDescription = itemsDescription,
-                                            cargoWeight = cargoWeight
-                                        };
-                                        tenderContragents.Add(registerTenderContragent);
-                                    }
+                                    contragents.Add(Int64.Parse(items.itemExternalN), tenderContragents);
                                 }
-                                contragents.Add(Int64.Parse(items.itemExternalN), tenderContragents);
                             }
                         }
                         context.UpdateDataRegisterContragents(contragents);

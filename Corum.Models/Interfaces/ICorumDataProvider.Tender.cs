@@ -34,7 +34,7 @@ namespace Corum.Models
         ContrAgentModel GetWinnerContragent(List<ContrAgentModel> listAllContragents, int SupplierIdWinnerContragent);
         void UpdateDataRegisterContragents(Dictionary<long, List<RegisterTenderContragent>> regisContragents);
         void FormInitMessageToContragents(ref InfoToContragentsAfterChange listInfoToCont);
-        bool FormMessageToSendContragents(InfoToContragentsAfterChange listInfoToCont);
+        bool FormMessageToSendContragents(InfoToContragentsAfterChange listInfoToCont, bool toogle);
         List<RegisterMessageToContragents> GetListFormUuidToContragents(long orderId);
         bool CheckFormUuid(Guid formUuid);
         List<RegisterFormFromContragents> GetRegisterFormFromContragents(Guid formUuid);

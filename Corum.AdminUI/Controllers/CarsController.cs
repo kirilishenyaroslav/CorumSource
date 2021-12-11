@@ -37,10 +37,14 @@ namespace CorumAdminUI.Controllers
         [HttpGet]
         public ActionResult NewCarOwner(int? parentId)
         {
+            var listEdrpou = context.GetEdrpouListAllContragents();
+            var listEmails = context.GetEmailsListAllContragents();
             var carOwnersInfo = new CarOwnersAccessViewModel()
             {
                 parentId = parentId,                 
                 AvailableCarOwners = context.GetCarOwnersTree().ToList(),
+                edrpouListAllContragents = listEdrpou,
+                emailsListAllContragents = listEmails
             };
 
             return PartialView(carOwnersInfo);
@@ -64,7 +68,10 @@ namespace CorumAdminUI.Controllers
         public ActionResult UpdateCarOwner(int carOwnerId)
         {
             var carOwnerInfo = context.GetCarOwner(carOwnerId);
-
+            List<string> emails = new List<string>();
+            emails = context.GetListEmails(carOwnerInfo.email_aps);
+            var listEdrpou = context.GetEdrpouListAllContragents();
+            var listEmails = context.GetEmailsListAllContragents();
             var carOwnerItem = new CarOwnersAccessViewModel()
             {
                 Id = carOwnerInfo.Id,
@@ -78,6 +85,13 @@ namespace CorumAdminUI.Controllers
                 isRoot = carOwnerInfo.isRoot,
                 IsForwarder = carOwnerInfo.IsForwarder,
                 AvailableCarOwners = context.GetCarOwnersTree().ToList(),
+                emails = emails,
+                email_aps = (emails.Count > 0) ? emails[0] : null,
+                email_aps2 = (emails.Count > 1)? emails[1]: null,
+                email_aps3 = (emails.Count > 2) ? emails[2] : null, 
+                edrpou_aps = carOwnerInfo.edrpou_aps,
+                edrpouListAllContragents = listEdrpou,
+                emailsListAllContragents = listEmails
             };
 
             return View(carOwnerItem);
@@ -86,6 +100,14 @@ namespace CorumAdminUI.Controllers
         [HttpPost]
         public ActionResult UpdateCarOwner(CarOwnersAccessViewModel model)
         {
+            if (model.email_aps2 == null) 
+            {
+                ModelState["email_aps2"].Errors.Clear();
+            }
+            if (model.email_aps3 == null)
+            {
+                ModelState["email_aps3"].Errors.Clear();
+            }
             if (!ModelState.IsValid) return View(model);
             context.UpdateCarOwner(model);
             return RedirectToAction("CarOwners", "Cars");

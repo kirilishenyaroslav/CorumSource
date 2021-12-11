@@ -128,9 +128,18 @@ namespace CorumAdminUI.Controllers
                         //"corumsourcetest@gmail.com",
                         //"sergeykredenser@gmail.com"
                         };
-                    if (data.regmesstocontrag != null && data.regmesstocontrag.emailOperacionist.Contains('@'))
+                    var emailsListOperacionist = context.GetListEmails(data.regmesstocontrag.emailOperacionist);
+                    if (data.regmesstocontrag != null && emailsListOperacionist[0].Contains('@'))
                     {
-                        listEmails.Add(data.regmesstocontrag.emailOperacionist);
+                        //listEmails.Add(data.regmesstocontrag.emailOperacionist);
+                        foreach (var value in emailsListOperacionist)
+                        {
+                            string addEmail = listEmails.Find(x => x == value);
+                            if (addEmail == null)
+                            {
+                                listEmails.Add(value);
+                            }
+                        }
                     }
 
                     foreach (var value in listEmails)

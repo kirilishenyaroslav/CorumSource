@@ -42,6 +42,7 @@ namespace Corum.DAL.Entity
         public string emailContragent { get; set; }
         public Nullable<System.Guid> formUuid { get; set; }
         public Nullable<int> tenderTureNumber { get; set; }
+        public Nullable<long> edrpou_aps { get; set; }
     
         public virtual ContractSpecifications ContractSpecifications { get; set; }
         public virtual OrdersBase OrdersBase { get; set; }

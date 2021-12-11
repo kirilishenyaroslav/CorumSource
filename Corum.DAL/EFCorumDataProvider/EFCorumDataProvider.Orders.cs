@@ -2443,9 +2443,28 @@ namespace Corum.DAL
             var messageToContr = db.RegisterMessageToContragents.FirstOrDefault(u => u.formUuid == formUuid);
             var formFromContr = db.RegisterFormFromContragents.FirstOrDefault(u => u.tenderItemUuid == formUuid);
             var dbInfo = db.OrderUsedCars.FirstOrDefault(u => u.formUuid == formUuid);
-            var expeditor = db.CarOwners.FirstOrDefault(u => u.email_aps == messageToContr.emailContragent);
-            var payerId = db.OrdersBase.FirstOrDefault(u => u.Id == messageToContr.orderId).PayerId;
-            var contractInfo = GetContractExpBkInfoBySearchString("", expeditor.Id, (int)payerId).ToList();
+            var emailsListContr = GetListEmails(messageToContr.emailContragent);
+            CarOwners expeditor = new CarOwners();
+            Nullable<int> payerId;
+            List<ContractsViewModel> contractInfo = new List<ContractsViewModel>();
+            if (emailsListContr != null)
+            {
+                var toggle = true;
+                foreach (var item in emailsListContr)
+                {
+                    if (toggle)
+                    {
+                        expeditor = null;
+                        var emailExp = db.CarOwners.FirstOrDefault(u => u.email_aps.Contains(item)).email_aps;
+                        expeditor = db.CarOwners.FirstOrDefault(u => u.email_aps == emailExp);
+                        if (expeditor != null) {
+                            payerId = db.OrdersBase.FirstOrDefault(u => u.Id == messageToContr.orderId).PayerId;
+                            contractInfo = GetContractExpBkInfoBySearchString("", expeditor.Id, (int)payerId).ToList();
+                            toggle = false;
+                        }
+                    }
+                }
+            }
             data.regmesstocontrag = new Models.Tender.RegisterMessageToContragents()
             {
                 acceptedTransportUnits = messageToContr.acceptedTransportUnits,
@@ -2631,12 +2650,44 @@ namespace Corum.DAL
                 var messageToContr = db.RegisterMessageToContragents.FirstOrDefault(u => u.formUuid == formUuid && u.tenderTureNumber == tenderTureNumber);
                 var formFromContr = db.RegisterFormFromContragents.FirstOrDefault(u => u.tenderItemUuid == formUuid && u.tenderTureNumber == tenderTureNumber);
                 var dbInfo = db.OrderUsedCars.FirstOrDefault(u => u.formUuid == formUuid && u.tenderTureNumber == tenderTureNumber);
-                var expeditor = db.CarOwners.FirstOrDefault(u => u.email_aps == messageToContr.emailContragent);
-                if (expeditor == null)
+                var emailsListContr = GetListEmails(messageToContr.emailContragent);
+                CarOwners expeditor = new CarOwners();
+                RegisterTenderContragents regContrag;
+                if (emailsListContr != null)
                 {
-                    var regContrag = db.RegisterTenderContragents.FirstOrDefault(u => u.emailContragent == messageToContr.emailContragent);
-                    expeditor = (regContrag != null) ? db.CarOwners.FirstOrDefault(u => u.edrpou_aps == regContrag.EDRPOUContragent) : expeditor;
+                    var toggle = true;
+                    foreach (var item in emailsListContr)
+                    {
+                        if (toggle)
+                        {
+                            expeditor = null;
+                            var emailExp = db.CarOwners.FirstOrDefault(u => u.email_aps.Contains(item)).email_aps;
+                            expeditor = db.CarOwners.FirstOrDefault(u => u.email_aps == emailExp);
+                            if (expeditor != null)
+                            {
+                                toggle = false;
+                            }
+                        }
+                    }
+                    if (expeditor == null)
+                    {
+                        toggle = true;
+                        foreach (var item in emailsListContr)
+                        {
+                            if (toggle)
+                            {
+                                var emailExp = db.RegisterTenderContragents.FirstOrDefault(u => u.emailContragent.Contains(item)).emailContragent;
+                                regContrag = db.RegisterTenderContragents.FirstOrDefault(u => u.emailContragent == emailExp);
+                                expeditor = (regContrag != null) ? db.CarOwners.FirstOrDefault(u => u.edrpou_aps == regContrag.EDRPOUContragent) : expeditor;
+                                if (expeditor != null)
+                                {
+                                    toggle = false;
+                                }
+                            }
+                        }
+                    }
                 }
+               
                 var payerId = db.OrdersBase.FirstOrDefault(u => u.Id == messageToContr.orderId).PayerId;
                 var contractInfo = GetContractExpBkInfoBySearchString("", expeditor.Id, (int)payerId).ToList();
                 if (dbInfo == null && IsSelected)

@@ -4,10 +4,25 @@
     ViewBag.Title = "NewCarOwner";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+<style type="text/css" media="(min-width: 350px)">
+    .col-md-1, .col-md-2, .col-md-3, .col-md-4, .col-md-5, .col-md-6, .col-md-7, .col-md-8, .col-md-9, .col-md-10, .col-md-11, .col-md-12 {
+        float: left;
+    }
 
-@using (Html.BeginForm("NewCarOwner", "Cars", FormMethod.Post))
+    .error-exist {
+        -webkit-text-size-adjust: 100%;
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        font-size: 15px;
+        line-height: 1.42857143;
+        font-family: 'Open Sans', sans-serif !important;
+        color: #e74c3c;
+        box-sizing: border-box;
+    }
+</style>
+
+@using (Html.BeginForm("NewCarOwner", "Cars", FormMethod.Post, new { id = "frmId" }))
 {
-    <div class="form-horizontal">
+    <div class="form-horizontal" id="divHorForm">
         <h4>Добавление нового перевозчика</h4>
         <hr />
         @Html.ValidationSummary(true, "", new { @class = "text-danger" })
@@ -16,49 +31,76 @@
 
         <div class="form-group">
             @Html.LabelFor(model => model.CarrierName, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10" style="width:310px">
                 @Html.EditorFor(model => model.CarrierName, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
                 @Html.ValidationMessageFor(model => model.CarrierName, "", new { @class = "text-danger" })
             </div>
         </div>
-        @*<div class="form-group">
+        <div class="form-group">
             @Html.LabelFor(model => model.edrpou_aps, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.edrpou_aps, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+            <div class="col-md-10" style="width:310px">
+                @Html.EditorFor(model => model.edrpou_aps, new { htmlAttributes = new { @id = "EdrpouCar", @class = "form-control", autocomplete = "off", @type = "text" } })
                 @Html.ValidationMessageFor(model => model.edrpou_aps, "", new { @class = "text-danger" })
+                <span id="edrpou_ErrorExist" class="error-exist" style="display: none">Такой номер уже существует</span>
             </div>
-        </div>*@
+        </div>
         <div class="form-group">
             @Html.LabelFor(model => model.Address, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10" style="width:310px">
                 @Html.EditorFor(model => model.Address, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
                 @Html.ValidationMessageFor(model => model.Address, "", new { @class = "text-danger" })
             </div>
         </div>
-        <div class="form-group">
+        <div class="form-group" id="PhoneDiv">
             @Html.LabelFor(model => model.Phone, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10" style="width:310px">
                 @Html.EditorFor(model => model.Phone, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
                 @Html.ValidationMessageFor(model => model.Phone, "", new { @class = "text-danger" })
             </div>
         </div>
-        @*<div class="form-group">
+        <div class="form-group" id="emailDivBlock" style="display:block;">
             @Html.LabelFor(model => model.email_aps, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
-                @Html.EditorFor(model => model.email_aps, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
+            <div class="col-md-3" style="width:310px">
+                @Html.EditorFor(model => model.email_aps, new { htmlAttributes = new { @id = "emailCar", @class = "form-control", autocomplete = "off" } })
                 @Html.ValidationMessageFor(model => model.email_aps, "", new { @class = "text-danger" })
+                <span id="email_aps_ErrorExist" class="error-exist" style="display: none">Такой имейл уже существует</span>
             </div>
-        </div>*@
+            <div class="col-md-1" style="width:auto; padding-left: 0px; display: flex; flex-flow: column nowrap; justify-content:flex-start; height:45px;">
+                <a href="#" data-toggle="tooltip" data-placement="right" title="Добавить email">
+                    <img src="../Content/images/plus.png" id="emailButAdd" onclick="CreateEmail()" style="border: 0px; width:16px; height:16px;">
+                </a>
+                <a href="#" data-toggle="tooltip" data-placement="right" title="Удалить email">
+                    <img src="../Content/images/icon-delete.png" id="emailButDelete" onclick="DeleteEmail()" style="border: 0px; width:16px; height:16px;">
+                </a>
+            </div>
+        </div>
+        <div class="form-group" id="emailDivBlock2" style="display:none;">
+            @Html.LabelFor(model => model.email_aps2, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.email_aps2, new { htmlAttributes = new { @id = "email2Car", @class = "form-control", autocomplete = "off" } })
+                @Html.ValidationMessageFor(model => model.email_aps2, "", new { @class = "text-danger" })
+                <span id="email_aps2_ErrorExist" class="error-exist" style="display: none">Такой имейл уже существует</span>
+            </div>
+        </div>
+        <div class="form-group" id="emailDivBlock3" style="display:none;">
+            @Html.LabelFor(model => model.email_aps3, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.email_aps3, new { htmlAttributes = new { @id = "email3Car", @class = "form-control", autocomplete = "off" } })
+                @Html.ValidationMessageFor(model => model.email_aps3, "", new { @class = "text-danger" })
+                <span id="email_aps3_ErrorExist" class="error-exist" style="display: none">Такой имейл уже существует</span>
+            </div>
+        </div>
+
         <div class="form-group">
             @Html.LabelFor(model => model.ContactPerson, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10" style="width:310px">
                 @Html.EditorFor(model => model.ContactPerson, new { htmlAttributes = new { @class = "form-control", autocomplete = "off" } })
                 @Html.ValidationMessageFor(model => model.ContactPerson, "", new { @class = "text-danger" })
             </div>
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.parentId, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10" style="width:610px">
                 <div class="form-control-container full-width-select">
                     @Html.DropDownListFor(model => model.parentId,
                         new SelectList(Model.AvailableCarOwners.Select(x => new { Value = x.Id, Text = x.CarrierName }), "Value", "Text", Model.parentId),
@@ -69,7 +111,7 @@
         </div>
         <div class="form-group">
             @Html.LabelFor(model => model.IsForwarder, htmlAttributes: new { @class = "control-label col-md-2" })
-            <div class="col-md-10">
+            <div class="col-md-10" style="width:310px">
                 <div class="form-control-container full-width-select">
                     @Html.CheckBoxFor(m => m.IsForwarder)
                 </div>
@@ -81,6 +123,178 @@
             </div>
         </div>
     </div>
+}
+@section scripts
+{
+    <script>
+        $(document).ready(function(){
+          $('[data-toggle="tooltip"]').tooltip();
+        });
+        let frmId = document.getElementById('frmId');
+        let PhoneDiv = document.getElementById('PhoneDiv');
+        let emailDivBlock = document.getElementById('emailDivBlock');
+        let emailDivBlock2 = document.getElementById('emailDivBlock2');
+        let emailDivBlock3 = document.getElementById('emailDivBlock3');
+        let emailButDelete = document.getElementById('emailButDelete');
+        let emailButAdd = document.getElementById('emailButAdd');
+        let divHorForm = document.getElementById('divHorForm');
+        let EdrpouCar = document.getElementById('EdrpouCar');
+        let emailCar = document.getElementById('emailCar');
+        let email2Car = document.getElementById('email2Car');
+        let email3Car = document.getElementById('email3Car');
+
+        let edrpou_ErrorExist = document.getElementById('edrpou_ErrorExist');
+        let email_aps_ErrorExist = document.getElementById('email_aps_ErrorExist');
+        let email_aps2_ErrorExist = document.getElementById('email_aps2_ErrorExist');
+        let email_aps3_ErrorExist = document.getElementById('email_aps3_ErrorExist');
+
+        EdrpouCar.onkeypress = KeyPressValidInput;
+        let listButtons = [emailButDelete, emailButAdd];
+        let listEmails = [emailDivBlock, emailDivBlock2, emailDivBlock3];
+        let countEmail = 1;
+        function CreateEmail() {
+            switch (++countEmail) {
+                case 2: {
+                    listEmails[1].style.display = 'block';
+                    break;
+                }
+                case 3: {
+                    listEmails[2].style.display = 'block';
+                    break;
+                }
+                default: countEmail--; break;
+            }
+        }
+        function KeyPressValidInput(e) {
+            switch (String.fromCharCode(e.charCode)) {
+                case '0':
+                case '1':
+                case '2':
+                case '3':
+                case '4':
+                case '5':
+                case '6':
+                case '7':
+                case '8':
+                case '9':
+                    {
+                        return true;
+                    }
+                default:
+                    {
+                        return false;
+                    }
+            }
+        }
+        function DeleteEmail() {
+            let findEmailRemove;
+            let htmlEl = listEmails.find(function (element) {
+                if (element.style.display == "block") {
+                    findEmailRemove = element;
+                }
+            });
+            console.dir(htmlEl);
+            if (findEmailRemove.id != emailDivBlock.id) {
+                findEmailRemove.style.display = "none";
+                countEmail--;
+            }
+        }
+
+        window.onload = function () {
+            listButtons.forEach(value => {
+                value.addEventListener('mouseover', function (e) {
+                    e.target.style.cursor = "pointer";
+                });
+
+                value.addEventListener('mouseout', function (e) {
+                    e.target.style.cursor = "default";
+                });
+
+                value.addEventListener('mousedown', function (e) {
+                    e.target.style.transform = "scale(1.05)";
+                    e.target.style.cursor = "default";
+                });
+
+                value.addEventListener('mouseup', function (e) {
+                    e.target.style.transform = "scale(1)";
+                    e.target.style.cursor = "pointer";
+                });
+            })
+
+            frmId.addEventListener('submit', function (e) {
+                let listEdrpouAllContragents = @Html.Raw(Json.Encode(@Model.edrpouListAllContragents));
+                let listEmailsAllContragents = @Html.Raw(Json.Encode(@Model.emailsListAllContragents));
+                let upgradeEdrpouList = [];
+                let upgradeEmailsList = [];
+                listEdrpouAllContragents.forEach(value => {
+                    if (value != null) {
+                        upgradeEdrpouList.push(value);
+                    }
+                });
+                listEmailsAllContragents.forEach(value => {
+                    if (value != null) {
+                        let itemList = value.split(';');
+                        itemList.forEach(item => { upgradeEmailsList.push(item) });
+                    }
+                });
+                //Валидация ЕДРПОУ на случай повторного ввода номера ЕДРПОУ
+                let checkEdrpou = (Number(EdrpouCar.value) == Number(@Html.Raw(Json.Encode(@Model.edrpou_aps)))) ? false : true;
+                if (checkEdrpou) {
+                    checkEdrpou = upgradeEdrpouList.some(x => x == Number(EdrpouCar.value));
+                }
+                if (checkEdrpou) {
+                    e.preventDefault();
+                    EdrpouCar.focus();
+                    edrpou_ErrorExist.style.display = "block";
+                }
+
+                //Валидация email на случай повторного ввода номера адреса email
+                let checkEmailOne = (emailCar.value == @Html.Raw(Json.Encode(@Model.email_aps))) ? false : true;
+                if (checkEmailOne) {
+                    checkEmailOne = upgradeEmailsList.some(x => x == emailCar.value);
+                }
+                if (checkEmailOne) {
+                    e.preventDefault();
+                    emailCar.focus();
+                    email_aps_ErrorExist.style.display = "block";
+                }
+
+                //Валидация email2 на случай повторного ввода номера адреса email2
+                let checkEmailTwo = (email2Car.value == @Html.Raw(Json.Encode(@Model.email_aps2))) ? false : true;
+                if (checkEmailTwo) {
+                    checkEmailTwo = upgradeEmailsList.some(x => x == email2Car.value);
+                }
+                if (checkEmailTwo) {
+                    e.preventDefault();
+                    email2Car.focus();
+                    email_aps2_ErrorExist.style.display = "block";
+                }
+
+                //Валидация email3 на случай повторного ввода номера адреса email3
+                let checkEmailThree = (email3Car.value == @Html.Raw(Json.Encode(@Model.email_aps3))) ? false : true;
+                if (checkEmailThree) {
+                    checkEmailThree = upgradeEmailsList.some(x => x == email3Car.value);
+                }
+                if (checkEmailThree) {
+                    e.preventDefault();
+                    email3Car.focus();
+                    email_aps3_ErrorExist.style.display = "block";
+                }
+            });
+        EdrpouCar.addEventListener('input', function (e) {
+            edrpou_ErrorExist.style.display = "none";
+        });
+        emailCar.addEventListener('input', function (e) {
+            email_aps_ErrorExist.style.display = "none";
+        });
+        email2Car.addEventListener('input', function (e) {
+            email_aps2_ErrorExist.style.display = "none";
+        });
+        email3Car.addEventListener('input', function (e) {
+            email_aps3_ErrorExist.style.display = "none";
+        });
+        }
+    </script>
 }
 
 

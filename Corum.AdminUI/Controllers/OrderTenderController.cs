@@ -90,7 +90,7 @@ namespace CorumAdminUI.Controllers
             bool isAvaliable = false;
             if (listInfoToCont.listLosersInfoAfterChange != null || listInfoToCont.listWinnersInfoAfterChange != null)
             {
-                isAvaliable = context.FormMessageToSendContragents(listInfoToCont);
+                isAvaliable = context.FormMessageToSendContragents(listInfoToCont, flag);
                 if (isAvaliable || flag)
                 {
                     SendEmailToContragents(listInfoToCont);
@@ -121,9 +121,16 @@ namespace CorumAdminUI.Controllers
                         "avtogruz@corum.com"
                         //"corumsourcetest@gmail.com"
                         };
-                        if ((item as ListInfoAfterChange).recipientEmail != null && (item as ListInfoAfterChange).recipientEmail.Contains('@'))
+                        if ((item as ListInfoAfterChange).recipientEmailList != null && (item as ListInfoAfterChange).recipientEmailList[0].Contains('@'))
                         {
-                            listEmails.Add((item as ListInfoAfterChange).recipientEmail);
+                            //listEmails.Add((item as ListInfoAfterChange).recipientEmail);
+                            foreach(var value in (item as ListInfoAfterChange).recipientEmailList){
+                                string addEmail = listEmails.Find(x => x == value);
+                                if (addEmail == null) 
+                                {
+                                    listEmails.Add(value);
+                                }
+                            }
                         }
                         foreach (var value in listEmails)
                         {
@@ -141,9 +148,17 @@ namespace CorumAdminUI.Controllers
                         "avtogruz@corum.com"
                         //"corumsourcetest@gmail.com"
                         };
-                        if ((item as ListInfoAfterChange).recipientEmail != null && (item as ListInfoAfterChange).recipientEmail.Contains('@'))
+                        if ((item as ListInfoAfterChange).recipientEmailList != null && (item as ListInfoAfterChange).recipientEmailList[0].Contains('@'))
                         {
-                            listEmails.Add((item as ListInfoAfterChange).recipientEmail);
+                            //listEmails.Add((item as ListInfoAfterChange).recipientEmail);
+                            foreach (var value in (item as ListInfoAfterChange).recipientEmailList)
+                            {
+                                string addEmail = listEmails.Find(x => x == value);
+                                if (addEmail == null)
+                                {
+                                    listEmails.Add(value);
+                                }
+                            }
                         }
                         foreach (var value in listEmails)
                         {

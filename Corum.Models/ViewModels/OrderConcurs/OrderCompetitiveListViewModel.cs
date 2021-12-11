@@ -162,6 +162,7 @@ namespace Corum.Models.ViewModels.OrderConcurs
         public string itemDescription { get; set; }
         public string cargoWeight { get; set; }
         public string emailContragent { get; set; }
+        public string[] emailsContragent { get; set; }
         public Nullable<System.Guid> formUuid { get; set; }
         public Nullable<int> tenderTureNumber { get; set; }
     }

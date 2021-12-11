@@ -465,6 +465,7 @@
           <Property Name="emailContragent" Type="varchar" MaxLength="50" />
           <Property Name="formUuid" Type="uniqueidentifier" />
           <Property Name="tenderTureNumber" Type="int" />
+          <Property Name="edrpou_aps" Type="bigint" />
         </EntityType>
         <EntityType Name="OrderConcursListsSteps">
           <Key>
@@ -930,8 +931,8 @@
           <Property Name="formUuid" Type="uniqueidentifier" Nullable="false" />
           <Property Name="tenderNumber" Type="int" Nullable="false" />
           <Property Name="contragentName" Type="nvarchar" MaxLength="350" Nullable="false" />
-          <Property Name="emailOperacionist" Type="varchar" MaxLength="50" Nullable="false" />
-          <Property Name="emailContragent" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="emailOperacionist" Type="text" />
+          <Property Name="emailContragent" Type="text" />
           <Property Name="dateCreate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="dateUpdate" Type="datetime2" Precision="7" Nullable="false" />
           <Property Name="industryId" Type="int" Nullable="false" />
@@ -7075,6 +7076,7 @@
           <Property Name="emailContragent" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="formUuid" Type="Guid" />
           <Property Name="tenderTureNumber" Type="Int32" />
+          <Property Name="edrpou_aps" Type="Int64" />
         </EntityType>
         <Association Name="FK_OrderCompetitiveList_ContractSpecifications">
           <End Type="CorumModel.ContractSpecifications" Role="ContractSpecifications" Multiplicity="0..1" />
@@ -8931,8 +8933,8 @@
           <Property Name="orderId" Type="Int64" Nullable="false" />
           <Property Name="tenderNumber" Type="Int32" Nullable="false" />
           <Property Name="contragentName" Type="String" Nullable="false" MaxLength="350" FixedLength="false" Unicode="true" />
-          <Property Name="emailOperacionist" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="emailContragent" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="emailOperacionist" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="emailContragent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="dateCreate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="dateUpdate" Type="DateTime" Nullable="false" Precision="7" />
           <Property Name="descriptionTender" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
@@ -10186,6 +10188,7 @@
           <EntitySetMapping Name="OrderCompetitiveList">
             <EntityTypeMapping TypeName="CorumModel.OrderCompetitiveList">
               <MappingFragment StoreEntitySet="OrderCompetitiveList">
+                <ScalarProperty Name="edrpou_aps" ColumnName="edrpou_aps" />
                 <ScalarProperty Name="tenderTureNumber" ColumnName="tenderTureNumber" />
                 <ScalarProperty Name="formUuid" ColumnName="formUuid" />
                 <ScalarProperty Name="emailContragent" ColumnName="emailContragent" />

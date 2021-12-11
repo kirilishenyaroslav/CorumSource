@@ -17,9 +17,10 @@ namespace Corum.Models.ViewModels.Cars
         [Display(Name = "Название перевозчика")]
         public string CarrierName { get; set; }
 
-        [Required(ErrorMessage = "Введите код ЕДРПОУ")]
         [Display(Name = "ЕДРПОУ")]
-        public long edrpou_aps { get; set; }
+        [Required(ErrorMessage = "Введите код ЕДРПОУ")]
+        [RegularExpression("^[0-9]{8}$|^[0-9]{10}$", ErrorMessage ="Неверное количество цифр")]
+        public long? edrpou_aps { get; set; }
 
         //[Required(ErrorMessage = "Введите адрес")]
         [Display(Name = "Адрес")]
@@ -29,9 +30,20 @@ namespace Corum.Models.ViewModels.Cars
         [Display(Name = "Телефон")]
         public string Phone { get; set; }
 
-        [Required(ErrorMessage = "Введите имейл")]
         [Display(Name = "Email")]
+        [Required(ErrorMessage = "Введите имейл")]
+        [EmailAddress(ErrorMessage = "Неверный формат email")]
         public string email_aps { get; set; }
+
+        [Required(ErrorMessage = "Введите имейл")]
+        [Display(Name = "Email-2")]
+        [EmailAddress(ErrorMessage = "Неверный формат email")]
+        public string email_aps2 { get; set; }
+
+        [Required(ErrorMessage = "Введите имейл")]
+        [Display(Name = "Email-3")]
+        [EmailAddress(ErrorMessage = "Неверный формат email")]
+        public string email_aps3 { get; set; }
 
         //[Required(ErrorMessage = "Введите контактное лицо")]
         [Display(Name = "Контактное лицо")]
@@ -50,7 +62,12 @@ namespace Corum.Models.ViewModels.Cars
         [Display(Name = "Экспедитор")]
         public bool IsForwarder { get; set; }
 
+        public List<string> emails { get; set; }
+
         public List<CarOwnersAccessViewModel> AvailableCarOwners { get; set; }
+
+        public List<long?> edrpouListAllContragents { get; set; }
+        public List<string> emailsListAllContragents { get; set; }
     }
 
 

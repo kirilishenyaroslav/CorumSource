@@ -1,6 +1,12 @@
 ﻿@model Corum.Models.OrderNavigationResult<Corum.Models.ViewModels.OrderConcurs.OrderCompetitiveListViewModel>
 
-<link type="text/css" rel="stylesheet" href="~/Content/Tender/MessageStyle.css" />
+<header>
+    <link type="text/css" rel="stylesheet" href="~/Content/Tender/MessageStyle.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+</header>
+
 <container style="display:none;">
     <div class="contSendMessage" id="partialMessageToContr">
         <p class="pWinner">Победителям:</p>
@@ -26,7 +32,7 @@
     let industryName_;
     class Winner {
         constructor(expeditorName, numberTender, order, transportationType, route, nameOfCargo, cargoWeight, dowloadingDate,
-            unloadingDate, description, price, paymentDeferment, emailContragent, formUuid) {
+            unloadingDate, description, price, paymentDeferment, emailContragent,emailsContragent, formUuid) {
             this.expeditorName = expeditorName;
             this.numberTender = numberTender;
             this.order = order;
@@ -42,6 +48,7 @@
             this.paymentDeferment = paymentDeferment;
             this.isWinner = true;
             this.emailContragent = emailContragent;
+            this.emailsContragent = emailsContragent;
             this.routeShort = GetInfoAboutShortRoute(numberTender);
             this.formUuid = formUuid;
         }
@@ -49,7 +56,7 @@
         countWinner = 1;
     };
     class Loser {
-        constructor(expeditorName, numberTender, order, transportationType, route, nameOfCargo, cargoWeight, price, emailContragent, formUuid) {
+        constructor(expeditorName, numberTender, order, transportationType, route, nameOfCargo, cargoWeight, price, emailContragent,emailsContragent, formUuid) {
             this.expeditorName = expeditorName;
             this.numberTender = numberTender;
             this.order = order;
@@ -59,6 +66,7 @@
             this.cargoWeight = cargoWeight;
             this.price = price;
             this.emailContragent = emailContragent;
+            this.emailsContragent = emailsContragent;
             this.routeShort = GetInfoAboutShortRoute(numberTender);
             this.formUuid = formUuid;
         }
@@ -110,7 +118,9 @@
         this.numberOfVehicles = undefined;
         this.count = undefined;
         this.senderEmail = undefined;
+        this.senderEmailList = [];
         this.recipientEmail = undefined;
+        this.recipientEmailList = [];
         this.upperartOfTheMessage = undefined;
         this.dataTable = undefined;
         this.messageFooter = undefined;
@@ -128,7 +138,9 @@
         this.numberOfVehicles = undefined;
         this.count= undefined;
         this.senderEmail = undefined;
+        this.senderEmailList = [];
         this.recipientEmail = undefined;
+        this.recipientEmailList = [];
         this.upperartOfTheMessage = undefined;
         this.dataTable = undefined;
         this.messageFooter = undefined;
@@ -215,7 +227,7 @@
                                                 winnerAfterChange.count = item.countWinner;
                                                 for (const value of item.senderEmail) {
                                                     if (value.selected) {
-                                                        winnerAfterChange.senderEmail = value.text;
+                                                        winnerAfterChange.senderEmailList.push(value.text);
                                                     }
                                                 };
                                                 for (const value of item.dataTable.childNodes[0].childNodes) {
@@ -227,7 +239,7 @@
                                                 }
                                                 winnerAfterChange.thContent.push('Экспедитор');
                                                 winnerAfterChange.tdContent.push(item.expeditorName);
-                                                winnerAfterChange.recipientEmail = item.recipientEmail.value;
+                                                winnerAfterChange.recipientEmailList = $(item.recipientEmail).val();
                                                 winnerAfterChange.upperartOfTheMessage = item.upperpartOfTheMessage.outerHTML;
                                                 winnerAfterChange.dataTable = item.dataTable.outerHTML;
                                                 winnerAfterChange.messageFooter = item.messageFooter.outerHTML;
@@ -250,10 +262,13 @@
                                                 winnerAfterChange.dataUnload = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.ToDate));
                                                 allContragents = (JSON.parse(sessionStorage.getItem('listDisplayValues')))[tendNumber];
                                                 for (const val of allContragents) {
-                                                    if (val.emailContragent == winnerAfterChange.recipientEmail || val.ExpeditorName == item.expeditorName) {
+                                                    let toggle = true;
+                                                    winnerAfterChange.recipientEmailList.forEach(value => {
+                                                        if (toggle && (val.emailContragent == value || val.ExpeditorName == item.expeditorName)) {
                                                         winnerAfterChange.DelayPayment = parseInt(val.DaysDelayStep2);
-                                                        break;
+                                                            toggle = false;
                                                     }
+                                                    });
                                                 };
 
 
@@ -274,7 +289,7 @@
                                                 loserAfterChange.count = item.countWinner;
                                                 for (const value of item.senderEmail) {
                                                     if (value.selected) {
-                                                        loserAfterChange.senderEmail = value.text;
+                                                        loserAfterChange.senderEmailList.push(value.text);
                                                     }
                                                 };
                                                 for (const value of item.dataTable.childNodes[0].childNodes) {
@@ -286,7 +301,7 @@
                                                 }
                                                 loserAfterChange.thContent.push('Экспедитор');
                                                 loserAfterChange.tdContent.push(item.expeditorName);
-                                                loserAfterChange.recipientEmail = item.recipientEmail.value;
+                                                loserAfterChange.recipientEmailList = $(item.recipientEmail).val();
                                                 loserAfterChange.upperartOfTheMessage = item.upperartOfTheMessage.outerHTML;
                                                 loserAfterChange.dataTable = item.dataTable.outerHTML;
                                                 loserAfterChange.messageFooter = item.messageFooter.outerHTML;
@@ -309,10 +324,13 @@
                                                 loserAfterChange.dataUnload = @Html.Raw(Json.Encode(Model.CompetitiveListInfo.ToDate));
                                                 allContragents = (JSON.parse(sessionStorage.getItem('listDisplayValues')))[tendNumber];
                                                 for (const val of allContragents) {
-                                                    if (val.emailContragent == loserAfterChange.recipientEmail || val.ExpeditorName == item.expeditorName) {
+                                                    let toggle = true;
+                                                    loserAfterChange.recipientEmailList.forEach(value => {
+                                                        if (toggle && (val.emailContragent == value || val.ExpeditorName == item.expeditorName)) {
                                                         loserAfterChange.DelayPayment = parseInt(val.DaysDelayStep2);
-                                                        break;
+                                                            toggle = false;
                                                     }
+                                                    });
                                                 };
 
                                                 if (loserAfterChange.isSelected) {
@@ -391,6 +409,7 @@
                             }
                         ]
                 });
+
 
         $('#partialMessageToContr').dialog('open');
 
@@ -497,7 +516,7 @@
                     listSameWinners.push(new Winner(listWinners[x].ExpeditorName, listWinners[x].tenderNumber, listWinners[x].OrderId,
                         listWinners[x].NameSpecification, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.Route)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.TruckDescription)),
                         listWinners[x].cargoWeight, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.FromDate)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.ToDate)), listWinners[x].itemDescription,
-                        listWinners[x].CarCost, listWinners[x].DaysDelayStep2, listWinners[x].emailContragent, FindRegisterDataAboutMessage(listWinners[x].emailContragent, x, listWinners[x].tenderNumber, listWinners[x].formUuid)));
+                        listWinners[x].CarCost, listWinners[x].DaysDelayStep2, listWinners[x].emailContragent, listWinners[x].emailsContragent, FindRegisterDataAboutMessage(listWinners[x].emailContragent, x, listWinners[x].tenderNumber, listWinners[x].formUuid)));
                 }
             }
 
@@ -505,13 +524,14 @@
                 if (listLosers[x] != undefined) {
                     listSameLosers.push(new Loser(listLosers[x].ExpeditorName, listLosers[x].tenderNumber, listLosers[x].OrderId,
                         listLosers[x].NameSpecification, @Html.Raw(Json.Encode(Model.CompetitiveListInfo.Route)), @Html.Raw(Json.Encode(Model.CompetitiveListInfo.TruckDescription)),
-                        listLosers[x].cargoWeight, listLosers[x].CarCost, listLosers[x].emailContragent, FindRegisterDataAboutMessageLosers(listLosers[x].emailContragent, x, listLosers[x].tenderNumber, listLosers[x].formUuid)));
+                        listLosers[x].cargoWeight, listLosers[x].CarCost, listLosers[x].emailContragent,listLosers[x].emailsContragent, FindRegisterDataAboutMessageLosers(listLosers[x].emailContragent, x, listLosers[x].tenderNumber, listLosers[x].formUuid)));
                 }
             }
 
         }
         CreateHTMLTableWithDataWinnersContragents(listLink_);
         CreateHTMLTableWithDataLosersContragents(listLink_);
+        $('.js-example-basic-multiple').select2();
     }
 
     function FindRegisterDataAboutMessage(emailContragents, count, tenderNumber, formUuid_) {
@@ -626,8 +646,10 @@
             $(messFrToSelect).addClass('messFrToSelect');
 
             let select = document.createElement('select');
-            $(select).attr('name', 'selectMenedger');
-            $(select).addClass('inpMess');
+            $(select).attr('name', 'selectMenedger[]');
+            $(select).attr('multiple', 'multiple');
+            $(select).attr('id', 'selMened');
+            $(select).addClass('js-example-basic-multiple');
             $(select).attr('style', 'max-width: 100%; margin-bottom: 5px;');
 
             let optionOne = document.createElement('option');
@@ -646,16 +668,32 @@
             messFrToSelect.appendChild(select);
             winnerObj.senderEmail = select;
 
-            let inpMess = document.createElement('input');
-            $(inpMess).addClass('inpMess');
-            $(inpMess).attr('type', 'text');
-            $(inpMess).attr('name', 'From');
-            $(inpMess).attr('value', `${val.emailContragent}`);
-            $(inpMess).attr('style', 'max-width: 100%; padding-left: 2px; padding-right: 0px; border: 1px solid gray;');
-            messFrToSelect.appendChild(inpMess);
+
+            let divSelectCont = document.createElement('div');
+            $(divSelectCont).attr('style', 'width: 100%; margin-top: 0.5%;');
+
+            let selectContr = document.createElement('select');
+            $(selectContr).attr('name', 'states[]');
+            $(selectContr).attr('multiple', 'multiple');
+            $(selectContr).addClass('js-example-basic-multiple');
+            $(selectContr).attr('style', 'width: 100%;');
+
+            let flagEmContr = true;
+            val.emailsContragent.forEach(item => {
+                let optionOneContr = document.createElement('option');
+                if (flagEmContr) {
+                    $(optionOneContr).attr('selected', 'selected');
+                    flagEmContr = false;
+                }
+                $(optionOneContr).attr('value', `${item}`);
+                $(optionOneContr).text(`${item}`);
+                selectContr.appendChild(optionOneContr);
+            });
+            divSelectCont.appendChild(selectContr);
+            messFrToSelect.appendChild(divSelectCont);
             messFromTo.appendChild(messFrToSelect);
             messageToContragents.appendChild(messFromTo);
-            winnerObj.recipientEmail = inpMess;
+            winnerObj.recipientEmail = selectContr;
 
             // Создание вложенного контейнера в messageToContragents
             let messBody = document.createElement('div');
@@ -1041,8 +1079,10 @@
             $(messFrToSelect).addClass('messFrToSelect');
 
             let select = document.createElement('select');
-            $(select).attr('name', 'selectMenedger');
-            $(select).addClass('inpMess');
+            $(select).attr('name', 'selectMenedger[]');
+            $(select).attr('multiple', 'multiple');
+            $(select).attr('id', 'selMened');
+            $(select).addClass('js-example-basic-multiple');
             $(select).attr('style', 'max-width: 100%; margin-bottom: 5px;');
 
             let optionOne = document.createElement('option');
@@ -1061,16 +1101,31 @@
             messFrToSelect.appendChild(select);
             loserObj.senderEmail = select;
 
-            let inpMess = document.createElement('input');
-            $(inpMess).addClass('inpMess');
-            $(inpMess).attr('type', 'text');
-            $(inpMess).attr('name', 'From');
-            $(inpMess).attr('value', `${val.emailContragent}`);
-            $(inpMess).attr('style', 'max-width: 100%; padding-left: 2px; padding-right: 0px; border: 1px solid gray;');
-            messFrToSelect.appendChild(inpMess);
+            let divSelectCont = document.createElement('div');
+            $(divSelectCont).attr('style', 'width: 100%; margin-top: 0.5%;');
+
+            let selectContr = document.createElement('select');
+            $(selectContr).attr('name', 'states[]');
+            $(selectContr).attr('multiple', 'multiple');
+            $(selectContr).addClass('js-example-basic-multiple');
+            $(selectContr).attr('style', 'width: 100%;');
+
+            let flagEmContr = true;
+            val.emailsContragent.forEach(item => {
+                let optionOneContr = document.createElement('option');
+                if (flagEmContr) {
+                    $(optionOneContr).attr('selected', 'selected');
+                    flagEmContr = false;
+                }
+                $(optionOneContr).attr('value', `${item}`);
+                $(optionOneContr).text(`${item}`);
+                selectContr.appendChild(optionOneContr);
+            });
+            divSelectCont.appendChild(selectContr);
+            messFrToSelect.appendChild(divSelectCont);
             messFromTo.appendChild(messFrToSelect);
             messageToContragents.appendChild(messFromTo);
-            loserObj.recipientEmail = inpMess;
+            loserObj.recipientEmail = selectContr;
 
             // Создание вложенного контейнера в messageToContragents
             let messBody = document.createElement('div');
@@ -1201,5 +1256,4 @@
     function GetDataAboutMessageContragents() {
 
     }
-
 </script>

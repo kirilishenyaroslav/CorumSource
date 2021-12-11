@@ -49,6 +49,7 @@ namespace Corum.DAL
             return carOwnersInfo;
         }
 
+
         //есть ли листья у элемента?
         public bool CarOwnersHasChild(int carOwnersId)
         {
@@ -74,10 +75,19 @@ namespace Corum.DAL
                 /* if (model.IsForwarder == true)
                      carOwnersInfo.IsForwarder = true;
                  else carOwnersInfo.IsForwarder = false;*/
-
+                carOwnersInfo.email_aps = SetListEmails(model.email_aps, model.email_aps2, model.email_aps3);
+                carOwnersInfo.edrpou_aps = model.edrpou_aps;
                 db.CarOwners.Add(carOwnersInfo);
                 db.SaveChanges();
             };
+        }
+
+        private string SetListEmails(string email, string email2, string email3)
+        {
+            string emailAll = email;
+            emailAll += (email2 != null) ? $";{email2}" : null;
+            emailAll += (email3 != null) ? $";{email3}" : null;
+            return emailAll;
         }
 
         public void RemoveCarOwner(int carOwnerId)
@@ -103,6 +113,9 @@ namespace Corum.DAL
                 carOwnerInfoItem.ContactPerson = carOwnersItem.ContactPerson;
                 carOwnerInfoItem.parentId = carOwnersItem.parentId;
                 carOwnerInfoItem.IdForScript = carOwnersItem.Id;
+                carOwnerInfoItem.email_aps = carOwnersItem.email_aps;
+                carOwnerInfoItem.edrpou_aps = carOwnersItem.edrpou_aps;
+
 
                 //если  нет children - элементов, то это лист
                 carOwnerInfoItem.is_Leaf = !(CarOwnersHasChild(carOwnersItem.Id));
@@ -134,6 +147,8 @@ namespace Corum.DAL
             dbInfo.ContactPerson = model.ContactPerson;
             dbInfo.parentId = model.IsForwarder ? null : model.parentId;
             dbInfo.IsForwarder = model.IsForwarder;
+            dbInfo.edrpou_aps = model.edrpou_aps;
+            dbInfo.email_aps = SetListEmails(model.email_aps, model.email_aps2, model.email_aps3);
             db.SaveChanges();
         }
 
@@ -271,7 +286,7 @@ namespace Corum.DAL
                     if ((carOwnersCarsItem.Count() > 0) || (CarOwnersHasChild(carOwnersItem.Id)))
                         carOwnerInfoItem.CanBeDelete = false;
                     else carOwnerInfoItem.CanBeDelete = true;
-                   // carOwnerInfoItem.isRoot = (carOwnersItem.parentId == null) ? true : false;
+                    // carOwnerInfoItem.isRoot = (carOwnersItem.parentId == null) ? true : false;
                     groupRoleInfo.Add(carOwnerInfoItem);
                 }
             }
@@ -299,7 +314,7 @@ namespace Corum.DAL
             DateTime dateTimeInMonth = DateTime.Now.AddDays(30);
 
             foreach (var contractsItem in contractsItems)
-            {   
+            {
                 ContractsViewModel contrItem = new ContractsViewModel();
 
                 if (contractsItem.ContractDate != null) ContractDate = contractsItem.ContractDate.Value.ToString("dd.MM.yyyy");
@@ -308,7 +323,8 @@ namespace Corum.DAL
                 if (contractsItem.ReceiveDateReal != null)
                 {
                     ReceiveDateReal = contractsItem.ReceiveDateReal.Value.ToString("dd.MM.yyyy");
-                } else
+                }
+                else
                 {
                     ReceiveDateReal = "";
                 }
@@ -323,7 +339,7 @@ namespace Corum.DAL
                 contrItem.DateEndRaw = DateTimeConvertClass.getString(contractsItem.DateEnd.Value);
                 if (contractsItem.ReceiveDateReal != null)
                 { contrItem.ReceiveDateRealRaw = DateTimeConvertClass.getString(contractsItem.ReceiveDateReal.Value); }
-          
+
                 contrItem.DateBeg = DateBeg;
                 contrItem.DateEnd = DateEnd;
                 contrItem.ReceiveDateReal = ReceiveDateReal;
@@ -332,17 +348,18 @@ namespace Corum.DAL
                 contrItem.NDSTax = (contractsItem.NDSTax ?? 00).ToString(CultureInfo.CreateSpecificCulture("uk-UA"));
                 contrItem.ContractRevision = contractsItem.ContractRevision;
                 if (contractsItem.BalanceKeeperId != null)
-                contrItem.BalanceKeeperName = db.BalanceKeepers.FirstOrDefault(p => p.Id == contractsItem.BalanceKeeperId).BalanceKeeper ?? "";
+                    contrItem.BalanceKeeperName = db.BalanceKeepers.FirstOrDefault(p => p.Id == contractsItem.BalanceKeeperId).BalanceKeeper ?? "";
                 contrItem.ExpeditorId = contractsItem.ExpeditorId ?? 0;
                 if (contrItem.ExpeditorId != 0)
-                    contrItem.ExpeditorName = db.CarOwners.FirstOrDefault(p => p.Id == contrItem.ExpeditorId).CarrierName??"";
+                    contrItem.ExpeditorName = db.CarOwners.FirstOrDefault(p => p.Id == contrItem.ExpeditorId).CarrierName ?? "";
 
                 DateTime dateEnd = contractsItem.DateEnd ?? DateTime.MinValue;
-                
+
                 if (dateEnd < DateTime.Now)
                 {
                     contrItem.BackgroundColor = "#FF0000";
-                } else
+                }
+                else
                 if ((dateEnd - dateTimeInMonth).TotalDays <= 30)
                 {
                     contrItem.BackgroundColor = "#FFCC99";
@@ -358,7 +375,7 @@ namespace Corum.DAL
 
         public IQueryable<ContractsViewModel> GetAllContractsExpBK()
         {
-            return db.Contracts         
+            return db.Contracts
                             .AsNoTracking()
                              .Where(s => s.BalanceKeeperId != null)
                              .Select(Mapper.Map)
@@ -426,7 +443,7 @@ namespace Corum.DAL
             db.SaveChanges();
         }
 
-      
+
         public ContractsViewModel getContract(int contractId)
         {
             return Mapper.Map(db.Contracts.AsNoTracking().FirstOrDefault(u => u.Id == contractId));
@@ -434,12 +451,12 @@ namespace Corum.DAL
 
         public IQueryable<ContractSpecificationsViewModel> GetContractSpecifications(int groupeSpecId)
         {
-            
-                var Contracts = db.ContractSpecifications
-                .AsNoTracking()
-                 .Where(u => u.GroupeSpecId == groupeSpecId)
-                  .Select(Mapper.Map);
-            
+
+            var Contracts = db.ContractSpecifications
+            .AsNoTracking()
+             .Where(u => u.GroupeSpecId == groupeSpecId)
+              .Select(Mapper.Map);
+
             int i = 1;
             List<ContractSpecificationsViewModel> contracts = new List<ContractSpecificationsViewModel>();
             foreach (var c in Contracts)
@@ -484,9 +501,9 @@ namespace Corum.DAL
                 //фрахт
                 if (c.TypeSpecId == 1) contract.GenId = 1;
                 //дог. цена
-               else if (c.IsPriceNegotiated) contract.GenId = 5;
+                else if (c.IsPriceNegotiated) contract.GenId = 5;
                 //иначе - считаем что тариф
-               else contract.GenId = 2;
+                else contract.GenId = 2;
 
                 contracts.Add(contract);
                 i++;
@@ -528,13 +545,13 @@ namespace Corum.DAL
 
         public void AddSpecification(ContractSpecificationsViewModel model)
         {
-          
+
             var specInfo = new ContractSpecifications()
             {
                 CreatedByUser = model.CreatedByUser,
                 CreateDate = DateTimeConvertClass.getDateTime(model.CreateDateRaw),
                 CarryCapacityId = model.CarryCapacityId,
-                DeparturePoint =model.DeparturePoint,
+                DeparturePoint = model.DeparturePoint,
                 ArrivalPoint = model.ArrivalPoint,
                 RouteLength = Convert.ToDecimal(model.RouteLength.Replace(".", ",")),
                 IntervalTypeId = model.IntervalTypeId,
@@ -546,14 +563,14 @@ namespace Corum.DAL
                 NDSTax = Convert.ToDecimal(model.NDSTax.Replace(".", ",")),
                 GroupeSpecId = model.GroupeSpecId,
                 RouteId = model.RouteId,
-                IsTruck = model.IsTruck, 
+                IsTruck = model.IsTruck,
                 IsPriceNegotiated = model.IsPriceNegotiated,
                 TypeVehicleId = model.TypeVehicleId,
                 TypeSpecId = model.TypeSpecId,
                 NameId = model.NameId,
                 RouteName = model.RouteName
-            
-                        
+
+
             };
 
             db.ContractSpecifications.Add(specInfo);
@@ -636,7 +653,7 @@ namespace Corum.DAL
             };
 
             db.ContractGroupesSpecifications.Add(specInfo);
-            
+
             db.SaveChanges();
 
             return specInfo.Id;
@@ -692,7 +709,7 @@ namespace Corum.DAL
 
             var capacityInfo = new CarCarryCapacity()
             {
-                CarryCapacity =  Convert.ToDecimal(model.CarryCapacity.Replace(".", ",")),
+                CarryCapacity = Convert.ToDecimal(model.CarryCapacity.Replace(".", ",")),
                 MaxCapacity = Convert.ToDecimal(model.MaxCapacity.Replace(".", ",")),
                 CapacityComment = model.CommentCapacity
             };
@@ -879,7 +896,7 @@ namespace Corum.DAL
         public List<ContractsViewModel> GetContracts(string searchTerm, int pageSize, int pageNum, long? Id)
         {
             return GetContractsBySearchString(searchTerm, Id)
-                        .Skip(pageSize* (pageNum - 1))
+                        .Skip(pageSize * (pageNum - 1))
                          .Take(pageSize)
                            .ToList();
         }
@@ -887,6 +904,40 @@ namespace Corum.DAL
         public int GetContractsCount(string searchTerm, long? Id)
         {
             return GetContractsBySearchString(searchTerm, Id).Count();
+        }
+
+        public List<string> GetListEmails(string email)
+        {
+            string[] splitEmailsTosign = null;
+            List<string> list = new List<string>();
+            try
+            {
+                splitEmailsTosign = email.Split(';');
+                if (splitEmailsTosign != null)
+                {
+                    foreach (string item in splitEmailsTosign)
+                    {
+                        list.Add(item);
+                    }
+                }
+            }
+            catch (Exception e) 
+            { 
+            }
+            return list;
+        }
+
+        public List<long?> GetEdrpouListAllContragents() 
+        {
+          var list = db.CarOwners.Select(x => x.edrpou_aps).AsQueryable();
+          var el = list.ToList();
+          return el;
+        }
+        public List<string> GetEmailsListAllContragents()
+        {
+            var list = db.CarOwners.Select(x => x.email_aps).AsQueryable();
+            var el = list.ToList();
+            return el;
         }
     }
 }

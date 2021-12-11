@@ -59,5 +59,6 @@ namespace Corum.Models
         void ChangeRegisterMessageData(int tenderNumber, long orderId, Guid formUuid, OrderCompetitiveListViewModel model);
         void NewSpecification(SpecificationListViewModel model, string userId, int? tenderNumber, out Guid formUuid);
         int? GetTenderTureNumber(int tenderNumber);
+        string[] GetCarsOwner(long? edrpou);
     }
 }

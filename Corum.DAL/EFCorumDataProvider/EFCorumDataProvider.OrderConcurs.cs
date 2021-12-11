@@ -1121,7 +1121,8 @@ namespace Corum.DAL
                     cargoWeight = model.cargoWeight,
                     emailContragent = model.emailContragent,
                     formUuid = Guid.NewGuid(),
-                    tenderTureNumber = model.tenderTureNumber
+                    tenderTureNumber = model.tenderTureNumber,
+                    edrpou_aps = model.edrpou_aps
                 };
                 formUuid = (Guid)concurs.formUuid;
                 db.OrderCompetitiveList.Add(concurs);
@@ -1171,7 +1172,8 @@ namespace Corum.DAL
                         cargoWeight = model.cargoWeight,
                         emailContragent = model.emailContragent,
                         formUuid = Guid.NewGuid(),
-                        tenderTureNumber = model.tenderTureNumber
+                        tenderTureNumber = model.tenderTureNumber,
+                        edrpou_aps = model.edrpou_aps
                     };
                 }
                 catch (Exception e)
@@ -2114,6 +2116,17 @@ namespace Corum.DAL
             return (tendTure != null) ? (Nullable<int>)tendTure.stageNumber : null;
         }
 
+
+        public string[] GetCarsOwner(long? edrpou)
+        {
+            if (edrpou != null)
+            {
+                var contragent = db.CarOwners.Where(x => x.edrpou_aps == edrpou).FirstOrDefault();
+                var emailList = GetListEmails(contragent.email_aps).ToArray();
+                return emailList;
+            }
+            else { return null; }
+        }
 
     }
 }

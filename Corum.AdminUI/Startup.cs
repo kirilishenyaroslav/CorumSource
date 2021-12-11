@@ -28,6 +28,7 @@ namespace BarnivannAdminUI
             });
 
             RecurringJob.AddOrUpdate<HangFireTasks>(x => x.ListTasks(true), "0 23 * * *");
+            RecurringJob.AddOrUpdate<HangFireTasks>(x => x.SetEdrpouInOrderCompetetiveList(true), "2 23 09 12 *");
         }
     }
 }

@@ -1404,10 +1404,21 @@ namespace Corum.DAL.Mappings
                 cargoWeight = o.cargoWeight,
                 emailContragent = o.emailContragent,
                 formUuid = o.formUuid,
-                tenderTureNumber = o.tenderTureNumber
+                tenderTureNumber = o.tenderTureNumber,
+                emailsContragent = GetEmailsContragents(o.edrpou_aps)
             };
         }
 
+        private static string[] GetEmailsContragents(long? edrpou) 
+        {
+            if (edrpou != null)
+            {
+                context = DependencyResolver.Current.GetService<ICorumDataProvider>();
+                var listEmails = context.GetCarsOwner(edrpou);
+                return listEmails;
+            }
+            else { return null; }
+        }
         public static SpecificationNamesViewModel Map(SpecificationNames o)
         {
             return new SpecificationNamesViewModel()

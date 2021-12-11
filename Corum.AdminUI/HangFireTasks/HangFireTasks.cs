@@ -113,5 +113,12 @@ namespace CorumAdminUI.HangFireTasks
 
         }
 
+        public async Task SetEdrpouInOrderCompetetiveList(bool flag) 
+        {
+            this.flag = flag;
+            await Task.Run(() => context.SetEdrpouInOrdCompList());
+
+        }
+
     }
 }

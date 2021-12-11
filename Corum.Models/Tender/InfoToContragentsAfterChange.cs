@@ -13,7 +13,9 @@ namespace Corum.Models.Tender
         public int numberOfVehicles { get; set; }
         public int count { get; set; }
         public string senderEmail { get; set; }
+        public string[] senderEmailList { get; set; }
         public string recipientEmail { get; set; }
+        public string[] recipientEmailList { get; set; }
         public string upperartOfTheMessage { get; set; }
         public string dataTable { get; set; }
         public string messageFooter { get; set; }

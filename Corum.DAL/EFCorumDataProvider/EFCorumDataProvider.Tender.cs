@@ -728,7 +728,7 @@ namespace Corum.DAL
             }
         }
 
-        public bool FormMessageToSendContragents(InfoToContragentsAfterChange listInfoToCont)
+        public bool FormMessageToSendContragents(InfoToContragentsAfterChange listInfoToCont, bool toggle)
         {
             var listWinners = listInfoToCont.listWinnersInfoAfterChange;
             var listLosers = listInfoToCont.listLosersInfoAfterChange;
@@ -740,7 +740,7 @@ namespace Corum.DAL
                     foreach (var model in listWinners)
                     {
                         var item = db.RegisterMessageToContragents.Where(x => x.tenderNumber == model.tenderNumber && x.contragentName == model.expeditorName && x.formUuid == model.formUuid).FirstOrDefault();
-                        if (item != null && item.flag == true)
+                        if (item != null && (item.flag == true || toggle))
                         {
                             item.acceptedTransportUnits = model.numberOfVehicles;
                             item.contragentName = model.expeditorName;
@@ -748,8 +748,8 @@ namespace Corum.DAL
                             item.dateCreate = model.dateCreate;
                             item.dateUpdate = model.dateUpdate;
                             item.descriptionTender = model.description;
-                            item.emailContragent = model.recipientEmail;
-                            item.emailOperacionist = model.senderEmail;
+                            item.emailContragent = ConvertToStringEmail(model.recipientEmailList);
+                            item.emailOperacionist = ConvertToStringEmail(model.senderEmailList);
                             item.formUuid = model.formUuid;
                             item.industryId = model.industryId;
                             item.orderId = model.orderId;
@@ -777,8 +777,8 @@ namespace Corum.DAL
                             item.dateCreate = model.dateCreate;
                             item.dateUpdate = model.dateUpdate;
                             item.descriptionTender = model.description;
-                            item.emailContragent = model.recipientEmail;
-                            item.emailOperacionist = model.senderEmail;
+                            item.emailContragent = ConvertToStringEmail(model.recipientEmailList);
+                            item.emailOperacionist = ConvertToStringEmail(model.senderEmailList);
                             item.formUuid = model.formUuid;
                             item.industryId = model.industryId;
                             item.orderId = model.orderId;
@@ -810,16 +810,20 @@ namespace Corum.DAL
                     foreach (var model in listLosers)
                     {
                         var item = db.RegisterMessageToContragents.Where(x => x.tenderNumber == model.tenderNumber && x.contragentName == model.expeditorName && x.formUuid == model.formUuid).FirstOrDefault();
-                        if (item != null && item.IsSendMessage == null)
+                        if (item != null && (item.IsSendMessage == null || toggle))
                         {
                             flag = true;
                             item.IsSendMessage = flag;
+                            item.emailContragent = ConvertToStringEmail(model.recipientEmailList);
+                            item.emailOperacionist = ConvertToStringEmail(model.senderEmailList);
                             db.SaveChanges();
                         }
-                        else if (item != null && item.IsSendMessage != null && !(bool)item.IsSendMessage)
+                        else if (item != null && (item.IsSendMessage != null && !(bool)item.IsSendMessage || toggle))
                         {
                             flag = true;
                             item.IsSendMessage = flag;
+                            item.emailContragent = ConvertToStringEmail(model.recipientEmailList);
+                            item.emailOperacionist = ConvertToStringEmail(model.senderEmailList);
                             db.SaveChanges();
                         }
                     }
@@ -831,6 +835,25 @@ namespace Corum.DAL
             {
                 return flag;
             }
+        }
+
+        private string ConvertToStringEmail(string[] emailList)
+        {
+            string emailAll = null;
+            int count = 0;
+            do
+            {
+                if (count == 0)
+                {
+                    emailAll += emailList[count];
+                }
+                else
+                {
+                    emailAll += $";{emailList[count]}";
+                }
+            }
+            while (++count < emailList.Length);
+            return emailAll;
         }
         public List<RegisterMessageToContragents> GetListFormUuidToContragents(long orderId)
         {
@@ -962,7 +985,8 @@ namespace Corum.DAL
                     {
                         instance.loadCapacity = Double.Parse(dic["loadCapacity"].Replace('.', ','));
                     }
-                    catch {
+                    catch
+                    {
                         instance.loadCapacity = Double.Parse(dic["loadCapacity"]);
                     }
                     instance.distance = Double.Parse(dic["distance"]);
@@ -1107,6 +1131,60 @@ namespace Corum.DAL
                 db.RegisterMessageToContragents.Add(model);
                 db.SaveChanges();
                 NewUsedCar(formUuid, (int)mod.tenderTureNumber, mod.IsWinner);
+            }
+        }
+
+        public void SetEdrpouInOrdCompList()
+        {
+            Dictionary<long, long> dict = new Dictionary<long, long>();
+            try
+            {
+                var orderCompList = db.OrderCompetitiveList.AsQueryable();
+                foreach (var item in orderCompList)
+                {
+                    string nameContragent = item.ExpeditorName;
+                    string[] names = nameContragent.Split(' ');
+                    Entity.CarOwners carOwners = null;
+                    foreach (var it in names)
+                    {
+                        string uPCaseIt = it.ToUpper();
+                        if (uPCaseIt.Length > 3)
+                        {
+                            carOwners = db.CarOwners.Where(x => x.CarrierName.Contains(uPCaseIt)).FirstOrDefault();
+                        }
+                        if (carOwners != null)
+                        {
+                            break;
+                        }
+                    }
+                    if (carOwners != null)
+                    {
+                        try
+                        {
+                            dict.Add(item.Id, (long)carOwners.edrpou_aps);
+                        }
+                        catch (Exception e)
+                        {
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                }
+                foreach (KeyValuePair<long, long> item in dict)
+                {
+                    var order = db.OrderCompetitiveList.Where(x => x.Id == item.Key).FirstOrDefault();
+                    if (order.edrpou_aps == null)
+                    {
+                        order.edrpou_aps = item.Value;
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
             }
         }
     }

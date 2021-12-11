@@ -89,5 +89,8 @@ namespace Corum.Models
         IQueryable<ContractsViewModel> GetContractsBySearchString(string searchTerm, long? Id);
         List<ContractsViewModel> GetContracts(string searchTerm, int pageSize, int pageNum, long? Id);
         int GetContractsCount(string searchTerm, long? Id);
+        List<string> GetListEmails(string email);
+        List<long?> GetEdrpouListAllContragents();
+        List<string> GetEmailsListAllContragents();
     }
 }

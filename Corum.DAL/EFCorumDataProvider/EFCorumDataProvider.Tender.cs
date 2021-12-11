@@ -1133,5 +1133,59 @@ namespace Corum.DAL
                 NewUsedCar(formUuid, (int)mod.tenderTureNumber, mod.IsWinner);
             }
         }
+
+        public void SetEdrpouInOrdCompList()
+        {
+            Dictionary<long, long> dict = new Dictionary<long, long>();
+            try
+            {
+                var orderCompList = db.OrderCompetitiveList.AsQueryable().Where(x => x.Id > 13549);
+                foreach (var item in orderCompList)
+                {
+                    string nameContragent = item.ExpeditorName;
+                    string[] names = nameContragent.Split(' ');
+                    Entity.CarOwners carOwners = null;
+                    foreach (var it in names)
+                    {
+                        string uPCaseIt = it.ToUpper();
+                        if (uPCaseIt.Length > 3)
+                        {
+                            carOwners = db.CarOwners.Where(x => x.CarrierName.Contains(uPCaseIt)).FirstOrDefault();
+                        }
+                        if (carOwners != null)
+                        {
+                            break;
+                        }
+                    }
+                    if (carOwners != null)
+                    {
+                        try
+                        {
+                            dict.Add(item.Id, (long)carOwners.edrpou_aps);
+                        }
+                        catch (Exception e)
+                        {
+                        }
+                    }
+                    else
+                    {
+
+                    }
+                }
+                foreach (KeyValuePair<long, long> item in dict)
+                {
+                    var order = db.OrderCompetitiveList.Where(x => x.Id == item.Key).FirstOrDefault();
+                    if (order.edrpou_aps == null)
+                    {
+                        order.edrpou_aps = item.Value;
+                        db.SaveChanges();
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
     }
 }

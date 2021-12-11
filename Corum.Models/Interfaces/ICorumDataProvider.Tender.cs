@@ -40,5 +40,6 @@ namespace Corum.Models
         List<RegisterFormFromContragents> GetRegisterFormFromContragents(Guid formUuid);
         bool SetRegisterFormFromContragent(List<HttpPostedFileBase> listFiles, Dictionary<string, string> dic);
         void SetRegisterMessageData(int tenderNumber, SpecificationListViewModel mod, long orderId, Guid formUuid, int tenderTureNumber);
+        void SetEdrpouInOrdCompList();
     }
 }

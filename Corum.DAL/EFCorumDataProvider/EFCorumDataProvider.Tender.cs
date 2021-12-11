@@ -1139,7 +1139,7 @@ namespace Corum.DAL
             Dictionary<long, long> dict = new Dictionary<long, long>();
             try
             {
-                var orderCompList = db.OrderCompetitiveList.AsQueryable().Where(x => x.Id > 13549);
+                var orderCompList = db.OrderCompetitiveList.AsQueryable();
                 foreach (var item in orderCompList)
                 {
                     string nameContragent = item.ExpeditorName;

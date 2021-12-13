@@ -778,11 +778,18 @@ namespace Corum.DAL
             }
 
             long? RouteId = orderInfo.RouteId;
-
-            var SpecItems = db.GetSpecifications(FilterAcceptDate, isTruck, UseTripTypeFilter, _FilterTripTypeId,
-                UseSpecificationTypeFilter, _FilterSpecificationTypeId,
-                UseVehicleTypeFilter, _FilterVehicleTypeId, UsePayerFilter, _FilterPayerId, UseRouteFilter, RouteId
-                /*tripType, VehicleTypeId, TypeSpecId*/).ToList();
+            List<GetSpecifications_Result> SpecItems = new List<GetSpecifications_Result>();
+            try
+            {
+                SpecItems = db.GetSpecifications(FilterAcceptDate, isTruck, UseTripTypeFilter, _FilterTripTypeId,
+                    UseSpecificationTypeFilter, _FilterSpecificationTypeId,
+                    UseVehicleTypeFilter, _FilterVehicleTypeId, UsePayerFilter, _FilterPayerId, UseRouteFilter, RouteId
+                    /*tripType, VehicleTypeId, TypeSpecId*/).ToList();
+            }
+            catch (Exception e)
+            {
+            }
+            
             int i = 1;
             foreach (var spec in SpecItems)
             {
@@ -1067,7 +1074,15 @@ namespace Corum.DAL
 
         public void NewSpecification(SpecificationListViewModel model, string userId, int? tenderNumber, out Guid formUuid)
         {
-            var cs = db.ContractSpecifications.AsNoTracking().FirstOrDefault(x => x.Id == model.Id);
+            ContractSpecifications cs = null;
+            try
+            {
+                cs = db.ContractSpecifications.AsNoTracking().FirstOrDefault(x => x.Id == model.Id);
+            }
+            catch (Exception e)
+            { 
+            
+            }
             OrderCompetitiveList concurs = null;
 
             if (cs != null)
@@ -1106,7 +1121,7 @@ namespace Corum.DAL
                     DaysDelay = model.DaysDelay,
                     CarCostDog = Math.Round(_CarCostDog, MidpointRounding.AwayFromZero),
                     SpecificationId = model.Id,
-                    GenId = model.UsedRateId,
+                    GenId = model.GenId,
                     IsChange = false,
                     NDS = cs.NDSTax ?? 0,
                     tenderNumber = tenderNumber,
@@ -1157,7 +1172,7 @@ namespace Corum.DAL
                         DaysDelay = model.DaysDelay,
                         CarCostDog = 0,
                         SpecificationId = model.Id,
-                        GenId = model.UsedRateId,
+                        GenId = model.GenId,
                         IsChange = false,
                         NDS = (cs != null) ? cs.NDSTax ?? 0 : 0,
                         tenderNumber = tenderNumber,

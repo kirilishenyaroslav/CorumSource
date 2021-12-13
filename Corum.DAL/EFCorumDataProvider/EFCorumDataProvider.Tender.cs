@@ -1187,5 +1187,21 @@ namespace Corum.DAL
 
             }
         }
+
+        public SpecificationListViewModel GetSpesificationData(long? edrpou)
+        {
+            if (edrpou != null)
+            {
+                var specificationList = db.OrderCompetitiveList.Where(x => x.edrpou_aps == edrpou).OrderByDescending(x => x.Id).Where(x=>x.GenId>0).FirstOrDefault();
+                SpecificationListViewModel model = new SpecificationListViewModel();
+                int GenId = (int)specificationList.GenId;
+                model.CarryCapacity = specificationList.CarryCapacity;
+                model.edrpou_aps = specificationList.edrpou_aps;
+                model.GenId = GenId;
+                model.Id = (int)specificationList.Id;
+                return model;
+            }
+            return new SpecificationListViewModel();
+        }
     }
 }

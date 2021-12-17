@@ -144,7 +144,7 @@ namespace CorumAdminUI.Controllers
 
                     foreach (var value in listEmails)
                     {
-                        Task.WaitAll(Task.Run(() => SendToOperacionistAsync(listFiles, dic, value)));
+                        Task.WaitAll(Task.Run(() => SendToOperacionistAsync(listFiles, dic, value, orderId)));
                     }
                 }
             }
@@ -161,10 +161,12 @@ namespace CorumAdminUI.Controllers
             };
         }
 
-        private async Task SendToOperacionistAsync(List<HttpPostedFileBase> listFiles, Dictionary<string, string> dic, string emailOperacionist)
+        private async Task SendToOperacionistAsync(List<HttpPostedFileBase> listFiles, Dictionary<string, string> dic, string emailOperacionist, int orderId)
         {
             try
             {
+                var shortDatatoExecuterNotes = $"{dic["contragentName"]} {dic["carBrand"]} {dic["stateNumberCar"]}/{dic["trailerNumber"]} {dic["fullNameOfDriver"]} {dic["phoneNumber"]}";
+                context.UpdateExecuterNotesOnOrdersBase(shortDatatoExecuterNotes, orderId);
                 MailAddress from = new MailAddress(ConfigurationManager.AppSettings["SmtpAccountLogin"], $"{dic["contragentName"]}", Encoding.UTF8);
                 MailAddress to = new MailAddress(emailOperacionist);
                 MailMessage mail = new MailMessage(from, to);

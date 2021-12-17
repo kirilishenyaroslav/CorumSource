@@ -495,56 +495,48 @@ namespace CorumAdminUI.Controllers
                                 }
                                 else
                                 {
-                                    SpecificationListViewModel instance = new SpecificationListViewModel()
-                                    {
-                                        OrderId = (int)OrderId,
-                                        GenId = specificationList[0].GenId,
-                                        tenderNumber = tenderNumber,
-                                        CarryCapacity = specificationList[0].CarryCapacity,
-                                        DaysDelay = it.Value[i].PaymentDelay,
-                                        ExpeditorName = it.Value[i].ContragentName,
-                                        FilterPayerId = specificationList[0].FilterPayerId,
-                                        FilterSpecificationTypeId = specificationList[0].FilterSpecificationTypeId,
-                                        FilterTripTypeId = specificationList[0].FilterTripTypeId,
-                                        FilterVehicleTypeId = specificationList[0].FilterVehicleTypeId,
-                                        FreightName = specificationList[0].FreightName,
-                                        GroupeSpecId = specificationList[0].GroupeSpecId,
-                                        IntervalTypeId = specificationList[0].IntervalTypeId,
-                                        IsForwarder = specificationList[0].IsForwarder,
-                                        IsFreight = specificationList[0].IsFreight,
-                                        NDSTax = specificationList[0].NDSTax,
-                                        NameGroupeSpecification = specificationList[0].NameGroupeSpecification,
-                                        NameSpecification = it.Value[i].nmcName,
-                                        RateValue = specificationList[0].RateValue,
-                                        RouteTypeId = specificationList[0].RouteTypeId,
-                                        UsePayerFilter = specificationList[0].UsePayerFilter,
-                                        UseRouteFilter = specificationList[0].UseRouteFilter,
-                                        UseSpecificationTypeFilter = specificationList[0].UseSpecificationTypeFilter,
-                                        UseTripTypeFilter = specificationList[0].UseTripTypeFilter,
-                                        UseVehicleTypeFilter = specificationList[0].UseVehicleTypeFilter,
-                                        UsedRateId = specificationList[0].UsedRateId,
-                                        UsedRateName = specificationList[0].UsedRateName,
-                                        VehicleTypeName = specificationList[0].VehicleTypeName,
-                                        edrpou_aps = it.Value[i].EDRPOUContragent,
-                                        email_aps = it.Value[i].emailContragent,
-                                        isTruck = specificationList[0].isTruck,
-                                        itemExternalNumber = it.Value[i].itemExternalNumber,
-                                        ContragentIdAps = it.Value[i].ContragentIdAps,
-                                        DateUpdateInfo = it.Value[i].DateUpdateInfo,
-                                        IsWinner = it.Value[i].IsWinner,
-                                        EDRPOUContragent = it.Value[i].EDRPOUContragent,
-                                        emailContragent = it.Value[i].emailContragent,
-                                        transportUnitsProposed = it.Value[i].transportUnitsProposed,
-                                        acceptedTransportUnits = it.Value[i].acceptedTransportUnits,
-                                        costOfCarWithoutNDS = it.Value[i].costOfCarWithoutNDS,
-                                        tenderItemUuid = it.Value[i].tenderItemUuid,
-                                        costOfCarWithoutNDSToNull = it.Value[i].costOfCarWithoutNDSToNull,
-                                        note = it.Value[i].note,
-                                        itemDescription = it.Value[i].itemDescription,
-                                        cargoWeight = cargoWeight,
-                                        tenderTureNumber = myDeserializedClass.data.stageNumber
-                                    };
-                                    specificationListViews.Add(instance);
+                                    spec = context.GetSpesificationData(it.Value[i].EDRPOUContragent);
+                                    spec.OrderId = (int)OrderId;
+                                    spec.tenderNumber = tenderNumber;
+                                    spec.DaysDelay = it.Value[i].PaymentDelay;
+                                    spec.ExpeditorName = it.Value[i].ContragentName;
+                                    spec.FilterPayerId = CompetitiveListInfo_.FilterPayerId;
+                                    spec.FilterSpecificationTypeId = CompetitiveListInfo_.FilterSpecificationTypeId;
+                                    spec.FilterTripTypeId = CompetitiveListInfo_.FilterTripTypeId;
+                                    spec.FilterVehicleTypeId = CompetitiveListInfo_.FilterVehicleTypeId;
+                                    spec.FilterTripTypeId = CompetitiveListInfo_.FilterTripTypeId;
+                                    spec.FilterVehicleTypeId = CompetitiveListInfo_.FilterVehicleTypeId;
+                                    spec.FilterPayerId = CompetitiveListInfo_.FilterPayerId;
+                                    spec.isTruck = true;
+                                    spec.UseTripTypeFilter = true;
+                                    spec.UseVehicleTypeFilter = true;
+                                    spec.NameSpecification = it.Value[i].nmcName;
+                                    spec.UsePayerFilter = CompetitiveListInfo_.UsePayerFilter;
+                                    spec.UseRouteFilter = CompetitiveListInfo_.UseRouteFilter;
+                                    spec.UseSpecificationTypeFilter = CompetitiveListInfo_.UseSpecificationTypeFilter;
+                                    spec.UseTripTypeFilter = CompetitiveListInfo_.UseTripTypeFilter;
+                                    spec.UseVehicleTypeFilter = CompetitiveListInfo_.UseVehicleTypeFilter;
+                                    spec.VehicleTypeName = CompetitiveListInfo_.VehicleTypeName;
+                                    spec.edrpou_aps = it.Value[i].EDRPOUContragent;
+                                    spec.email_aps = it.Value[i].emailContragent;
+                                    spec.isTruck = CompetitiveListInfo_.IsTruck;
+                                    spec.itemExternalNumber = it.Value[i].itemExternalNumber;
+                                    spec.ContragentIdAps = it.Value[i].ContragentIdAps;
+                                    spec.DateUpdateInfo = it.Value[i].DateUpdateInfo;
+                                    spec.IsWinner = it.Value[i].IsWinner;
+                                    spec.EDRPOUContragent = it.Value[i].EDRPOUContragent;
+                                    spec.emailContragent = it.Value[i].emailContragent;
+                                    spec.transportUnitsProposed = it.Value[i].transportUnitsProposed;
+                                    spec.acceptedTransportUnits = it.Value[i].acceptedTransportUnits;
+                                    spec.costOfCarWithoutNDS = it.Value[i].costOfCarWithoutNDS;
+                                    spec.tenderItemUuid = it.Value[i].tenderItemUuid;
+                                    spec.costOfCarWithoutNDSToNull = it.Value[i].costOfCarWithoutNDSToNull;
+                                    spec.note = it.Value[i].note;
+                                    spec.itemDescription = it.Value[i].itemDescription;
+                                    spec.cargoWeight = cargoWeight;
+                                    spec.tenderTureNumber = myDeserializedClass.data.stageNumber;
+                                    
+                                    specificationListViews.Add(spec);
                                 }
                             }
                         }

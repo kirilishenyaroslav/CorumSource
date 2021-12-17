@@ -1192,7 +1192,7 @@ namespace Corum.DAL
         {
             if (edrpou != null)
             {
-                var specificationList = db.OrderCompetitiveList.Where(x => x.edrpou_aps == edrpou).OrderByDescending(x => x.Id).Where(x=>x.GenId>0).FirstOrDefault();
+                var specificationList = db.OrderCompetitiveList.Where(x => x.edrpou_aps == edrpou).OrderByDescending(x => x.Id).Where(x => x.GenId > 0).FirstOrDefault();
                 SpecificationListViewModel model = new SpecificationListViewModel();
                 int GenId = (int)specificationList.GenId;
                 model.CarryCapacity = specificationList.CarryCapacity;
@@ -1202,6 +1202,34 @@ namespace Corum.DAL
                 return model;
             }
             return new SpecificationListViewModel();
+        }
+
+        public void UpdateExecuterNotesOnOrdersBase(string executerNotes, int orderId)
+        {
+            var orderInfo = db.OrdersBase.FirstOrDefault(o => o.Id == orderId);
+            var listTendersofOrder = db.RegisterTenders.Where(x => x.OrderId == orderId).OrderBy(x=>x.tenderNumber).Where(x=>x.lotState != 3).ToList();
+            if (listTendersofOrder != null && listTendersofOrder.Count < 2)
+            {
+                orderInfo.LastTenderNumber = listTendersofOrder.First().tenderNumber;
+                db.SaveChanges();
+            }
+
+            if (orderInfo != null && orderInfo.LastTenderNumber == listTendersofOrder.LastOrDefault().tenderNumber)
+            {
+                orderInfo.ExecuterNotes += $"{executerNotes}\r\n\r\n";
+                db.SaveChanges();
+            }
+            else
+            {
+                orderInfo.ExecuterNotes = executerNotes;
+                db.SaveChanges();
+            }
+
+            if(listTendersofOrder != null && listTendersofOrder.Count >= 2)
+            {
+                orderInfo.LastTenderNumber = listTendersofOrder.LastOrDefault().tenderNumber;
+                db.SaveChanges();
+            }
         }
     }
 }

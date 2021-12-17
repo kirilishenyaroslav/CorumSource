@@ -641,6 +641,7 @@
           <Property Name="TimeSpecialVehicles" Type="int" />
           <Property Name="IsAdditionalRoutePoints" Type="bit" />
           <Property Name="RouteId" Type="bigint" />
+          <Property Name="LastTenderNumber" Type="int" />
         </EntityType>
         <EntityType Name="OrdersDocTypes">
           <Key>
@@ -7579,6 +7580,7 @@
           <NavigationProperty Name="AspNetUsers" Relationship="CorumModel.FK_OrdersBase_AspNetUsers" FromRole="OrdersBase" ToRole="AspNetUsers" />
           <NavigationProperty Name="AspNetUsers1" Relationship="CorumModel.FK_OrdersBase_AspNetUsers1" FromRole="OrdersBase" ToRole="AspNetUsers" />
           <NavigationProperty Name="OrderUsedCars" Relationship="CorumModel.FK_OrderUsedCarsOrder" FromRole="OrdersBase" ToRole="OrderUsedCars" />
+          <Property Name="LastTenderNumber" Type="Int32" />
           </EntityType>
         <Association Name="FK_AdditionalRoutePoints_Order">
           <End Type="CorumModel.OrdersBase" Role="OrdersBase" Multiplicity="1" />
@@ -10435,6 +10437,7 @@
           <EntitySetMapping Name="OrdersBase">
             <EntityTypeMapping TypeName="CorumModel.OrdersBase">
               <MappingFragment StoreEntitySet="OrdersBase">
+                <ScalarProperty Name="LastTenderNumber" ColumnName="LastTenderNumber" />
                 <ScalarProperty Name="RouteId" ColumnName="RouteId" />
                 <ScalarProperty Name="IsAdditionalRoutePoints" ColumnName="IsAdditionalRoutePoints" />
                 <ScalarProperty Name="TimeSpecialVehicles" ColumnName="TimeSpecialVehicles" />

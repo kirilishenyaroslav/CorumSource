@@ -43,5 +43,6 @@ namespace Corum.Models
         void SetEdrpouInOrdCompList();
         SpecificationListViewModel GetSpesificationData(long? edrpou);
         void UpdateExecuterNotesOnOrdersBase(string ExecuterNotes, int orderId);
+        string GetExecuterNotes(int orderId);
     }
 }

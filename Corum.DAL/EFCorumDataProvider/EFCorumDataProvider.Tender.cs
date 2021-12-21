@@ -1231,5 +1231,17 @@ namespace Corum.DAL
                 db.SaveChanges();
             }
         }
+        public string GetExecuterNotes(int orderId) 
+        {
+            var orderInfo = db.OrdersBase.FirstOrDefault(o => o.Id == orderId);
+            if (orderInfo != null)
+            {
+                return orderInfo.ExecuterNotes;
+            }
+            else 
+            {
+                return null;
+            }
+        }
     }
 }

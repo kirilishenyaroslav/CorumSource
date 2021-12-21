@@ -141,6 +141,16 @@ namespace CorumAdminUI.Controllers
                             }
                         }
                     }
+                    var shortDatatoExecuterNotes = $"{dic["contragentName"]} {dic["carBrand"]} {dic["stateNumberCar"]}/{dic["trailerNumber"]} {dic["fullNameOfDriver"]} {dic["phoneNumber"]}";
+                    string executerText = context.GetExecuterNotes(orderId);
+                    if (executerText == null)
+                    {
+                        context.UpdateExecuterNotesOnOrdersBase(shortDatatoExecuterNotes, orderId);
+                    }
+                    if (executerText != null && !executerText.Contains(shortDatatoExecuterNotes))
+                    {
+                        context.UpdateExecuterNotesOnOrdersBase(shortDatatoExecuterNotes, orderId);
+                    }
 
                     foreach (var value in listEmails)
                     {
@@ -165,8 +175,6 @@ namespace CorumAdminUI.Controllers
         {
             try
             {
-                var shortDatatoExecuterNotes = $"{dic["contragentName"]} {dic["carBrand"]} {dic["stateNumberCar"]}/{dic["trailerNumber"]} {dic["fullNameOfDriver"]} {dic["phoneNumber"]}";
-                context.UpdateExecuterNotesOnOrdersBase(shortDatatoExecuterNotes, orderId);
                 MailAddress from = new MailAddress(ConfigurationManager.AppSettings["SmtpAccountLogin"], $"{dic["contragentName"]}", Encoding.UTF8);
                 MailAddress to = new MailAddress(emailOperacionist);
                 MailMessage mail = new MailMessage(from, to);

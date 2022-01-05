@@ -434,6 +434,7 @@ namespace Corum.Models
 
         int NewUsedCar(Guid formUuid, ref DataToAndFromContragent data);
         void NewUsedCar(Guid formUuid, int tenderTureNumber, bool IsSelected);
+        void NewUsedCarManual(object concursObj);
         IQueryable<OrderUsedCarViewModel> getOrderCarsInfoFromContragent(Guid formUuid);
         void NewUsedCarExcel(Guid formUuid, ref DataToAndFromContragent data);
         int? GetTenderNumber(Guid formUuid);

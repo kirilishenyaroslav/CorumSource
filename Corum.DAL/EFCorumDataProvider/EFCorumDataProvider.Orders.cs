@@ -2736,6 +2736,95 @@ namespace Corum.DAL
             }
         }
 
+        public void NewUsedCarManual(object concursObj)
+        {
+            OrderCompetitiveList concurs = concursObj as OrderCompetitiveList;
+            try
+            {
+                var dbInfo = db.OrderUsedCars.FirstOrDefault(u => u.formUuid == concurs.formUuid && u.tenderTureNumber == concurs.tenderTureNumber);
+                var emailsListContr = GetListEmails(concurs.emailContragent);
+                CarOwners expeditor = new CarOwners();
+                if (emailsListContr != null)
+                {
+                    var toggle = true;
+                    foreach (var item in emailsListContr)
+                    {
+                        if (toggle)
+                        {
+                            expeditor = null;
+                            var emailExp = db.CarOwners.FirstOrDefault(u => u.email_aps.Contains(item)).email_aps;
+                            expeditor = db.CarOwners.FirstOrDefault(u => u.email_aps == emailExp);
+                            if (expeditor != null)
+                            {
+                                toggle = false;
+                            }
+                        }
+                    }
+                    if (expeditor == null)
+                    {
+                        toggle = true;
+                        foreach (var item in emailsListContr)
+                        {
+                            if (toggle)
+                            {
+                                expeditor = db.CarOwners.FirstOrDefault(u => u.edrpou_aps == concurs.edrpou_aps);
+                                if (expeditor != null)
+                                {
+                                    toggle = false;
+                                }
+                            }
+                        }
+                    }
+                }
+
+                var payerId = db.OrdersBase.FirstOrDefault(u => u.Id == concurs.OrderId).PayerId;
+                var contractInfo = GetContractExpBkInfoBySearchString("", expeditor.Id, (int)payerId).ToList();
+                if (dbInfo == null && !(bool)concurs.IsSelectedId)
+                {
+                    var car = new OrderUsedCars()
+                    {
+                        CarDriverInfo = "",
+                        CarCapacity = null,
+                        OrderId = concurs.OrderId,
+                        CarModelInfo = "",
+                        CarRegNum = "",
+                        ExpeditorName = concurs.ExpeditorName,
+                        ExpeditorId = (expeditor != null) ? expeditor.Id : 0,
+                        ContractInfo = $"{contractInfo[0].ContractNumber} от {contractInfo[0].ContractDate}",
+                        ContractExpBkId = contractInfo[0].Id,
+                        DriverCardInfo = "",
+                        DelayDays = concurs.DaysDelay,
+                        DriverContactInfo = "",
+                        CarrierInfo = concurs.ExpeditorName,
+                        trailerNumber = "",
+                        distance = null,
+                        formUuid = concurs.formUuid,
+                        IsUpdate = false,
+                        transportDimensions = "",
+                        stateBorderCrossingPoint = "",
+                        seriesPassportNumber = "",
+                        Comments = "",
+                        drivingLicenseNumber = "",
+                        tenderNumber = concurs.tenderNumber,
+                        fullMassTC = null,
+                        fullMassTC2Trailer = null,
+                        massWithoutLoadTC1 = null,
+                        massWithoutLoadTC2Trailer = null,
+                        tenderTureNumber = concurs.tenderTureNumber,
+                        IsSelected = concurs.IsSelectedId
+                    };
+
+                    db.OrderUsedCars.Add(car);
+                    db.SaveChanges();
+                }
+
+            }
+            catch (Exception e)
+            {
+
+            }
+        }
+
         public bool UpdateUsedCar(OrderUsedCarViewModel model)
         {
             var dbInfo = db.OrderUsedCars.FirstOrDefault(u => u.Id == model.Id);

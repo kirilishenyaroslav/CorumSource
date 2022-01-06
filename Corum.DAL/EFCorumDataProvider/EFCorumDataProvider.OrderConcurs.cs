@@ -9,8 +9,7 @@ using Corum.DAL.Mappings;
 using Corum.DAL.Entity;
 using Corum.Models.ViewModels.Cars;
 using System.Globalization;
-
-
+using Corum.Models.ViewModels.Orders;
 
 namespace Corum.DAL
 {
@@ -789,7 +788,7 @@ namespace Corum.DAL
             catch (Exception e)
             {
             }
-            
+
             int i = 1;
             foreach (var spec in SpecItems)
             {
@@ -987,9 +986,10 @@ namespace Corum.DAL
                     IsSelectedId = model.IsWinner,
                     itemDescription = model.itemDescription,
                     cargoWeight = model.cargoWeight,
-                    emailContragent = model.emailContragent,
+                    emailContragent = (model.emailContragent == null) ? GetEmailContragent(model.ExpeditorName) : model.emailContragent,
                     formUuid = Guid.NewGuid(),
-                    tenderTureNumber = model.tenderTureNumber
+                    tenderTureNumber = (model.tenderTureNumber == null) ? GetTenderTureNumber_((int)model.tenderNumber) : model.tenderTureNumber,
+                    edrpou_aps = (model.edrpou_aps == null) ? GetEDRPOUContragent(model.ExpeditorName) : model.edrpou_aps
                 };
 
                 db.OrderCompetitiveList.Add(concurs);
@@ -1037,9 +1037,10 @@ namespace Corum.DAL
                         IsSelectedId = model.IsWinner,
                         itemDescription = model.itemDescription,
                         cargoWeight = model.cargoWeight,
-                        emailContragent = model.emailContragent,
+                        emailContragent = (model.emailContragent == null) ? GetEmailContragent(model.ExpeditorName) : model.emailContragent,
                         formUuid = Guid.NewGuid(),
-                        tenderTureNumber = model.tenderTureNumber
+                        tenderTureNumber = (model.tenderTureNumber == null) ? GetTenderTureNumber_((int)model.tenderNumber) : model.tenderTureNumber,
+                        edrpou_aps = (model.edrpou_aps == null) ? GetEDRPOUContragent(model.ExpeditorName) : model.edrpou_aps
                     };
                 }
                 catch (Exception e)
@@ -1067,9 +1068,99 @@ namespace Corum.DAL
                 }
             }
 
-
+            NewUsedCarManual(concurs); // Мануальное добавление данных о перевозчике в Заявку
+            
             return concurs.Id;
 
+        }
+
+        private string GetEmailContragent(string expeditorName)
+        {
+            try
+            {
+                string nameContragent = expeditorName;
+                string[] names = nameContragent.Split(' ');
+                Entity.CarOwners carOwners = null;
+                foreach (var it in names)
+                {
+                    string uPCaseIt = it.ToUpper();
+                    if (uPCaseIt.Length > 3)
+                    {
+                        carOwners = db.CarOwners.Where(x => x.CarrierName.Contains(uPCaseIt)).FirstOrDefault();
+                    }
+                    if (carOwners != null)
+                    {
+                        break;
+                    }
+                }
+                if (carOwners != null)
+                {
+                    return carOwners.email_aps;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        private long? GetEDRPOUContragent(string expeditorName)
+        {
+            try
+            {
+                string nameContragent = expeditorName;
+                string[] names = nameContragent.Split(' ');
+                Entity.CarOwners carOwners = null;
+                foreach (var it in names)
+                {
+                    string uPCaseIt = it.ToUpper();
+                    if (uPCaseIt.Length > 3)
+                    {
+                        carOwners = db.CarOwners.Where(x => x.CarrierName.Contains(uPCaseIt)).FirstOrDefault();
+                    }
+                    if (carOwners != null)
+                    {
+                        break;
+                    }
+                }
+                if (carOwners != null)
+                {
+                    return carOwners.edrpou_aps;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
+        }
+
+        private int? GetTenderTureNumber_(int tenderNumber)
+        {
+            try
+            {
+                var registerTenderInfo = db.RegisterTenders.Where(x => x.tenderNumber == tenderNumber).FirstOrDefault();
+                if (registerTenderInfo != null)
+                {
+                    int tenderTureNumber = registerTenderInfo.stageNumber;
+                    return tenderTureNumber;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception e)
+            {
+                return null;
+            }
         }
 
         public void NewSpecification(SpecificationListViewModel model, string userId, int? tenderNumber, out Guid formUuid)
@@ -1080,8 +1171,8 @@ namespace Corum.DAL
                 cs = db.ContractSpecifications.AsNoTracking().FirstOrDefault(x => x.Id == model.Id);
             }
             catch (Exception e)
-            { 
-            
+            {
+
             }
             OrderCompetitiveList concurs = null;
 
@@ -2122,6 +2213,16 @@ namespace Corum.DAL
                     NewUsedCar(formUuid, (int)GetTenderTureNumber(tenderNumber), mod.IsSelectedId);
                 }
 
+            }
+            else 
+            {
+                var usedCar = db.OrderUsedCars.Where(x => x.tenderNumber == tenderNumber && x.formUuid == formUuid).FirstOrDefault();
+                if (usedCar != null)
+                {
+                    usedCar.tenderTureNumber = GetTenderTureNumber(tenderNumber);
+                    usedCar.IsSelected = mod.IsSelectedId;
+                    db.SaveChanges();
+                }
             }
         }
 

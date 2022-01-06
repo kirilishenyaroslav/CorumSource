@@ -318,19 +318,19 @@ namespace CorumAdminUI.Controllers
                                             {
                                                 if (costOfCarWithoutNDS == 0)
                                                 {
-                                                    costOfCarWithoutNDS = (el.listCritariaValues[i].Id == 61) ? Double.Parse(el.listCritariaValues[i].Value.ToString()) : 0d;
+                                                    costOfCarWithoutNDS = (el.listCritariaValues[i].Name.Contains("Абсолютная цена в валюте, без НДС (редукцион)")) ? Double.Parse(el.listCritariaValues[i].Value.ToString()) : 0d;
                                                 }
                                                 if (costOfCarWithoutNDSToNull == 0)
                                                 {
-                                                    costOfCarWithoutNDSToNull = (el.listCritariaValues[i].Id == 64) ? Double.Parse(el.listCritariaValues[i].Value.ToString()) : 0d;
+                                                    costOfCarWithoutNDSToNull = (el.listCritariaValues[i].Name.Contains("Цена, приведенная к \"0\", грн без НДС (редукцион)")) ? Double.Parse(el.listCritariaValues[i].Value.ToString()) : 0d;
                                                 }
                                                 if (paymentDelay == 0)
                                                 {
-                                                    paymentDelay = (el.listCritariaValues[i].Id == 66) ? Int32.Parse(el.listCritariaValues[i].Value.ToString()) : 0;
+                                                    paymentDelay = (el.listCritariaValues[i].Name.Contains("Оплата 1.Дней (редукцион)")) ? Int32.Parse(el.listCritariaValues[i].Value.ToString()) : 0;
                                                 }
                                                 if (note == null)
                                                 {
-                                                    note = (el.listCritariaValues[i].Id == 510) ? el.listCritariaValues[i].Value.ToString() : null;
+                                                    note = (el.listCritariaValues[i].Name.Contains("Примечания")) ? el.listCritariaValues[i].Value.ToString() : null;
                                                 }
                                             }
                                         }

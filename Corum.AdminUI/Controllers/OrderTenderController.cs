@@ -242,6 +242,19 @@ namespace CorumAdminUI.Controllers
         }
 
         [HttpGet]
+        public ActionResult CloseTenderOnRegistry(int tenderNumber)
+        {
+            bool toggle = context.CloseTenderOnRegistry(tenderNumber);
+
+            return new JsonpResult
+            {
+                Data = new { toggle },
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet
+            };
+        }
+
+
+        [HttpGet]
         public ActionResult UpdateStatusOrderTender(int tenderNumber)
         {
             UpdateRegisterStatusTender updateDeserializedClass = new UpdateRegisterStatusTender();

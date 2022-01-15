@@ -1067,9 +1067,17 @@ namespace Corum.DAL
                     db.SaveChanges();
                 }
             }
+            try
+            {
+                NewUsedCarManual(concurs); // Мануальное добавление данных о перевозчике в Заявку
 
-            NewUsedCarManual(concurs); // Мануальное добавление данных о перевозчике в Заявку
+                SetRegisterMessageData_((int)tenderNumber, model, concurs.OrderId, (Guid)concurs.formUuid, (int)concurs.tenderTureNumber);
+            }
+            catch (Exception e)
+            { 
             
+            }
+
             return concurs.Id;
 
         }
@@ -2214,7 +2222,7 @@ namespace Corum.DAL
                 }
 
             }
-            else 
+            else
             {
                 var usedCar = db.OrderUsedCars.Where(x => x.tenderNumber == tenderNumber && x.formUuid == formUuid).FirstOrDefault();
                 if (usedCar != null)

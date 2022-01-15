@@ -912,6 +912,24 @@ namespace Corum.DAL
         }
 
 
+        public bool CloseTenderOnRegistry(int tenderNumber)
+        {
+            var toggle = db.RegisterTenders.FirstOrDefault(x => x.tenderNumber == tenderNumber);
+            if (toggle != null)
+            {
+                toggle.process = 9;
+                toggle.processValue = "Завершен";
+                db.SaveChanges();
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+
+
         public List<RegisterFormFromContragents> GetRegisterFormFromContragents(Guid formUuid)
         {
             List<RegisterFormFromContragents> listDataToForm = new List<RegisterFormFromContragents>();
@@ -1134,6 +1152,77 @@ namespace Corum.DAL
             }
         }
 
+
+        public void SetRegisterMessageData_(int tenderNumber, SpecificationListViewModel mod, long orderId, Guid formUuid, int tenderTureNumber)
+        {
+            try
+            {
+                var industryId = db.RegisterTenders.Where(x => x.tenderNumber == mod.tenderNumber).FirstOrDefault().industryId;
+                var concList = getCompetitiveListInfo(orderId, tenderNumber);
+                var item = db.RegisterMessageToContragents.Where(x => x.tenderNumber == tenderNumber && x.contragentName == mod.ExpeditorName && x.formUuid == mod.formUuid && x.tenderTureNumber == tenderTureNumber).FirstOrDefault();
+                if (item != null && item.flag == true)
+                {
+                    item.acceptedTransportUnits = mod.acceptedTransportUnits;
+                    item.contragentName = mod.ExpeditorName;
+                    item.cost = mod.costOfCarWithoutNDS;
+                    item.dateCreate = DateTime.Now;
+                    item.dateUpdate = DateTime.Now;
+                    item.descriptionTender = mod.itemDescription;
+                    item.emailContragent = mod.emailContragent;
+                    item.emailOperacionist = "avtogruz@corum.com";
+                    item.formUuid = formUuid;
+                    item.industryId = (int)industryId;
+                    item.orderId = orderId;
+                    item.tenderItemUuid = mod.tenderItemUuid;
+                    item.tenderNumber = tenderNumber;
+                    item.flag = true;
+                    item.dataDownload = DateTime.Parse(concList.FromDate);
+                    item.dataUnload = DateTime.Parse(concList.ToDate);
+                    item.DelayPayment = mod.DaysDelay;
+                    item.industryName = mod.NameSpecification;
+                    item.nameCargo = concList.TruckDescription;
+                    item.routeShort = concList.Route;
+                    item.weightCargo = Double.Parse(concList.Weight);
+                    item.isSelected = mod.IsWinner;
+                    item.tenderTureNumber = mod.tenderTureNumber;
+                    db.SaveChanges();
+                }
+                else if (item == null)
+                {
+                    Entity.RegisterMessageToContragents model = new Entity.RegisterMessageToContragents();
+                    model.acceptedTransportUnits = mod.acceptedTransportUnits;
+                    model.contragentName = mod.ExpeditorName;
+                    model.cost = mod.costOfCarWithoutNDS;
+                    model.dateCreate = DateTime.Now;
+                    model.dateUpdate = DateTime.Now;
+                    model.descriptionTender = mod.itemDescription;
+                    model.emailContragent = mod.emailContragent;
+                    model.emailOperacionist = "avtogruz@corum.com";
+                    model.formUuid = formUuid;
+                    model.industryId = (int)industryId;
+                    model.orderId = orderId;
+                    model.tenderItemUuid = mod.tenderItemUuid;
+                    model.tenderNumber = tenderNumber;
+                    model.flag = true;
+                    model.dataDownload = DateTime.Parse(concList.FromDate);
+                    model.dataUnload = DateTime.Parse(concList.ToDate);
+                    model.DelayPayment = mod.DaysDelay;
+                    model.industryName = mod.NameSpecification;
+                    model.nameCargo = concList.TruckDescription;
+                    model.routeShort = concList.Route;
+                    model.weightCargo = Double.Parse(concList.Weight);
+                    model.isSelected = mod.IsWinner;
+                    model.tenderTureNumber = mod.tenderTureNumber;
+                    db.RegisterMessageToContragents.Add(model);
+                    db.SaveChanges();
+                }
+            }
+            catch (Exception e)
+            { 
+            
+            }
+        }
+
         public void SetEdrpouInOrdCompList()
         {
             Dictionary<long, long> dict = new Dictionary<long, long>();
@@ -1231,14 +1320,14 @@ namespace Corum.DAL
                 db.SaveChanges();
             }
         }
-        public string GetExecuterNotes(int orderId) 
+        public string GetExecuterNotes(int orderId)
         {
             var orderInfo = db.OrdersBase.FirstOrDefault(o => o.Id == orderId);
             if (orderInfo != null)
             {
                 return orderInfo.ExecuterNotes;
             }
-            else 
+            else
             {
                 return null;
             }

@@ -792,7 +792,7 @@
           <Property Name="Summ" Type="decimal" Precision="16" Scale="2" />
           <Property Name="DriverCardInfo" Type="varchar" MaxLength="100" />
           <Property Name="Comments" Type="varchar" MaxLength="255" />
-          <Property Name="CarCapacity" Type="float" />
+          <Property Name="CarCapacity" Type="int" />
           <Property Name="PlanDistance" Type="decimal" Precision="16" Scale="2" />
           <Property Name="PlanTimeWorkDay" Type="int" />
           <Property Name="PlanTimeHoliday" Type="int" />
@@ -8454,7 +8454,7 @@
           <Property Name="Summ" Type="Decimal" Precision="16" Scale="2" />
           <Property Name="DriverCardInfo" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
           <Property Name="Comments" Type="String" MaxLength="255" FixedLength="false" Unicode="false" />
-          <Property Name="CarCapacity" Type="Double" />
+          <Property Name="CarCapacity" Type="Int32" />
           <Property Name="PlanDistance" Type="Decimal" Precision="16" Scale="2" />
           <Property Name="PlanTimeWorkDay" Type="Int32" />
           <Property Name="PlanTimeHoliday" Type="Int32" />

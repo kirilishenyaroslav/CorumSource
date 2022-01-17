@@ -565,11 +565,16 @@ namespace Corum.RestReports
 
                 WorkSheet.Cells["D" + RowCount].Value = GetPropValue(data, "AcceptDate"); //2
                 WorkSheet.Cells["E" + RowCount].Value = GetPropValue(data, "PayerName"); //3 
+                try
+                {
+                    WorkSheet.Cells["F" + RowCount].Value = GetPropValue(data, "ClientCenterName").ToString();
 
-                WorkSheet.Cells["F" + RowCount].Value = GetPropValue(data, "ClientCenterName").ToString();
-
-                WorkSheet.Cells["G" + RowCount].Value = GetPropValue(data, "ClientName"); //4
-
+                    WorkSheet.Cells["G" + RowCount].Value = GetPropValue(data, "ClientName"); //4
+                }
+                catch (Exception e)
+                { 
+                
+                }
                 WorkSheet.Cells["H" + RowCount].Value = GetPropValue(data, "TruckTypeName"); //5
                 WorkSheet.Cells["I" + RowCount].Value = GetPropValue(data, "TruckDescription"); //6
                 WorkSheet.Cells["J" + RowCount].Value = GetPropValue(data, "Weight"); //7

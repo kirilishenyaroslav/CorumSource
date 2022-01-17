@@ -29,7 +29,7 @@ namespace Corum.DAL.Entity
         public Nullable<decimal> Summ { get; set; }
         public string DriverCardInfo { get; set; }
         public string Comments { get; set; }
-        public Nullable<double> CarCapacity { get; set; }
+        public Nullable<int> CarCapacity { get; set; }
         public Nullable<decimal> PlanDistance { get; set; }
         public Nullable<int> PlanTimeWorkDay { get; set; }
         public Nullable<int> PlanTimeHoliday { get; set; }

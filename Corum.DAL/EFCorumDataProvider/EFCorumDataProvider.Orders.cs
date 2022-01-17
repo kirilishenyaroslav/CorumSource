@@ -2399,7 +2399,7 @@ namespace Corum.DAL
             car.CarOwnerInfo = model.CarOwnerInfo;
             car.CarModelInfo = model.CarModelInfo;
             car.CarRegNum = model.CarRegNum;
-            car.CarCapacity = model.CarCapacity;
+            car.CarCapacity = (Nullable<int>)model.CarCapacity;
             car.CarDriverInfo = model.CarDriverInfo;
             car.DriverContactInfo = model.DriverContactInfo;
             car.CarrierInfo = model.CarrierInfo;
@@ -2459,7 +2459,14 @@ namespace Corum.DAL
                         expeditor = db.CarOwners.FirstOrDefault(u => u.email_aps == emailExp);
                         if (expeditor != null) {
                             payerId = db.OrdersBase.FirstOrDefault(u => u.Id == messageToContr.orderId).PayerId;
-                            contractInfo = GetContractExpBkInfoBySearchString("", expeditor.Id, (int)payerId).ToList();
+                            try
+                            {
+                                contractInfo = GetContractExpBkInfoBySearchString("", expeditor.Id, (int)payerId).ToList();
+                            }
+                            catch (Exception e)
+                            { 
+                            
+                            }
                             toggle = false;
                         }
                     }
@@ -2517,7 +2524,7 @@ namespace Corum.DAL
                     var car = new OrderUsedCars()
                     {
                         CarDriverInfo = formFromContr.fullNameOfDriver,
-                        CarCapacity = (Nullable<double>)formFromContr.loadCapacity,
+                        CarCapacity = (Nullable<int>)formFromContr.loadCapacity,
                         OrderId = messageToContr.orderId,
                         CarModelInfo = formFromContr.carBrand,
                         CarRegNum = formFromContr.stateNumberCar,
@@ -2550,7 +2557,7 @@ namespace Corum.DAL
                 else
                 {
                     dbInfo.CarDriverInfo = formFromContr.fullNameOfDriver;
-                    dbInfo.CarCapacity = (Nullable<double>)formFromContr.loadCapacity;
+                    dbInfo.CarCapacity = (Nullable<int>)formFromContr.loadCapacity;
                     dbInfo.OrderId = messageToContr.orderId;
                     dbInfo.CarModelInfo = formFromContr.carBrand;
                     dbInfo.CarRegNum = formFromContr.stateNumberCar;
@@ -2834,7 +2841,7 @@ namespace Corum.DAL
             dbInfo.CarOwnerInfo = model.CarOwnerInfo;
             dbInfo.CarModelInfo = model.CarModelInfo;
             dbInfo.CarRegNum = model.CarRegNum;
-            dbInfo.CarCapacity = model.CarCapacity;
+            dbInfo.CarCapacity = (Nullable<int>)model.CarCapacity;
             dbInfo.CarDriverInfo = model.CarDriverInfo;
             dbInfo.DriverContactInfo = model.DriverContactInfo;
             dbInfo.CarrierInfo = model.CarrierInfo;
@@ -3887,7 +3894,7 @@ namespace Corum.DAL
 
                 CarModelInfo = cars.Model ?? "",
                 CarRegNum = cars.Number,
-                CarCapacity = model.CarCapacity,
+                CarCapacity = (Nullable<int>)model.CarCapacity,
                 CarDriverInfo = cars.Driver,
                 DriverCardInfo = cars.DriverLicenseSeria + " " + cars.DriverLicenseNumber,
 

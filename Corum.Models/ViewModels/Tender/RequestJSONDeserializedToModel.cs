@@ -44,6 +44,45 @@ namespace Corum.Models.ViewModels.Tender
 
     public class PropValue
     {
+        private string GetDate(object value)
+        {
+            string dataBeforeT = "";
+            string val = value.ToString();
+            string[] valMassive = val.Contains('T')?val.Split('T'):val.Split(' ');
+            string[] valMassiveTwo = valMassive[0].Contains('-')?valMassive[0].Split('-'): valMassive[0].Split('.');
+            string[] valMassiveThree = valMassive[1].Split(':');
+            foreach (var item in valMassiveTwo)
+            {
+                foreach (var it in item)
+                {
+                    if (dataBeforeT.Length < 10)
+                    {
+                        dataBeforeT += it;
+                    }
+                }
+                if (dataBeforeT.Length < 10)
+                {
+                    dataBeforeT += '-';
+                }
+            }
+            dataBeforeT += 'T';
+            foreach (var item in valMassiveThree)
+            {
+                foreach (var it in item)
+                {
+                    if (dataBeforeT.Length < 20)
+                    {
+                        dataBeforeT += it;
+                    }
+                }
+                if (dataBeforeT.Length < 19)
+                {
+                    dataBeforeT += ':';
+                }
+            }
+            return dataBeforeT;
+        }
+        private object dateOnload;
         [JsonProperty("Доп.точка загрузки 1")]
         public string ДопТочкаЗагрузки1 { get; set; }
 
@@ -84,7 +123,17 @@ namespace Corum.Models.ViewModels.Tender
         public string НаименованиеГруза { get; set; }
 
         [JsonProperty("Дата загрузки требуемая")]
-        public DateTime? ДатаЗагрузкиТребуемая { get; set; }
+        public object ДатаЗагрузкиТребуемая
+        {
+            set
+            {
+                dateOnload = GetDate(value);
+            }
+            get
+            {
+                return dateOnload as DateTime?;
+            }
+        }
 
         [JsonProperty("Дата выгрузки требуемая")]
         public DateTime? ДатаВыгрузкиТребуемая { get; set; }

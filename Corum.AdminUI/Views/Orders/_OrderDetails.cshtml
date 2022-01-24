@@ -149,10 +149,10 @@
                                 id = "ClientId",
                                 @class = "filter_dropdown form-control input",
                                 @name = "ClientId",
-                                @Value = "",
+                                @Value = (Model.ClientId == -1)?"":Model.ClientId.ToString(),
                                 data_source_url = Url.Action("GetClients", "Orders"),
                                 data_droplist_placeholder = "Выберите функциональное поразделение",
-                                data_selected_text = Model.ClientName
+                                data_selected_text = Model.ClientCenterName + "/"+Model.ClientName
                             })
                      }
                      else

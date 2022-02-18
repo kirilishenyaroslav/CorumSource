@@ -332,7 +332,7 @@ namespace Corum.DAL
                     stageMode = model.stageMode,
                     stageNumber = model.stageNumber,
                     subCompanyId = model.subCompanyId,
-                    subCompanyName = model.subCompanyName,
+                    subCompanyName = (model.subCompanyName != null)? model.subCompanyName: "",
                     tenderNumber = model.tenderNumber,
                     downloadAddress = model.downloadAddress,
                     unloadAddress = model.unloadAddress,
